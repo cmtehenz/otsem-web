@@ -61,8 +61,9 @@ function MerchantCardModal({ onDone }: { onDone?: () => void }) {
             if (!res.ok) throw new Error(data?.message || "Falha na criação da cobrança");
             toast.success(`Cobrança criada em ${installments}x, valor: ${fmtBRL(amount)}`);
             onDone?.();
-        } catch (e: any) {
-            toast.error(e?.message ?? "Erro ao criar cobrança");
+        } catch (e) {
+            const errorMessage = (e instanceof Error && e.message) ? e.message : "Erro ao criar cobrança";
+            toast.error(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -79,10 +80,10 @@ function MerchantCardModal({ onDone }: { onDone?: () => void }) {
                 </DialogHeader>
                 <div className="space-y-3">
                     <label className="text-sm text-muted-foreground">Valor (BRL)</label>
-                    <Input type="number" min={1} step="0.01" value={amount as any} onChange={(e) => setAmount(Number(e.target.value))} />
+                    <Input type="number" min={1} step="0.01" value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
 
                     <label className="text-sm text-muted-foreground">Parcelas</label>
-                    <Input type="number" min={1} max={12} value={installments as any} onChange={(e) => setInstallments(Number(e.target.value))} />
+                    <Input type="number" min={1} max={12} value={installments} onChange={(e) => setInstallments(Number(e.target.value))} />
 
                     <Button onClick={onCreate} disabled={loading || amount <= 0} className="w-full">{loading ? "Processando…" : "Criar cobrança"}</Button>
                 </div>

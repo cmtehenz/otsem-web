@@ -54,8 +54,9 @@ export default function NewPayoutPage() {
             if (!res.ok) throw new Error(data?.message || "Falha no payout");
             toast.success(`Payout criado em ${values.network}. Hash: ${data?.txHash ?? "pendente"}`);
             reset({ network: values.network, toAddress: "", amount: 0 });
-        } catch (e: any) {
-            toast.error(e?.message ?? "Erro no payout");
+        } catch (e) {
+            const errorMessage = e instanceof Error ? e.message : "Erro no payout";
+            toast.error(errorMessage);
         }
     };
 

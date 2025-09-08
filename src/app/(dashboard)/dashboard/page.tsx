@@ -189,7 +189,7 @@ function PayoutModal({ onDone }: { onDone?: () => void }) {
                         ))}
                     </div>
                     <Input placeholder="Endereço (wallet do recebedor)" value={toAddress} onChange={e => setToAddress(e.target.value)} />
-                    <Input type="number" min={0} step="0.01" placeholder="Valor em USDT" value={amount as any} onChange={e => setAmount(Number(e.target.value))} />
+                    <Input type="number" min={0} step="0.01" placeholder="Valor em USDT" value={amount} onChange={e => setAmount(Number(e.target.value))} />
 
                     {insuficiente && (
                         <div className="text-xs text-rose-600">Saldo USDT insuficiente para enviar {amount}.</div>
