@@ -3,6 +3,7 @@
 
 import { nanoid } from "nanoid";
 
+// ---------- Tipos base ----------
 export type Tx = {
     id: string;
     createdAt: string;
@@ -12,7 +13,7 @@ export type Tx = {
     amount: number;
     description?: string;
     txid?: string;
-    meta?: Record<string, any>;
+    meta?: Record<string, unknown>;
 };
 
 export type PixCharge = {
@@ -26,14 +27,15 @@ export type PixCharge = {
     expiresAt: string;
 };
 
-type Balances = { brl: number; usdt: number };
-type Network = "TRON" | "ETHEREUM" | "SOLANA";
-type DepositAddress = { network: Network; address: string; qrCode?: string; memoTag?: string };
+export type Balances = { brl: number; usdt: number };
+export type Network = "TRON" | "ETHEREUM" | "SOLANA";
+export type DepositAddress = { network: Network; address: string; qrCode?: string; memoTag?: string };
 
+// ---------- Ambiente demo ----------
 const DEMO = typeof window !== "undefined" && process.env.NEXT_PUBLIC_DEMO_MODE === "true";
 const DEMO_RATE = 5.5; // 1 USDT ~ R$5,50 (exemplo)
 
-// —— Persistência opcional em localStorage ——
+// ---------- Persistência em localStorage ----------
 const PERSIST = true;
 const STORE_KEY = "otsem_demo_store_v1";
 
@@ -46,9 +48,8 @@ type Store = {
 
 function defaultStore(): Store {
     return {
-        balances: { brl: 5000, usdt: 1200 }, // saldos iniciais demo
+        balances: { brl: 5000, usdt: 1200 },
         txs: [
-            // exemplo de duas transações iniciais
             {
                 id: nanoid(),
                 createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
@@ -83,7 +84,6 @@ function loadStore(): Store {
     }
     try {
         const parsed = JSON.parse(raw) as Store;
-        // se por algum motivo veio sem seed, aplique uma única vez
         if (!parsed.seeded) {
             const seeded = { ...defaultStore(), ...parsed, seeded: true };
             localStorage.setItem(STORE_KEY, JSON.stringify(seeded));
@@ -97,35 +97,64 @@ function loadStore(): Store {
     }
 }
 
-function saveStore(store: Store) {
+function saveStore(s: Store) {
     if (!PERSIST || typeof window === "undefined") return;
-    localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    localStorage.setItem(STORE_KEY, JSON.stringify(s));
 }
 
-let store: Store = loadStore();
+// objeto é mutável; 'const' atende ao prefer-const
+const store: Store = loadStore();
 
-// —— Util QR fake ——
-function fakeQR(_: string) {
+// ---------- Util: QR fake ----------
+function fakeQR(id: string): string {
     const svg = encodeURIComponent(
-        `<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'><rect width='100%' height='100%' fill='#EEE'/><rect x='32' y='32' width='448' height='448' fill='#000' opacity='0.06'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='22' font-family='monospace'>PIX DEMO</text></svg>`
+        `<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'>
+       <rect width='100%' height='100%' fill='#EEE'/>
+       <rect x='32' y='32' width='448' height='448' fill='#000' opacity='0.06'/>
+       <text x='50%' y='48%' dominant-baseline='middle' text-anchor='middle' font-size='22' font-family='monospace'>PIX DEMO</text>
+       <text x='50%' y='56%' dominant-baseline='middle' text-anchor='middle' font-size='14' font-family='monospace'>${id.slice(0, 10)}…</text>
+     </svg>`
     );
     return `data:image/svg+xml;charset=utf-8,${svg}`;
 }
 
-// —— API base: fetch real quando DEMO=false ——
-export async function apiFetch(input: string, init?: RequestInit) {
+// ---------- Tipos de bodies para POST ----------
+type PostPixChargeBody = {
+    amountBrl: number;
+    description?: string;
+    autoConvert?: boolean;
+};
+
+type PostPayoutBody = {
+    network: Network | string;
+    toAddress: string;
+    amount: number;
+};
+
+type PostConversionBody = {
+    amountBRL: number;
+};
+
+type PostDemoFundBody = {
+    addBRL?: number;
+    addUSDT?: number;
+};
+
+// ---------- API base ----------
+export async function apiFetch(input: string, init?: RequestInit): Promise<Response> {
     if (!DEMO) return fetch(input, { credentials: "include", ...(init ?? {}) });
 
     const url = new URL(input, window.location.origin);
     const path = url.pathname + (url.search || "");
     const method = (init?.method || "GET").toUpperCase();
-    const json = (body: any, ok = true, status = ok ? 200 : 400) =>
+
+    const json = (body: unknown, ok = true, status = ok ? 200 : 400): Response =>
         new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 
     // latência fake
-    await new Promise((r) => setTimeout(r, 200));
+    await new Promise<void>((r) => setTimeout(r, 200));
 
-    // ——— GETs ———
+    // -------- GETs --------
 
     // saldos
     if (path.startsWith("/wallets/me") && method === "GET") {
@@ -178,16 +207,18 @@ export async function apiFetch(input: string, init?: RequestInit) {
             ETHEREUM: "0xDEMo00000000000000000000000000000fAcE",
             SOLANA: "DEMo9jKhd3h1U2e3s8f4QzX1YpJ6LkQw",
         };
-        return json({ network: net, address: addrByNet[net], qrCode: fakeQR(addrByNet[net]) } as DepositAddress);
+        const resp: DepositAddress = { network: net, address: addrByNet[net], qrCode: fakeQR(addrByNet[net]) };
+        return json(resp);
     }
 
-    // ——— POSTs ———
+    // -------- POSTs --------
 
     // criar cobrança pix
     if (path.startsWith("/pix/charges") && method === "POST") {
-        const body = init?.body ? JSON.parse(init.body as string) : {};
-        const amountBrl: number = Number(body.amountBrl || 0);
-        const autoConvert: boolean = !!body.autoConvert;
+        const raw = init?.body as string | undefined;
+        const body = raw ? (JSON.parse(raw) as PostPixChargeBody) : ({} as PostPixChargeBody);
+        const amountBrl = Number(body.amountBrl || 0);
+        const autoConvert = Boolean(body.autoConvert);
 
         if (amountBrl <= 0) return json({ message: "Valor inválido" }, false, 400);
 
@@ -257,9 +288,10 @@ export async function apiFetch(input: string, init?: RequestInit) {
 
     // payout (enviar USDT)
     if (path.startsWith("/payouts") && method === "POST") {
-        const body = init?.body ? JSON.parse(init.body as string) : {};
+        const raw = init?.body as string | undefined;
+        const body = raw ? (JSON.parse(raw) as PostPayoutBody) : ({} as PostPayoutBody);
         const amount = Number(body.amount || 0);
-        const network = String(body.network || "TRON").toUpperCase();
+        const network = String(body.network || "TRON").toUpperCase() as Network | string;
         const toAddress = String(body.toAddress || "");
 
         if (!["TRON", "ETHEREUM", "SOLANA"].includes(network)) {
@@ -288,8 +320,9 @@ export async function apiFetch(input: string, init?: RequestInit) {
 
     // conversão BRL->USDT
     if (path.startsWith("/conversions/brl-to-usdt") && method === "POST") {
-        const body = init?.body ? JSON.parse(init.body as string) : {};
-        const amountBRL: number = Number(body.amountBRL || 0);
+        const raw = init?.body as string | undefined;
+        const body = raw ? (JSON.parse(raw) as PostConversionBody) : ({} as PostConversionBody);
+        const amountBRL = Number(body.amountBRL || 0);
         if (amountBRL <= 0) return json({ message: "Valor inválido" }, false, 400);
         if (store.balances.brl < amountBRL) return json({ message: "Saldo BRL insuficiente" }, false, 400);
 
@@ -322,7 +355,8 @@ export async function apiFetch(input: string, init?: RequestInit) {
 
     // 💰 carregar dinheiro demo rapidamente
     if (path.startsWith("/demo/fund") && method === "POST") {
-        const body = init?.body ? JSON.parse(init.body as string) : {};
+        const raw = init?.body as string | undefined;
+        const body = raw ? (JSON.parse(raw) as PostDemoFundBody) : ({} as PostDemoFundBody);
         const addBRL = Number(body.addBRL || 0);
         const addUSDT = Number(body.addUSDT || 0);
 
@@ -359,19 +393,24 @@ export async function apiFetch(input: string, init?: RequestInit) {
     return json({ message: `No demo route for ${method} ${path}` }, false, 404);
 }
 
+// ---------- Helpers de fetch ----------
 export const swrFetcher = (url: string) => apiFetch(url).then((r) => r.json());
-export async function apiPost<T = any>(url: string, body: any): Promise<T> {
+
+export async function apiPost<T = unknown>(url: string, body: unknown): Promise<T> {
     const res = await apiFetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data?.message || "Request failed");
-    return data;
+    const data: unknown = await res.json();
+    if (!res.ok) {
+        const message = (data as { message?: string } | null)?.message ?? "Request failed";
+        throw new Error(message);
+    }
+    return data as T;
 }
 
-// Tipos de erro e Result
+// ---------- Result API (sem try/catch no componente) ----------
 export class ApiError extends Error {
     readonly status: number;
     readonly code?: string;
@@ -389,11 +428,7 @@ export type Ok<T> = { ok: true; data: T };
 export type Err = { ok: false; error: ApiError };
 export type Result<T> = Ok<T> | Err;
 
-/**
- * Versão "safe" que não lança; retorna Result<T>.
- * Use esta no front para evitar try/catch com any/unknown.
- */
-export async function apiSafePost<T>(url: string, body: any): Promise<Result<T>> {
+export async function apiSafePost<T>(url: string, body: unknown): Promise<Result<T>> {
     try {
         const res = await apiFetch(url, {
             method: "POST",
@@ -401,17 +436,15 @@ export async function apiSafePost<T>(url: string, body: any): Promise<Result<T>>
             body: JSON.stringify(body),
         });
 
-        const data = await res.json().catch(() => ({}));
+        const data: unknown = await res.json().catch(() => ({}));
 
         if (!res.ok) {
-            const msg = (data && typeof data.message === "string") ? data.message : "Request failed";
+            const msg = (data as { message?: string } | null)?.message ?? "Request failed";
             return { ok: false, error: new ApiError(msg, { status: res.status, payload: data }) };
         }
         return { ok: true, data: data as T };
     } catch (e) {
-        // NOTE: toda a manipulação de unknown fica encapsulada aqui, não nos componentes
         const err = e instanceof Error ? new ApiError(e.message, { status: 0 }) : new ApiError("Network error", { status: 0 });
         return { ok: false, error: err };
     }
 }
-
