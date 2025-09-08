@@ -24,7 +24,7 @@ type LoginForm = z.infer<typeof loginSchema>;
 // Alinha generics do RHF em qualquer versão
 const loginResolver = zodResolver(loginSchema) as unknown as Resolver<LoginForm>;
 
-export default function LoginPage(): JSX.Element {
+export default function LoginPage(): React.JSX.Element {
     const router = useRouter();
 
     const {
