@@ -19,8 +19,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "";
-const fetcher = (url: string) => fetch(url, { credentials: "include" }).then((r) => r.json());
+// ✅ use o fetcher do mock (src/lib/api.ts)
+import { swrFetcher } from "@/lib/api";
 
 export type Tx = {
     id: string;
@@ -41,7 +41,6 @@ const filterSchema = z.object({
     from: z.string().optional().or(z.literal("")),
     to: z.string().optional().or(z.literal("")),
 });
-
 type FilterForm = z.infer<typeof filterSchema>;
 const filterResolver = zodResolver(filterSchema) as unknown as Resolver<FilterForm>;
 
@@ -66,6 +65,7 @@ export default function TransactionsPage() {
         if (values.asset && values.asset !== "ALL") p.set("asset", values.asset);
         if (values.type && values.type !== "ALL") p.set("type", values.type);
         if (values.origin && values.origin !== "ALL") p.set("origin", values.origin);
+        // 👇 from/to já são enviados; o mock atual ignora (veja patch opcional abaixo)
         if (values.from) p.set("from", values.from);
         if (values.to) p.set("to", values.to);
         p.set("page", String(page));
@@ -73,7 +73,12 @@ export default function TransactionsPage() {
         return p.toString();
     }, [values, page, limit]);
 
-    const { data, isLoading, mutate } = useSWR<{ items: Tx[] }>(`${API}/transactions?${query}`, fetcher, { keepPreviousData: true });
+    // ✅ caminhos relativos para bater no mock
+    const { data, isLoading, mutate } = useSWR<{ items: Tx[]; total?: number; page?: number; limit?: number }>(
+        `/transactions?${query}`,
+        swrFetcher,
+        { keepPreviousData: true }
+    );
 
     function onReset() {
         setValue("q", "");
@@ -92,7 +97,9 @@ export default function TransactionsPage() {
                     <h1 className="text-2xl font-semibold tracking-tight">Transações</h1>
                     <p className="text-sm text-muted-foreground">Filtro por moeda, tipo, origem e período.</p>
                 </div>
-                <Button variant="ghost" className="gap-2" onClick={() => mutate()}><RefreshCw className="size-4" /> Atualizar</Button>
+                <Button variant="ghost" className="gap-2" onClick={() => mutate()}>
+                    <RefreshCw className="size-4" /> Atualizar
+                </Button>
             </div>
 
             {/* Filtros */}
@@ -232,7 +239,13 @@ export default function TransactionsPage() {
                         <div className="flex items-center gap-2">
                             <Button variant="outline" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1}>Anterior</Button>
                             <div className="text-sm text-muted-foreground">Página {page}</div>
-                            <Button variant="outline" onClick={() => setPage(p => p + 1)} disabled={!!data && Array.isArray(data.items) && data.items.length < limit}>Próxima</Button>
+                            <Button
+                                variant="outline"
+                                onClick={() => setPage(p => p + 1)}
+                                disabled={!!data && Array.isArray(data.items) && data.items.length < limit}
+                            >
+                                Próxima
+                            </Button>
                         </div>
                     </div>
                 </CardContent>
@@ -240,5 +253,3 @@ export default function TransactionsPage() {
         </div>
     );
 }
-
-

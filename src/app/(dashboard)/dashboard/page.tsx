@@ -40,7 +40,7 @@ import {
 import { toast } from "sonner";
 
 // ——— Mock API helpers ———
-import { swrFetcher, apiPost } from "@/lib/api";
+import { swrFetcher, apiPost, apiSafePost } from "@/lib/api";
 
 // ——— Helpers ———
 const API = process.env.NEXT_PUBLIC_API_URL || "";
@@ -82,18 +82,20 @@ function ConvertModal({ onDone }: { onDone?: () => void }) {
     const [loading, setLoading] = useState(false);
 
     async function onConvert() {
-        try {
-            setLoading(true);
-            await apiPost(`${API}/conversions/brl-to-usdt`, {
-                amountBRL: Number(amount),
-            });
-            toast.success(`BRL ${amount} convertido para USDT (demo).`);
-            onDone?.();
-        } catch (e: any) {
-            toast.error(e?.message ?? "Erro na conversão");
-        } finally {
-            setLoading(false);
+        setLoading(true);
+        const result = await apiSafePost<{
+            ok: true; rate: number; amountBRL: number; usdtAdded: number;
+        }>(`${API}/conversions/brl-to-usdt`, { amountBRL: Number(amount) });
+
+        setLoading(false);
+
+        if (!result.ok) {
+            toast.error(result.error.message);
+            return;
         }
+
+        toast.success(`BRL ${amount} convertido para USDT (demo).`);
+        onDone?.();
     }
 
     return (
@@ -113,8 +115,8 @@ function ConvertModal({ onDone }: { onDone?: () => void }) {
                         type="number"
                         min={0}
                         step="0.01"
-                        value={amount as any}
-                        onChange={(e) => setAmount(Number(e.target.value))}
+                        value={amount.toString()} // ✅ sempre string
+                        onChange={(e) => setAmount(Number(e.target.value) || 0)}
                         placeholder="0,00"
                     />
                     <Button
@@ -131,70 +133,71 @@ function ConvertModal({ onDone }: { onDone?: () => void }) {
 }
 
 function PayoutModal({ onDone }: { onDone?: () => void }) {
-    const [network, setNetwork] = useState<"TRON" | "ETHEREUM" | "SOLANA">(
-        "TRON"
+    const { data: balances, mutate: refetchBalances } = useSWR<{ brl: number; usdt: number }>(
+        "/wallets/me",
+        swrFetcher
     );
+    const usdtBalance = balances?.usdt ?? 0;
+
+    const [network, setNetwork] = useState<"TRON" | "ETHEREUM" | "SOLANA">("TRON");
     const [toAddress, setToAddress] = useState("");
     const [amount, setAmount] = useState<number>(0);
     const [loading, setLoading] = useState(false);
 
+    const insuficiente = amount > 0 && amount > usdtBalance;
+
     async function onPayout() {
-        try {
-            setLoading(true);
-            const data = await apiPost(`${API}/payouts`, {
-                network,
-                toAddress,
-                amount,
-            });
-            toast.success(`Payout criado. Hash: ${data?.txHash ?? "pendente"}`);
-            onDone?.();
-        } catch (e: any) {
-            toast.error(e?.message ?? "Erro no payout");
-        } finally {
-            setLoading(false);
+        setLoading(true);
+        const result = await apiSafePost<{ txHash: string }>(`${API}/payouts`, {
+            network,
+            toAddress,
+            amount,
+        });
+
+        setLoading(false);
+
+        if (!result.ok) {
+            toast.error(result.error.message);
+            return;
         }
+
+        toast.success(`Payout criado. Hash: ${result.data.txHash ?? "pendente"}`);
+        onDone?.();
+
     }
 
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2">
-                    <ArrowUpRight className="size-4" /> Enviar USDT
-                </Button>
+                <Button variant="outline" className="gap-2"><ArrowUpRight className="size-4" /> Enviar USDT</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
                 <DialogHeader>
                     <DialogTitle>Enviar USDT (on-chain)</DialogTitle>
                 </DialogHeader>
+
+                <div className="text-xs text-muted-foreground -mt-2 mb-2">
+                    Saldo disponível: <b>{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(usdtBalance)}</b>
+                </div>
+
                 <div className="space-y-3">
                     <div className="grid grid-cols-3 gap-2">
-                        {(["TRON", "ETHEREUM", "SOLANA"] as const).map((n) => (
-                            <Button
-                                key={n}
-                                variant={network === n ? "default" : "secondary"}
-                                onClick={() => setNetwork(n)}
-                                className="w-full"
-                            >
+                        {(["TRON", "ETHEREUM", "SOLANA"] as const).map(n => (
+                            <Button key={n} variant={network === n ? "default" : "secondary"} onClick={() => setNetwork(n)} className="w-full">
                                 {n}
                             </Button>
                         ))}
                     </div>
-                    <Input
-                        placeholder="Endereço (wallet do recebedor)"
-                        value={toAddress}
-                        onChange={(e) => setToAddress(e.target.value)}
-                    />
-                    <Input
-                        type="number"
-                        min={0}
-                        step="0.01"
-                        placeholder="Valor em USDT"
-                        value={amount as any}
-                        onChange={(e) => setAmount(Number(e.target.value))}
-                    />
+                    <Input placeholder="Endereço (wallet do recebedor)" value={toAddress} onChange={e => setToAddress(e.target.value)} />
+                    <Input type="number" min={0} step="0.01" placeholder="Valor em USDT" value={amount as any} onChange={e => setAmount(Number(e.target.value))} />
+
+                    {insuficiente && (
+                        <div className="text-xs text-rose-600">Saldo USDT insuficiente para enviar {amount}.</div>
+                    )}
+
                     <Button
                         onClick={onPayout}
-                        disabled={loading || !toAddress || amount <= 0}
+                        disabled={loading || !toAddress || amount <= 0 || insuficiente}
                         className="w-full"
                     >
                         {loading ? "Enviando…" : "Enviar"}
@@ -391,8 +394,8 @@ export default function Dashboard() {
                                         <TableCell>
                                             <div
                                                 className={`inline-flex items-center gap-1 text-sm ${t.type === "CREDIT"
-                                                        ? "text-emerald-600 dark:text-emerald-400"
-                                                        : "text-rose-600 dark:text-rose-400"
+                                                    ? "text-emerald-600 dark:text-emerald-400"
+                                                    : "text-rose-600 dark:text-rose-400"
                                                     }`}
                                             >
                                                 {t.type === "CREDIT" ? (

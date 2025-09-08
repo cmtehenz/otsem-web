@@ -1,88 +1,166 @@
-// =====================================
-// File: src/app/transactions/[id]/page.tsx
-// =====================================
 "use client";
 
 import React from "react";
 import useSWR from "swr";
-import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { notFound, useParams } from "next/navigation";
+import { ArrowLeft, ArrowDownRight, ArrowUpRight, Copy, Check } from "lucide-react";
 
-// shadcn
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { swrFetcher } from "@/lib/api";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
-import type { Tx } from "../page";
+type Tx = {
+    id: string;
+    createdAt: string;
+    type: "CREDIT" | "DEBIT";
+    origin?: "PIX" | "CARD" | "CONVERSION" | "PAYOUT" | "MANUAL";
+    asset: "BRL" | "USDT";
+    amount: number;
+    description?: string;
+    txid?: string;
+    meta?: Record<string, any>;
+};
 
-const API2 = process.env.NEXT_PUBLIC_API_URL || "";
-const fetcher2 = (url: string) => fetch(url, { credentials: "include" }).then((r) => r.json());
-
-function fmtBRL(v: number) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v ?? 0); }
-function fmtUSD(v: number) { return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(v ?? 0); }
-const time2 = (iso?: string) => (iso ? new Date(iso).toLocaleString("pt-BR") : "");
+const fmtBRL = (v: number) =>
+    new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v ?? 0);
+const fmtUSD = (v: number) =>
+    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(v ?? 0);
 
 export default function TransactionDetailPage() {
-    const params = useParams();
-    const router = useRouter();
-    const id = params?.id as string;
+    const { id } = useParams<{ id: string }>();
 
-    const { data, isLoading } = useSWR<Tx & { meta?: Record<string, any> }>(id ? `${API2}/transactions/${id}` : null, fetcher2);
+    const { data, error, isLoading, mutate } = useSWR<Tx>(`/transactions/${id}`, swrFetcher);
+
+    if (!isLoading && (error || !data)) {
+        // 404 do mock cai aqui também
+        notFound();
+    }
+
+    const amountView =
+        data?.asset === "BRL" ? fmtBRL(Number(data?.amount ?? 0)) : fmtUSD(Number(data?.amount ?? 0));
 
     return (
         <div className="min-h-screen w-full px-4 md:px-8 py-6 space-y-6">
+            {/* Topo */}
             <div className="flex items-center justify-between">
-                <Button variant="ghost" className="gap-2" onClick={() => router.back()}><ArrowLeft className="size-4" /> Voltar</Button>
+                <div className="flex items-center gap-3">
+                    <Link href="/transactions">
+                        <Button variant="ghost" className="gap-2">
+                            <ArrowLeft className="size-4" /> Voltar
+                        </Button>
+                    </Link>
+                    <div>
+                        <h1 className="text-2xl font-semibold tracking-tight">Detalhes da transação</h1>
+                        <p className="text-sm text-muted-foreground">
+                            #{id}
+                        </p>
+                    </div>
+                </div>
+                <Button variant="outline" onClick={() => mutate()}>Recarregar</Button>
             </div>
 
+            {/* Card principal */}
             <Card className="rounded-2xl">
-                <CardHeader>
-                    <CardTitle>Transação #{id}</CardTitle>
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                        <CardTitle className="flex items-center gap-2">
+                            {data?.type === "CREDIT" ? (
+                                <>
+                                    <ArrowDownRight className="size-5 text-emerald-600" />
+                                    Crédito
+                                </>
+                            ) : (
+                                <>
+                                    <ArrowUpRight className="size-5 text-rose-600" />
+                                    Débito
+                                </>
+                            )}
+                        </CardTitle>
+                        <CardDescription>
+                            {data ? new Date(data.createdAt).toLocaleString("pt-BR") : "—"}
+                        </CardDescription>
+                    </div>
+
+                    {data?.origin && <Badge variant="secondary">{data.origin}</Badge>}
                 </CardHeader>
-                <CardContent>
-                    {isLoading && <div className="text-sm text-muted-foreground">Carregando…</div>}
-                    {data && (
-                        <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                                <div><b>Quando:</b> {time2(data.createdAt)}</div>
-                                <div><b>Tipo:</b> {data.type}</div>
-                                <div><b>Origem:</b> {data.origin ?? '—'}</div>
-                                <div><b>Moeda:</b> {data.asset}</div>
-                                <div><b>Valor:</b> {data.asset === 'BRL' ? fmtBRL(data.amount) : fmtUSD(data.amount)}</div>
-                                <div><b>Descrição:</b> {data.description ?? '—'}</div>
-                                {data.txid && <div className="col-span-1 md:col-span-3"><b>TxID/Ref:</b> {data.txid}</div>}
-                            </div>
 
-                            {data.meta && (
-                                <div className="overflow-x-auto">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>Campo</TableHead>
-                                                <TableHead>Valor</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {Object.entries(data.meta).map(([k, v]) => (
-                                                <TableRow key={k}>
-                                                    <TableCell className="font-medium">{k}</TableCell>
-                                                    <TableCell className="text-sm">{typeof v === 'object' ? JSON.stringify(v) : String(v)}</TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </div>
-                            )}
-
-                            {data.asset === 'USDT' && data.txid && (
-                                <div className="text-xs text-muted-foreground">
-                                    Dica: para ver a transação on-chain, use o explorador da rede correta (TRON/Ethereum/Solana).
-                                </div>
-                            )}
+                <CardContent className="space-y-6">
+                    {/* Valor + Moeda */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="p-4 border rounded-xl">
+                            <div className="text-xs text-muted-foreground">Valor</div>
+                            <div className="text-2xl font-semibold">{amountView}</div>
                         </div>
+                        <div className="p-4 border rounded-xl">
+                            <div className="text-xs text-muted-foreground">Moeda</div>
+                            <div className="text-xl font-medium">{data?.asset ?? "—"}</div>
+                        </div>
+                        <div className="p-4 border rounded-xl">
+                            <div className="text-xs text-muted-foreground">Tipo</div>
+                            <div className="text-xl font-medium">{data?.type ?? "—"}</div>
+                        </div>
+                    </div>
+
+                    <Separator />
+
+                    {/* Descrição */}
+                    <div className="space-y-1">
+                        <div className="text-xs text-muted-foreground">Descrição</div>
+                        <div className="text-sm">{data?.description ?? "—"}</div>
+                    </div>
+
+                    {/* TXID (se houver) */}
+                    {data?.txid && <TxidRow txid={data.txid} />}
+
+                    {/* Meta (se houver) */}
+                    {data?.meta && Object.keys(data.meta).length > 0 && (
+                        <>
+                            <Separator />
+                            <div className="space-y-2">
+                                <div className="text-xs text-muted-foreground">Metadados</div>
+                                <div className="text-xs whitespace-pre-wrap break-all rounded-md border p-3 bg-muted/30">
+                                    {JSON.stringify(data.meta, null, 2)}
+                                </div>
+                            </div>
+                        </>
                     )}
                 </CardContent>
             </Card>
+
+            {/* Link auxiliar */}
+            <div className="text-center">
+                <Link href="/transactions" className="text-xs underline text-muted-foreground">
+                    Voltar para lista
+                </Link>
+            </div>
+        </div>
+    );
+}
+
+function TxidRow({ txid }: { txid: string }) {
+    const [copied, setCopied] = React.useState(false);
+    async function copy() {
+        try {
+            await navigator.clipboard.writeText(txid);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1200);
+        } catch { }
+    }
+
+    return (
+        <div className="flex items-center justify-between gap-3">
+            <div className="space-y-1">
+                <div className="text-xs text-muted-foreground">TxID / Referência</div>
+                <div className="text-xs md:text-sm break-all">{txid}</div>
+            </div>
+            <Button variant="secondary" className="gap-2" onClick={copy}>
+                {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+                {copied ? "Copiado" : "Copiar"}
+            </Button>
         </div>
     );
 }
