@@ -90,7 +90,7 @@ export default function PixNewPage() {
         if (pollRef.current) clearInterval(pollRef.current);
         pollRef.current = setInterval(async () => {
             try {
-                const up = await swrFetcher(`/pix/charges/${id}`);
+                const up = await swrFetcher(`/pix/charges/${id}`) as PixCharge;
                 setCharge(up);
                 if (["PAID", "SETTLED", "CANCELED", "EXPIRED"].includes(up.status)) {
                     stopPolling();

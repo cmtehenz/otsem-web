@@ -3,7 +3,9 @@
 
 import { nanoid } from "nanoid";
 
-// ---------- Tipos base ----------
+// =====================
+// Tipos base
+// =====================
 export type Tx = {
     id: string;
     createdAt: string;
@@ -16,10 +18,19 @@ export type Tx = {
     meta?: Record<string, unknown>;
 };
 
+export type PixChargeStatus =
+    | "CREATED"
+    | "PENDING"
+    | "PAID"
+    | "CONVERTING"
+    | "SETTLED"
+    | "CANCELED"
+    | "EXPIRED";
+
 export type PixCharge = {
     id: string;
     txid: string;
-    status: "CREATED" | "PENDING" | "PAID" | "CONVERTING" | "SETTLED" | "CANCELED" | "EXPIRED";
+    status: PixChargeStatus;
     valor: number;
     qrCode?: string;
     copyPaste?: string;
@@ -31,18 +42,47 @@ export type Balances = { brl: number; usdt: number };
 export type Network = "TRON" | "ETHEREUM" | "SOLANA";
 export type DepositAddress = { network: Network; address: string; qrCode?: string; memoTag?: string };
 
-// ---------- Ambiente demo ----------
-const DEMO = typeof window !== "undefined" && process.env.NEXT_PUBLIC_DEMO_MODE === "true";
-const DEMO_RATE = 5.5; // 1 USDT ~ R$5,50 (exemplo)
+// ——— Cartão (demo) ———
+export type CardPaymentStatus =
+    | "CREATED"
+    | "REQUIRES_ACTION"
+    | "AUTHORIZED"
+    | "CAPTURED"
+    | "PARTIALLY_SETTLED"
+    | "SETTLED"
+    | "FAILED"
+    | "CANCELED";
 
-// ---------- Persistência em localStorage ----------
+export type CardPayment = {
+    id: string;
+    clientId: string;      // lojista
+    amount_brl: number;
+    installments: number;  // 1..12
+    status: CardPaymentStatus;
+    mdr_percent?: number;
+    fee_fixed_brl?: number;
+    interest_brl?: number;
+    settled_brl?: number;
+    converted_usdt?: number;
+    processor?: string;
+    processorRef?: string;
+    createdAt: string;
+};
+
+// =====================
+// Ambiente demo + store
+// =====================
+const DEMO = typeof window !== "undefined" && process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+const DEMO_RATE = 5.5; // 1 USDT ~ R$5,50
+
 const PERSIST = true;
-const STORE_KEY = "otsem_demo_store_v1";
+const STORE_KEY = "otsem_demo_store_v2";
 
 type Store = {
     balances: Balances;
     txs: Tx[];
     pix: Record<string, PixCharge>;
+    card: Record<string, CardPayment>;
     seeded?: boolean;
 };
 
@@ -70,6 +110,7 @@ function defaultStore(): Store {
             },
         ],
         pix: {},
+        card: {},
         seeded: true,
     };
 }
@@ -84,6 +125,10 @@ function loadStore(): Store {
     }
     try {
         const parsed = JSON.parse(raw) as Store;
+        if (typeof parsed !== "object" || parsed === null) {
+            throw new Error("Invalid store data");
+        }
+        if (!("card" in parsed) || typeof parsed.card !== "object" || parsed.card === undefined) (parsed as Store).card = {};
         if (!parsed.seeded) {
             const seeded = { ...defaultStore(), ...parsed, seeded: true };
             localStorage.setItem(STORE_KEY, JSON.stringify(seeded));
@@ -97,28 +142,45 @@ function loadStore(): Store {
     }
 }
 
-function saveStore(s: Store) {
+function saveStore(s: Store): void {
     if (!PERSIST || typeof window === "undefined") return;
     localStorage.setItem(STORE_KEY, JSON.stringify(s));
 }
 
-// objeto é mutável; 'const' atende ao prefer-const
 const store: Store = loadStore();
 
-// ---------- Util: QR fake ----------
+// =====================
+// Utils
+// =====================
 function fakeQR(id: string): string {
     const svg = encodeURIComponent(
         `<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'>
-       <rect width='100%' height='100%' fill='#EEE'/>
-       <rect x='32' y='32' width='448' height='448' fill='#000' opacity='0.06'/>
-       <text x='50%' y='48%' dominant-baseline='middle' text-anchor='middle' font-size='22' font-family='monospace'>PIX DEMO</text>
-       <text x='50%' y='56%' dominant-baseline='middle' text-anchor='middle' font-size='14' font-family='monospace'>${id.slice(0, 10)}…</text>
-     </svg>`
+      <rect width='100%' height='100%' fill='#EEE'/>
+      <rect x='32' y='32' width='448' height='448' fill='#000' opacity='0.06'/>
+      <text x='50%' y='48%' dominant-baseline='middle' text-anchor='middle' font-size='22' font-family='monospace'>PIX DEMO</text>
+      <text x='50%' y='56%' dominant-baseline='middle' text-anchor='middle' font-size='14' font-family='monospace'>${id.slice(0, 10)}…</text>
+    </svg>`
     );
     return `data:image/svg+xml;charset=utf-8,${svg}`;
 }
 
-// ---------- Tipos de bodies para POST ----------
+function sleep(ms: number): Promise<void> {
+    return new Promise((r) => setTimeout(r, ms));
+}
+
+/** Normaliza path para funcionar com /api, i18n (/pt, /en, /es) e barra final */
+function normalize(url: URL): { pathnameOnly: string; normPath: string } {
+    const pathnameOnly = url.pathname
+        .replace(/^\/api\b/, "")       // remove prefixo /api
+        .replace(/^\/(pt|en|es)\b/, "")// remove locale comum (ajuste se tiver outros)
+        .replace(/\/+$/, "");          // remove barra final
+    const normPath = pathnameOnly + (url.search || "");
+    return { pathnameOnly, normPath };
+}
+
+// =====================
+// Tipos de bodies POST
+// =====================
 type PostPixChargeBody = {
     amountBrl: number;
     description?: string;
@@ -140,29 +202,43 @@ type PostDemoFundBody = {
     addUSDT?: number;
 };
 
-// ---------- API base ----------
-export async function apiFetch(input: string, init?: RequestInit): Promise<Response> {
-    if (!DEMO) return fetch(input, { credentials: "include", ...(init ?? {}) });
+type PostCardIntentBody = {
+    amount_brl: number;
+    installments: number;
+};
 
+type PostCardConfirmBody = {
+    card_token: string;
+};
+
+// =====================
+// API base
+// =====================
+export async function apiFetch(input: string, init?: RequestInit): Promise<Response> {
+    if (!DEMO) {
+        return fetch(input, { credentials: "include", ...(init ?? {}) });
+    }
+
+    // DEMO MODE
     const url = new URL(input, window.location.origin);
-    const path = url.pathname + (url.search || "");
     const method = (init?.method || "GET").toUpperCase();
+    const { pathnameOnly, normPath } = normalize(url);
 
     const json = (body: unknown, ok = true, status = ok ? 200 : 400): Response =>
         new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 
     // latência fake
-    await new Promise<void>((r) => setTimeout(r, 200));
+    await sleep(180);
 
-    // -------- GETs --------
+    // ---------- GETs ----------
 
     // saldos
-    if (path.startsWith("/wallets/me") && method === "GET") {
+    if (normPath.startsWith("/wallets/me") && method === "GET") {
         return json({ brl: store.balances.brl, usdt: store.balances.usdt });
     }
 
-    // lista transações
-    if (path.startsWith("/transactions") && method === "GET" && !/\/transactions\//.test(path)) {
+    // lista transações (com paginação e filtros básicos)
+    if (normPath.startsWith("/transactions") && method === "GET" && !/\/transactions\//.test(normPath)) {
         const qs = url.searchParams;
         const page = Number(qs.get("page") || 1);
         const limit = Number(qs.get("limit") || 10);
@@ -175,32 +251,36 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         const asset = qs.get("asset");
         const type = qs.get("type");
         const origin = qs.get("origin");
+        const from = qs.get("from");
+        const to = qs.get("to");
 
         if (q) items = items.filter((t) => (t.description || "").toLowerCase().includes(q) || t.id.includes(q));
         if (asset && asset !== "ALL") items = items.filter((t) => t.asset === asset);
         if (type && type !== "ALL") items = items.filter((t) => t.type === type);
         if (origin && origin !== "ALL") items = items.filter((t) => t.origin === origin);
+        if (from) items = items.filter((t) => +new Date(t.createdAt) >= +new Date(from));
+        if (to) items = items.filter((t) => +new Date(t.createdAt) <= +new Date(to) + 24 * 60 * 60 * 1000 - 1);
 
         const start = (page - 1) * limit;
         return json({ items: items.slice(start, start + limit), total: items.length, page, limit });
     }
 
     // detalhe transação
-    if (/^\/transactions\/[\w-]+/.test(url.pathname) && method === "GET") {
-        const id = url.pathname.split("/").pop()!;
+    if (/^\/transactions\/[\w-]+$/.test(pathnameOnly) && method === "GET") {
+        const id = pathnameOnly.split("/").pop()!;
         const found = store.txs.find((t) => t.id === id);
         return found ? json(found) : json({ message: "Not found" }, false, 404);
     }
 
     // status pix
-    if (/^\/pix\/charges\/[\w-]+/.test(url.pathname) && method === "GET") {
-        const id = url.pathname.split("/").pop()!;
+    if (/^\/pix\/charges\/[\w-]+$/.test(pathnameOnly) && method === "GET") {
+        const id = pathnameOnly.split("/").pop()!;
         const ch = store.pix[id];
         return ch ? json(ch) : json({ message: "Not found" }, false, 404);
     }
 
     // endereço de depósito USDT
-    if (path.startsWith("/wallets/usdt/deposit-address") && method === "GET") {
+    if (normPath.startsWith("/wallets/usdt/deposit-address") && method === "GET") {
         const net = (url.searchParams.get("network") || "TRON") as Network;
         const addrByNet: Record<Network, string> = {
             TRON: "TDEMOu7N7yA1vC4hC2CqV3QSa",
@@ -211,12 +291,13 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         return json(resp);
     }
 
-    // -------- POSTs --------
+    // ---------- POSTs ----------
 
     // criar cobrança pix
-    if (path.startsWith("/pix/charges") && method === "POST") {
+    if (normPath.startsWith("/pix/charges") && method === "POST") {
         const raw = init?.body as string | undefined;
-        const body = raw ? (JSON.parse(raw) as PostPixChargeBody) : ({} as PostPixChargeBody);
+        const body = raw ? (JSON.parse(raw) as PostPixChargeBody) : { amountBrl: 0, autoConvert: false };
+
         const amountBrl = Number(body.amountBrl || 0);
         const autoConvert = Boolean(body.autoConvert);
 
@@ -254,7 +335,7 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
             saveStore(store);
         }, 3000);
 
-        // simula SETTLED + conversão automática em 6s
+        // simula SETTLED (+ conversão automática)
         setTimeout(() => {
             store.pix[id].status = "SETTLED";
             if (autoConvert) {
@@ -287,16 +368,15 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
     }
 
     // payout (enviar USDT)
-    if (path.startsWith("/payouts") && method === "POST") {
+    if (normPath.startsWith("/payouts") && method === "POST") {
         const raw = init?.body as string | undefined;
-        const body = raw ? (JSON.parse(raw) as PostPayoutBody) : ({} as PostPayoutBody);
+        const body = raw ? (JSON.parse(raw) as PostPayoutBody) : { network: "TRON", toAddress: "", amount: 0 };
+
         const amount = Number(body.amount || 0);
-        const network = String(body.network || "TRON").toUpperCase() as Network | string;
+        const network = String(body.network || "TRON").toUpperCase();
         const toAddress = String(body.toAddress || "");
 
-        if (!["TRON", "ETHEREUM", "SOLANA"].includes(network)) {
-            return json({ message: "Rede inválida" }, false, 400);
-        }
+        if (!["TRON", "ETHEREUM", "SOLANA"].includes(network)) return json({ message: "Rede inválida" }, false, 400);
         if (!toAddress || toAddress.length < 8) return json({ message: "Endereço inválido" }, false, 400);
         if (amount <= 0) return json({ message: "Valor inválido" }, false, 400);
         if (store.balances.usdt < amount) return json({ message: "Saldo insuficiente" }, false, 400);
@@ -318,10 +398,11 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         return json({ txHash }, true, 201);
     }
 
-    // conversão BRL->USDT
-    if (path.startsWith("/conversions/brl-to-usdt") && method === "POST") {
+    // conversão BRL -> USDT
+    if (normPath.startsWith("/conversions/brl-to-usdt") && method === "POST") {
         const raw = init?.body as string | undefined;
-        const body = raw ? (JSON.parse(raw) as PostConversionBody) : ({} as PostConversionBody);
+        const body = raw ? (JSON.parse(raw) as PostConversionBody) : { amountBRL: 0 };
+
         const amountBRL = Number(body.amountBRL || 0);
         if (amountBRL <= 0) return json({ message: "Valor inválido" }, false, 400);
         if (store.balances.brl < amountBRL) return json({ message: "Saldo BRL insuficiente" }, false, 400);
@@ -353,10 +434,11 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         return json({ ok: true, rate: DEMO_RATE, amountBRL, usdtAdded: usdt }, true, 201);
     }
 
-    // 💰 carregar dinheiro demo rapidamente
-    if (path.startsWith("/demo/fund") && method === "POST") {
+    // carregar dinheiro demo
+    if (normPath.startsWith("/demo/fund") && method === "POST") {
         const raw = init?.body as string | undefined;
-        const body = raw ? (JSON.parse(raw) as PostDemoFundBody) : ({} as PostDemoFundBody);
+        const body = raw ? (JSON.parse(raw) as PostDemoFundBody) : {};
+
         const addBRL = Number(body.addBRL || 0);
         const addUSDT = Number(body.addUSDT || 0);
 
@@ -389,12 +471,134 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         return json({ ok: true, brl: store.balances.brl, usdt: store.balances.usdt }, true, 201);
     }
 
-    // rota desconhecida
-    return json({ message: `No demo route for ${method} ${path}` }, false, 404);
+    // ====== CARD PAYMENTS (DEMO) ======
+
+    // intent
+    if (normPath.startsWith("/card/payments/intent") && method === "POST") {
+        const raw = init?.body as string | undefined;
+        const body = raw ? (JSON.parse(raw) as PostCardIntentBody) : { amount_brl: 0, installments: 1 };
+
+        const amount = Number(body.amount_brl || 0);
+        const installments = Number(body.installments || 1);
+        if (amount <= 0) return json({ message: "Valor inválido" }, false, 400);
+        if (installments < 1 || installments > 12) return json({ message: "Parcelas inválidas" }, false, 400);
+
+        const mdr_percent = 2.8;
+        const fee_fixed_brl = 1.5;
+        const interest_brl = installments > 1 ? +(amount * 0.015 * (installments - 1)).toFixed(2) : 0;
+
+        const id = nanoid();
+        const processorRef = `cp_${nanoid(10)}`;
+
+        const payment: CardPayment = {
+            id,
+            clientId: "me",
+            amount_brl: amount,
+            installments,
+            status: "REQUIRES_ACTION",
+            mdr_percent,
+            fee_fixed_brl,
+            interest_brl,
+            settled_brl: 0,
+            converted_usdt: 0,
+            processor: "DEMO-PROC",
+            processorRef,
+            createdAt: new Date().toISOString(),
+        };
+
+        store.card[id] = payment;
+        saveStore(store);
+        return json(payment, true, 201);
+    }
+
+    // confirm
+    if (/^\/card\/payments\/[\w-]+\/confirm$/.test(pathnameOnly) && method === "POST") {
+        const id = pathnameOnly.split("/")[3]!;
+        const raw = init?.body as string | undefined;
+        const body = raw ? (JSON.parse(raw) as PostCardConfirmBody) : { card_token: "" };
+
+        const pay = store.card[id];
+        if (!pay) return json({ message: "Pagamento não encontrado" }, false, 404);
+        if (!body.card_token || body.card_token.length < 6) return json({ message: "Token inválido" }, false, 400);
+
+        // AUTHORIZED
+        store.card[id] = { ...pay, status: "AUTHORIZED" };
+        saveStore(store);
+
+        // CAPTURED
+        setTimeout(() => {
+            const p = store.card[id]; if (!p) return;
+            store.card[id] = { ...p, status: "CAPTURED" };
+            saveStore(store);
+        }, 900);
+
+        // SETTLED + conversão
+        setTimeout(() => {
+            const p = store.card[id]; if (!p) return;
+
+            const gross = p.amount_brl + (p.interest_brl ?? 0);
+            const feeVar = (p.mdr_percent ?? 0) / 100 * gross;
+            const feeFix = p.fee_fixed_brl ?? 0;
+            const settled = +(gross - feeVar - feeFix).toFixed(2);
+
+            // crédito BRL
+            store.balances.brl += settled;
+            store.txs.unshift({
+                id: nanoid(),
+                createdAt: new Date().toISOString(),
+                type: "CREDIT",
+                origin: "CARD",
+                asset: "BRL",
+                amount: settled,
+                description: `Cartão (capturado) ${p.processorRef}`,
+            });
+
+            // conversão BRL→USDT
+            const usdt = +(settled / DEMO_RATE).toFixed(2);
+            store.balances.brl -= settled;
+            store.balances.usdt += usdt;
+            store.txs.unshift({
+                id: nanoid(),
+                createdAt: new Date().toISOString(),
+                type: "DEBIT",
+                origin: "CONVERSION",
+                asset: "BRL",
+                amount: settled,
+                description: "Conversão demo BRL→USDT (cartão)",
+            });
+            store.txs.unshift({
+                id: nanoid(),
+                createdAt: new Date().toISOString(),
+                type: "CREDIT",
+                origin: "CONVERSION",
+                asset: "USDT",
+                amount: usdt,
+                description: "Conversão demo BRL→USDT (cartão)",
+            });
+
+            store.card[id] = { ...p, status: "SETTLED", settled_brl: settled, converted_usdt: usdt };
+            saveStore(store);
+        }, 2300);
+
+        return json(store.card[id], true, 200);
+    }
+
+    // get status
+    if (/^\/card\/payments\/[\w-]+$/.test(pathnameOnly) && method === "GET") {
+        const id = pathnameOnly.split("/").pop()!;
+        const p = store.card[id];
+        return p ? json(p) : json({ message: "Pagamento não encontrado" }, false, 404);
+    }
+
+    // ——— rota desconhecida ———
+    return json({ message: `No demo route for ${method} ${normPath}` }, false, 404);
 }
 
-// ---------- Helpers de fetch ----------
-export const swrFetcher = (url: string) => apiFetch(url).then((r) => r.json());
+// =====================
+// Helpers
+// =====================
+export const swrFetcher = <T>(url: string): Promise<T> =>
+    apiFetch(url).then((r) => r.json() as Promise<T>);
 
 export async function apiPost<T = unknown>(url: string, body: unknown): Promise<T> {
     const res = await apiFetch(url, {
@@ -410,7 +614,9 @@ export async function apiPost<T = unknown>(url: string, body: unknown): Promise<
     return data as T;
 }
 
-// ---------- Result API (sem try/catch no componente) ----------
+// =====================
+// Result API (sem try/catch no componente)
+// =====================
 export class ApiError extends Error {
     readonly status: number;
     readonly code?: string;
@@ -435,7 +641,6 @@ export async function apiSafePost<T>(url: string, body: unknown): Promise<Result
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),
         });
-
         const data: unknown = await res.json().catch(() => ({}));
 
         if (!res.ok) {

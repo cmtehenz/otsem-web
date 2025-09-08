@@ -337,7 +337,7 @@ export default function Dashboard() {
                 </Link>
 
                 {/* ✅ Cobrança no Cartão → rota */}
-                <Link href="/merchant/card/new">
+                <Link href="/card/new">
                     <Button variant="outline" className="gap-2">
                         <CreditCard className="size-4" /> Cobrar no Cartão (lojista)
                     </Button>

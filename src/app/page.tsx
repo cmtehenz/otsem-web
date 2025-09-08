@@ -28,7 +28,7 @@ export default function HomePage() {
             <ArrowUpRight className="size-5" /> Novo Payout
           </Button>
         </Link>
-        <Link href="/merchant/card/new">
+        <Link href="/card/new">
           <Button variant="ghost" className="gap-2">
             <CreditCard className="size-5" /> Cobrança no Cartão
           </Button>

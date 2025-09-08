@@ -1,203 +1,235 @@
+// src/app/merchant/card/new/page.tsx
 "use client";
 
-import React, { useMemo, useState } from "react";
+import * as React from "react";
+import type { JSX } from "react";
+import Link from "next/link";
 import useSWR from "swr";
-import { ArrowDownRight, ArrowUpRight, CreditCard, RefreshCw, Wallet } from "lucide-react";
+import { z } from "zod";
+import { useForm, type SubmitHandler, type Resolver } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { ArrowLeft, CreditCard, Loader2, RefreshCw, ShieldCheck } from "lucide-react";
 
-// ——— shadcn/ui ———
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 
-// ——— Sonner ———
-import { toast } from "sonner";
+import { apiPost, swrFetcher, type CardPayment } from "@/lib/api";
 
-// ——— Helpers ———
-const API = process.env.NEXT_PUBLIC_API_URL || "";
-const fetcher = (url: string) => fetch(url, { credentials: "include" }).then((r) => r.json());
-const fmtBRL = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v ?? 0);
-const fmtUSD = (v: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(v ?? 0);
-const timeAgo = (iso?: string) => {
-    if (!iso) return "";
-    const diff = Date.now() - new Date(iso).getTime();
-    const m = Math.floor(diff / 60000);
-    if (m < 1) return "agora";
-    if (m < 60) return `${m} min`;
-    const h = Math.floor(m / 60);
-    if (h < 24) return `${h} h`;
-    const d = Math.floor(h / 24);
-    return `${d} d`;
-};
+// —— Schemas
+const intentSchema = z.object({
+    amount_brl: z.coerce.number().positive("Informe um valor maior que zero"),
+    installments: z.coerce.number().int().min(1).max(12),
+});
+type IntentForm = z.infer<typeof intentSchema>;
+const intentResolver = zodResolver(intentSchema) as unknown as Resolver<IntentForm>;
 
-// Types
-type Balances = { brl: number; usdt: number };
-type Tx = {
-    id: string;
-    createdAt: string;
-    type: "CREDIT" | "DEBIT";
-    asset: "BRL" | "USDT";
-    amount: number;
-    description?: string;
-};
+const confirmSchema = z.object({
+    card_token: z.string().min(6, "Token inválido"),
+});
+type ConfirmForm = z.infer<typeof confirmSchema>;
+const confirmResolver = zodResolver(confirmSchema) as unknown as Resolver<ConfirmForm>;
 
-// ——— Merchant Flow Simplificado ———
-function MerchantCardModal({ onDone }: { onDone?: () => void }) {
-    const [amount, setAmount] = useState<number>(0);
-    const [installments, setInstallments] = useState<number>(1);
-    const [loading, setLoading] = useState(false);
-
-    async function onCreate() {
-        try {
-            setLoading(true);
-            const res = await fetch(`${API}/card/payments/intent`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({ amount_brl: amount, installments })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data?.message || "Falha na criação da cobrança");
-            toast.success(`Cobrança criada em ${installments}x, valor: ${fmtBRL(amount)}`);
-            onDone?.();
-        } catch (e) {
-            const errorMessage = (e instanceof Error && e.message) ? e.message : "Erro ao criar cobrança";
-            toast.error(errorMessage);
-        } finally {
-            setLoading(false);
-        }
+// —— Helpers
+function fmtBRL(v: number): string {
+    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v ?? 0);
+}
+function badgeClass(status?: CardPayment["status"]): string {
+    switch (status) {
+        case "AUTHORIZED":
+        case "CAPTURED":
+        case "SETTLED": return "text-emerald-600 dark:text-emerald-400";
+        case "FAILED":
+        case "CANCELED": return "text-rose-600 dark:text-rose-400";
+        default: return "text-amber-600 dark:text-amber-400";
     }
+}
+
+export default function MerchantCardNewPage(): JSX.Element {
+    const [payment, setPayment] = React.useState<CardPayment | null>(null);
+
+    // polling do status quando houver pagamento
+    const paymentId = payment?.id ?? null;
+    const { data: livePayment, mutate } = useSWR<CardPayment>(paymentId ? `/card/payments/${paymentId}` : null, swrFetcher, {
+        refreshInterval: paymentId ? 4000 : 0,
+    });
+
+    React.useEffect(() => {
+        if (livePayment) setPayment(livePayment);
+    }, [livePayment]);
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2"><CreditCard className="size-4" /> Cobrar no Cartão</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                    <DialogTitle>Cobrar no Cartão</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-3">
-                    <label className="text-sm text-muted-foreground">Valor (BRL)</label>
-                    <Input type="number" min={1} step="0.01" value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
-
-                    <label className="text-sm text-muted-foreground">Parcelas</label>
-                    <Input type="number" min={1} max={12} value={installments} onChange={(e) => setInstallments(Number(e.target.value))} />
-
-                    <Button onClick={onCreate} disabled={loading || amount <= 0} className="w-full">{loading ? "Processando…" : "Criar cobrança"}</Button>
+        <div className="min-h-screen w-full px-4 md:px-8 py-6 space-y-6">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-semibold tracking-tight">Cobrança no Cartão (Lojista)</h1>
+                    <p className="text-sm text-muted-foreground">
+                        Crie a venda em BRL (parcelado), confirme com o gateway e acompanhe a liquidação → conversão para USDT.
+                    </p>
                 </div>
-            </DialogContent>
-        </Dialog>
+                <div className="flex items-center gap-2">
+                    <Link href="/dashboard">
+                        <Button variant="outline" className="gap-2">
+                            <ArrowLeft className="size-4" /> Dashboard
+                        </Button>
+                    </Link>
+                    <Button variant="ghost" onClick={() => mutate()} disabled={!paymentId} className="gap-2">
+                        <RefreshCw className="size-4" /> Atualizar
+                    </Button>
+                </div>
+            </div>
+
+            {!payment && <CreateIntent onCreated={setPayment} />}
+
+            {payment && (
+                <>
+                    <ConfirmPayment payment={payment} onConfirmed={setPayment} />
+                    <StatusPanel payment={payment} />
+                </>
+            )}
+        </div>
     );
 }
 
-// ——— Dashboard ———
-export default function Dashboard() {
-    const { data: balances, isLoading: loadingBalances, mutate: refetchBalances } = useSWR<Balances>(API ? `${API}/wallets/me` : null, fetcher);
-    const { data: txs, isLoading: loadingTxs, mutate: refetchTxs } = useSWR<Tx[]>(API ? `${API}/transactions?limit=10` : null, fetcher);
+// —— Criar intenção
+function CreateIntent({ onCreated }: { onCreated: (p: CardPayment) => void }): JSX.Element {
+    const { register, handleSubmit, formState: { errors, isSubmitting }, setValue } = useForm<IntentForm>({
+        resolver: intentResolver,
+        defaultValues: { amount_brl: 30000, installments: 10 },
+    });
 
-    console.log(loadingBalances);
-    const brl = balances?.brl ?? 0;
-    const usdt = balances?.usdt ?? 0;
-
-    const totalBRL = useMemo(() => brl, [brl]);
-    const totalUSDT = useMemo(() => usdt, [usdt]);
+    const onSubmit: SubmitHandler<IntentForm> = async (values) => {
+        try {
+            const created = await apiPost<CardPayment>("/card/payments/intent", values);
+            toast.success("Pagamento criado. Confirme com o cartão.");
+            onCreated(created);
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : "Falha ao criar pagamento";
+            toast.error(msg);
+        }
+    };
 
     return (
-        <div className="min-h-screen w-full px-4 md:px-8 py-6">
-            {/* Topbar */}
-            <div className="flex items-center justify-between mb-6">
-                <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-                    <p className="text-sm text-muted-foreground">Acompanhe saldos, adicione BRL via Pix, converta e envie USDT, ou cobre no cartão.</p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="ghost" onClick={() => { refetchBalances(); refetchTxs(); }} className="gap-2"><RefreshCw className="size-4" /> Atualizar</Button>
-                </div>
-            </div>
-
-            {/* Saldo Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <Card className="rounded-2xl">
-                    <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Saldo em Reais (BRL)</CardTitle>
-                        <Wallet className="size-4 opacity-60" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-semibold">{fmtBRL(totalBRL)}</div>
-                        <div className="mt-2 text-xs text-muted-foreground">Disponível para conversão</div>
-                    </CardContent>
-                </Card>
-
-                <Card className="rounded-2xl">
-                    <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Saldo em Dólar Tether (USDT)</CardTitle>
-                        <Wallet className="size-4 opacity-60" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-semibold">{fmtUSD(totalUSDT)}</div>
-                        <div className="mt-2 text-xs text-muted-foreground">Disponível para envios on-chain</div>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Ações rápidas */}
-            <div className="flex flex-wrap gap-3 mb-8">
-                {/* PixAddModal, ConvertModal, PayoutModal devem ser adicionados aqui */}
-                <MerchantCardModal onDone={() => { refetchBalances(); refetchTxs(); }} />
-            </div>
-
-            {/* Histórico de transações */}
-            <Card className="rounded-2xl">
-                <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">Últimas transações</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="overflow-x-auto">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Quando</TableHead>
-                                    <TableHead>Tipo</TableHead>
-                                    <TableHead>Moeda</TableHead>
-                                    <TableHead className="text-right">Valor</TableHead>
-                                    <TableHead>Descrição</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {loadingTxs && (
-                                    <TableRow><TableCell colSpan={5} className="text-center text-sm text-muted-foreground">Carregando…</TableCell></TableRow>
-                                )}
-                                {(!loadingTxs && (!txs || txs.length === 0)) && (
-                                    <TableRow><TableCell colSpan={5} className="text-center text-sm text-muted-foreground">Sem transações recentes</TableCell></TableRow>
-                                )}
-                                {txs?.map((t) => (
-                                    <TableRow key={t.id}>
-                                        <TableCell className="whitespace-nowrap text-sm text-muted-foreground">{timeAgo(t.createdAt)}</TableCell>
-                                        <TableCell>
-                                            <div className={`inline-flex items-center gap-1 text-sm ${t.type === 'CREDIT' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
-                                                {t.type === 'CREDIT' ? <ArrowDownRight className="size-4" /> : <ArrowUpRight className="size-4" />}
-                                                {t.type === 'CREDIT' ? 'Crédito' : 'Débito'}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-sm">{t.asset}</TableCell>
-                                        <TableCell className="text-right font-medium">
-                                            {t.asset === 'BRL' ? fmtBRL(t.amount) : fmtUSD(t.amount)}
-                                        </TableCell>
-                                        <TableCell className="text-sm text-muted-foreground max-w-[320px] truncate">
-                                            {t.description ?? '—'}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+        <Card className="rounded-2xl">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                    <CreditCard className="size-5" /> Criar intenção de pagamento
+                </CardTitle>
+                <CardDescription>Informe o valor em BRL e o número de parcelas.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                        <Label>Valor (BRL)</Label>
+                        <Input type="number" step="0.01" placeholder="0,00" {...register("amount_brl")} />
+                        {errors.amount_brl && <p className="text-xs text-rose-500 mt-1">{errors.amount_brl.message}</p>}
                     </div>
-                </CardContent>
-            </Card>
+                    <div>
+                        <Label>Parcelas</Label>
+                        <Select defaultValue="10" onValueChange={(v) => setValue("installments", Number(v), { shouldValidate: true })}>
+                            <SelectTrigger><SelectValue placeholder="Parcelas" /></SelectTrigger>
+                            <SelectContent>
+                                {Array.from({ length: 12 }).map((_, i) => (
+                                    <SelectItem key={i + 1} value={`${i + 1}`}>{i + 1}x</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        {errors.installments && <p className="text-xs text-rose-500 mt-1">{errors.installments.message}</p>}
+                    </div>
+                    <div className="flex items-end">
+                        <Button type="submit" className="w-full" disabled={isSubmitting}>
+                            {isSubmitting ? (<><Loader2 className="size-4 animate-spin" /> Criando…</>) : "Criar intenção"}
+                        </Button>
+                    </div>
+                </form>
+            </CardContent>
+        </Card>
+    );
+}
 
-            {/* Footer note */}
-            <p className="mt-6 text-center text-xs text-muted-foreground">OtsemBank — MVP • UI preview (com suporte a merchant)</p>
-        </div>
+// —— Confirmar com token
+function ConfirmPayment({ payment, onConfirmed }: { payment: CardPayment; onConfirmed: (p: CardPayment) => void }): JSX.Element {
+    const { register, handleSubmit, formState: { isSubmitting }, reset } = useForm<ConfirmForm>({
+        resolver: confirmResolver,
+        defaultValues: { card_token: "" },
+    });
+
+    const onSubmit: SubmitHandler<ConfirmForm> = async (values) => {
+        try {
+            const updated = await apiPost<CardPayment>(`/card/payments/${payment.id}/confirm`, values);
+            onConfirmed(updated);
+            if (updated.status === "AUTHORIZED" || updated.status === "CAPTURED" || updated.status === "SETTLED") {
+                toast.success(`Pagamento ${updated.status.toLowerCase()}`);
+            } else {
+                toast("Atualizado", { description: `Status: ${updated.status}` });
+            }
+            reset({ card_token: "" });
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : "Falha na confirmação";
+            toast.error(msg);
+        }
+    };
+
+    return (
+        <Card className="rounded-2xl">
+            <CardHeader>
+                <CardTitle>Confirmar pagamento</CardTitle>
+                <CardDescription>Use o token do gateway (tokenização segura via SDK).</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div className="md:col-span-3">
+                        <Label>Token do Cartão (gateway)</Label>
+                        <Input placeholder="tok_xxx… (ex.: DEMO)" {...register("card_token")} />
+                    </div>
+                    <div className="md:col-span-1 flex items-end">
+                        <Button type="submit" disabled={isSubmitting} className="w-full">
+                            {isSubmitting ? "Confirmando…" : "Confirmar"}
+                        </Button>
+                    </div>
+                </form>
+
+                <Separator className="my-4" />
+                <div className="text-sm text-muted-foreground grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div>Valor: <b>{fmtBRL(payment.amount_brl)}</b></div>
+                    <div>Parcelas: <b>{payment.installments}x</b></div>
+                    <div className={badgeClass(payment.status)}>Status: <b>{payment.status}</b></div>
+                    {payment.processor && <div>Gateway: <b>{payment.processor}</b></div>}
+                    {payment.processorRef && <div>Ref: <b>{payment.processorRef}</b></div>}
+                </div>
+
+                <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                    <ShieldCheck className="size-4" /> Os dados do cartão devem ser coletados pelo SDK do processador (tokenização PCI-DSS).
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
+// —— Painel de status
+function StatusPanel({ payment }: { payment: CardPayment }): JSX.Element {
+    return (
+        <Card className="rounded-2xl">
+            <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                    <CardTitle>Status do Pagamento</CardTitle>
+                    <CardDescription>Acompanhe autorização, captura e liquidação → conversão para USDT.</CardDescription>
+                </div>
+            </CardHeader>
+            <CardContent className="space-y-2 text-sm">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div>ID: <b>{payment.id}</b></div>
+                    <div>Valor: <b>{fmtBRL(payment.amount_brl)}</b></div>
+                    <div>Parcelas: <b>{payment.installments}x</b></div>
+                    <div className={badgeClass(payment.status)}>Status: <b>{payment.status}</b></div>
+                    {typeof payment.settled_brl === "number" && <div>Liquidado: <b>{fmtBRL(payment.settled_brl)}</b></div>}
+                    {typeof payment.converted_usdt === "number" && <div>USDT creditado: <b>{payment.converted_usdt.toFixed(2)} USDT</b></div>}
+                </div>
+            </CardContent>
+        </Card>
     );
 }
