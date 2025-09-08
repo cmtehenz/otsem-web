@@ -133,7 +133,7 @@ function ConvertModal({ onDone }: { onDone?: () => void }) {
 }
 
 function PayoutModal({ onDone }: { onDone?: () => void }) {
-    const { data: balances, mutate: refetchBalances } = useSWR<{ brl: number; usdt: number }>(
+    const { data: balances } = useSWR<{ brl: number; usdt: number }>(
         "/wallets/me",
         swrFetcher
     );
@@ -216,6 +216,7 @@ export default function Dashboard() {
         isLoading: loadingBalances,
         mutate: refetchBalances,
     } = useSWR<Balances>("/wallets/me", swrFetcher);
+    console.log(loadingBalances);
 
     // ✅ a lista do mock retorna { items: Tx[] }
     const {

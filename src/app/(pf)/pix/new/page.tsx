@@ -77,8 +77,11 @@ export default function PixNewPage() {
             setCharge(data);
             toast.success("Cobrança Pix criada. Pague para concluir.");
             startPolling(data.id);
-        } catch (e: any) {
-            toast.error(e?.message ?? "Erro ao criar Pix");
+        } catch (e) {
+            const errorMessage = typeof e === "object" && e !== null && "message" in e
+                ? (e as { message: string }).message
+                : "Erro ao criar Pix";
+            toast.error(errorMessage);
         }
     };
 

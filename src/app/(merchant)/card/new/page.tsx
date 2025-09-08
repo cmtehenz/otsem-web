@@ -2,12 +2,11 @@
 
 import React, { useMemo, useState } from "react";
 import useSWR from "swr";
-import { ArrowDownRight, ArrowRightLeft, ArrowUpRight, CreditCard, Landmark, RefreshCw, Wallet } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, CreditCard, RefreshCw, Wallet } from "lucide-react";
 
 // ——— shadcn/ui ———
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -97,6 +96,7 @@ export default function Dashboard() {
     const { data: balances, isLoading: loadingBalances, mutate: refetchBalances } = useSWR<Balances>(API ? `${API}/wallets/me` : null, fetcher);
     const { data: txs, isLoading: loadingTxs, mutate: refetchTxs } = useSWR<Tx[]>(API ? `${API}/transactions?limit=10` : null, fetcher);
 
+    console.log(loadingBalances);
     const brl = balances?.brl ?? 0;
     const usdt = balances?.usdt ?? 0;
 

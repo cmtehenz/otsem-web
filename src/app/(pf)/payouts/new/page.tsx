@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useForm, type SubmitHandler, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Network } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,9 @@ const API = process.env.NEXT_PUBLIC_API_URL || "";
 
 // —— Schema & Types
 type Network = "TRON" | "ETHEREUM" | "SOLANA";
+
+console.log(Network);
+
 const payoutSchema = z.object({
     network: z.enum(["TRON", "ETHEREUM", "SOLANA"]).default("TRON"),
     toAddress: z.string().min(8, "Endereço inválido"),

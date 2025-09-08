@@ -22,7 +22,7 @@ type Tx = {
     amount: number;
     description?: string;
     txid?: string;
-    meta?: Record<string, any>;
+    meta?: Record<string, unknown>;
 };
 
 const fmtBRL = (v: number) =>
