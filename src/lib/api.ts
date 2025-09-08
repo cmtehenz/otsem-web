@@ -511,6 +511,43 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         return json(payment, true, 201);
     }
 
+    // conversão USDT -> BRL
+    if (normPath.startsWith("/conversions/usdt-to-brl") && method === "POST") {
+        const raw = init?.body as string | undefined;
+        const body = raw ? (JSON.parse(raw) as { amountUSDT: number }) : { amountUSDT: 0 };
+
+        const amountUSDT = Number(body.amountUSDT || 0);
+        if (amountUSDT <= 0) return json({ message: "Valor inválido" }, false, 400);
+        if (store.balances.usdt < amountUSDT) return json({ message: "Saldo USDT insuficiente" }, false, 400);
+
+        const brl = +(amountUSDT * DEMO_RATE).toFixed(2);
+        store.balances.usdt -= amountUSDT;
+        store.balances.brl += brl;
+
+        store.txs.unshift({
+            id: nanoid(),
+            createdAt: new Date().toISOString(),
+            type: "DEBIT",
+            origin: "CONVERSION",
+            asset: "USDT",
+            amount: amountUSDT,
+            description: "Conversão demo USDT→BRL",
+        });
+        store.txs.unshift({
+            id: nanoid(),
+            createdAt: new Date().toISOString(),
+            type: "CREDIT",
+            origin: "CONVERSION",
+            asset: "BRL",
+            amount: brl,
+            description: "Conversão demo USDT→BRL",
+        });
+
+        saveStore(store);
+        return json({ ok: true, rate: DEMO_RATE, amountUSDT, brlAdded: brl }, true, 201);
+    }
+
+
     // confirm
     if (/^\/card\/payments\/[\w-]+\/confirm$/.test(pathnameOnly) && method === "POST") {
         const id = pathnameOnly.split("/")[3]!;

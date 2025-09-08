@@ -342,6 +342,13 @@ export default function Dashboard() {
                         <CreditCard className="size-4" /> Cobrar no Cartão (lojista)
                     </Button>
                 </Link>
+
+                {/* ✅ Conversão USDT → BRL → rota */}
+                <Link href="/conversions/usdt-to-brl">
+                    <Button variant="outline" className="gap-2">
+                        <ArrowRightLeft className="size-4" /> USDT → BRL
+                    </Button>
+                </Link>
             </div>
 
             {/* Histórico de transações */}
