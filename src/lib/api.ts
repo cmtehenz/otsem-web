@@ -55,9 +55,9 @@ export type CardPaymentStatus =
 
 export type CardPayment = {
     id: string;
-    clientId: string;      // lojista
+    clientId: string; // lojista
     amount_brl: number;
-    installments: number;  // 1..12
+    installments: number; // 1..12
     status: CardPaymentStatus;
     mdr_percent?: number;
     fee_fixed_brl?: number;
@@ -128,7 +128,8 @@ function loadStore(): Store {
         if (typeof parsed !== "object" || parsed === null) {
             throw new Error("Invalid store data");
         }
-        if (!("card" in parsed) || typeof parsed.card !== "object" || parsed.card === undefined) (parsed as Store).card = {};
+        if (!("card" in parsed) || typeof parsed.card !== "object" || parsed.card === undefined)
+            (parsed as Store).card = {};
         if (!parsed.seeded) {
             const seeded = { ...defaultStore(), ...parsed, seeded: true };
             localStorage.setItem(STORE_KEY, JSON.stringify(seeded));
@@ -145,9 +146,27 @@ function loadStore(): Store {
 function saveStore(s: Store): void {
     if (!PERSIST || typeof window === "undefined") return;
     localStorage.setItem(STORE_KEY, JSON.stringify(s));
+    broadcast(); // <— emite evento global sempre que persistir
 }
 
 const store: Store = loadStore();
+
+// =====================
+// Precisão & Broadcast
+// =====================
+export const BRL_DECIMALS = 2;
+export const USDT_DECIMALS = 6;
+export const round = (n: number, d: number) => Number(n.toFixed(d));
+export const brl = (n: number) => round(n, BRL_DECIMALS);
+export const usdt = (n: number) => round(n, USDT_DECIMALS);
+
+function broadcast() {
+    try {
+        window.dispatchEvent(new CustomEvent("demo:store-updated"));
+    } catch {
+        // ignore (SSR)
+    }
+}
 
 // =====================
 // Utils
@@ -171,9 +190,9 @@ function sleep(ms: number): Promise<void> {
 /** Normaliza path para funcionar com /api, i18n (/pt, /en, /es) e barra final */
 function normalize(url: URL): { pathnameOnly: string; normPath: string } {
     const pathnameOnly = url.pathname
-        .replace(/^\/api\b/, "")       // remove prefixo /api
-        .replace(/^\/(pt|en|es)\b/, "")// remove locale comum (ajuste se tiver outros)
-        .replace(/\/+$/, "");          // remove barra final
+        .replace(/^\/api\b/, "") // remove prefixo /api
+        .replace(/^\/(pt|en|es)\b/, "") // remove locale comum (ajuste se tiver outros)
+        .replace(/\/+$/, ""); // remove barra final
     const normPath = pathnameOnly + (url.search || "");
     return { pathnameOnly, normPath };
 }
@@ -193,8 +212,12 @@ type PostPayoutBody = {
     amount: number;
 };
 
-type PostConversionBody = {
+type PostConversionBrlToUsdtBody = {
     amountBRL: number;
+};
+
+type PostConversionUsdtToBrlBody = {
+    amountUSDT: number;
 };
 
 type PostDemoFundBody = {
@@ -232,6 +255,11 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
 
     // ---------- GETs ----------
 
+    // cotação
+    if (normPath.startsWith("/rates") && method === "GET") {
+        return json({ brlPerUsdt: DEMO_RATE, updatedAt: new Date().toISOString() });
+    }
+
     // saldos
     if (normPath.startsWith("/wallets/me") && method === "GET") {
         return json({ brl: store.balances.brl, usdt: store.balances.usdt });
@@ -243,9 +271,7 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         const page = Number(qs.get("page") || 1);
         const limit = Number(qs.get("limit") || 10);
 
-        let items = [...store.txs].sort(
-            (a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)
-        );
+        let items = [...store.txs].sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));
 
         const q = qs.get("q")?.toLowerCase();
         const asset = qs.get("asset");
@@ -309,7 +335,7 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
             id,
             txid,
             status: "PENDING",
-            valor: amountBrl,
+            valor: brl(amountBrl),
             copyPaste: `000201PIX-DEMO-${id}`,
             qrCode: fakeQR(id),
             createdAt: new Date().toISOString(),
@@ -322,14 +348,14 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         // simula PAID em 3s
         setTimeout(() => {
             store.pix[id].status = "PAID";
-            store.balances.brl += amountBrl;
+            store.balances.brl = brl(store.balances.brl + amountBrl);
             store.txs.unshift({
                 id: nanoid(),
                 createdAt: new Date().toISOString(),
                 type: "CREDIT",
                 origin: "PIX",
                 asset: "BRL",
-                amount: amountBrl,
+                amount: brl(amountBrl),
                 description: `Pix demo ${txid}`,
             });
             saveStore(store);
@@ -339,16 +365,16 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         setTimeout(() => {
             store.pix[id].status = "SETTLED";
             if (autoConvert) {
-                const usdt = +(amountBrl / DEMO_RATE).toFixed(2);
-                store.balances.brl -= amountBrl;
-                store.balances.usdt += usdt;
+                const addedUsdt = usdt(amountBrl / DEMO_RATE);
+                store.balances.brl = brl(store.balances.brl - amountBrl);
+                store.balances.usdt = usdt(store.balances.usdt + addedUsdt);
                 store.txs.unshift({
                     id: nanoid(),
                     createdAt: new Date().toISOString(),
                     type: "DEBIT",
                     origin: "CONVERSION",
                     asset: "BRL",
-                    amount: amountBrl,
+                    amount: brl(amountBrl),
                     description: "Conversão demo BRL→USDT",
                 });
                 store.txs.unshift({
@@ -357,7 +383,7 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
                     type: "CREDIT",
                     origin: "CONVERSION",
                     asset: "USDT",
-                    amount: usdt,
+                    amount: usdt(addedUsdt),
                     description: "Conversão demo BRL→USDT",
                 });
             }
@@ -381,14 +407,14 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         if (amount <= 0) return json({ message: "Valor inválido" }, false, 400);
         if (store.balances.usdt < amount) return json({ message: "Saldo insuficiente" }, false, 400);
 
-        store.balances.usdt -= amount;
+        store.balances.usdt = usdt(store.balances.usdt - amount);
         store.txs.unshift({
             id: nanoid(),
             createdAt: new Date().toISOString(),
             type: "DEBIT",
             origin: "PAYOUT",
             asset: "USDT",
-            amount,
+            amount: usdt(amount),
             description: `Payout demo ${network} → ${toAddress.slice(0, 8)}…`,
             meta: { network, toAddress },
         });
@@ -401,15 +427,15 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
     // conversão BRL -> USDT
     if (normPath.startsWith("/conversions/brl-to-usdt") && method === "POST") {
         const raw = init?.body as string | undefined;
-        const body = raw ? (JSON.parse(raw) as PostConversionBody) : { amountBRL: 0 };
+        const body = raw ? (JSON.parse(raw) as PostConversionBrlToUsdtBody) : { amountBRL: 0 };
 
-        const amountBRL = Number(body.amountBRL || 0);
+        const amountBRL = brl(Number(body.amountBRL || 0));
         if (amountBRL <= 0) return json({ message: "Valor inválido" }, false, 400);
         if (store.balances.brl < amountBRL) return json({ message: "Saldo BRL insuficiente" }, false, 400);
 
-        const usdt = +(amountBRL / DEMO_RATE).toFixed(2);
-        store.balances.brl -= amountBRL;
-        store.balances.usdt += usdt;
+        const addUSDT = usdt(amountBRL / DEMO_RATE);
+        store.balances.brl = brl(store.balances.brl - amountBRL);
+        store.balances.usdt = usdt(store.balances.usdt + addUSDT);
 
         store.txs.unshift({
             id: nanoid(),
@@ -417,7 +443,7 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
             type: "DEBIT",
             origin: "CONVERSION",
             asset: "BRL",
-            amount: amountBRL,
+            amount: brl(amountBRL),
             description: "Conversão demo BRL→USDT",
         });
         store.txs.unshift({
@@ -426,12 +452,12 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
             type: "CREDIT",
             origin: "CONVERSION",
             asset: "USDT",
-            amount: usdt,
+            amount: usdt(addUSDT),
             description: "Conversão demo BRL→USDT",
         });
 
         saveStore(store);
-        return json({ ok: true, rate: DEMO_RATE, amountBRL, usdtAdded: usdt }, true, 201);
+        return json({ ok: true, rate: DEMO_RATE, amountBRL, usdtAdded: addUSDT }, true, 201);
     }
 
     // carregar dinheiro demo
@@ -439,30 +465,30 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         const raw = init?.body as string | undefined;
         const body = raw ? (JSON.parse(raw) as PostDemoFundBody) : {};
 
-        const addBRL = Number(body.addBRL || 0);
-        const addUSDT = Number(body.addUSDT || 0);
+        const addBRL = brl(Number(body.addBRL || 0));
+        const addUSDT = usdt(Number(body.addUSDT || 0));
 
         if (addBRL > 0) {
-            store.balances.brl += addBRL;
+            store.balances.brl = brl(store.balances.brl + addBRL);
             store.txs.unshift({
                 id: nanoid(),
                 createdAt: new Date().toISOString(),
                 type: "CREDIT",
                 origin: "MANUAL",
                 asset: "BRL",
-                amount: addBRL,
+                amount: brl(addBRL),
                 description: "Depósito demo BRL",
             });
         }
         if (addUSDT > 0) {
-            store.balances.usdt += addUSDT;
+            store.balances.usdt = usdt(store.balances.usdt + addUSDT);
             store.txs.unshift({
                 id: nanoid(),
                 createdAt: new Date().toISOString(),
                 type: "CREDIT",
                 origin: "MANUAL",
                 asset: "USDT",
-                amount: addUSDT,
+                amount: usdt(addUSDT),
                 description: "Depósito demo USDT",
             });
         }
@@ -478,14 +504,14 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         const raw = init?.body as string | undefined;
         const body = raw ? (JSON.parse(raw) as PostCardIntentBody) : { amount_brl: 0, installments: 1 };
 
-        const amount = Number(body.amount_brl || 0);
+        const amount = brl(Number(body.amount_brl || 0));
         const installments = Number(body.installments || 1);
         if (amount <= 0) return json({ message: "Valor inválido" }, false, 400);
         if (installments < 1 || installments > 12) return json({ message: "Parcelas inválidas" }, false, 400);
 
         const mdr_percent = 2.8;
         const fee_fixed_brl = 1.5;
-        const interest_brl = installments > 1 ? +(amount * 0.015 * (installments - 1)).toFixed(2) : 0;
+        const interest_brl = installments > 1 ? brl(amount * 0.015 * (installments - 1)) : 0;
 
         const id = nanoid();
         const processorRef = `cp_${nanoid(10)}`;
@@ -514,15 +540,15 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
     // conversão USDT -> BRL
     if (normPath.startsWith("/conversions/usdt-to-brl") && method === "POST") {
         const raw = init?.body as string | undefined;
-        const body = raw ? (JSON.parse(raw) as { amountUSDT: number }) : { amountUSDT: 0 };
+        const body = raw ? (JSON.parse(raw) as PostConversionUsdtToBrlBody) : { amountUSDT: 0 };
 
-        const amountUSDT = Number(body.amountUSDT || 0);
+        const amountUSDT = usdt(Number(body.amountUSDT || 0));
         if (amountUSDT <= 0) return json({ message: "Valor inválido" }, false, 400);
         if (store.balances.usdt < amountUSDT) return json({ message: "Saldo USDT insuficiente" }, false, 400);
 
-        const brl = +(amountUSDT * DEMO_RATE).toFixed(2);
-        store.balances.usdt -= amountUSDT;
-        store.balances.brl += brl;
+        const addBRL = brl(amountUSDT * DEMO_RATE);
+        store.balances.usdt = usdt(store.balances.usdt - amountUSDT);
+        store.balances.brl = brl(store.balances.brl + addBRL);
 
         store.txs.unshift({
             id: nanoid(),
@@ -530,7 +556,7 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
             type: "DEBIT",
             origin: "CONVERSION",
             asset: "USDT",
-            amount: amountUSDT,
+            amount: usdt(amountUSDT),
             description: "Conversão demo USDT→BRL",
         });
         store.txs.unshift({
@@ -539,16 +565,15 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
             type: "CREDIT",
             origin: "CONVERSION",
             asset: "BRL",
-            amount: brl,
+            amount: brl(addBRL),
             description: "Conversão demo USDT→BRL",
         });
 
         saveStore(store);
-        return json({ ok: true, rate: DEMO_RATE, amountUSDT, brlAdded: brl }, true, 201);
+        return json({ ok: true, rate: DEMO_RATE, amountUSDT, brlAdded: addBRL }, true, 201);
     }
 
-
-    // confirm
+    // confirm (cartão)
     if (/^\/card\/payments\/[\w-]+\/confirm$/.test(pathnameOnly) && method === "POST") {
         const id = pathnameOnly.split("/")[3]!;
         const raw = init?.body as string | undefined;
@@ -564,22 +589,24 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
 
         // CAPTURED
         setTimeout(() => {
-            const p = store.card[id]; if (!p) return;
+            const p = store.card[id];
+            if (!p) return;
             store.card[id] = { ...p, status: "CAPTURED" };
             saveStore(store);
         }, 900);
 
         // SETTLED + conversão
         setTimeout(() => {
-            const p = store.card[id]; if (!p) return;
+            const p = store.card[id];
+            if (!p) return;
 
-            const gross = p.amount_brl + (p.interest_brl ?? 0);
-            const feeVar = (p.mdr_percent ?? 0) / 100 * gross;
-            const feeFix = p.fee_fixed_brl ?? 0;
-            const settled = +(gross - feeVar - feeFix).toFixed(2);
+            const gross = brl(p.amount_brl + (p.interest_brl ?? 0));
+            const feeVar = brl(((p.mdr_percent ?? 0) / 100) * gross);
+            const feeFix = brl(p.fee_fixed_brl ?? 0);
+            const settled = brl(gross - feeVar - feeFix);
 
             // crédito BRL
-            store.balances.brl += settled;
+            store.balances.brl = brl(store.balances.brl + settled);
             store.txs.unshift({
                 id: nanoid(),
                 createdAt: new Date().toISOString(),
@@ -591,9 +618,9 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
             });
 
             // conversão BRL→USDT
-            const usdt = +(settled / DEMO_RATE).toFixed(2);
-            store.balances.brl -= settled;
-            store.balances.usdt += usdt;
+            const convUsdt = usdt(settled / DEMO_RATE);
+            store.balances.brl = brl(store.balances.brl - settled);
+            store.balances.usdt = usdt(store.balances.usdt + convUsdt);
             store.txs.unshift({
                 id: nanoid(),
                 createdAt: new Date().toISOString(),
@@ -609,18 +636,18 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
                 type: "CREDIT",
                 origin: "CONVERSION",
                 asset: "USDT",
-                amount: usdt,
+                amount: convUsdt,
                 description: "Conversão demo BRL→USDT (cartão)",
             });
 
-            store.card[id] = { ...p, status: "SETTLED", settled_brl: settled, converted_usdt: usdt };
+            store.card[id] = { ...p, status: "SETTLED", settled_brl: settled, converted_usdt: convUsdt };
             saveStore(store);
         }, 2300);
 
         return json(store.card[id], true, 200);
     }
 
-    // get status
+    // get status (cartão)
     if (/^\/card\/payments\/[\w-]+$/.test(pathnameOnly) && method === "GET") {
         const id = pathnameOnly.split("/").pop()!;
         const p = store.card[id];
@@ -634,26 +661,8 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
 // =====================
 // Helpers
 // =====================
-export const swrFetcher = <T>(url: string): Promise<T> =>
-    apiFetch(url).then((r) => r.json() as Promise<T>);
+export const swrFetcher = <T>(url: string): Promise<T> => apiFetch(url).then((r) => r.json() as Promise<T>);
 
-export async function apiPost<T = unknown>(url: string, body: unknown): Promise<T> {
-    const res = await apiFetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-    });
-    const data: unknown = await res.json();
-    if (!res.ok) {
-        const message = (data as { message?: string } | null)?.message ?? "Request failed";
-        throw new Error(message);
-    }
-    return data as T;
-}
-
-// =====================
-// Result API (sem try/catch no componente)
-// =====================
 export class ApiError extends Error {
     readonly status: number;
     readonly code?: string;
@@ -667,6 +676,23 @@ export class ApiError extends Error {
     }
 }
 
+export async function apiPost<T = unknown>(url: string, body: unknown): Promise<T> {
+    const res = await apiFetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+    });
+    const data: unknown = await res.json().catch(() => ({}));
+    if (!res.ok) {
+        const message = (data as { message?: string } | null)?.message ?? "Request failed";
+        throw new ApiError(message, { status: res.status, payload: data });
+    }
+    return data as T;
+}
+
+// =====================
+// Result API (sem try/catch no componente)
+// =====================
 export type Ok<T> = { ok: true; data: T };
 export type Err = { ok: false; error: ApiError };
 export type Result<T> = Ok<T> | Err;
@@ -686,7 +712,8 @@ export async function apiSafePost<T>(url: string, body: unknown): Promise<Result
         }
         return { ok: true, data: data as T };
     } catch (e) {
-        const err = e instanceof Error ? new ApiError(e.message, { status: 0 }) : new ApiError("Network error", { status: 0 });
+        const err =
+            e instanceof Error ? new ApiError(e.message, { status: 0 }) : new ApiError("Network error", { status: 0 });
         return { ok: false, error: err };
     }
 }

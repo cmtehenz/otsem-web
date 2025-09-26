@@ -1,4 +1,4 @@
-// src/app/(dashboard)/dashboard/page.tsx
+
 "use client";
 
 // --- React, SWR, ICONS ---
@@ -300,56 +300,6 @@ export default function Dashboard() {
                 </Card>
             </div>
 
-            {/* Ações rápidas */}
-            <div className="flex flex-wrap gap-3 mb-8">
-                <Link href="/pix/new">
-                    <Button asChild={false} variant="secondary" className="gap-2">
-                        <Landmark className="size-4" /> Adicionar via Pix
-                    </Button>
-                </Link>
-
-                <ConvertModal
-                    onDone={() => {
-                        refetchBalances();
-                        refetchTxs();
-                    }}
-                />
-
-                <PayoutModal
-                    onDone={() => {
-                        refetchBalances();
-                        refetchTxs();
-                    }}
-                />
-
-                {/* ✅ Receber USDT */}
-                <Link href="/wallet/usdt/receive">
-                    <Button variant="outline" className="gap-2">
-                        <Wallet className="size-4" /> Receber USDT
-                    </Button>
-                </Link>
-
-                {/* ✅ Histórico */}
-                <Link href="/transactions">
-                    <Button variant="outline" className="gap-2">
-                        <List className="size-4" /> Histórico
-                    </Button>
-                </Link>
-
-                {/* ✅ Cobrança no Cartão → rota */}
-                <Link href="/card/new">
-                    <Button variant="outline" className="gap-2">
-                        <CreditCard className="size-4" /> Cobrar no Cartão (lojista)
-                    </Button>
-                </Link>
-
-                {/* ✅ Conversão USDT → BRL → rota */}
-                <Link href="/conversions/usdt-to-brl">
-                    <Button variant="outline" className="gap-2">
-                        <ArrowRightLeft className="size-4" /> USDT → BRL
-                    </Button>
-                </Link>
-            </div>
 
             {/* Histórico de transações */}
             <Card className="rounded-2xl">
