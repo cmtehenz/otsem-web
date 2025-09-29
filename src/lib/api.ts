@@ -83,6 +83,7 @@ type Store = {
     txs: Tx[];
     pix: Record<string, PixCharge>;
     card: Record<string, CardPayment>;
+    users: Record<string, User>; // <---
     seeded?: boolean;
 };
 
@@ -111,11 +112,13 @@ function defaultStore(): Store {
         ],
         pix: {},
         card: {},
+        users: {},
         seeded: true,
     };
 }
 
 function loadStore(): Store {
+
     if (!PERSIST || typeof window === "undefined") return defaultStore();
     const raw = localStorage.getItem(STORE_KEY);
     if (!raw) {
@@ -130,6 +133,8 @@ function loadStore(): Store {
         }
         if (!("card" in parsed) || typeof parsed.card !== "object" || parsed.card === undefined)
             (parsed as Store).card = {};
+        if (!("users" in parsed) || typeof parsed.users !== "object" || parsed.users === undefined)
+            (parsed as Store).users = {};
         if (!parsed.seeded) {
             const seeded = { ...defaultStore(), ...parsed, seeded: true };
             localStorage.setItem(STORE_KEY, JSON.stringify(seeded));
@@ -654,6 +659,96 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         return p ? json(p) : json({ message: "Pagamento não encontrado" }, false, 404);
     }
 
+    // --- AUTH: REGISTER ---
+    if (normPath.startsWith("/auth/register") && method === "POST") {
+        const raw = init?.body as string | undefined;
+        const body = raw ? (JSON.parse(raw) as AuthRegisterBody) : { name: "", email: "", password: "" };
+
+        const name = String(body.name || "").trim();
+        const email = String(body.email || "").toLowerCase().trim();
+        const password = String(body.password || "");
+
+        if (!name || !email || !password) return json({ message: "Dados inválidos" }, false, 400);
+        const exists = Object.values(store.users).some((u) => u.email === email);
+        if (exists) return json({ message: "E-mail já cadastrado" }, false, 409);
+
+        const id = nanoid();
+        store.users[id] = { id, name, email, password, createdAt: new Date().toISOString() };
+        saveStore(store);
+
+        // DEMO: não retorna token; o front pode chamar /auth/login em seguida
+        return json({ ok: true, userId: id }, true, 201);
+    }
+
+    // --- AUTH: LOGIN ---
+    if (normPath.startsWith("/auth/login") && method === "POST") {
+        const raw = init?.body as string | undefined;
+        const body = raw ? (JSON.parse(raw) as AuthLoginBody) : { email: "", password: "" };
+        const email = String(body.email || "").toLowerCase().trim();
+        const password = String(body.password || "");
+
+        const user = Object.values(store.users).find((u) => u.email === email && u.password === password);
+        if (!user) return json({ message: "Credenciais inválidas" }, false, 401);
+
+        // DEMO: gera um token fake e salva em localStorage (para o ClientAuthGate)
+        const access = `demo_${nanoid(16)}`;
+        try {
+            localStorage.setItem("access_token", access);
+            localStorage.setItem("current_user", JSON.stringify({ id: user.id, name: user.name, email: user.email }));
+        } catch { }
+
+        return json({ access_token: access, user: { id: user.id, name: user.name, email: user.email } }, true, 200);
+    }
+
+    // --- AUTH: LOGOUT (opcional) ---
+    if (normPath.startsWith("/auth/logout") && method === "POST") {
+        try {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("current_user");
+        } catch { }
+        return json({ ok: true }, true, 200);
+    }
+
+    // --- AUTH: FORGOT ---
+    if (normPath.startsWith("/auth/forgot") && method === "POST") {
+        const raw = init?.body as string | undefined;
+        const body = raw ? (JSON.parse(raw) as AuthForgotBody) : { email: "" };
+        const email = String(body.email || "").toLowerCase().trim();
+
+        const user = Object.values(store.users).find((u) => u.email === email);
+        // segurança: sempre 200 para não expor existência
+        if (user) {
+            const token = nanoid(32);
+            const exp = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // 15 min
+            store.users[user.id] = { ...user, resetToken: token, resetExpiresAt: exp };
+            saveStore(store);
+            const resetUrl = `${window.location.origin}/reset?token=${token}`;
+            return json({ ok: true, resetUrl }, true, 200);
+        }
+        return json({ ok: true }, true, 200);
+    }
+
+    // --- AUTH: RESET ---
+    if (normPath.startsWith("/auth/reset") && method === "POST") {
+        const raw = init?.body as string | undefined;
+        const body = raw ? (JSON.parse(raw) as AuthResetBody) : { token: "", password: "" };
+        const token = String(body.token || "");
+        const password = String(body.password || "");
+
+        if (!token || password.length < 8) return json({ message: "Dados inválidos" }, false, 400);
+
+        const user = Object.values(store.users).find((u) => u.resetToken === token);
+        if (!user) return json({ message: "Token inválido" }, false, 400);
+        if (user.resetExpiresAt && +new Date(user.resetExpiresAt) < Date.now()) {
+            return json({ message: "Token expirado" }, false, 400);
+        }
+
+        store.users[user.id] = { ...user, password, resetToken: undefined, resetExpiresAt: undefined };
+        saveStore(store);
+        return json({ ok: true }, true, 200);
+    }
+
+
     // ——— rota desconhecida ———
     return json({ message: `No demo route for ${method} ${normPath}` }, false, 404);
 }
@@ -717,3 +812,27 @@ export async function apiSafePost<T>(url: string, body: unknown): Promise<Result
         return { ok: false, error: err };
     }
 }
+
+// --- Auth (demo) ---
+export type User = {
+    id: string;
+    name: string;
+    email: string;
+    password: string; // demo: texto puro (NÃO use assim em prod)
+    createdAt: string;
+    resetToken?: string;
+    resetExpiresAt?: string;
+};
+
+type AuthRegisterBody = { name: string; email: string; password: string };
+type AuthLoginBody = { email: string; password: string };
+type AuthForgotBody = { email: string };            // <—
+type AuthResetBody = { token: string; password: string }; // <—
+
+declare global {
+    interface Window {
+        // só para evitar TS reclamar do localStorage access em demo
+    }
+}
+
+
