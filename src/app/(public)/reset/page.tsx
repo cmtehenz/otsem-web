@@ -1,6 +1,8 @@
+// src/app/(public)/reset/page.tsx
 "use client";
 
 import * as React from "react";
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { useForm, type Resolver } from "react-hook-form";
@@ -15,25 +17,42 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { apiPost } from "@/lib/api";
 
-const schema = z.object({
-    password: z.string().min(8, "Mínimo 8 caracteres"),
-    confirm: z.string().min(8, "Confirme sua senha"),
-}).refine((v) => v.password === v.confirm, {
-    message: "As senhas não conferem",
-    path: ["confirm"],
-});
+// Evita cache estático nessa página sensível
+export const dynamic = "force-dynamic";
+
+const schema = z
+    .object({
+        password: z.string().min(8, "Mínimo 8 caracteres"),
+        confirm: z.string().min(8, "Confirme sua senha"),
+    })
+    .refine((v) => v.password === v.confirm, {
+        message: "As senhas não conferem",
+        path: ["confirm"],
+    });
+
 type FormValues = z.infer<typeof schema>;
 const resolver = zodResolver(schema) as unknown as Resolver<FormValues>;
 
-export default function ResetPage() {
+export default function ResetPage(): React.JSX.Element {
+    return (
+        <Suspense fallback={<div className="min-h-dvh grid place-items-center text-sm text-muted-foreground">Carregando…</div>}>
+            <ResetPageInner />
+        </Suspense>
+    );
+}
+
+function ResetPageInner(): React.JSX.Element {
     const router = useRouter();
-    const sp = useSearchParams();
+    const sp = useSearchParams(); // agora seguro dentro de <Suspense/>
     const token = sp.get("token") || "";
 
-    const { register, handleSubmit, formState: { errors, isSubmitting } } =
-        useForm<FormValues>({ resolver, defaultValues: { password: "", confirm: "" } });
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm<FormValues>({ resolver, defaultValues: { password: "", confirm: "" } });
 
-    async function onSubmit(v: FormValues) {
+    async function onSubmit(v: FormValues): Promise<void> {
         try {
             await apiPost("/auth/reset", { token, password: v.password });
             toast.success("Senha alterada. Faça login para continuar.");
@@ -60,25 +79,47 @@ export default function ResetPage() {
                             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="password">Nova senha</Label>
-                                    <Input id="password" type="password" autoComplete="new-password" {...register("password")} />
-                                    {errors.password && <p className="text-xs text-rose-500 mt-1">{errors.password.message}</p>}
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        autoComplete="new-password"
+                                        {...register("password")}
+                                    />
+                                    {errors.password && (
+                                        <p className="text-xs text-rose-500 mt-1">{errors.password.message}</p>
+                                    )}
                                 </div>
+
                                 <div className="space-y-2">
                                     <Label htmlFor="confirm">Confirmar senha</Label>
-                                    <Input id="confirm" type="password" autoComplete="new-password" {...register("confirm")} />
-                                    {errors.confirm && <p className="text-xs text-rose-500 mt-1">{errors.confirm.message}</p>}
+                                    <Input
+                                        id="confirm"
+                                        type="password"
+                                        autoComplete="new-password"
+                                        {...register("confirm")}
+                                    />
+                                    {errors.confirm && (
+                                        <p className="text-xs text-rose-500 mt-1">{errors.confirm.message}</p>
+                                    )}
                                 </div>
+
                                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                                     {isSubmitting ? "Salvando…" : "Salvar nova senha"}
                                 </Button>
+
                                 <p className="text-center text-sm text-muted-foreground">
-                                    Lembrou? <Link href="/login" className="font-medium text-indigo-600 hover:underline">Entrar</Link>
+                                    Lembrou?{" "}
+                                    <Link href="/login" className="font-medium text-indigo-600 hover:underline">
+                                        Entrar
+                                    </Link>
                                 </p>
                             </form>
                         ) : (
                             <div className="text-center text-sm">
                                 Token ausente ou inválido. Volte para{" "}
-                                <Link href="/forgot" className="font-medium text-indigo-600 hover:underline">Recuperar senha</Link>.
+                                <Link href="/forgot" className="font-medium text-indigo-600 hover:underline">
+                                    Recuperar senha
+                                </Link>.
                             </div>
                         )}
                     </CardContent>
