@@ -1,3 +1,4 @@
+// src/components/layout/AppHeader.tsx
 "use client";
 
 import * as React from "react";
@@ -14,11 +15,12 @@ import { Menu, PlusCircle, ArrowRightLeft, Send, Download, History, CreditCard, 
 import useSWR from "swr";
 import { apiPost, swrFetcher, type Balances } from "@/lib/api";
 
+const TICKER = "1 USDT ≈ R$ 5,50";
+
 export default function AppHeader() {
     const router = useRouter();
     const { openModal } = useUiModals();
 
-    // ⚡ saldos
     const { data: balances } = useSWR<Balances>("/wallets/me", swrFetcher, {
         refreshInterval: 5000,
     });
@@ -41,7 +43,13 @@ export default function AppHeader() {
     return (
         <header className="sticky top-0 z-40 w-full border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/50">
             <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-3 md:px-4">
+                {/* esquerda: logo */}
                 <div className="min-w-0"><Logo /></div>
+
+                {/* centro: ticker (desktop) */}
+                <div className="hidden md:flex items-center justify-center px-3 text-xs font-medium text-muted-foreground">
+                    {TICKER}
+                </div>
 
                 {/* centro: ações (desktop) */}
                 <div className="hidden flex-1 md:flex">
@@ -49,17 +57,19 @@ export default function AppHeader() {
                         {...actions}
                         brlAmount={balances?.brl ?? null}
                         usdtAmount={balances?.usdt ?? null}
+                        // opcional: para mostrar o ticker dentro do menu USDT:
+                        tickerText={TICKER}
                     />
                 </div>
 
                 {/* direita: mobile actions + user */}
                 <div className="flex items-center gap-2">
-                    {/* 🔽 agora renderiza no mobile */}
                     <div className="md:hidden">
                         <MobileActions
                             {...actions}
                             brlAmount={balances?.brl ?? null}
                             usdtAmount={balances?.usdt ?? null}
+                            tickerText={TICKER}
                         />
                     </div>
                     <UserMenu />
@@ -82,6 +92,7 @@ function MobileActions(p: {
     onRefresh: () => void;
     brlAmount?: number | null;
     usdtAmount?: number | null;
+    tickerText?: string;
 }) {
     const brlFmt = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
     const usdtFmt = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 6 });
@@ -94,7 +105,13 @@ function MobileActions(p: {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-60">
-                {/* resumo saldos */}
+                {/* ticker estático */}
+                <div className="px-2 py-1 text-center text-xs font-medium text-muted-foreground">
+                    {p.tickerText ?? "1 USDT ≈ R$ 5,50"}
+                </div>
+                <DropdownMenuSeparator />
+
+                {/* resumo de saldos */}
                 <div className="px-2 py-1.5 text-xs text-muted-foreground">
                     <div className="flex items-center justify-between">
                         <span>BRL</span>

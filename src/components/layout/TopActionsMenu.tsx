@@ -24,6 +24,7 @@ type Props = {
     /** saldos opcionais para mostrar nos gatilhos */
     brlAmount?: number | null;
     usdtAmount?: number | null;
+    tickerText?: string; // <--- NOVO
 };
 
 const brlFmt = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
@@ -51,16 +52,18 @@ export default function TopActionsMenu(p: Props) {
         return () => window.removeEventListener("keydown", onKey);
     }, [p]);
 
+    // dentro do TopActionsMenu.tsx
     const brlBadge = (
-        <Badge variant="secondary" className="rounded-full font-mono text-xs">
+        <Badge className="rounded-full font-mono text-xs">
             {typeof p.brlAmount === "number" ? brlFmt.format(p.brlAmount) : "—"}
         </Badge>
     );
     const usdtBadge = (
-        <Badge variant="secondary" className="rounded-full font-mono text-xs">
+        <Badge variant="outline" className="rounded-full font-mono text-xs">
             {typeof p.usdtAmount === "number" ? `${usdtFmt.format(p.usdtAmount)} USDT` : "—"}
         </Badge>
     );
+
 
     return (
         <div className="w-full flex items-center gap-3">
@@ -88,6 +91,15 @@ export default function TopActionsMenu(p: Props) {
                         <DollarSign className="h-4 w-4" /> USDT {usdtBadge}
                     </MenubarTrigger>
                     <MenubarContent>
+                        {/* 🔽 ticker opcional dentro do menu */}
+                        {p.tickerText && (
+                            <>
+                                <div className="px-2 py-1 text-xs text-muted-foreground text-center">
+                                    {p.tickerText}
+                                </div>
+                                <MenubarSeparator />
+                            </>
+                        )}
                         <MenubarItem onClick={p.onSendUsdt} className="gap-2">
                             <Send className="h-4 w-4" /> Enviar USDT
                             <MenubarShortcut>E</MenubarShortcut>
