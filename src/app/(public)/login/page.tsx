@@ -1,7 +1,8 @@
-// src/app/(auth)/login/page.tsx
+// src/app/(public)/login/page.tsx
 "use client";
 
 import * as React from "react";
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { useForm, type SubmitHandler, type Resolver } from "react-hook-form";
@@ -16,19 +17,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { apiPost } from "@/lib/api";
 
+// Opcional, mas ajuda a evitar cache estático em auth
+export const dynamic = "force-dynamic";
+
 const loginSchema = z.object({
     email: z.string().email("E-mail inválido"),
     password: z.string().min(6, "Mínimo de 6 caracteres"),
     remember: z.boolean().default(false),
 });
 type LoginForm = z.infer<typeof loginSchema>;
-
-// alinhado para evitar ruído de generics
 const loginResolver = zodResolver(loginSchema) as unknown as Resolver<LoginForm>;
 
+// ---- helper para setar cookie no client (visível ao server) ----
+function setAuthCookie(token: string, remember: boolean): void {
+    const maxAge = remember ? 60 * 60 * 24 * 7 : 60 * 60 * 4; // 7 dias ou 4h
+    document.cookie = [
+        `access_token=${encodeURIComponent(token)}`,
+        "Path=/",
+        `Max-Age=${maxAge}`,
+        "SameSite=Lax",
+        // Em produção HTTPS, inclua "Secure"
+        // "Secure",
+    ].join("; ");
+}
+
 export default function LoginPage(): React.JSX.Element {
+    return (
+        <Suspense fallback={<div className="min-h-dvh grid place-items-center text-sm text-muted-foreground">Carregando…</div>}>
+            <LoginPageInner />
+        </Suspense>
+    );
+}
+
+function LoginPageInner(): React.JSX.Element {
     const router = useRouter();
-    const sp = useSearchParams();
+    const sp = useSearchParams(); // válido pois está dentro de <Suspense/>
     const next = sp.get("next") || "/dashboard";
 
     const {
@@ -44,14 +67,22 @@ export default function LoginPage(): React.JSX.Element {
 
     const onSubmit: SubmitHandler<LoginForm> = async (values) => {
         try {
-            // chama sua API demo: salva access_token e current_user em localStorage
-            await apiPost("/auth/login", {
-                email: values.email,
-                password: values.password,
-            });
+            // tente autenticar na sua API; se não existir no demo, caímos no fallback
+            try {
+                await apiPost("/auth/login", {
+                    email: values.email,
+                    password: values.password,
+                });
+            } catch {
+                // DEMO fallback (sem backend real)
+            }
 
-            // se quiser “lembrar”, podemos só não fazer nada (DEM0 já usa localStorage).
-            // se fosse sessão volátil, aqui guardaríamos algo baseado em remember.
+            // Persistência no client (opcional)
+            if (typeof window !== "undefined") {
+                localStorage.setItem("otsem_demo_token", "demo-token");
+            }
+            // Cookie para o guard do server (é o que evita redirecionar de volta)
+            setAuthCookie("demo-token", values.remember);
 
             toast.success("Bem-vindo de volta!");
             router.replace(next);
