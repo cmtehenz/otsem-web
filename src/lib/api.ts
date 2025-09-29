@@ -696,6 +696,12 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
             localStorage.setItem("access_token", access);
             localStorage.setItem("current_user", JSON.stringify({ id: user.id, name: user.name, email: user.email }));
         } catch { }
+        // depois de setar localStorage...
+        try {
+            // persiste cookie pra SSR/middleware
+            document.cookie = `access_token=${access}; Path=/; Max-Age=${60 * 60 * 8}; SameSite=Lax`;
+        } catch { }
+
 
         return json({ access_token: access, user: { id: user.id, name: user.name, email: user.email } }, true, 200);
     }
@@ -705,6 +711,8 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         try {
             localStorage.removeItem("access_token");
             localStorage.removeItem("current_user");
+            // remove cookie
+            document.cookie = "access_token=; Path=/; Max-Age=0; SameSite=Lax";
         } catch { }
         return json({ ok: true }, true, 200);
     }

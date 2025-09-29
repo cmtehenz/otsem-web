@@ -4,6 +4,7 @@ import {
     Menubar, MenubarMenu, MenubarTrigger, MenubarContent,
     MenubarItem, MenubarSeparator, MenubarShortcut
 } from "@/components/ui/menubar";
+import { Badge } from "@/components/ui/badge";
 import {
     PlusCircle, ArrowRightLeft, Send, Download,
     History, CreditCard, Wallet, DollarSign, RotateCw, FlaskConical
@@ -19,39 +20,47 @@ type Props = {
     onChargeOnCard: () => void;
     onLoadDemo: () => void;
     onRefresh: () => void;
+
+    /** saldos opcionais para mostrar nos gatilhos */
+    brlAmount?: number | null;
+    usdtAmount?: number | null;
 };
 
+const brlFmt = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+const usdtFmt = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 6 });
+
 export default function TopActionsMenu(p: Props) {
-    // Atalhos globais simples (ignora quando digitando em inputs/textareas)
+    // atalhos de teclado (mesmo que antes)
     React.useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
             const t = e.target as HTMLElement | null;
-            const isTyping =
-                t &&
-                (t.tagName === "INPUT" ||
-                    t.tagName === "TEXTAREA" ||
-                    (t as HTMLElement).isContentEditable);
+            const isTyping = t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);
             if (isTyping) return;
-
-            // mapa de atalhos
             const k = e.key.toLowerCase();
-            // BRL
             if (k === "p") { e.preventDefault(); p.onAddPix(); }
             if (k === "c") { e.preventDefault(); p.onConvertBrlToUsdt(); }
-            // USDT
             if (k === "e") { e.preventDefault(); p.onSendUsdt(); }
             if (k === "r") { e.preventDefault(); p.onReceiveUsdt(); }
-            if (k === "u") { e.preventDefault(); p.onConvertUsdtToBrl(); } // U de USDT→BRL
-            // ações
+            if (k === "u") { e.preventDefault(); p.onConvertUsdtToBrl(); }
             if (k === "h") { e.preventDefault(); p.onOpenHistory(); }
-            if (k === "l") { e.preventDefault(); p.onChargeOnCard(); } // L de Loja/Cartão
-            if (k === "d") { e.preventDefault(); p.onLoadDemo(); }     // D de Demo
-            if (k === "R") { /* uppercase quando Shift+R */ }
-            if (k === "r" && e.shiftKey) { e.preventDefault(); p.onRefresh(); } // Shift+R evita conflito com refresh do navegador
+            if (k === "l") { e.preventDefault(); p.onChargeOnCard(); }
+            if (k === "d") { e.preventDefault(); p.onLoadDemo(); }
+            if (k === "r" && e.shiftKey) { e.preventDefault(); p.onRefresh(); }
         };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
     }, [p]);
+
+    const brlBadge = (
+        <Badge variant="secondary" className="rounded-full font-mono text-xs">
+            {typeof p.brlAmount === "number" ? brlFmt.format(p.brlAmount) : "—"}
+        </Badge>
+    );
+    const usdtBadge = (
+        <Badge variant="secondary" className="rounded-full font-mono text-xs">
+            {typeof p.usdtAmount === "number" ? `${usdtFmt.format(p.usdtAmount)} USDT` : "—"}
+        </Badge>
+    );
 
     return (
         <div className="w-full flex items-center gap-3">
@@ -59,7 +68,7 @@ export default function TopActionsMenu(p: Props) {
                 {/* BRL */}
                 <MenubarMenu>
                     <MenubarTrigger className="gap-2" aria-label="Ações de BRL">
-                        <Wallet className="h-4 w-4" /> BRL
+                        <Wallet className="h-4 w-4" /> BRL {brlBadge}
                     </MenubarTrigger>
                     <MenubarContent>
                         <MenubarItem onClick={p.onAddPix} className="gap-2">
@@ -76,7 +85,7 @@ export default function TopActionsMenu(p: Props) {
                 {/* USDT */}
                 <MenubarMenu>
                     <MenubarTrigger className="gap-2" aria-label="Ações de USDT">
-                        <DollarSign className="h-4 w-4" /> USDT
+                        <DollarSign className="h-4 w-4" /> USDT {usdtBadge}
                     </MenubarTrigger>
                     <MenubarContent>
                         <MenubarItem onClick={p.onSendUsdt} className="gap-2">

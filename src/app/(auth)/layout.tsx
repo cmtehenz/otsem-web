@@ -1,18 +1,14 @@
-// src/app/(auth)/layout.tsx
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import AuthenticatedAppShell from "@/components/layout/AuthenticatedAppShell";
-import { ClientAuthGate } from "@/components/layout/ClientAuthGate";
 
 export const metadata: Metadata = { title: "Otsem Bank" };
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-    // ⚠️ No DEMO o "token" vai no localStorage (client).
-    // Por isso o guard precisa ser client-side. Se no futuro
-    // você usar cookies/sessão no servidor, pode mover o guard pra cá.
+export default async function Layout({ children }: { children: React.ReactNode }) {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("access_token")?.value;
+    if (!token) redirect("/login?next=/dashboard"); // ou use pathname atual
 
-    return (
-        <AuthenticatedAppShell>
-            <ClientAuthGate>{children}</ClientAuthGate>
-        </AuthenticatedAppShell>
-    );
+    return <AuthenticatedAppShell>{children}</AuthenticatedAppShell>;
 }
