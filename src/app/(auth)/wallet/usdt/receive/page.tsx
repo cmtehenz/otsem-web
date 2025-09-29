@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from "react";
 import useSWR from "swr";
 import { toast } from "sonner";
-import { QrCode, Copy, Check, Shield, Wallet, RefreshCw } from "lucide-react";
+import { QrCode, Copy, Shield, Wallet, RefreshCw } from "lucide-react";
 import Link from "next/link";
 
 // shadcn/ui
@@ -55,7 +55,7 @@ export default function ReceiveUSDTPage() {
     }, [network]);
 
     async function onCopy(text?: string) {
-        if (!text) return;
+        if (!text) { return; }
         await navigator.clipboard.writeText(text);
         toast.success("Copiado para a área de transferência");
     }

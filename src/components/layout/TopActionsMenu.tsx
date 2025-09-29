@@ -36,7 +36,7 @@ export default function TopActionsMenu(p: Props) {
         const onKey = (e: KeyboardEvent) => {
             const t = e.target as HTMLElement | null;
             const isTyping = t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);
-            if (isTyping) return;
+            if (isTyping) {return;}
             const k = e.key.toLowerCase();
             if (k === "p") { e.preventDefault(); p.onAddPix(); }
             if (k === "c") { e.preventDefault(); p.onConvertBrlToUsdt(); }

@@ -4,7 +4,7 @@ import * as React from "react";
 import { z } from "zod";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Mail, ArrowLeft } from "lucide-react";
@@ -23,11 +23,11 @@ const resolver = zodResolver(schema) as unknown as Resolver<FormValues>;
 
 export default function ForgotPage() {
     const router = useRouter();
-    const sp = useSearchParams();
-    const next = sp.get("next") || "/login";
+    // const sp = useSearchParams();
+    // const next = sp.get("next") || "/login";
 
     const {
-        register, handleSubmit, formState: { errors, isSubmitting }, setValue,
+        register, handleSubmit, formState: { errors, isSubmitting }
     } = useForm<FormValues>({ resolver, defaultValues: { email: "" } });
 
     const [resetUrl, setResetUrl] = React.useState<string | null>(null);

@@ -2,120 +2,57 @@
 
 import * as React from "react";
 import { z } from "zod";
-import { useForm, type Resolver } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import Image from "next/image";
 import { useUiModals } from "@/stores/ui-modals";
-import { apiFetch, apiPost, type PixCharge } from "@/lib/api";
+import { JSX } from "react";
 
 const schema = z.object({
-    amountBRL: z.coerce.number().min(1, "Mínimo R$ 1,00"),
-    autoConvert: z.boolean().default(false),
+    amountBRL: z.number().min(1, "Mínimo R$ 1,00"),
 });
+
 type FormValues = z.infer<typeof schema>;
 
-export default function PixModal() {
+export default function PixModal(): JSX.Element {
     const { open, closeModal } = useUiModals();
-    const [creating, setCreating] = React.useState(false);
-    const [charge, setCharge] = React.useState<PixCharge | null>(null);
-    const [remaining, setRemaining] = React.useState<string>("");
+    const [qrCode, setQrCode] = React.useState<string | null>(null);
 
     const form = useForm<FormValues>({
-        resolver: zodResolver(schema) as Resolver<FormValues>,
-        defaultValues: { amountBRL: 100, autoConvert: false },
+        resolver: zodResolver(schema),
+        defaultValues: { amountBRL: 100 },
     });
 
-    const isOpen = open.pix;
-
-    // reset ao fechar
-    const handleClose = () => {
-        setCharge(null);
-        setRemaining("");
-        form.reset();
-        closeModal("pix");
-    };
-
-    // cria cobrança via sua api demo
-    async function onSubmit(values: FormValues) {
+    async function onSubmit(values: FormValues): Promise<void> {
         try {
-            setCreating(true);
-            const created = await apiPost<PixCharge>("/pix/charges", {
-                amountBrl: values.amountBRL,
-                autoConvert: values.autoConvert,
-            });
-            setCharge(created);
-        } catch (e) {
-            alert(e instanceof Error ? e.message : "Erro ao gerar Pix");
-        } finally {
-            setCreating(false);
+            // 🔹 Chame sua API de Pix que retorna o QR Code (ex.: string base64 ou data URL)
+            // const res = await fetch("/api/pix/deposit", { method: "POST", body: JSON.stringify(values) });
+            // const data = await res.json();
+            // setQrCode(data.qrCode);
+
+            // ⚡ Exemplo mockado: QR como SVG inline
+            const fakeQr = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'>
+        <rect width='256' height='256' fill='white'/>
+        <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='20'>PIX ${values.amountBRL}</text>
+      </svg>`;
+            setQrCode(fakeQr);
+        } catch (err) {
+            console.error("Erro ao gerar PIX:", err);
         }
     }
 
-    // polling do status enquanto houver charge
-    React.useEffect(() => {
-        if (!charge?.id) return;
-        let active = true;
-        const tick = async () => {
-            try {
-                const r = await apiFetch(`/pix/charges/${charge.id}`);
-                const data = (await r.json()) as PixCharge;
-                if (active) setCharge(data);
-            } catch { }
-        };
-        tick();
-        const it = setInterval(tick, 1200);
-        return () => {
-            active = false;
-            clearInterval(it);
-        };
-    }, [charge?.id]);
-
-    // contador de validade
-    React.useEffect(() => {
-        if (!charge?.expiresAt) return;
-        const id = setInterval(() => {
-            const diff = +new Date(charge.expiresAt) - Date.now();
-            if (diff <= 0) {
-                setRemaining("expirado");
-                clearInterval(id);
-                return;
-            }
-            const m = Math.floor(diff / 60000);
-            const s = Math.floor((diff % 60000) / 1000);
-            setRemaining(`${m}m ${s}s`);
-        }, 1000);
-        return () => clearInterval(id);
-    }, [charge?.expiresAt]);
-
-    const copyCode = async () => {
-        if (!charge?.copyPaste) return;
-        await navigator.clipboard.writeText(charge.copyPaste);
-    };
-
-    const downloadQR = () => {
-        if (!charge?.qrCode) return;
-        const a = document.createElement("a");
-        a.href = charge.qrCode;
-        // fakeQR é SVG dataURL; se você trocar por PNG, ajuste a extensão.
-        a.download = "pix-qrcode.svg";
-        a.click();
-    };
-
     return (
-        <Dialog open={isOpen} onOpenChange={(v) => (!v ? handleClose() : null)}>
-            <DialogContent className="sm:max-w-lg">
+        <Dialog open={open.pix} onOpenChange={(v) => (!v ? closeModal("pix") : null)}>
+            <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>Adicionar via Pix</DialogTitle>
                 </DialogHeader>
 
-                {!charge && (
+                {!qrCode ? (
                     <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="amountBRL">Valor (BRL)</Label>
@@ -123,8 +60,7 @@ export default function PixModal() {
                                 id="amountBRL"
                                 type="number"
                                 step="0.01"
-                                placeholder="0,00"
-                                {...form.register("amountBRL")}
+                                {...form.register("amountBRL", { valueAsNumber: true })}
                             />
                             {form.formState.errors.amountBRL && (
                                 <p className="text-sm text-destructive">
@@ -133,80 +69,27 @@ export default function PixModal() {
                             )}
                         </div>
 
-                        <label className="inline-flex items-center gap-2 text-sm">
-                            <input type="checkbox" {...form.register("autoConvert")} />
-                            Converter automaticamente para USDT
-                        </label>
-
                         <DialogFooter className="gap-2">
-                            <Button type="button" variant="outline" onClick={handleClose}>
+                            <Button type="button" variant="outline" onClick={() => closeModal("pix")}>
                                 Cancelar
                             </Button>
-                            <Button type="submit" disabled={creating}>
-                                {creating ? "Gerando..." : "Gerar Pix"}
-                            </Button>
+                            <Button type="submit">Gerar Pix</Button>
                         </DialogFooter>
                     </form>
-                )}
-
-                {charge && (
-                    <div className="grid gap-4">
-                        <div className="flex items-center justify-between text-sm">
-                            <div className="text-muted-foreground">
-                                Status: <b>{charge.status}</b>
-                                {charge.expiresAt ? ` · expira em ${remaining || "--"}` : null}
-                            </div>
-                            <div className="flex gap-2">
-                                <Button variant="outline" size="sm" onClick={() => setCharge(null)}>
-                                    Gerar outro valor
-                                </Button>
-                                <Button size="sm" onClick={downloadQR}>
-                                    Baixar QR
-                                </Button>
-                            </div>
-                        </div>
-
-                        <Separator />
-
-                        <Tabs defaultValue="qr">
-                            <TabsList className="grid w-full grid-cols-2">
-                                <TabsTrigger value="qr">QR Code</TabsTrigger>
-                                <TabsTrigger value="code">Copia e Cola</TabsTrigger>
-                            </TabsList>
-
-                            <TabsContent value="qr" className="pt-4">
-                                <div className="flex items-center justify-center">
-                                    <img
-                                        src={charge.qrCode!}
-                                        alt="QR Code Pix"
-                                        className="rounded-xl border p-2"
-                                        width={240}
-                                        height={240}
-                                    />
-                                </div>
-                            </TabsContent>
-
-                            <TabsContent value="code" className="pt-4">
-                                <div className="grid gap-2">
-                                    <Label>Código Pix</Label>
-                                    <textarea
-                                        readOnly
-                                        className="min-h-28 w-full rounded-md border bg-muted/30 p-3 font-mono text-xs"
-                                        value={charge.copyPaste ?? ""}
-                                    />
-                                    <div className="flex gap-2">
-                                        <Button variant="outline" onClick={copyCode}>Copiar código</Button>
-                                        <Button onClick={downloadQR}>Baixar QR</Button>
-                                    </div>
-                                </div>
-                            </TabsContent>
-                        </Tabs>
-
-                        <DialogFooter>
-                            <Button variant="outline" onClick={handleClose}>
-                                Fechar
-                            </Button>
-                        </DialogFooter>
+                ) : (
+                    <div className="flex flex-col items-center gap-4">
+                        <p className="text-center text-sm">Escaneie o QR Code abaixo para concluir o pagamento:</p>
+                        <Image
+                            src={qrCode}
+                            alt="QR Code do Pix"
+                            width={256}
+                            height={256}
+                            unoptimized
+                            className="mx-auto h-48 w-48 rounded-lg"
+                        />
+                        <Button variant="outline" onClick={() => setQrCode(null)}>
+                            Gerar outro
+                        </Button>
                     </div>
                 )}
             </DialogContent>

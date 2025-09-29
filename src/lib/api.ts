@@ -119,7 +119,7 @@ function defaultStore(): Store {
 
 function loadStore(): Store {
 
-    if (!PERSIST || typeof window === "undefined") return defaultStore();
+    if (!PERSIST || typeof window === "undefined") {return defaultStore();}
     const raw = localStorage.getItem(STORE_KEY);
     if (!raw) {
         const base = defaultStore();
@@ -132,9 +132,9 @@ function loadStore(): Store {
             throw new Error("Invalid store data");
         }
         if (!("card" in parsed) || typeof parsed.card !== "object" || parsed.card === undefined)
-            (parsed as Store).card = {};
+            {(parsed as Store).card = {};}
         if (!("users" in parsed) || typeof parsed.users !== "object" || parsed.users === undefined)
-            (parsed as Store).users = {};
+            {(parsed as Store).users = {};}
         if (!parsed.seeded) {
             const seeded = { ...defaultStore(), ...parsed, seeded: true };
             localStorage.setItem(STORE_KEY, JSON.stringify(seeded));
@@ -149,7 +149,7 @@ function loadStore(): Store {
 }
 
 function saveStore(s: Store): void {
-    if (!PERSIST || typeof window === "undefined") return;
+    if (!PERSIST || typeof window === "undefined") {return;}
     localStorage.setItem(STORE_KEY, JSON.stringify(s));
     broadcast(); // <— emite evento global sempre que persistir
 }
@@ -285,12 +285,12 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         const from = qs.get("from");
         const to = qs.get("to");
 
-        if (q) items = items.filter((t) => (t.description || "").toLowerCase().includes(q) || t.id.includes(q));
-        if (asset && asset !== "ALL") items = items.filter((t) => t.asset === asset);
-        if (type && type !== "ALL") items = items.filter((t) => t.type === type);
-        if (origin && origin !== "ALL") items = items.filter((t) => t.origin === origin);
-        if (from) items = items.filter((t) => +new Date(t.createdAt) >= +new Date(from));
-        if (to) items = items.filter((t) => +new Date(t.createdAt) <= +new Date(to) + 24 * 60 * 60 * 1000 - 1);
+        if (q) {items = items.filter((t) => (t.description || "").toLowerCase().includes(q) || t.id.includes(q));}
+        if (asset && asset !== "ALL") {items = items.filter((t) => t.asset === asset);}
+        if (type && type !== "ALL") {items = items.filter((t) => t.type === type);}
+        if (origin && origin !== "ALL") {items = items.filter((t) => t.origin === origin);}
+        if (from) {items = items.filter((t) => +new Date(t.createdAt) >= +new Date(from));}
+        if (to) {items = items.filter((t) => +new Date(t.createdAt) <= +new Date(to) + 24 * 60 * 60 * 1000 - 1);}
 
         const start = (page - 1) * limit;
         return json({ items: items.slice(start, start + limit), total: items.length, page, limit });
@@ -332,7 +332,7 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         const amountBrl = Number(body.amountBrl || 0);
         const autoConvert = Boolean(body.autoConvert);
 
-        if (amountBrl <= 0) return json({ message: "Valor inválido" }, false, 400);
+        if (amountBrl <= 0) {return json({ message: "Valor inválido" }, false, 400);}
 
         const id = nanoid();
         const txid = `E2E-${nanoid(10)}`;
@@ -407,10 +407,10 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         const network = String(body.network || "TRON").toUpperCase();
         const toAddress = String(body.toAddress || "");
 
-        if (!["TRON", "ETHEREUM", "SOLANA"].includes(network)) return json({ message: "Rede inválida" }, false, 400);
-        if (!toAddress || toAddress.length < 8) return json({ message: "Endereço inválido" }, false, 400);
-        if (amount <= 0) return json({ message: "Valor inválido" }, false, 400);
-        if (store.balances.usdt < amount) return json({ message: "Saldo insuficiente" }, false, 400);
+        if (!["TRON", "ETHEREUM", "SOLANA"].includes(network)) {return json({ message: "Rede inválida" }, false, 400);}
+        if (!toAddress || toAddress.length < 8) {return json({ message: "Endereço inválido" }, false, 400);}
+        if (amount <= 0) {return json({ message: "Valor inválido" }, false, 400);}
+        if (store.balances.usdt < amount) {return json({ message: "Saldo insuficiente" }, false, 400);}
 
         store.balances.usdt = usdt(store.balances.usdt - amount);
         store.txs.unshift({
@@ -435,8 +435,8 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         const body = raw ? (JSON.parse(raw) as PostConversionBrlToUsdtBody) : { amountBRL: 0 };
 
         const amountBRL = brl(Number(body.amountBRL || 0));
-        if (amountBRL <= 0) return json({ message: "Valor inválido" }, false, 400);
-        if (store.balances.brl < amountBRL) return json({ message: "Saldo BRL insuficiente" }, false, 400);
+        if (amountBRL <= 0) {return json({ message: "Valor inválido" }, false, 400);}
+        if (store.balances.brl < amountBRL) {return json({ message: "Saldo BRL insuficiente" }, false, 400);}
 
         const addUSDT = usdt(amountBRL / DEMO_RATE);
         store.balances.brl = brl(store.balances.brl - amountBRL);
@@ -511,8 +511,8 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
 
         const amount = brl(Number(body.amount_brl || 0));
         const installments = Number(body.installments || 1);
-        if (amount <= 0) return json({ message: "Valor inválido" }, false, 400);
-        if (installments < 1 || installments > 12) return json({ message: "Parcelas inválidas" }, false, 400);
+        if (amount <= 0) {return json({ message: "Valor inválido" }, false, 400);}
+        if (installments < 1 || installments > 12) {return json({ message: "Parcelas inválidas" }, false, 400);}
 
         const mdr_percent = 2.8;
         const fee_fixed_brl = 1.5;
@@ -548,8 +548,8 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         const body = raw ? (JSON.parse(raw) as PostConversionUsdtToBrlBody) : { amountUSDT: 0 };
 
         const amountUSDT = usdt(Number(body.amountUSDT || 0));
-        if (amountUSDT <= 0) return json({ message: "Valor inválido" }, false, 400);
-        if (store.balances.usdt < amountUSDT) return json({ message: "Saldo USDT insuficiente" }, false, 400);
+        if (amountUSDT <= 0) {return json({ message: "Valor inválido" }, false, 400);}
+        if (store.balances.usdt < amountUSDT) {return json({ message: "Saldo USDT insuficiente" }, false, 400);}
 
         const addBRL = brl(amountUSDT * DEMO_RATE);
         store.balances.usdt = usdt(store.balances.usdt - amountUSDT);
@@ -585,8 +585,8 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         const body = raw ? (JSON.parse(raw) as PostCardConfirmBody) : { card_token: "" };
 
         const pay = store.card[id];
-        if (!pay) return json({ message: "Pagamento não encontrado" }, false, 404);
-        if (!body.card_token || body.card_token.length < 6) return json({ message: "Token inválido" }, false, 400);
+        if (!pay) {return json({ message: "Pagamento não encontrado" }, false, 404);}
+        if (!body.card_token || body.card_token.length < 6) {return json({ message: "Token inválido" }, false, 400);}
 
         // AUTHORIZED
         store.card[id] = { ...pay, status: "AUTHORIZED" };
@@ -595,7 +595,7 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         // CAPTURED
         setTimeout(() => {
             const p = store.card[id];
-            if (!p) return;
+            if (!p) {return;}
             store.card[id] = { ...p, status: "CAPTURED" };
             saveStore(store);
         }, 900);
@@ -603,7 +603,7 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         // SETTLED + conversão
         setTimeout(() => {
             const p = store.card[id];
-            if (!p) return;
+            if (!p) {return;}
 
             const gross = brl(p.amount_brl + (p.interest_brl ?? 0));
             const feeVar = brl(((p.mdr_percent ?? 0) / 100) * gross);
@@ -668,9 +668,9 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         const email = String(body.email || "").toLowerCase().trim();
         const password = String(body.password || "");
 
-        if (!name || !email || !password) return json({ message: "Dados inválidos" }, false, 400);
+        if (!name || !email || !password) {return json({ message: "Dados inválidos" }, false, 400);}
         const exists = Object.values(store.users).some((u) => u.email === email);
-        if (exists) return json({ message: "E-mail já cadastrado" }, false, 409);
+        if (exists) {return json({ message: "E-mail já cadastrado" }, false, 409);}
 
         const id = nanoid();
         store.users[id] = { id, name, email, password, createdAt: new Date().toISOString() };
@@ -688,7 +688,7 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         const password = String(body.password || "");
 
         const user = Object.values(store.users).find((u) => u.email === email && u.password === password);
-        if (!user) return json({ message: "Credenciais inválidas" }, false, 401);
+        if (!user) {return json({ message: "Credenciais inválidas" }, false, 401);}
 
         // DEMO: gera um token fake e salva em localStorage (para o ClientAuthGate)
         const access = `demo_${nanoid(16)}`;
@@ -743,10 +743,10 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
         const token = String(body.token || "");
         const password = String(body.password || "");
 
-        if (!token || password.length < 8) return json({ message: "Dados inválidos" }, false, 400);
+        if (!token || password.length < 8) {return json({ message: "Dados inválidos" }, false, 400);}
 
         const user = Object.values(store.users).find((u) => u.resetToken === token);
-        if (!user) return json({ message: "Token inválido" }, false, 400);
+        if (!user) {return json({ message: "Token inválido" }, false, 400);}
         if (user.resetExpiresAt && +new Date(user.resetExpiresAt) < Date.now()) {
             return json({ message: "Token expirado" }, false, 400);
         }

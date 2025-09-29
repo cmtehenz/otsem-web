@@ -51,7 +51,7 @@ export default function NewPayoutPage() {
                 body: JSON.stringify(values),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data?.message || "Falha no payout");
+            if (!res.ok) {throw new Error(data?.message || "Falha no payout");}
             toast.success(`Payout criado em ${values.network}. Hash: ${data?.txHash ?? "pendente"}`);
             reset({ network: values.network, toAddress: "", amount: 0 });
         } catch (e) {

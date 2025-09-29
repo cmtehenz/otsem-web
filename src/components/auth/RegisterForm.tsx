@@ -29,9 +29,9 @@ type FormValues = z.infer<typeof schema>;
 // medidor simples (0..3)
 function passwordScore(pw: string) {
     let s = 0;
-    if (pw.length >= 8) s++;
-    if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) s++;
-    if (/\d/.test(pw) || /[^A-Za-z0-9]/.test(pw)) s++;
+    if (pw.length >= 8) {s++;}
+    if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) {s++;}
+    if (/\d/.test(pw) || /[^A-Za-z0-9]/.test(pw)) {s++;}
     return s;
 }
 

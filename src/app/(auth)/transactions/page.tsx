@@ -61,13 +61,13 @@ export default function TransactionsPage() {
     const values = watch();
     const query = React.useMemo(() => {
         const p = new URLSearchParams();
-        if (values.q) p.set("q", values.q);
-        if (values.asset && values.asset !== "ALL") p.set("asset", values.asset);
-        if (values.type && values.type !== "ALL") p.set("type", values.type);
-        if (values.origin && values.origin !== "ALL") p.set("origin", values.origin);
+        if (values.q) {p.set("q", values.q);}
+        if (values.asset && values.asset !== "ALL") {p.set("asset", values.asset);}
+        if (values.type && values.type !== "ALL") {p.set("type", values.type);}
+        if (values.origin && values.origin !== "ALL") {p.set("origin", values.origin);}
         // 👇 from/to já são enviados; o mock atual ignora (veja patch opcional abaixo)
-        if (values.from) p.set("from", values.from);
-        if (values.to) p.set("to", values.to);
+        if (values.from) {p.set("from", values.from);}
+        if (values.to) {p.set("to", values.to);}
         p.set("page", String(page));
         p.set("limit", String(limit));
         return p.toString();
