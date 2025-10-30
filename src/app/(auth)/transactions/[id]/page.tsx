@@ -1,29 +1,29 @@
 "use client";
 
 import React from "react";
-import useSWR from "swr";
+// import useSWR from "swr";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { ArrowLeft, ArrowDownRight, ArrowUpRight, Copy, Check } from "lucide-react";
 
 // import { swrFetcher } from "@/lib/api";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+// import { Badge } from "@/components/ui/badge";
+// import { Separator } from "@/components/ui/separator";
 
-type Tx = {
-    id: string;
-    createdAt: string;
-    type: "CREDIT" | "DEBIT";
-    origin?: "PIX" | "CARD" | "CONVERSION" | "PAYOUT" | "MANUAL";
-    asset: "BRL" | "USDT";
-    amount: number;
-    description?: string;
-    txid?: string;
-    meta?: Record<string, unknown>;
-};
+// type Tx = {
+//     id: string;
+//     createdAt: string;
+//     type: "CREDIT" | "DEBIT";
+//     origin?: "PIX" | "CARD" | "CONVERSION" | "PAYOUT" | "MANUAL";
+//     asset: "BRL" | "USDT";
+//     amount: number;
+//     description?: string;
+//     txid?: string;
+//     meta?: Record<string, unknown>;
+// };
 
 const fmtBRL = (v: number) =>
     new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v ?? 0);

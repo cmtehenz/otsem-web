@@ -2,22 +2,19 @@
 
 import React from "react";
 import Link from "next/link";
-import useSWR from "swr";
 import { z } from "zod";
 import { useForm, type SubmitHandler, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRightLeft, Landmark, Loader2, RefreshCw } from "lucide-react";
+import { ArrowLeft, ArrowRightLeft, Landmark, Loader2 } from "lucide-react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
-import { apiPost, swrFetcher } from "@/lib/api";
+// import { apiPost, swrFetcher } from "@/lib/api";
 
-// ===== Types =====
-type Balances = { brl: number; usdt: number };
 
 // ===== Schema/Form =====
 const schema = z.object({
@@ -30,9 +27,9 @@ const formResolver = zodResolver(schema) as unknown as Resolver<FormValues>;
 
 export default function UsdtToBrlPage() {
     // Saldos (para mostrar e refrescar depois da conversão)
-    const { data: balances, mutate: refetchBalances } = useSWR<Balances>("/wallets/me", swrFetcher);
-    const brl = balances?.brl ?? 0;
-    const usdt = balances?.usdt ?? 0;
+    // const { data: balances, mutate: refetchBalances } = useSWR<Balances>("/wallets/me", swrFetcher);
+    // const brl = balances?.brl ?? 0;
+    // const usdt = balances?.usdt ?? 0;
 
     const {
         register,
@@ -46,13 +43,13 @@ export default function UsdtToBrlPage() {
 
     const onSubmit: SubmitHandler<FormValues> = async (values) => {
         try {
-            const resp = await apiPost<{ ok: true; rate: number; amountUSDT: number; brlAdded: number }>(
-                "/conversions/usdt-to-brl",
-                { amountUSDT: values.amount_usdt }
-            );
-            toast.success(`Convertido ${values.amount_usdt.toFixed(2)} USDT → R$ ${resp.brlAdded.toFixed(2)} (cotação R$ ${resp.rate.toFixed(2)})`);
-            reset({ amount_usdt: 0 });
-            await refetchBalances();
+            // const resp = await apiPost<{ ok: true; rate: number; amountUSDT: number; brlAdded: number }>(
+            //     "/conversions/usdt-to-brl",
+            //     { amountUSDT: values.amount_usdt }
+            // );
+            // toast.success(`Convertido ${values.amount_usdt.toFixed(2)} USDT → R$ ${resp.brlAdded.toFixed(2)} (cotação R$ ${resp.rate.toFixed(2)})`);
+            // reset({ amount_usdt: 0 });
+            // await refetchBalances();
         } catch (err) {
             const msg = err instanceof Error ? err.message : "Falha na conversão";
             toast.error(msg);
@@ -75,9 +72,9 @@ export default function UsdtToBrlPage() {
                             <ArrowLeft className="size-4" /> Dashboard
                         </Button>
                     </Link>
-                    <Button variant="ghost" onClick={() => refetchBalances()} className="gap-2">
+                    {/* <Button variant="ghost" onClick={() => refetchBalances()} className="gap-2">
                         <RefreshCw className="size-4" /> Atualizar
-                    </Button>
+                    </Button> */}
                 </div>
             </div>
 
@@ -89,9 +86,9 @@ export default function UsdtToBrlPage() {
                         <Landmark className="size-4 opacity-60" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-semibold">
+                        {/* <div className="text-3xl font-semibold">
                             {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(brl)}
-                        </div>
+                        </div> */}
                         <div className="mt-2 text-xs text-muted-foreground">Saldo disponível em BRL</div>
                     </CardContent>
                 </Card>
@@ -103,7 +100,7 @@ export default function UsdtToBrlPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-semibold">
-                            {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(usdt)}
+                            {/* {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(usdt)} */}
                         </div>
                         <div className="mt-2 text-xs text-muted-foreground">Saldo disponível em USDT</div>
                     </CardContent>

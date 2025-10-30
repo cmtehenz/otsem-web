@@ -3,7 +3,6 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { doLogout } from "@/lib/auth";
 import { toast } from "sonner";
 
 export default function LogoutPage() {
@@ -11,7 +10,6 @@ export default function LogoutPage() {
 
     React.useEffect(() => {
         (async () => {
-            await doLogout();
             toast.success("Você saiu da sua conta.");
             router.replace("/login");
         })();

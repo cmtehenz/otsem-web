@@ -3,11 +3,8 @@
 
 // --- React, SWR, ICONS ---
 import React, { useMemo } from "react";
-import useSWR from "swr";
 import Link from "next/link";
 import {
-    ArrowDownRight,
-    ArrowUpRight,
     RefreshCw,
     Wallet,
 } from "lucide-react";
@@ -18,15 +15,13 @@ import { Button } from "@/components/ui/button";
 
 import {
     Table,
-    TableBody,
-    TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
 
 // ——— Sonner ———
-import { toast } from "sonner";
+// import { toast } from "sonner";
 
 
 
@@ -39,28 +34,28 @@ const fmtUSD = (v: number) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
         v ?? 0
     );
-const timeAgo = (iso?: string) => {
-    if (!iso) { return ""; }
-    const diff = Date.now() - new Date(iso).getTime();
-    const m = Math.floor(diff / 60000);
-    if (m < 1) { return "agora"; }
-    if (m < 60) { return `${m} min`; }
-    const h = Math.floor(m / 60);
-    if (h < 24) { return `${h} h`; }
-    const d = Math.floor(h / 24);
-    return `${d} d`;
-};
+// const timeAgo = (iso?: string) => {
+//     if (!iso) { return ""; }
+//     const diff = Date.now() - new Date(iso).getTime();
+//     const m = Math.floor(diff / 60000);
+//     if (m < 1) { return "agora"; }
+//     if (m < 60) { return `${m} min`; }
+//     const h = Math.floor(m / 60);
+//     if (h < 24) { return `${h} h`; }
+//     const d = Math.floor(h / 24);
+//     return `${d} d`;
+// };
 
 // Types (ajuste se necessário com a sua API)
-type Balances = { brl: number; usdt: number };
-type Tx = {
-    id: string;
-    createdAt: string;
-    type: "CREDIT" | "DEBIT";
-    asset: "BRL" | "USDT";
-    amount: number;
-    description?: string;
-};
+// type Balances = { brl: number; usdt: number };
+// type Tx = {
+//     id: string;
+//     createdAt: string;
+//     type: "CREDIT" | "DEBIT";
+//     asset: "BRL" | "USDT";
+//     amount: number;
+//     description?: string;
+// };
 
 // ——— Actions Modals ———
 // function ConvertModal({ onDone }: { onDone?: () => void }) {
