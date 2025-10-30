@@ -1,14 +1,16 @@
-import type { Metadata } from "next";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import AuthenticatedAppShell from "@/components/layout/AuthenticatedAppShell";
+// src/app/(app)/layout.tsx  ← tudo dentro fica protegido
+"use client";
 
-export const metadata: Metadata = { title: "Otsem Bank" };
+import * as React from "react";
+import { AuthProvider } from "@/contexts/auth-context";
+import { Protected } from "@/components/auth/Protected";
 
-export default async function Layout({ children }: { children: React.ReactNode }) {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("access_token")?.value;
-    if (!token) {redirect("/login?next=/dashboard");} // ou use pathname atual
-
-    return <AuthenticatedAppShell>{children}</AuthenticatedAppShell>;
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <AuthProvider>
+            <Protected>
+                {children}
+            </Protected>
+        </AuthProvider>
+    );
 }
