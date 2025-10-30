@@ -59,7 +59,9 @@ async function refreshAccessToken(): Promise<string | null> {
 }
 
 function joinUrl(path: string, absolute?: boolean) {
-    if (absolute || /^https?:\/\//i.test(path)) return path;
+    if (absolute || /^https?:\/\//i.test(path)) {
+        return path;
+    }
     return `${BASE_URL}${path}`;
 }
 
