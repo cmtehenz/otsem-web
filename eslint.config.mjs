@@ -71,7 +71,7 @@ const config = [
       // JS básicos — opcionais
       "no-console": ["warn", { allow: ["warn", "error"] }],
       eqeqeq: ["warn", "always", { null: "ignore" }],
-      curly: ["warn", "all"],
+      curly: ["off"],
     },
   },
 ];
