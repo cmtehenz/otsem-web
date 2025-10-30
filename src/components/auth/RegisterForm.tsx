@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, Mail, User, Lock } from "lucide-react";
 import { http } from "@/lib/http";
+import { toast } from "sonner";
 
 // Evita cache estático
 export const dynamic = "force-dynamic";
@@ -102,73 +103,36 @@ function RegisterPageInner(): React.JSX.Element {
         try {
             setLoading(true);
 
-            // 1) Registrar SEMPRE como CUSTOMER
-            await http.post(
-                "/auth/register",
-                {
-                    name: v.name,
-                    email: v.email,
-                    password: v.password,
-                    role: "CUSTOMER", // <- força o perfil desejado
-                },
-                { anonymous: true }
+            // 1) registra (NADA de confirm/accept no body)
+            const res = await http.post<{ access_token: string; role?: string }>(
+                "/auth/register",                                       // Opção A (com rewrites)
+                // `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,  // Opção B (sem rewrites)
+                { name: v.name, email: v.email, password: v.password },
+                { anonymous: true /*, absolute: true */ }               // absolute: true se usar Opção B
             );
 
-            // 2) Login imediato para já autenticar
-            const login = await http.post<{ access_token: string; refresh_token?: string; role?: string }>(
-                "/auth/login",
-                { email: v.email, password: v.password },
-                { anonymous: true }
-            );
+            // 2) persiste token (tokenStore/localStorage/cookie)
+            localStorage.setItem("accessToken", res.access_token);
 
-            // 3) Persistência mínima (ajuste se usar tokenStore)
-            if (typeof window !== "undefined") {
-                localStorage.setItem("accessToken", login.access_token);
-                if (login.refresh_token) localStorage.setItem("refreshToken", login.refresh_token);
-            }
-            setAuthCookie(login.access_token, true);
+            // (opcional) cookie legível pelo server (para SSR guard)
+            document.cookie = [
+                `access_token=${encodeURIComponent(res.access_token)}`,
+                "Path=/",
+                "Max-Age=604800",  // 7d
+                "SameSite=Lax",
+                // "Secure",        // ative em produção HTTPS
+            ].join("; ");
 
-            // 4) Redireciona
-            router.replace(next);
+            toast.success("Conta criada! Bem-vindo(a).");
+            router.replace("/dashboard"); // ou outro destino
         } catch (e: unknown) {
-            // status seguro (Axios-like)
-            const status =
-                (e && typeof e === "object" && "response" in e
-                    ? (e as { response?: { status?: number } }).response?.status
-                    : 0) ?? 0;
-
-            if (status === 409) {
-                form.setError("email", { message: "Este e-mail já está em uso" });
-                alert("Este e-mail já está em uso.");
-                return;
-            }
-
-            if (status === 400) {
-                alert("Dados inválidos. Verifique as informações.");
-                return;
-            }
-
-            // mensagem segura
-            let msg = "Falha no cadastro";
-            if (e && typeof e === "object") {
-                const obj = e as {
-                    message?: string | string[];
-                    response?: { data?: { message?: string | string[] } };
-                };
-                const m =
-                    Array.isArray(obj.message)
-                        ? obj.message.join(", ")
-                        : obj.message ??
-                        (Array.isArray(obj.response?.data?.message)
-                            ? obj.response?.data?.message?.join(", ")
-                            : obj.response?.data?.message);
-                if (m && m.trim().length > 0) msg = m;
-            } else if (e instanceof Error) {
-                msg = e.message || msg;
-            }
-
-            alert(msg);
-
+            // mostra a mensagem do backend quando vier 400/409
+            const msg =
+                (e as any)?.response?.data?.message ||
+                (e as any)?.message ||
+                "Falha no cadastro";
+            // se for array de validação do Nest:
+            toast.error(Array.isArray(msg) ? msg.join(", ") : msg);
         } finally {
             setLoading(false);
         }
