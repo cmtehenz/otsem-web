@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,14 +22,8 @@ export const dynamic = "force-dynamic";
 // ---------------- Schema ----------------
 const schema = z
     .object({
-        name: z
-            .string()
-            .min(3, "Informe seu nome")
-            .transform((v) => v.trim()),
-        email: z
-            .string()
-            .email("E-mail inválido")
-            .transform((v) => v.trim().toLowerCase()),
+        name: z.string().min(3, "Informe seu nome").transform((v) => v.trim()),
+        email: z.string().email("E-mail inválido").transform((v) => v.trim().toLowerCase()),
         password: z.string().min(8, "Mínimo 8 caracteres"),
         confirm: z.string().min(8, "Confirme sua senha"),
         accept: z.literal(true, { message: "Aceite os termos para continuar" }),
@@ -52,25 +46,29 @@ function passwordScore(pw: string): number {
 }
 const SCORE_TEXT = ["fraca", "ok", "boa", "forte"] as const;
 
-// Cookie opcional para SSR/middleware (não é HttpOnly)
-function setAuthCookie(token: string, remember = true): void {
-    const maxAge = remember ? 60 * 60 * 24 * 7 : 60 * 60 * 4; // 7d ou 4h
-    const parts = [
-        `access_token=${encodeURIComponent(token)}`,
-        "Path=/",
-        `Max-Age=${maxAge}`,
-        "SameSite=Lax",
-    ];
-    if (typeof window !== "undefined" && window.location.protocol === "https:") {
-        parts.push("Secure");
+// ---- helpers seguros para erro HTTP (sem any)
+function getHttpStatus(e: unknown): number {
+    if (e && typeof e === "object" && "response" in e) {
+        const r = e as { response?: { status?: number } };
+        return r.response?.status ?? 0;
     }
-    document.cookie = parts.join("; ");
+    return 0;
 }
-
-// Sanitiza "next" para evitar open redirect
-function safeNext(nextParam: string | null | undefined, fallback = "/dashboard") {
-    if (!nextParam) return fallback;
-    return nextParam.startsWith("/") ? nextParam : fallback;
+function getHttpMessage(e: unknown, fallback = "Falha no cadastro"): string {
+    if (e && typeof e === "object") {
+        const obj = e as {
+            message?: string | string[];
+            response?: { data?: { message?: string | string[] } };
+        };
+        const arr =
+            (Array.isArray(obj.message) ? obj.message :
+                Array.isArray(obj.response?.data?.message) ? obj.response?.data?.message : null);
+        if (arr && arr.length) return arr.join(", ");
+        const msg = obj.message ?? obj.response?.data?.message;
+        if (typeof msg === "string" && msg.trim()) return msg;
+    }
+    if (e instanceof Error && e.message.trim()) return e.message;
+    return fallback;
 }
 
 export default function RegisterPage(): React.JSX.Element {
@@ -83,8 +81,6 @@ export default function RegisterPage(): React.JSX.Element {
 
 function RegisterPageInner(): React.JSX.Element {
     const router = useRouter();
-    const sp = useSearchParams(); // seguro dentro de <Suspense/>
-    const next = safeNext(sp.get("next"));
 
     const [showPw, setShowPw] = React.useState(false);
     const [showConfirm, setShowConfirm] = React.useState(false);
@@ -105,34 +101,36 @@ function RegisterPageInner(): React.JSX.Element {
 
             // 1) registra (NADA de confirm/accept no body)
             const res = await http.post<{ access_token: string; role?: string }>(
-                "/auth/register",                                       // Opção A (com rewrites)
-                // `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,  // Opção B (sem rewrites)
+                "/auth/register", // (com rewrites) — use absoluto+absolute:true se não usar rewrites
                 { name: v.name, email: v.email, password: v.password },
-                { anonymous: true /*, absolute: true */ }               // absolute: true se usar Opção B
+                { anonymous: true }
             );
 
-            // 2) persiste token (tokenStore/localStorage/cookie)
+            // 2) persiste token
             localStorage.setItem("accessToken", res.access_token);
 
             // (opcional) cookie legível pelo server (para SSR guard)
             document.cookie = [
                 `access_token=${encodeURIComponent(res.access_token)}`,
                 "Path=/",
-                "Max-Age=604800",  // 7d
+                "Max-Age=604800", // 7d
                 "SameSite=Lax",
-                // "Secure",        // ative em produção HTTPS
+                // "Secure", // ative em produção HTTPS
             ].join("; ");
 
             toast.success("Conta criada! Bem-vindo(a).");
-            router.replace("/dashboard"); // ou outro destino
+            router.replace("/dashboard");
         } catch (e: unknown) {
-            // mostra a mensagem do backend quando vier 400/409
-            const msg =
-                (e as any)?.response?.data?.message ||
-                (e as any)?.message ||
-                "Falha no cadastro";
-            // se for array de validação do Nest:
-            toast.error(Array.isArray(msg) ? msg.join(", ") : msg);
+            const status = getHttpStatus(e);
+
+            if (status === 409) {
+                form.setError("email", { message: "Este e-mail já está em uso" });
+                toast.error("Este e-mail já está em uso.");
+            } else if (status === 400) {
+                toast.error("Dados inválidos. Verifique as informações.");
+            } else {
+                toast.error(getHttpMessage(e, "Falha no cadastro"));
+            }
         } finally {
             setLoading(false);
         }
@@ -201,8 +199,7 @@ function RegisterPageInner(): React.JSX.Element {
                                 <div className="mt-1">
                                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
                                         <div
-                                            className={`h-full transition-all ${score <= 1 ? "bg-red-500" : score === 2 ? "bg-yellow-500" : "bg-green-500"
-                                                }`}
+                                            className={`h-full transition-all ${score <= 1 ? "bg-red-500" : score === 2 ? "bg-yellow-500" : "bg-green-500"}`}
                                             style={{ width: `${(score / 3) * 100}%` }}
                                         />
                                     </div>
