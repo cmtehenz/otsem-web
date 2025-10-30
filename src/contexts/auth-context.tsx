@@ -86,8 +86,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const me = await fetchMe(accessToken);
             setState({ status: "authenticated", user: me, token: accessToken });
 
-            if (me.role === "ADMIN") router.replace("/admin/dashboard");
-            else router.replace("/customer/dashboard");
+            const r = role ?? me.role;
+            if (r === "ADMIN") router.push("/admin/dashboard");
+            else router.push("/customer/dashboard");
         } catch {
             tokenStore.clear();
             clearCookieAccessToken();
