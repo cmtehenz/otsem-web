@@ -70,8 +70,17 @@ function ResetPageInner(): React.JSX.Element {
 
             toast.success("Senha alterada. Faça login para continuar.");
             router.replace("/login");
-        } catch (e: any) {
-            const status = e?.status ?? e?.response?.status ?? 0;
+        } catch (e: unknown) {
+            let status = 0;
+            let message = "Falha ao redefinir senha";
+
+            if (e && typeof e === "object" && "response" in e) {
+                const err = e as { response?: { status?: number }; message?: string };
+                status = err.response?.status ?? 0;
+                message = err.message ?? message;
+            } else if (e instanceof Error) {
+                message = e.message;
+            }
 
             if (status === 400) {
                 toast.error("Link inválido ou já utilizado.");
@@ -80,10 +89,10 @@ function ResetPageInner(): React.JSX.Element {
             } else if (status === 410) {
                 toast.error("Este link expirou. Solicite um novo.");
             } else {
-                const msg = e instanceof Error ? e.message : "Falha ao redefinir senha";
-                toast.error(msg);
+                toast.error(message);
             }
         }
+
     }
 
     const tokenMissing = !token;

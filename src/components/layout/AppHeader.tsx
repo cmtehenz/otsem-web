@@ -2,43 +2,21 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
 import Logo from "@/components/brand/Logo";
 // import TopActionsMenu from "@/components/layout/TopActionsMenu";
 import UserMenu from "@/components/layout/UserMenu";
-import { useUiModals } from "@/stores/ui-modals";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Menu, PlusCircle, ArrowRightLeft, Send, Download, History, CreditCard, FlaskConical, RotateCw } from "lucide-react";
-// import useSWR from "swr";
-// import { apiPost, swrFetcher, type Balances } from "@/lib/api";
+
 
 const TICKER = "1 USDT ≈ R$ 5,50";
 
 export default function AppHeader() {
-    const router = useRouter();
-    const { openModal } = useUiModals();
 
-    // const { data: balances } = useSWR<Balances>("/wallets/me", swrFetcher, {
-    //     refreshInterval: 5000,
-    // });
 
-    // const actions = React.useMemo(
-    //     () => ({
-    //         onAddPix: () => openModal("pix"),
-    //         onConvertBrlToUsdt: () => openModal("convertBrlUsdt"),
-    //         onConvertUsdtToBrl: () => openModal("convertUsdtBrl"),
-    //         onSendUsdt: () => openModal("sendUsdt"),
-    //         onReceiveUsdt: () => openModal("receiveUsdt"),
-    //         onOpenHistory: () => router.push("/history"),
-    //         onChargeOnCard: () => router.push("/merchant/charge"),
-    //         // onLoadDemo: async () => { try { await apiPost("/demo/fund", { addBRL: 500, addUSDT: 100 }); } catch { } },
-    //         onRefresh: () => router.refresh(),
-    //     }),
-    //     [openModal, router]
-    // );
 
     return (
         <header className="sticky top-0 z-40 w-full border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/50">

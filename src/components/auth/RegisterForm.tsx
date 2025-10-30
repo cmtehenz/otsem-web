@@ -130,20 +130,45 @@ function RegisterPageInner(): React.JSX.Element {
 
             // 4) Redireciona
             router.replace(next);
-        } catch (e: any) {
-            const status = e?.status ?? e?.response?.status;
+        } catch (e: unknown) {
+            // status seguro (Axios-like)
+            const status =
+                (e && typeof e === "object" && "response" in e
+                    ? (e as { response?: { status?: number } }).response?.status
+                    : 0) ?? 0;
+
             if (status === 409) {
-                // conflito (e-mail já existe)
                 form.setError("email", { message: "Este e-mail já está em uso" });
                 alert("Este e-mail já está em uso.");
-            } else if (status === 400) {
-                alert("Dados inválidos. Verifique as informações.");
-            } else {
-                const msg =
-                    Array.isArray(e?.message) ? e.message.join(", ") :
-                        e?.message ?? e?.response?.data?.message ?? "Falha no cadastro";
-                alert(msg);
+                return;
             }
+
+            if (status === 400) {
+                alert("Dados inválidos. Verifique as informações.");
+                return;
+            }
+
+            // mensagem segura
+            let msg = "Falha no cadastro";
+            if (e && typeof e === "object") {
+                const obj = e as {
+                    message?: string | string[];
+                    response?: { data?: { message?: string | string[] } };
+                };
+                const m =
+                    Array.isArray(obj.message)
+                        ? obj.message.join(", ")
+                        : obj.message ??
+                        (Array.isArray(obj.response?.data?.message)
+                            ? obj.response?.data?.message?.join(", ")
+                            : obj.response?.data?.message);
+                if (m && m.trim().length > 0) msg = m;
+            } else if (e instanceof Error) {
+                msg = e.message || msg;
+            }
+
+            alert(msg);
+
         } finally {
             setLoading(false);
         }

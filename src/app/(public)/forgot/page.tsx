@@ -81,21 +81,24 @@ export default function ForgotPage(): React.JSX.Element {
             toast.success("Se o e-mail existir, enviaremos as instruções.");
             // trava novo envio por 30s
             setCooldown(30);
-        } catch (e: any) {
-            // tenta mapear status comuns (se sua apiPost expõe .status ou .response.status)
-            const status = e?.status ?? e?.response?.status ?? 0;
+        } catch (e: unknown) {
+            if (e && typeof e === "object" && "response" in e) {
+                const axiosErr = e as { response?: { status?: number }; message?: string };
+                const status = axiosErr.response?.status ?? 0;
 
-            if (status === 429) {
-                setCooldown((c) => (c > 0 ? c : 60));
-                toast.error("Muitas tentativas. Tente novamente em instantes.");
-            } else if (status === 400) {
-                // Exemplo: e-mail inválido no backend
-                setError("email", { message: "Verifique o e-mail informado." });
-                toast.error("Não foi possível processar sua solicitação.");
+                if (status === 429) {
+                    setCooldown((c) => (c > 0 ? c : 60));
+                    toast.error("Muitas tentativas. Tente novamente em instantes.");
+                } else if (status === 400) {
+                    setError("email", { message: "Verifique o e-mail informado." });
+                    toast.error("Não foi possível processar sua solicitação.");
+                } else {
+                    toast.error(axiosErr.message ?? "Falha ao solicitar recuperação");
+                }
+            } else if (e instanceof Error) {
+                toast.error(e.message);
             } else {
-                toast.error(
-                    e instanceof Error ? e.message : "Falha ao solicitar recuperação",
-                );
+                toast.error("Falha ao solicitar recuperação.");
             }
         }
     }
