@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useUiModals } from "@/stores/ui-modals";
-import { apiPost, swrFetcher } from "@/lib/api";
+// import { apiPost, swrFetcher } from "@/lib/api";
 
 type Direction = "BRL_TO_USDT" | "USDT_TO_BRL";
 
@@ -39,25 +39,25 @@ export default function ConvertModal() {
     });
 
     // pega cotação e saldos da demo API
-    const { data: rates } = useSWR<RatesResp>(isOpen ? "/rates" : null, swrFetcher);
-    const { data: balances } = useSWR<BalancesResp>(isOpen ? "/wallets/me" : null, swrFetcher);
+    // const { data: rates } = useSWR<RatesResp>(isOpen ? "/rates" : null, swrFetcher);
+    // const { data: balances } = useSWR<BalancesResp>(isOpen ? "/wallets/me" : null, swrFetcher);
 
     const amount = form.watch("amount") || 0;
-    const rate = rates?.brlPerUsdt ?? 0;
+    // const rate = rates?.brlPerUsdt ?? 0;
 
-    const youGet =
-        direction === "BRL_TO_USDT"
-            ? amount > 0 && rate > 0
-                ? (amount / rate)
-                : 0
-            : amount > 0 && rate > 0
-                ? (amount * rate)
-                : 0;
+    // const youGet =
+    //     direction === "BRL_TO_USDT"
+    //         ? amount > 0 && rate > 0
+    //             ? (amount / rate)
+    //             : 0
+    //         : amount > 0 && rate > 0
+    //             ? (amount * rate)
+    //             : 0;
 
-    const insufficient =
-        direction === "BRL_TO_USDT"
-            ? !!balances && amount > balances.brl
-            : !!balances && amount > balances.usdt;
+    // const insufficient =
+    //     direction === "BRL_TO_USDT"
+    //         ? !!balances && amount > balances.brl
+    //         : !!balances && amount > balances.usdt;
 
     const [submitting, setSubmitting] = React.useState(false);
 
@@ -74,14 +74,14 @@ export default function ConvertModal() {
 
     async function onSubmit(values: FormValues) {
         try {
-            setSubmitting(true);
-            if (direction === "BRL_TO_USDT") {
-                await apiPost("/conversions/brl-to-usdt", { amountBRL: values.amount });
-            } else {
-                await apiPost("/conversions/usdt-to-brl", { amountUSDT: values.amount });
-            }
-            handleClose();
-            router.refresh();
+            // setSubmitting(true);
+            // if (direction === "BRL_TO_USDT") {
+            //     await apiPost("/conversions/brl-to-usdt", { amountBRL: values.amount });
+            // } else {
+            //     await apiPost("/conversions/usdt-to-brl", { amountUSDT: values.amount });
+            // }
+            // handleClose();
+            // router.refresh();
         } catch (e) {
             const msg = e instanceof Error ? e.message : "Erro na conversão";
             alert(msg);
@@ -118,21 +118,21 @@ export default function ConvertModal() {
                         <div className="flex items-center justify-between">
                             <span className="text-muted-foreground">{previewLabel}</span>
                             <span className="font-medium">
-                                {direction === "BRL_TO_USDT"
+                                {/* {direction === "BRL_TO_USDT"
                                     ? youGet ? youGet.toFixed(6) : "—"
-                                    : youGet ? youGet.toFixed(2) : "—"}
+                                    : youGet ? youGet.toFixed(2) : "—"} */}
                             </span>
                         </div>
                         <div className="mt-1 text-xs text-muted-foreground">
-                            {rate ? `Taxa usada: 1 USDT ≈ R$ ${rate.toFixed(2)}` : "Carregando taxa..."}
+                            {/* {rate ? `Taxa usada: 1 USDT ≈ R$ ${rate.toFixed(2)}` : "Carregando taxa..."} */}
                         </div>
                     </div>
 
-                    {insufficient && (
+                    {/* {insufficient && (
                         <div className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
                             Saldo insuficiente.
                         </div>
-                    )}
+                    )} */}
 
                     <Separator />
 
@@ -140,9 +140,9 @@ export default function ConvertModal() {
                         <Button type="button" variant="outline" onClick={handleClose}>
                             Cancelar
                         </Button>
-                        <Button type="submit" disabled={submitting || insufficient || amount <= 0}>
+                        {/* <Button type="submit" disabled={submitting || insufficient || amount <= 0}>
                             {submitting ? "Convertendo..." : "Converter"}
-                        </Button>
+                        </Button> */}
                     </DialogFooter>
                 </form>
             </DialogContent>

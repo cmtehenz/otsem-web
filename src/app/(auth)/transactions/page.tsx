@@ -20,7 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 // ✅ use o fetcher do mock (src/lib/api.ts)
-import { swrFetcher } from "@/lib/api";
+// import { swrFetcher } from "@/lib/api";
 
 export type Tx = {
     id: string;
@@ -76,7 +76,7 @@ export default function TransactionsPage() {
     // ✅ caminhos relativos para bater no mock
     const { data, isLoading, mutate } = useSWR<{ items: Tx[]; total?: number; page?: number; limit?: number }>(
         `/transactions?${query}`,
-        swrFetcher,
+        // swrFetcher,
         { keepPreviousData: true }
     );
 
