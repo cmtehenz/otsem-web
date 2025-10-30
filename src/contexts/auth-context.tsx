@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { http } from "@/lib/http";
-import { readAccessToken, clearAccessToken } from "@/lib/auth-token";
+import { tokenStore } from "@/lib/token";
 import { toast } from "sonner";
 
 export type UserRole = "ADMIN" | "CUSTOMER" | "STAFF" | string;
@@ -34,10 +34,14 @@ interface AuthContextValue {
 const AuthContext = React.createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [state, setState] = React.useState<AuthState>({ status: "idle", user: null, token: null });
+    const [state, setState] = React.useState<AuthState>({
+        status: "idle",
+        user: null,
+        token: null,
+    });
 
+    // Usa header explícito pra funcionar mesmo antes de tokenStore.set()
     const fetchMe = React.useCallback(async (token: string): Promise<Me> => {
-        // ❗️sem bearer; usa headers padrão
         return http.get<Me>("/auth/me", {
             anonymous: true,
             headers: { Authorization: `Bearer ${token}` },
@@ -45,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const bootstrap = React.useCallback(async () => {
-        const token = readAccessToken();
+        const token = tokenStore.getAccess();
         if (!token) {
             setState({ status: "unauthenticated", user: null, token: null });
             return;
@@ -55,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const me = await fetchMe(token);
             setState({ status: "authenticated", user: me, token });
         } catch {
-            clearAccessToken();
+            tokenStore.clear();
             setState({ status: "unauthenticated", user: null, token: null });
         }
     }, [fetchMe]);
@@ -65,25 +69,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, [bootstrap]);
 
     async function login(accessToken: string) {
-        localStorage.setItem("accessToken", accessToken);
+        // grava no store canônico
+        tokenStore.set({ accessToken });
         setState({ status: "loading", user: null, token: accessToken });
         try {
             const me = await fetchMe(accessToken);
             setState({ status: "authenticated", user: me, token: accessToken });
         } catch {
-            clearAccessToken();
+            tokenStore.clear();
             setState({ status: "unauthenticated", user: null, token: null });
             toast.error("Sessão inválida.");
         }
     }
 
     function logout() {
-        clearAccessToken();
+        tokenStore.clear();
         setState({ status: "unauthenticated", user: null, token: null });
     }
 
     async function refreshMe() {
-        const token = readAccessToken();
+        const token = tokenStore.getAccess();
         if (!token) {
             setState({ status: "unauthenticated", user: null, token: null });
             return;
@@ -93,7 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const me = await fetchMe(token);
             setState({ status: "authenticated", user: me, token });
         } catch {
-            clearAccessToken();
+            tokenStore.clear();
             setState({ status: "unauthenticated", user: null, token: null });
         }
     }

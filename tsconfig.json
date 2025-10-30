@@ -36,7 +36,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "src/lib/api.ts.bak"  ],
   "exclude": [
     "node_modules"
   ]
