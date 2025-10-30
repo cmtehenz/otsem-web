@@ -86,7 +86,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const me = await fetchMe(accessToken);
             setState({ status: "authenticated", user: me, token: accessToken });
 
-            const r = role ?? me.role;
             if (me.role === "ADMIN") router.replace("/admin/dashboard");
             else router.replace("/customer/dashboard");
         } catch {

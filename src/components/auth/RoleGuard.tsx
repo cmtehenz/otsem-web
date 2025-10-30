@@ -9,7 +9,7 @@ import { SpinnerCustom } from "@/components/ui/spinner"; // use o seu SpinnerCus
 type Props = { roles: string[]; children: React.ReactNode; redirectTo?: string };
 
 export function RoleGuard({ roles, children, redirectTo = "/dashboard" }: Props) {
-    const { state, isLoading, user } = useAuth();
+    const { isLoading, user } = useAuth();
     const router = useRouter();
 
     React.useEffect(() => {
