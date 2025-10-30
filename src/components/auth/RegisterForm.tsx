@@ -7,22 +7,28 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { apiPost } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, Mail, User, Lock } from "lucide-react";
+import { http } from "@/lib/http";
 
-// Evita cache estático em páginas públicas sensíveis
+// Evita cache estático
 export const dynamic = "force-dynamic";
 
 // ---------------- Schema ----------------
 const schema = z
     .object({
-        name: z.string().min(3, "Informe seu nome"),
-        email: z.string().email("E-mail inválido"),
+        name: z
+            .string()
+            .min(3, "Informe seu nome")
+            .transform((v) => v.trim()),
+        email: z
+            .string()
+            .email("E-mail inválido")
+            .transform((v) => v.trim().toLowerCase()),
         password: z.string().min(8, "Mínimo 8 caracteres"),
         confirm: z.string().min(8, "Confirme sua senha"),
         accept: z.literal(true, { message: "Aceite os termos para continuar" }),
@@ -45,17 +51,25 @@ function passwordScore(pw: string): number {
 }
 const SCORE_TEXT = ["fraca", "ok", "boa", "forte"] as const;
 
-// helper para setar cookie no client (o guard do server enxerga)
-function setAuthCookie(token: string, remember: boolean): void {
-    const maxAge = remember ? 60 * 60 * 24 * 7 : 60 * 60 * 4; // 7 dias ou 4h
-    document.cookie = [
+// Cookie opcional para SSR/middleware (não é HttpOnly)
+function setAuthCookie(token: string, remember = true): void {
+    const maxAge = remember ? 60 * 60 * 24 * 7 : 60 * 60 * 4; // 7d ou 4h
+    const parts = [
         `access_token=${encodeURIComponent(token)}`,
         "Path=/",
         `Max-Age=${maxAge}`,
         "SameSite=Lax",
-        // Em produção HTTPS, inclua "Secure"
-        // "Secure",
-    ].join("; ");
+    ];
+    if (typeof window !== "undefined" && window.location.protocol === "https:") {
+        parts.push("Secure");
+    }
+    document.cookie = parts.join("; ");
+}
+
+// Sanitiza "next" para evitar open redirect
+function safeNext(nextParam: string | null | undefined, fallback = "/dashboard") {
+    if (!nextParam) return fallback;
+    return nextParam.startsWith("/") ? nextParam : fallback;
 }
 
 export default function RegisterPage(): React.JSX.Element {
@@ -68,8 +82,8 @@ export default function RegisterPage(): React.JSX.Element {
 
 function RegisterPageInner(): React.JSX.Element {
     const router = useRouter();
-    const sp = useSearchParams(); // agora seguro dentro de <Suspense/>
-    const next = sp.get("next") || "/dashboard";
+    const sp = useSearchParams(); // seguro dentro de <Suspense/>
+    const next = safeNext(sp.get("next"));
 
     const [showPw, setShowPw] = React.useState(false);
     const [showConfirm, setShowConfirm] = React.useState(false);
@@ -87,26 +101,49 @@ function RegisterPageInner(): React.JSX.Element {
     async function onSubmit(v: FormValues): Promise<void> {
         try {
             setLoading(true);
-            // cria conta
-            await apiPost("/auth/register", { name: v.name, email: v.email, password: v.password }).catch(() => {
-                // DEMO: se a API não existir, segue o fluxo
-            });
 
-            // faz login (ou simula)
-            await apiPost("/auth/login", { email: v.email, password: v.password }).catch(() => {
-                // DEMO fallback
-            });
+            // 1) Registrar SEMPRE como CUSTOMER
+            await http.post(
+                "/auth/register",
+                {
+                    name: v.name,
+                    email: v.email,
+                    password: v.password,
+                    role: "CUSTOMER", // <- força o perfil desejado
+                },
+                { anonymous: true }
+            );
 
-            // persiste token no client (opcional)
+            // 2) Login imediato para já autenticar
+            const login = await http.post<{ access_token: string; refresh_token?: string; role?: string }>(
+                "/auth/login",
+                { email: v.email, password: v.password },
+                { anonymous: true }
+            );
+
+            // 3) Persistência mínima (ajuste se usar tokenStore)
             if (typeof window !== "undefined") {
-                localStorage.setItem("otsem_demo_token", "demo-token");
+                localStorage.setItem("accessToken", login.access_token);
+                if (login.refresh_token) localStorage.setItem("refreshToken", login.refresh_token);
             }
-            // cookie para o guard do server
-            setAuthCookie("demo-token", true);
+            setAuthCookie(login.access_token, true);
 
+            // 4) Redireciona
             router.replace(next);
-        } catch (e) {
-            alert(e instanceof Error ? e.message : "Falha no cadastro");
+        } catch (e: any) {
+            const status = e?.status ?? e?.response?.status;
+            if (status === 409) {
+                // conflito (e-mail já existe)
+                form.setError("email", { message: "Este e-mail já está em uso" });
+                alert("Este e-mail já está em uso.");
+            } else if (status === 400) {
+                alert("Dados inválidos. Verifique as informações.");
+            } else {
+                const msg =
+                    Array.isArray(e?.message) ? e.message.join(", ") :
+                        e?.message ?? e?.response?.data?.message ?? "Falha no cadastro";
+                alert(msg);
+            }
         } finally {
             setLoading(false);
         }
@@ -125,7 +162,7 @@ function RegisterPageInner(): React.JSX.Element {
                     </CardHeader>
 
                     <CardContent>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4" noValidate>
                             {/* Nome */}
                             <div className="grid gap-2">
                                 <Label htmlFor="name">Nome</Label>
@@ -231,7 +268,7 @@ function RegisterPageInner(): React.JSX.Element {
                                 <p className="text-sm text-destructive">{form.formState.errors.accept.message}</p>
                             )}
 
-                            <Button type="submit" disabled={loading} className="mt-2">
+                            <Button type="submit" disabled={loading} className="mt-2" aria-busy={loading}>
                                 {loading ? "Criando conta..." : "Criar conta"}
                             </Button>
 

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, PlusCircle, ArrowRightLeft, Send, Download, History, CreditCard, FlaskConical, RotateCw } from "lucide-react";
 import useSWR from "swr";
-import { apiPost, swrFetcher, type Balances } from "@/lib/api";
+// import { apiPost, swrFetcher, type Balances } from "@/lib/api";
 
 const TICKER = "1 USDT ≈ R$ 5,50";
 
@@ -21,9 +21,9 @@ export default function AppHeader() {
     const router = useRouter();
     const { openModal } = useUiModals();
 
-    const { data: balances } = useSWR<Balances>("/wallets/me", swrFetcher, {
-        refreshInterval: 5000,
-    });
+    // const { data: balances } = useSWR<Balances>("/wallets/me", swrFetcher, {
+    //     refreshInterval: 5000,
+    // });
 
     const actions = React.useMemo(
         () => ({
@@ -34,7 +34,7 @@ export default function AppHeader() {
             onReceiveUsdt: () => openModal("receiveUsdt"),
             onOpenHistory: () => router.push("/history"),
             onChargeOnCard: () => router.push("/merchant/charge"),
-            onLoadDemo: async () => { try { await apiPost("/demo/fund", { addBRL: 500, addUSDT: 100 }); } catch { } },
+            // onLoadDemo: async () => { try { await apiPost("/demo/fund", { addBRL: 500, addUSDT: 100 }); } catch { } },
             onRefresh: () => router.refresh(),
         }),
         [openModal, router]
@@ -53,24 +53,24 @@ export default function AppHeader() {
 
                 {/* centro: ações (desktop) */}
                 <div className="hidden flex-1 md:flex">
-                    <TopActionsMenu
+                    {/* <TopActionsMenu
                         {...actions}
                         brlAmount={balances?.brl ?? null}
                         usdtAmount={balances?.usdt ?? null}
                         // opcional: para mostrar o ticker dentro do menu USDT:
                         tickerText={TICKER}
-                    />
+                    /> */}
                 </div>
 
                 {/* direita: mobile actions + user */}
                 <div className="flex items-center gap-2">
                     <div className="md:hidden">
-                        <MobileActions
+                        {/* <MobileActions
                             {...actions}
                             brlAmount={balances?.brl ?? null}
                             usdtAmount={balances?.usdt ?? null}
                             tickerText={TICKER}
-                        />
+                        /> */}
                     </div>
                     <UserMenu />
                 </div>
