@@ -13,22 +13,22 @@ export default function HomePage() {
       </p>
 
       <div className="flex flex-col md:flex-row gap-4 mt-4">
-        <Link href="/dashboard">
+        <Link href="/login">
           <Button variant="default" className="gap-2">
             <Landmark className="size-5" /> Ir para Dashboard
           </Button>
         </Link>
-        <Link href="/pix/new">
+        <Link href="/login">
           <Button variant="secondary" className="gap-2">
             <Landmark className="size-5" /> Adicionar via Pix
           </Button>
         </Link>
-        <Link href="/payouts/new">
+        <Link href="/login">
           <Button variant="outline" className="gap-2">
             <ArrowUpRight className="size-5" /> Novo Payout
           </Button>
         </Link>
-        <Link href="/card/new">
+        <Link href="/login">
           <Button variant="ghost" className="gap-2">
             <CreditCard className="size-5" /> Cobrança no Cartão
           </Button>
