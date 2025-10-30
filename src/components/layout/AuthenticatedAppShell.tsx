@@ -3,7 +3,7 @@
 import * as React from "react";
 import AppHeader from "@/components/layout/AppHeader";
 import PixModal from "@/components/modals/PixModal";
-import ConvertModal from "@/components/modals/ConvertModal";
+// import ConvertModal from "@/components/modals/ConvertModal";
 // Se já tiver, pode adicionar também:
 // import SendUsdtModal from "@/components/modals/SendUsdtModal";
 // import ReceiveUsdtModal from "@/components/modals/ReceiveUsdtModal";
@@ -16,7 +16,7 @@ export default function AuthenticatedAppShell({ children }: { children: React.Re
 
             {/* 🔽 Monta os modais uma única vez na aplicação */}
             <PixModal />
-            <ConvertModal />
+            {/* <ConvertModal /> */}
             {/* <SendUsdtModal /> */}
             {/* <ReceiveUsdtModal /> */}
         </div>
