@@ -16,19 +16,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-
-import { authLogin, toErrorMessage } from "@/lib/auth";
+import { authLogin, toErrorMessage } from '@/lib/auth';
+import { useAuth } from '@/contexts/auth-context'; // 👈 usa o contexto
 
 // evita cache estático
 export const dynamic = 'force-dynamic';
 
 const loginSchema = z.object({
-    email: z
-        .string()
-        .min(1, 'Informe seu e-mail')
-        .email('E-mail inválido')
-        .transform((v) => v.trim().toLowerCase()),
-    password: z.string().min(8, 'Mínimo de 8 caracteres'), // igual ao reset
+    email: z.string().min(1, 'Informe seu e-mail').email('E-mail inválido').transform((v) => v.trim().toLowerCase()),
+    password: z.string().min(8, 'Mínimo de 8 caracteres'),
     remember: z.boolean().default(true),
 });
 type LoginForm = z.infer<typeof loginSchema>;
@@ -53,9 +49,7 @@ function setAuthCookie(token: string, remember: boolean): void {
 function safeNext(nextParam: string | null | undefined, fallback = '/dashboard') {
     if (!nextParam) return fallback;
     try {
-        // Só permite caminhos relativos internos
-        if (nextParam.startsWith('/')) return nextParam;
-        return fallback;
+        return nextParam.startsWith('/') ? nextParam : fallback;
     } catch {
         return fallback;
     }
@@ -73,6 +67,7 @@ function LoginPageInner(): React.JSX.Element {
     const router = useRouter();
     const sp = useSearchParams();
     const next = safeNext(sp.get('next'));
+    const { login } = useAuth(); // 👈 pega o login do contexto
 
     const {
         register,
@@ -87,19 +82,18 @@ function LoginPageInner(): React.JSX.Element {
 
     const onSubmit: SubmitHandler<LoginForm> = async (values) => {
         try {
-            // Chama sua API NestJS (helper deve salvar os tokens no storage)
-            const res = await authLogin(values.email, values.password); // esperado: { access_token, role? }
+            // 1) autentica na API (recebe access_token)
+            const res = await authLogin(values.email, values.password); // { access_token, role? }
 
-            // (opcional) cookie legível pelo server (para guards/middleware SSR)
+            // 2) atualiza o contexto (salva no localStorage + valida /auth/me)
+            await login(res.access_token); // 👈 garante token salvo e user carregado
+
+            // 3) (opcional) cookie para middleware/SSR
             setAuthCookie(res.access_token, values.remember);
 
             toast.success('Bem-vindo de volta!');
-            // Se for rotear por role:
-            // const dest = res.role === 'ADMIN' ? '/admin' : next;
-            const dest = next;
-            router.replace(dest);
+            router.replace(next);
         } catch (e) {
-            // Tenta converter a mensagem via helper; se não, cai no fallback
             toast.error(toErrorMessage(e, 'Falha no login'));
         }
     };
