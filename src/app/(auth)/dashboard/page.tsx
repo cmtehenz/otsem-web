@@ -28,8 +28,7 @@ import {
 // ——— Sonner ———
 import { toast } from "sonner";
 
-// ——— Mock API helpers ———
-import { swrFetcher, apiPost } from "@/lib/api";
+
 
 
 const fmtBRL = (v: number) =>
@@ -198,24 +197,24 @@ type Tx = {
 // ——— Dashboard ———
 export default function Dashboard() {
     // ✅ Sempre use caminho relativo — assim o mock funciona mesmo sem NEXT_PUBLIC_API_URL
-    const {
-        data: balances,
-        isLoading: loadingBalances,
-        mutate: refetchBalances,
-    } = useSWR<Balances>("/wallets/me", swrFetcher);
-    console.log(loadingBalances);
+    // const {
+    //     data: balances,
+    //     isLoading: loadingBalances,
+    //     mutate: refetchBalances,
+    // } = useSWR<Balances>("/wallets/me", swrFetcher);
+    // console.log(loadingBalances);
 
-    // ✅ a lista do mock retorna { items: Tx[] }
-    const {
-        data: txList,
-        isLoading: loadingTxs,
-        mutate: refetchTxs,
-    } = useSWR<{ items: Tx[] }>("/transactions?limit=10", swrFetcher);
+    // // ✅ a lista do mock retorna { items: Tx[] }
+    // const {
+    //     data: txList,
+    //     isLoading: loadingTxs,
+    //     mutate: refetchTxs,
+    // } = useSWR<{ items: Tx[] }>("/transactions?limit=10", swrFetcher);
 
-    const txs = txList?.items ?? [];
+    // const txs = [];
 
-    const brl = balances?.brl ?? 0;
-    const usdt = balances?.usdt ?? 0;
+    const brl = 0;
+    const usdt = 0;
 
     const totalBRL = useMemo(() => brl, [brl]);
     const totalUSDT = useMemo(() => usdt, [usdt]);
@@ -233,20 +232,20 @@ export default function Dashboard() {
                 <div className="flex items-center gap-2">
                     <Button
                         variant="secondary"
-                        onClick={async () => {
-                            await apiPost("/demo/fund", { addBRL: 10000, addUSDT: 2000 });
-                            toast.success("Demo carregado: +R$ 10.000 e +2.000 USDT");
-                            await Promise.all([refetchBalances(), refetchTxs()]);
-                        }}
+                    // onClick={async () => {
+                    //     await apiPost("/demo/fund", { addBRL: 10000, addUSDT: 2000 });
+                    //     toast.success("Demo carregado: +R$ 10.000 e +2.000 USDT");
+                    //     await Promise.all([refetchBalances(), refetchTxs()]);
+                    // }}
                     >
                         Carregar demo
                     </Button>
                     <Button
                         variant="ghost"
-                        onClick={() => {
-                            refetchBalances();
-                            refetchTxs();
-                        }}
+                        // onClick={() => {
+                        //     refetchBalances();
+                        //     refetchTxs();
+                        // }}
                         className="gap-2"
                     >
                         <RefreshCw className="size-4" /> Atualizar
@@ -310,7 +309,7 @@ export default function Dashboard() {
                                     <TableHead>Descrição</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            <TableBody>
+                            {/* <TableBody>
                                 {loadingTxs && (
                                     <TableRow>
                                         <TableCell
@@ -360,7 +359,7 @@ export default function Dashboard() {
                                         </TableCell>
                                     </TableRow>
                                 ))}
-                            </TableBody>
+                            </TableBody> */}
                         </Table>
                     </div>
                 </CardContent>
