@@ -2,6 +2,7 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { http } from "@/lib/http";
 import { tokenStore } from "@/lib/token";
 import { toast } from "sonner";
@@ -26,21 +27,24 @@ interface AuthContextValue {
     isLoading: boolean;
     user: Me | null;
     token: string | null;
-    login: (accessToken: string) => Promise<void>;
+    login: (accessToken: string, role?: UserRole) => Promise<void>;
     logout: () => void;
     refreshMe: () => Promise<void>;
 }
 
 const AuthContext = React.createContext<AuthContextValue | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [state, setState] = React.useState<AuthState>({
-        status: "idle",
-        user: null,
-        token: null,
-    });
+// opcional: se quiser também limpar o cookie "access_token" quando fizer logout
+function clearCookieAccessToken() {
+    try {
+        document.cookie = "access_token=; Path=/; Max-Age=0; SameSite=Lax";
+    } catch { /* ignore */ }
+}
 
-    // Usa header explícito pra funcionar mesmo antes de tokenStore.set()
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+    const router = useRouter();
+    const [state, setState] = React.useState<AuthState>({ status: "idle", user: null, token: null });
+
     const fetchMe = React.useCallback(async (token: string): Promise<Me> => {
         return http.get<Me>("/auth/me", {
             anonymous: true,
@@ -48,6 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
     }, []);
 
+    // Bootstrap: checa token salvo e resolve /auth/me
     const bootstrap = React.useCallback(async () => {
         const token = tokenStore.getAccess();
         if (!token) {
@@ -58,25 +63,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
             const me = await fetchMe(token);
             setState({ status: "authenticated", user: me, token });
+
+            // redireciona conforme role
+            if (me.role === "ADMIN") router.replace("/admin/dashboard");
+            else router.replace("/customer/dashboard");
         } catch {
             tokenStore.clear();
+            clearCookieAccessToken();
             setState({ status: "unauthenticated", user: null, token: null });
         }
-    }, [fetchMe]);
+    }, [fetchMe, router]);
 
     React.useEffect(() => {
         void bootstrap();
     }, [bootstrap]);
 
-    async function login(accessToken: string) {
-        // grava no store canônico
-        tokenStore.set({ accessToken });
+    async function login(accessToken: string, role?: UserRole) {
+        // persiste via tokenStore (ele salva access/refresh se quiser)
+        tokenStore.set({ accessToken: accessToken, refreshToken: null });
         setState({ status: "loading", user: null, token: accessToken });
         try {
             const me = await fetchMe(accessToken);
             setState({ status: "authenticated", user: me, token: accessToken });
+
+            const r = role ?? me.role;
+            if (me.role === "ADMIN") router.replace("/admin/dashboard");
+            else router.replace("/customer/dashboard");
         } catch {
             tokenStore.clear();
+            clearCookieAccessToken();
             setState({ status: "unauthenticated", user: null, token: null });
             toast.error("Sessão inválida.");
         }
@@ -84,7 +99,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     function logout() {
         tokenStore.clear();
+        clearCookieAccessToken();
         setState({ status: "unauthenticated", user: null, token: null });
+        router.push("/login");
     }
 
     async function refreshMe() {
@@ -99,6 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setState({ status: "authenticated", user: me, token });
         } catch {
             tokenStore.clear();
+            clearCookieAccessToken();
             setState({ status: "unauthenticated", user: null, token: null });
         }
     }

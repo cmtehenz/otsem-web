@@ -85,8 +85,7 @@ function LoginPageInner(): React.JSX.Element {
             // 1) autentica na API (recebe access_token)
             const res = await authLogin(values.email, values.password); // { access_token, role? }
 
-            // 2) atualiza o contexto (salva no localStorage + valida /auth/me)
-            await login(res.access_token); // 👈 garante token salvo e user carregado
+            await login(res.access_token, res.role);
 
             // 3) (opcional) cookie para middleware/SSR
             setAuthCookie(res.access_token, values.remember);
