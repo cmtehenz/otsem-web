@@ -11,14 +11,14 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { doLogout } from "@/lib/auth";
+// import { doLogout } from "@/lib/auth";
 import { toast } from "sonner";
 
 export default function UserMenu() {
     const router = useRouter();
 
     async function handleLogout() {
-        await doLogout();
+        // await doLogout();
         toast.success("Você saiu da sua conta.");
         router.replace("/login");
     }

@@ -16,46 +16,47 @@ import { Input } from "@/components/ui/input";
 // import { apiPost, swrFetcher } from "@/lib/api";
 
 
-// ===== Schema/Form =====
-const schema = z.object({
-    amount_usdt: z.coerce.number().positive("Informe um valor maior que zero"),
-});
-type FormValues = z.infer<typeof schema>;
+// // ===== Schema/Form =====
+// const schema = z.object({
+//     amount_usdt: z.coerce.number().positive("Informe um valor maior que zero"),
+// });
+// type FormValues = z.infer<typeof schema>;
 
-// Algumas versões de RHF/Resolvers exigem cast do resolver:
-const formResolver = zodResolver(schema) as unknown as Resolver<FormValues>;
+// // Algumas versões de RHF/Resolvers exigem cast do resolver:
+// const formResolver = zodResolver(schema) as unknown as Resolver<FormValues>;
+
+// 
+//     // Saldos (para mostrar e refrescar depois da conversão)
+//     // const { data: balances, mutate: refetchBalances } = useSWR<Balances>("/wallets/me", swrFetcher);
+//     // const brl = balances?.brl ?? 0;
+//     // const usdt = balances?.usdt ?? 0;
+
+//     const {
+//         register,
+//         handleSubmit,
+//         formState: { errors, isSubmitting },
+//         reset,
+//     } = useForm<FormValues>({
+//         resolver: formResolver,
+//         defaultValues: { amount_usdt: 100 },
+//     });
+
+//     const onSubmit: SubmitHandler<FormValues> = async (values) => {
+//         try {
+//             // const resp = await apiPost<{ ok: true; rate: number; amountUSDT: number; brlAdded: number }>(
+//             //     "/conversions/usdt-to-brl",
+//             //     { amountUSDT: values.amount_usdt }
+//             // );
+//             // toast.success(`Convertido ${values.amount_usdt.toFixed(2)} USDT → R$ ${resp.brlAdded.toFixed(2)} (cotação R$ ${resp.rate.toFixed(2)})`);
+//             // reset({ amount_usdt: 0 });
+//             // await refetchBalances();
+//         } catch (err) {
+//             const msg = err instanceof Error ? err.message : "Falha na conversão";
+//             toast.error(msg);
+//         }
+//     };
 
 export default function UsdtToBrlPage() {
-    // Saldos (para mostrar e refrescar depois da conversão)
-    // const { data: balances, mutate: refetchBalances } = useSWR<Balances>("/wallets/me", swrFetcher);
-    // const brl = balances?.brl ?? 0;
-    // const usdt = balances?.usdt ?? 0;
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-        reset,
-    } = useForm<FormValues>({
-        resolver: formResolver,
-        defaultValues: { amount_usdt: 100 },
-    });
-
-    const onSubmit: SubmitHandler<FormValues> = async (values) => {
-        try {
-            // const resp = await apiPost<{ ok: true; rate: number; amountUSDT: number; brlAdded: number }>(
-            //     "/conversions/usdt-to-brl",
-            //     { amountUSDT: values.amount_usdt }
-            // );
-            // toast.success(`Convertido ${values.amount_usdt.toFixed(2)} USDT → R$ ${resp.brlAdded.toFixed(2)} (cotação R$ ${resp.rate.toFixed(2)})`);
-            // reset({ amount_usdt: 0 });
-            // await refetchBalances();
-        } catch (err) {
-            const msg = err instanceof Error ? err.message : "Falha na conversão";
-            toast.error(msg);
-        }
-    };
-
     return (
         <div className="min-h-screen w-full px-4 md:px-8 py-6 space-y-6">
             {/* Topo */}
@@ -116,7 +117,7 @@ export default function UsdtToBrlPage() {
                     <CardDescription>Informe o valor em USDT que deseja converter para Reais.</CardDescription>
                 </CardHeader>
 
-                <CardContent>
+                {/* <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div className="md:col-span-1">
                             <Label>Valor (USDT)</Label>
@@ -138,7 +139,7 @@ export default function UsdtToBrlPage() {
                             </Button>
                         </div>
                     </form>
-                </CardContent>
+                </CardContent> */}
             </Card>
         </div>
     );

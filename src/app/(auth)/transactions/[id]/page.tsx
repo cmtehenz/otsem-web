@@ -3,8 +3,8 @@
 import React from "react";
 // import useSWR from "swr";
 import Link from "next/link";
-import { notFound, useParams } from "next/navigation";
-import { ArrowLeft, ArrowDownRight, ArrowUpRight, Copy, Check } from "lucide-react";
+import { useParams } from "next/navigation";
+import { ArrowLeft, Copy, Check } from "lucide-react";
 
 // import { swrFetcher } from "@/lib/api";
 

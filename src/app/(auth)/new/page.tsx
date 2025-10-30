@@ -1,31 +1,31 @@
 // src/app/merchant/card/new/page.tsx
 "use client";
 
-import { z } from "zod";
-import { type Resolver } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+// import { z } from "zod";
+// import { type Resolver } from "react-hook-form";
+// import { zodResolver } from "@hookform/resolvers/zod";
 
 
 // import { apiPost, swrFetcher, type CardPayment } from "@/lib/api";
 
 // —— Schemas
-const intentSchema = z.object({
-    amount_brl: z.coerce.number().positive("Informe um valor maior que zero"),
-    installments: z.coerce.number().int().min(1).max(12),
-});
-type IntentForm = z.infer<typeof intentSchema>;
-const intentResolver = zodResolver(intentSchema) as unknown as Resolver<IntentForm>;
+// const intentSchema = z.object({
+//     amount_brl: z.coerce.number().positive("Informe um valor maior que zero"),
+//     installments: z.coerce.number().int().min(1).max(12),
+// });
+// type IntentForm = z.infer<typeof intentSchema>;
+// const intentResolver = zodResolver(intentSchema) as unknown as Resolver<IntentForm>;
 
-const confirmSchema = z.object({
-    card_token: z.string().min(6, "Token inválido"),
-});
-type ConfirmForm = z.infer<typeof confirmSchema>;
-const confirmResolver = zodResolver(confirmSchema) as unknown as Resolver<ConfirmForm>;
+// const confirmSchema = z.object({
+//     card_token: z.string().min(6, "Token inválido"),
+// });
+// type ConfirmForm = z.infer<typeof confirmSchema>;
+// const confirmResolver = zodResolver(confirmSchema) as unknown as Resolver<ConfirmForm>;
 
 // —— Helpers
-function fmtBRL(v: number): string {
-    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v ?? 0);
-}
+// function fmtBRL(v: number): string {
+//     return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v ?? 0);
+// }
 // function badgeClass(status?: CardPayment["status"]): string {
 //     switch (status) {
 //         case "AUTHORIZED":
