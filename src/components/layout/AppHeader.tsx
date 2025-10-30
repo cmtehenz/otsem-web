@@ -58,90 +58,90 @@ export default function AppHeader() {
 }
 
 /** Menu compacto para telas pequenas (mesmas ações do TopActionsMenu) */
-function MobileActions(p: {
-    onAddPix: () => void;
-    onConvertBrlToUsdt: () => void;
-    onConvertUsdtToBrl: () => void;
-    onSendUsdt: () => void;
-    onReceiveUsdt: () => void;
-    onOpenHistory: () => void;
-    onChargeOnCard: () => void;
-    onLoadDemo: () => void;
-    onRefresh: () => void;
-    brlAmount?: number | null;
-    usdtAmount?: number | null;
-    tickerText?: string;
-}) {
-    const brlFmt = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
-    const usdtFmt = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 6 });
+// function MobileActions(p: {
+//     onAddPix: () => void;
+//     onConvertBrlToUsdt: () => void;
+//     onConvertUsdtToBrl: () => void;
+//     onSendUsdt: () => void;
+//     onReceiveUsdt: () => void;
+//     onOpenHistory: () => void;
+//     onChargeOnCard: () => void;
+//     onLoadDemo: () => void;
+//     onRefresh: () => void;
+//     brlAmount?: number | null;
+//     usdtAmount?: number | null;
+//     tickerText?: string;
+// }) {
+//     const brlFmt = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+//     const usdtFmt = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 6 });
 
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="rounded-xl" aria-label="Ações">
-                    <Menu className="h-4 w-4" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-60">
-                {/* ticker estático */}
-                <div className="px-2 py-1 text-center text-xs font-medium text-muted-foreground">
-                    {p.tickerText ?? "1 USDT ≈ R$ 5,50"}
-                </div>
-                <DropdownMenuSeparator />
+//     return (
+//         <DropdownMenu>
+//             <DropdownMenuTrigger asChild>
+//                 <Button variant="outline" size="icon" className="rounded-xl" aria-label="Ações">
+//                     <Menu className="h-4 w-4" />
+//                 </Button>
+//             </DropdownMenuTrigger>
+//             <DropdownMenuContent align="end" className="w-60">
+//                 {/* ticker estático */}
+//                 <div className="px-2 py-1 text-center text-xs font-medium text-muted-foreground">
+//                     {p.tickerText ?? "1 USDT ≈ R$ 5,50"}
+//                 </div>
+//                 <DropdownMenuSeparator />
 
-                {/* resumo de saldos */}
-                <div className="px-2 py-1.5 text-xs text-muted-foreground">
-                    <div className="flex items-center justify-between">
-                        <span>BRL</span>
-                        <span className="font-medium">{typeof p.brlAmount === "number" ? brlFmt.format(p.brlAmount) : "—"}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <span>USDT</span>
-                        <span className="font-medium">
-                            {typeof p.usdtAmount === "number" ? `${usdtFmt.format(p.usdtAmount)} USDT` : "—"}
-                        </span>
-                    </div>
-                </div>
-                <DropdownMenuSeparator />
+//                 {/* resumo de saldos */}
+//                 <div className="px-2 py-1.5 text-xs text-muted-foreground">
+//                     <div className="flex items-center justify-between">
+//                         <span>BRL</span>
+//                         <span className="font-medium">{typeof p.brlAmount === "number" ? brlFmt.format(p.brlAmount) : "—"}</span>
+//                     </div>
+//                     <div className="flex items-center justify-between">
+//                         <span>USDT</span>
+//                         <span className="font-medium">
+//                             {typeof p.usdtAmount === "number" ? `${usdtFmt.format(p.usdtAmount)} USDT` : "—"}
+//                         </span>
+//                     </div>
+//                 </div>
+//                 <DropdownMenuSeparator />
 
-                {/* BRL */}
-                <DropdownMenuItem onClick={p.onAddPix} className="gap-2">
-                    <PlusCircle className="h-4 w-4" /> Adicionar via Pix
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={p.onConvertBrlToUsdt} className="gap-2">
-                    <ArrowRightLeft className="h-4 w-4" /> Converter BRL → USDT
-                </DropdownMenuItem>
+//                 {/* BRL */}
+//                 <DropdownMenuItem onClick={p.onAddPix} className="gap-2">
+//                     <PlusCircle className="h-4 w-4" /> Adicionar via Pix
+//                 </DropdownMenuItem>
+//                 <DropdownMenuItem onClick={p.onConvertBrlToUsdt} className="gap-2">
+//                     <ArrowRightLeft className="h-4 w-4" /> Converter BRL → USDT
+//                 </DropdownMenuItem>
 
-                {/* USDT */}
-                <DropdownMenuItem onClick={p.onSendUsdt} className="gap-2">
-                    <Send className="h-4 w-4" /> Enviar USDT
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={p.onReceiveUsdt} className="gap-2">
-                    <Download className="h-4 w-4" /> Receber USDT
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={p.onConvertUsdtToBrl} className="gap-2">
-                    <ArrowRightLeft className="h-4 w-4" /> Converter USDT → BRL
-                </DropdownMenuItem>
+//                 {/* USDT */}
+//                 <DropdownMenuItem onClick={p.onSendUsdt} className="gap-2">
+//                     <Send className="h-4 w-4" /> Enviar USDT
+//                 </DropdownMenuItem>
+//                 <DropdownMenuItem onClick={p.onReceiveUsdt} className="gap-2">
+//                     <Download className="h-4 w-4" /> Receber USDT
+//                 </DropdownMenuItem>
+//                 <DropdownMenuItem onClick={p.onConvertUsdtToBrl} className="gap-2">
+//                     <ArrowRightLeft className="h-4 w-4" /> Converter USDT → BRL
+//                 </DropdownMenuItem>
 
-                <DropdownMenuSeparator />
+//                 <DropdownMenuSeparator />
 
-                {/* Outras ações */}
-                <DropdownMenuItem onClick={p.onOpenHistory} className="gap-2">
-                    <History className="h-4 w-4" /> Histórico
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={p.onChargeOnCard} className="gap-2">
-                    <CreditCard className="h-4 w-4" /> Cobrar no Cartão
-                </DropdownMenuItem>
+//                 {/* Outras ações */}
+//                 <DropdownMenuItem onClick={p.onOpenHistory} className="gap-2">
+//                     <History className="h-4 w-4" /> Histórico
+//                 </DropdownMenuItem>
+//                 <DropdownMenuItem onClick={p.onChargeOnCard} className="gap-2">
+//                     <CreditCard className="h-4 w-4" /> Cobrar no Cartão
+//                 </DropdownMenuItem>
 
-                <DropdownMenuSeparator />
+//                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem onClick={p.onLoadDemo} className="gap-2">
-                    <FlaskConical className="h-4 w-4" /> Carregar saldo demo
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={p.onRefresh} className="gap-2">
-                    <RotateCw className="h-4 w-4" /> Atualizar
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    );
-}
+//                 <DropdownMenuItem onClick={p.onLoadDemo} className="gap-2">
+//                     <FlaskConical className="h-4 w-4" /> Carregar saldo demo
+//                 </DropdownMenuItem>
+//                 <DropdownMenuItem onClick={p.onRefresh} className="gap-2">
+//                     <RotateCw className="h-4 w-4" /> Atualizar
+//                 </DropdownMenuItem>
+//             </DropdownMenuContent>
+//         </DropdownMenu>
+//     );
+// }
