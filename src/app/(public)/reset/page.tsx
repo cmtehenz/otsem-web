@@ -9,20 +9,25 @@ import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import Link from "next/link";
-import { Lock } from "lucide-react";
+import { Lock, Eye, EyeOff } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { apiPost } from "@/lib/api";
+// import { apiPost } from "@/lib/api"; // ❌ não usamos mais
+import { http } from "@/lib/http"; // ✅ novo client
 
 // Evita cache estático nessa página sensível
 export const dynamic = "force-dynamic";
 
+// Validação: mínimo 8, e confirmação igual
 const schema = z
     .object({
-        password: z.string().min(8, "Mínimo 8 caracteres"),
+        password: z
+            .string()
+            .min(8, "Mínimo 8 caracteres")
+            .refine((s) => /\S/.test(s), "Não use apenas espaços"),
         confirm: z.string().min(8, "Confirme sua senha"),
     })
     .refine((v) => v.password === v.confirm, {
@@ -31,6 +36,7 @@ const schema = z
     });
 
 type FormValues = z.infer<typeof schema>;
+// Padrão que você prefere: cast no resolver
 const resolver = zodResolver(schema) as unknown as Resolver<FormValues>;
 
 export default function ResetPage(): React.JSX.Element {
@@ -43,8 +49,10 @@ export default function ResetPage(): React.JSX.Element {
 
 function ResetPageInner(): React.JSX.Element {
     const router = useRouter();
-    const sp = useSearchParams(); // agora seguro dentro de <Suspense/>
-    const token = sp.get("token") || "";
+    const sp = useSearchParams(); // seguro dentro do <Suspense/>
+    // normaliza o token (trim) e evita undefined
+    const rawToken = sp.get("token") ?? "";
+    const token = rawToken.trim();
 
     const {
         register,
@@ -52,16 +60,33 @@ function ResetPageInner(): React.JSX.Element {
         formState: { errors, isSubmitting },
     } = useForm<FormValues>({ resolver, defaultValues: { password: "", confirm: "" } });
 
+    const [showPwd, setShowPwd] = React.useState(false);
+    const [showConfirm, setShowConfirm] = React.useState(false);
+
     async function onSubmit(v: FormValues): Promise<void> {
         try {
-            await apiPost("/auth/reset", { token, password: v.password });
+            // chama sua API NestJS diretamente
+            await http.post("/auth/reset", { token, password: v.password }, { anonymous: true });
+
             toast.success("Senha alterada. Faça login para continuar.");
             router.replace("/login");
-        } catch (e) {
-            const msg = e instanceof Error ? e.message : "Falha ao redefinir senha";
-            toast.error(msg);
+        } catch (e: any) {
+            const status = e?.status ?? e?.response?.status ?? 0;
+
+            if (status === 400) {
+                toast.error("Link inválido ou já utilizado.");
+            } else if (status === 401) {
+                toast.error("Token não autorizado ou expirado.");
+            } else if (status === 410) {
+                toast.error("Este link expirou. Solicite um novo.");
+            } else {
+                const msg = e instanceof Error ? e.message : "Falha ao redefinir senha";
+                toast.error(msg);
+            }
         }
     }
+
+    const tokenMissing = !token;
 
     return (
         <div className="min-h-dvh bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-50 via-white to-white dark:from-indigo-950/30 dark:via-background dark:to-background">
@@ -75,16 +100,27 @@ function ResetPageInner(): React.JSX.Element {
                     </CardHeader>
 
                     <CardContent>
-                        {token ? (
-                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                        {!tokenMissing ? (
+                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
                                 <div className="space-y-2">
                                     <Label htmlFor="password">Nova senha</Label>
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        autoComplete="new-password"
-                                        {...register("password")}
-                                    />
+                                    <div className="relative">
+                                        <Input
+                                            id="password"
+                                            type={showPwd ? "text" : "password"}
+                                            autoComplete="new-password"
+                                            aria-invalid={!!errors.password || undefined}
+                                            {...register("password")}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPwd((s) => !s)}
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
+                                            aria-label={showPwd ? "Ocultar senha" : "Mostrar senha"}
+                                        >
+                                            {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                        </button>
+                                    </div>
                                     {errors.password && (
                                         <p className="text-xs text-rose-500 mt-1">{errors.password.message}</p>
                                     )}
@@ -92,18 +128,29 @@ function ResetPageInner(): React.JSX.Element {
 
                                 <div className="space-y-2">
                                     <Label htmlFor="confirm">Confirmar senha</Label>
-                                    <Input
-                                        id="confirm"
-                                        type="password"
-                                        autoComplete="new-password"
-                                        {...register("confirm")}
-                                    />
+                                    <div className="relative">
+                                        <Input
+                                            id="confirm"
+                                            type={showConfirm ? "text" : "password"}
+                                            autoComplete="new-password"
+                                            aria-invalid={!!errors.confirm || undefined}
+                                            {...register("confirm")}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirm((s) => !s)}
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
+                                            aria-label={showConfirm ? "Ocultar confirmação" : "Mostrar confirmação"}
+                                        >
+                                            {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                        </button>
+                                    </div>
                                     {errors.confirm && (
                                         <p className="text-xs text-rose-500 mt-1">{errors.confirm.message}</p>
                                     )}
                                 </div>
 
-                                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                                <Button type="submit" className="w-full" disabled={isSubmitting} aria-busy={isSubmitting}>
                                     {isSubmitting ? "Salvando…" : "Salvar nova senha"}
                                 </Button>
 

@@ -87,7 +87,7 @@ export default function PixNewPage() {
 
     // polling de status
     function startPolling(id: string) {
-        if (pollRef.current) {clearInterval(pollRef.current);}
+        if (pollRef.current) { clearInterval(pollRef.current); }
         pollRef.current = setInterval(async () => {
             try {
                 const up = await swrFetcher(`/pix/charges/${id}`) as PixCharge;
@@ -95,8 +95,8 @@ export default function PixNewPage() {
                 if (["PAID", "SETTLED", "CANCELED", "EXPIRED"].includes(up.status)) {
                     stopPolling();
                     refetchBalances();
-                    if (up.status === "SETTLED") {toast.success("Pagamento confirmado e processado.");}
-                    else if (up.status === "PAID") {toast.success("Pagamento confirmado (aguardando processamento).");}
+                    if (up.status === "SETTLED") { toast.success("Pagamento confirmado e processado."); }
+                    else if (up.status === "PAID") { toast.success("Pagamento confirmado (aguardando processamento)."); }
                 }
             } catch {
                 // silencioso no demo
@@ -104,7 +104,7 @@ export default function PixNewPage() {
         }, 3000);
     }
     function stopPolling() {
-        if (pollRef.current) {clearInterval(pollRef.current);}
+        if (pollRef.current) { clearInterval(pollRef.current); }
         pollRef.current = null;
     }
     useEffect(() => () => stopPolling(), []);
@@ -112,7 +112,7 @@ export default function PixNewPage() {
     // badge de status
     const statusBadge = useMemo(() => {
         const st = charge?.status;
-        if (!st) {return null;}
+        if (!st) { return null; }
         const map: Record<PixStatus, { label: string; variant: "default" | "secondary" | "destructive" }> = {
             CREATED: { label: "Criada", variant: "secondary" },
             PENDING: { label: "Pendente", variant: "secondary" },
@@ -129,7 +129,7 @@ export default function PixNewPage() {
     // copiar copia-e-cola
     const [copied, setCopied] = useState(false);
     async function copyPayload() {
-        if (!charge?.copyPaste) {return;}
+        if (!charge?.copyPaste) { return; }
         await navigator.clipboard.writeText(charge.copyPaste);
         setCopied(true);
         setTimeout(() => setCopied(false), 1200);

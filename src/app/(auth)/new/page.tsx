@@ -59,7 +59,7 @@ export default function MerchantCardNewPage(): JSX.Element {
     });
 
     React.useEffect(() => {
-        if (livePayment) {setPayment(livePayment);}
+        if (livePayment) { setPayment(livePayment); }
     }, [livePayment]);
 
     return (
