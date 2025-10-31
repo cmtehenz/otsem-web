@@ -52,7 +52,7 @@ const nav: Item[] = [
     url: "/admin",
     items: [
       { title: "Transações", url: "/admin/transactions", icon: Banknote },
-      { title: "Chaves Pix", url: "/admin/pix", icon: KeyRound },
+      { title: "Chaves Pix", url: "/admin/pix/keys", icon: KeyRound },
       { title: "Pagamentos Cartão", url: "/admin/cards", icon: CreditCard },
       { title: "Payouts", url: "/admin/payouts", icon: Send },
     ],
