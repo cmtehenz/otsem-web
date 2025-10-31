@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { RefreshCw, KeyRound, Plus, Search } from "lucide-react";
+import { RefreshCw, KeyRound, Plus, Search, Trash2, Loader2 } from "lucide-react";
 
 import { http } from "@/lib/http";
 import { Button } from "@/components/ui/button";
@@ -14,11 +14,27 @@ import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
-    Table, TableHeader, TableRow, TableHead, TableBody, TableCell,
+    Table,
+    TableHeader,
+    TableRow,
+    TableHead,
+    TableBody,
+    TableCell,
 } from "@/components/ui/table";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 /* ---------------------------------------------------------
-   🧾 TYPES
+   📘 TYPES
 --------------------------------------------------------- */
 
 interface BankInfo {
@@ -27,25 +43,25 @@ interface BankInfo {
     code?: string | null;
 }
 
-export interface PixKey {
+interface PixKey {
     key: string;
     keyType: string;
     keyTypeId: number;
     createdAt?: string;
-}
-
-export interface ListKeysResponse {
-    statusCode: number;
-    extensions?: {
-        data?: {
-            bank?: BankInfo;
-            keys?: PixKey[];
-        };
-        message?: string;
+    account?: {
+        branch?: string;
+        number?: string;
+        type?: string;
     };
 }
 
-export interface CreateKeyResponse {
+interface ListKeysResponse {
+    bank?: BankInfo;
+    keys: PixKey[];
+    message?: string;
+}
+
+interface CreateKeyResponse {
     statusCode: number;
     extensions?: {
         message?: string;
@@ -57,7 +73,7 @@ export interface CreateKeyResponse {
     };
 }
 
-export interface PrecheckBankData {
+interface PrecheckBankData {
     Ispb: string;
     Name: string;
     BankCode: string;
@@ -67,7 +83,7 @@ export interface PrecheckBankData {
     AccountTypeId: number;
 }
 
-export interface PrecheckData {
+interface PrecheckData {
     Name: string;
     TaxNumber: string;
     Key: string;
@@ -77,7 +93,7 @@ export interface PrecheckData {
     EndToEnd: string;
 }
 
-export interface PrecheckResponse {
+interface PrecheckResponse {
     StatusCode?: number;
     Title?: string;
     Extensions?: {
@@ -87,39 +103,23 @@ export interface PrecheckResponse {
 }
 
 /* ---------------------------------------------------------
-   🧮 HELPERS / VALIDATION
+   ✅ CONSTANTES FIXAS
 --------------------------------------------------------- */
 
-function mapKeyTypeToApi(t: string): "1" | "2" | "3" | "4" | "5" {
-    const lower = t.toLowerCase();
-    switch (lower) {
-        case "1":
-        case "cpf":
-            return "1";
-        case "2":
-        case "cnpj":
-            return "2";
-        case "3":
-        case "phone":
-            return "3";
-        case "4":
-        case "email":
-            return "4";
-        case "5":
-        case "random":
-            return "5";
-        default:
-            throw new Error("Tipo de chave inválido");
-    }
-}
+const ACCOUNT_HOLDER_ID = "d78ae5b9-252c-44e8-ba68-71474d8d382e";
+
+const LIST_URL = `/pix/keys/account-holders/${ACCOUNT_HOLDER_ID}`;
+const CREATE_URL = `/pix/keys/account-holders/${ACCOUNT_HOLDER_ID}`;
+const DELETE_URL = (key: string) =>
+    `/pix/keys/account-holders/${ACCOUNT_HOLDER_ID}/key/${encodeURIComponent(key)}`;
+const PRECHECK_URL = (key: string, value: string): string =>
+    `/pix/keys/account-holders/${ACCOUNT_HOLDER_ID}/key/${encodeURIComponent(
+        key
+    )}?value=${encodeURIComponent(value)}`;
 
 /* ---------------------------------------------------------
-   🧠 SCHEMAS
+   ⚙️ SCHEMAS
 --------------------------------------------------------- */
-
-const accountSchema = z.object({
-    accountHolderId: z.string().min(1, "Informe o Account Holder ID"),
-});
 
 const createSchema = z.object({
     type: z.enum(["cpf", "cnpj", "phone", "email", "random"]),
@@ -134,22 +134,7 @@ const precheckSchema = z.object({
 });
 
 /* ---------------------------------------------------------
-   🌐 API URLS
---------------------------------------------------------- */
-
-const LIST_URL = (id: string): string =>
-    `/pix/keys/account-holders/${encodeURIComponent(id)}`;
-
-const CREATE_URL = (id: string): string =>
-    `/pix/keys/account-holders/${encodeURIComponent(id)}`;
-
-const PRECHECK_URL = (id: string, key: string, value: string): string =>
-    `/pix/keys/account-holders/${encodeURIComponent(id)}/key/${encodeURIComponent(
-        key,
-    )}?value=${encodeURIComponent(value)}`;
-
-/* ---------------------------------------------------------
-   🧩 COMPONENT
+   🧩 COMPONENTE PRINCIPAL
 --------------------------------------------------------- */
 
 export default function AdminPixKeysPage(): React.JSX.Element {
@@ -157,13 +142,9 @@ export default function AdminPixKeysPage(): React.JSX.Element {
     const [creating, setCreating] = React.useState(false);
     const [checking, setChecking] = React.useState(false);
     const [keys, setKeys] = React.useState<PixKey[]>([]);
-    const [bankName, setBankName] = React.useState<string | undefined>(undefined);
+    const [bankName, setBankName] = React.useState<string>();
     const [precheck, setPrecheck] = React.useState<PrecheckData | null>(null);
-
-    const accountForm = useForm<z.infer<typeof accountSchema>>({
-        resolver: zodResolver(accountSchema),
-        defaultValues: { accountHolderId: "" },
-    });
+    const [deletingKey, setDeletingKey] = React.useState<string | null>(null); // key em exclusão
 
     const createForm = useForm<z.infer<typeof createSchema>>({
         resolver: zodResolver(createSchema),
@@ -176,25 +157,20 @@ export default function AdminPixKeysPage(): React.JSX.Element {
     });
 
     /* ---------------------------------------------------------
-       🔄 FUNÇÕES
+       🔁 Carregar chaves ao abrir a página
     --------------------------------------------------------- */
+    React.useEffect(() => {
+        void loadKeys();
+    }, []);
 
     async function loadKeys(): Promise<void> {
-        const { accountHolderId } = accountForm.getValues();
-        if (!accountHolderId) {
-            accountForm.setError("accountHolderId", {
-                message: "Informe o Account Holder ID",
-            });
-            return;
-        }
-
         try {
             setLoadingList(true);
-            const res = await http.get<ListKeysResponse>(LIST_URL(accountHolderId));
-            const list = res?.extensions?.data?.keys ?? [];
-            setKeys(list);
-            setBankName(res?.extensions?.data?.bank?.name);
-            toast.success("Chaves carregadas com sucesso");
+            const res = await http.get<ListKeysResponse>(LIST_URL);
+
+            setKeys(res.keys ?? []);
+            setBankName(res.bank?.name);
+            toast.success(res.message || "Chaves carregadas com sucesso");
         } catch (e) {
             const msg = e instanceof Error ? e.message : "Erro ao carregar chaves";
             toast.error(msg);
@@ -203,34 +179,28 @@ export default function AdminPixKeysPage(): React.JSX.Element {
         }
     }
 
+    /* ---------------------------------------------------------
+       ➕ Criar nova chave
+    --------------------------------------------------------- */
     async function createKey(): Promise<void> {
-        const { accountHolderId } = accountForm.getValues();
         const { type, value } = createForm.getValues();
-
-        if (!accountHolderId) {
-            accountForm.setError("accountHolderId", {
-                message: "Informe o Account Holder ID",
-            });
-            return;
-        }
 
         try {
             setCreating(true);
-            const KeyType = mapKeyTypeToApi(type);
 
-            const body =
-                KeyType === "5"
-                    ? { KeyType }
-                    : { KeyType, PixKey: value?.trim() ?? "" };
+            const payload =
+                type === "random"
+                    ? { keyType: "random" }
+                    : { keyType: type, pixKey: (value ?? "").trim() };
 
-            if (KeyType !== "5" && !body.PixKey) {
+            if (payload.keyType !== "random" && !payload.pixKey) {
                 createForm.setError("value", { message: "Informe o valor da chave" });
                 setCreating(false);
                 return;
             }
 
-            const res = await http.post<CreateKeyResponse>(CREATE_URL(accountHolderId), body);
-            const message = res?.extensions?.message ?? "Chave criada";
+            const res = await http.post<CreateKeyResponse>(CREATE_URL, payload);
+            const message = res?.extensions?.message ?? "Chave criada com sucesso!";
             toast.success(message);
             await loadKeys();
         } catch (e) {
@@ -241,21 +211,33 @@ export default function AdminPixKeysPage(): React.JSX.Element {
         }
     }
 
-    async function doPrecheck(): Promise<void> {
-        const { accountHolderId } = accountForm.getValues();
-        const { pixKey, amount } = precheckForm.getValues();
-
-        if (!accountHolderId) {
-            accountForm.setError("accountHolderId", {
-                message: "Informe o Account Holder ID",
-            });
-            return;
+    /* ---------------------------------------------------------
+       🗑️ Excluir chave (com confirmação)
+    --------------------------------------------------------- */
+    async function deleteKey(key: string): Promise<void> {
+        try {
+            setDeletingKey(key);
+            await http.delete<{ ok: true; message?: string }>(DELETE_URL(key));
+            toast.success("Chave removida com sucesso");
+            await loadKeys();
+        } catch (e) {
+            const msg = e instanceof Error ? e.message : "Falha ao remover chave";
+            toast.error(msg);
+        } finally {
+            setDeletingKey(null);
         }
+    }
+
+    /* ---------------------------------------------------------
+       🔍 Pré-consulta de chave Pix
+    --------------------------------------------------------- */
+    async function doPrecheck(): Promise<void> {
+        const { pixKey, amount } = precheckForm.getValues();
 
         try {
             setChecking(true);
             const res = await http.get<PrecheckResponse>(
-                PRECHECK_URL(accountHolderId, pixKey.trim(), amount.trim()),
+                PRECHECK_URL(pixKey.trim(), amount.trim())
             );
             const data = res?.Extensions?.Data ?? null;
             setPrecheck(data);
@@ -271,12 +253,12 @@ export default function AdminPixKeysPage(): React.JSX.Element {
     }
 
     /* ---------------------------------------------------------
-       💅 UI
+       💅 INTERFACE
     --------------------------------------------------------- */
 
     return (
         <div className="flex flex-col gap-6">
-            {/* Header */}
+            {/* Cabeçalho */}
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
@@ -293,38 +275,12 @@ export default function AdminPixKeysPage(): React.JSX.Element {
                 </Button>
             </div>
 
-            {/* Account Holder */}
-            <Card className="rounded-2xl">
-                <CardHeader>
-                    <CardTitle>Conta BRX</CardTitle>
-                </CardHeader>
-                <CardContent className="grid gap-3">
-                    <Label htmlFor="ah">Account Holder ID</Label>
-                    <div className="flex gap-2">
-                        <Input
-                            id="ah"
-                            placeholder="d78ae5b9-..."
-                            {...accountForm.register("accountHolderId")}
-                        />
-                        <Button onClick={loadKeys} disabled={loadingList}>
-                            {loadingList ? "..." : "Carregar"}
-                        </Button>
-                    </div>
-                    {accountForm.formState.errors.accountHolderId && (
-                        <p className="text-sm text-destructive">
-                            {accountForm.formState.errors.accountHolderId.message}
-                        </p>
-                    )}
-                    {bankName && (
-                        <p className="text-xs text-muted-foreground">Banco: {bankName}</p>
-                    )}
-                </CardContent>
-            </Card>
-
             {/* Lista de chaves */}
             <Card className="rounded-2xl">
                 <CardHeader>
-                    <CardTitle>Chaves cadastradas</CardTitle>
+                    <CardTitle>
+                        Chaves cadastradas {bankName && `– ${bankName}`}
+                    </CardTitle>
                 </CardHeader>
                 <CardContent>
                     <Table>
@@ -332,7 +288,9 @@ export default function AdminPixKeysPage(): React.JSX.Element {
                             <TableRow>
                                 <TableHead>Tipo</TableHead>
                                 <TableHead>Chave</TableHead>
-                                <TableHead>Criada em</TableHead>
+                                <TableHead>Ag/Conta</TableHead>
+                                <TableHead>Tipo Conta</TableHead>
+                                <TableHead className="text-right">Ações</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -342,16 +300,57 @@ export default function AdminPixKeysPage(): React.JSX.Element {
                                         <TableCell className="capitalize">{k.keyType}</TableCell>
                                         <TableCell className="font-mono">{k.key}</TableCell>
                                         <TableCell className="text-sm text-muted-foreground">
-                                            {k.createdAt
-                                                ? new Date(k.createdAt).toLocaleString()
+                                            {k.account
+                                                ? `${k.account.branch}/${k.account.number}`
                                                 : "—"}
+                                        </TableCell>
+                                        <TableCell className="text-sm text-muted-foreground">
+                                            {k.account?.type ?? "—"}
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        className="gap-2"
+                                                        disabled={deletingKey === k.key}
+                                                    >
+                                                        {deletingKey === k.key ? (
+                                                            <Loader2 className="size-4 animate-spin" />
+                                                        ) : (
+                                                            <Trash2 className="size-4" />
+                                                        )}
+                                                        Excluir
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>Excluir chave Pix?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            Essa ação não pode ser desfeita. A chave{" "}
+                                                            <span className="font-mono">{k.key}</span> será removida
+                                                            permanentemente da sua conta BRX.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                        <AlertDialogAction
+                                                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                                            onClick={() => void deleteKey(k.key)}
+                                                        >
+                                                            Confirmar exclusão
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
                                         </TableCell>
                                     </TableRow>
                                 ))
                             ) : (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={3}
+                                        colSpan={5}
                                         className="text-center text-sm text-muted-foreground"
                                     >
                                         Nenhuma chave encontrada.
@@ -382,7 +381,7 @@ export default function AdminPixKeysPage(): React.JSX.Element {
                                 >
                                     {type.toUpperCase()}
                                 </Button>
-                            ),
+                            )
                         )}
                     </div>
 
@@ -403,8 +402,17 @@ export default function AdminPixKeysPage(): React.JSX.Element {
                     )}
 
                     <Button onClick={createKey} disabled={creating}>
-                        <Plus className="size-4 mr-2" />
-                        {creating ? "Criando…" : "Criar chave"}
+                        {creating ? (
+                            <>
+                                <Loader2 className="size-4 mr-2 animate-spin" />
+                                Criando…
+                            </>
+                        ) : (
+                            <>
+                                <Plus className="size-4 mr-2" />
+                                Criar chave
+                            </>
+                        )}
                     </Button>
                 </CardContent>
             </Card>
@@ -424,8 +432,17 @@ export default function AdminPixKeysPage(): React.JSX.Element {
                         <Input id="preVal" {...precheckForm.register("amount")} />
                     </div>
                     <Button onClick={doPrecheck} disabled={checking}>
-                        <Search className="size-4 mr-2" />
-                        {checking ? "Consultando…" : "Consultar"}
+                        {checking ? (
+                            <>
+                                <Loader2 className="size-4 mr-2 animate-spin" />
+                                Consultando…
+                            </>
+                        ) : (
+                            <>
+                                <Search className="size-4 mr-2" />
+                                Consultar
+                            </>
+                        )}
                     </Button>
 
                     {precheck && (
