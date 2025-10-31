@@ -138,7 +138,7 @@ const precheckSchema = z.object({
 --------------------------------------------------------- */
 
 const LIST_URL = (id: string): string =>
-    `/integrations/brx/pix/keys/${encodeURIComponent(id)}`;
+    `/pix/keys/account-holders/${encodeURIComponent(id)}`;
 
 const CREATE_URL = (id: string): string =>
     `/integrations/brx/pix/keys/${encodeURIComponent(id)}`;
