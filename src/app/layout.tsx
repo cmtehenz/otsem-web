@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/contexts/auth-context";
+import { Analytics } from "@vercel/analytics/next"
 import "./globals.css";
 
 
@@ -18,7 +19,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <AuthProvider>
           {children}
           <Toaster position="top-right" richColors />
+          <Analytics />
         </AuthProvider>
+
       </body>
     </html>
   );
