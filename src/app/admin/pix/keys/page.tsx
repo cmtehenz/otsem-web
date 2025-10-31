@@ -141,10 +141,10 @@ const LIST_URL = (id: string): string =>
     `/pix/keys/account-holders/${encodeURIComponent(id)}`;
 
 const CREATE_URL = (id: string): string =>
-    `/integrations/brx/pix/keys/${encodeURIComponent(id)}`;
+    `/pix/keys/account-holders/${encodeURIComponent(id)}`;
 
 const PRECHECK_URL = (id: string, key: string, value: string): string =>
-    `/integrations/brx/pix/keys/${encodeURIComponent(id)}/key/${encodeURIComponent(
+    `/pix/keys/account-holders/${encodeURIComponent(id)}/key/${encodeURIComponent(
         key,
     )}?value=${encodeURIComponent(value)}`;
 
