@@ -138,13 +138,13 @@ const precheckSchema = z.object({
 --------------------------------------------------------- */
 
 const LIST_URL = (id: string): string =>
-    `/integrations/brx/pix/keys/account-holders/${encodeURIComponent(id)}`;
+    `/integrations/brx/pix/keys/${encodeURIComponent(id)}`;
 
 const CREATE_URL = (id: string): string =>
-    `/integrations/brx/pix/keys/account-holders/${encodeURIComponent(id)}`;
+    `/integrations/brx/pix/keys/${encodeURIComponent(id)}`;
 
 const PRECHECK_URL = (id: string, key: string, value: string): string =>
-    `/integrations/brx/pix/keys/account-holders/${encodeURIComponent(id)}/key/${encodeURIComponent(
+    `/integrations/brx/pix/keys/${encodeURIComponent(id)}/key/${encodeURIComponent(
         key,
     )}?value=${encodeURIComponent(value)}`;
 
