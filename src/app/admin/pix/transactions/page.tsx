@@ -34,7 +34,6 @@ import {
     DialogClose,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import Image from "next/image";
 
 /* -------------------------------------------
    CONSTANTES

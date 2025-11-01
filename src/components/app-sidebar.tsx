@@ -10,8 +10,6 @@ import {
   ShieldCheck,
   Banknote,
   KeyRound,
-  CreditCard,
-  Send,
   Wallet,
   Settings,
   Webhook,
