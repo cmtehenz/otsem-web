@@ -86,15 +86,25 @@ export interface PrecheckData {
     Key: string;
     KeyType: string;
     KeyTypeId: number;
-    BankData: PrecheckBankData;
+    BankData?: PrecheckBankData | null;
     EndToEnd: string;
+}
+
+export interface PrecheckBankData {
+    Ispb: string;
+    Name: string;
+    BankCode: string;
+    Branch: string;
+    Account: string;
+    AccountType: string;
+    AccountTypeId: number;
 }
 
 export interface PrecheckResponse {
     endToEndPixKey: string | null;
     name: string | null;
     taxNumber: string | null;
-    bankData?: any;
+    bankData?: PrecheckBankData | null;
 }
 
 export interface SendPixResponse {
