@@ -269,56 +269,6 @@ export default function AdminPixTransactionsPage(): React.JSX.Element {
         }
     }
 
-    /* -------------------------------------------
-       PRÉ-CONSULTA (opcional) + ENVIAR PIX
-    ------------------------------------------- */
-    async function handleSend(): Promise<void> {
-        const { pixKey, amount, description, runPrecheck } = sendForm.getValues();
-
-        try {
-            setSending(true);
-            setPrecheck(null);
-
-            let endToEnd: string | undefined;
-
-            if (runPrecheck) {
-                const pre = await http.get<PrecheckResponse>(
-                    PRECHECK_URL(ACCOUNT_HOLDER_ID, pixKey.trim(), amount.trim())
-                );
-                if (!pre.endToEndPixKey) {
-                    toast.error("Pré-consulta falhou.");
-                    return;
-                }
-                // só pra exibir no card:
-                setPrecheck({
-                    Name: pre.name ?? "",
-                    TaxNumber: pre.taxNumber ?? "",
-                    Key: pixKey.trim(),
-                    KeyType: "", KeyTypeId: 0,
-                    BankData: pre.bankData,
-                    EndToEnd: pre.endToEndPixKey,
-                });
-                endToEnd = pre.endToEndPixKey;
-            }
-
-
-            const payload = { pixKey: pixKey.trim(), amount: amount.trim(), description: (description ?? "").trim(), endToEnd };
-            const res = await http.post<SendPixResponse>(SEND_URL(ACCOUNT_HOLDER_ID), payload);
-
-            if (res.ok) {
-                toast.success(res.message ?? "PIX enviado com sucesso!");
-                await loadHistory();
-                sendForm.reset({ pixKey, amount: "0.01", description: "", runPrecheck });
-            } else {
-                toast.error(res.message ?? "Falha ao enviar PIX");
-            }
-        } catch (e) {
-            const msg = e instanceof Error ? e.message : "Erro ao enviar PIX";
-            toast.error(msg);
-        } finally {
-            setSending(false);
-        }
-    }
 
     /* -------------------------------------------
        GERAR QR/COPIA-E-COLA (RECEBER)
