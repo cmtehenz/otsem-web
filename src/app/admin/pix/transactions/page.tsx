@@ -91,12 +91,10 @@ export interface PrecheckData {
 }
 
 export interface PrecheckResponse {
-    StatusCode?: number;
-    Title?: string;
-    Extensions?: {
-        Data?: PrecheckData;
-        Message?: string;
-    };
+    endToEndPixKey: string | null;
+    name: string | null;
+    taxNumber: string | null;
+    bankData?: any;
 }
 
 export interface SendPixResponse {
@@ -146,7 +144,7 @@ const RECEIVE_URL = (id: string): string =>
     `/pix/transactions/account-holders/${encodeURIComponent(id)}/receive`;
 
 const PRECHECK_URL = (id: string, key: string, value: string): string =>
-    `/pix/keys/account-holders/${encodeURIComponent(id)}/key/${encodeURIComponent(key)}?value=${encodeURIComponent(value)}`;
+    `/pix/transactions/account-holders/${encodeURIComponent(id)}/precheck?pixKey=${encodeURIComponent(key)}&value=${encodeURIComponent(value)}`;
 
 /* -------------------------------------------
    COMPONENTE
@@ -164,6 +162,65 @@ export default function AdminPixTransactionsPage(): React.JSX.Element {
     const [sending, setSending] = React.useState(false);
     const [receiving, setReceiving] = React.useState(false);
     const [receiveResult, setReceiveResult] = React.useState<ReceivePixResponse | null>(null);
+
+    const [confirmDialogOpen, setConfirmDialogOpen] = React.useState(false);
+    const [pendingPix, setPendingPix] = React.useState<{
+        pixKey: string;
+        amount: string;
+        description?: string;
+        precheck?: PrecheckResponse;
+    } | null>(null);
+
+    async function handlePrecheckAndConfirm(): Promise<void> {
+        const { pixKey, amount, description } = sendForm.getValues();
+
+        try {
+            setSending(true);
+            const pre = await http.get<PrecheckResponse>(
+                PRECHECK_URL(ACCOUNT_HOLDER_ID, pixKey.trim(), amount.trim())
+            );
+
+            if (!pre.endToEndPixKey) {
+                toast.error("Não foi possível validar a chave Pix.");
+                return;
+            }
+
+            setPendingPix({ pixKey, amount, description, precheck: pre });
+            setConfirmDialogOpen(true);
+        } catch (e) {
+            const msg = e instanceof Error ? e.message : "Erro ao validar chave Pix";
+            toast.error(msg);
+        } finally {
+            setSending(false);
+        }
+    }
+
+    async function handleConfirmSend(): Promise<void> {
+        if (!pendingPix) return;
+        const { pixKey, amount, description } = pendingPix;
+
+        try {
+            setSending(true);
+            const payload = { pixKey: pixKey.trim(), amount: amount.trim(), description: (description ?? "").trim() };
+            const res = await http.post<SendPixResponse>(SEND_URL(ACCOUNT_HOLDER_ID), payload);
+
+            if (res.ok) {
+                toast.success(res.message ?? "PIX enviado com sucesso!");
+                await loadHistory();
+                sendForm.reset({ pixKey: "", amount: "0.01", description: "", runPrecheck: true });
+                setConfirmDialogOpen(false);
+                setPendingPix(null);
+                setPrecheck(null);
+            } else {
+                toast.error(res.message ?? "Falha ao enviar PIX");
+            }
+        } catch (e) {
+            const msg = e instanceof Error ? e.message : "Erro ao enviar PIX";
+            toast.error(msg);
+        } finally {
+            setSending(false);
+        }
+    }
 
     const sendForm = useForm<z.infer<typeof sendSchema>>({
         resolver: zodResolver(sendSchema),
@@ -215,15 +272,25 @@ export default function AdminPixTransactionsPage(): React.JSX.Element {
             let endToEnd: string | undefined;
 
             if (runPrecheck) {
-                const pre = await http.get<PrecheckResponse>(PRECHECK_URL(ACCOUNT_HOLDER_ID, pixKey.trim(), amount.trim()));
-                const data = pre?.Extensions?.Data ?? null;
-                if (!data?.EndToEnd) {
-                    toast.error("Pré-consulta falhou. Tente sem pré-consulta ou verifique a chave/valor.");
+                const pre = await http.get<PrecheckResponse>(
+                    PRECHECK_URL(ACCOUNT_HOLDER_ID, pixKey.trim(), amount.trim())
+                );
+                if (!pre.endToEndPixKey) {
+                    toast.error("Pré-consulta falhou.");
                     return;
                 }
-                setPrecheck(data);
-                endToEnd = data.EndToEnd;
+                // só pra exibir no card:
+                setPrecheck({
+                    Name: pre.name ?? "",
+                    TaxNumber: pre.taxNumber ?? "",
+                    Key: pixKey.trim(),
+                    KeyType: "", KeyTypeId: 0,
+                    BankData: pre.bankData,
+                    EndToEnd: pre.endToEndPixKey,
+                });
+                endToEnd = pre.endToEndPixKey;
             }
+
 
             const payload = { pixKey: pixKey.trim(), amount: amount.trim(), description: (description ?? "").trim(), endToEnd };
             const res = await http.post<SendPixResponse>(SEND_URL(ACCOUNT_HOLDER_ID), payload);
@@ -352,10 +419,42 @@ export default function AdminPixTransactionsPage(): React.JSX.Element {
                         </Dialog>
                     </div>
 
-                    <Button onClick={handleSend} disabled={sending}>
+                    <Button onClick={handlePrecheckAndConfirm} disabled={sending}>
                         <Send className="size-4 mr-2" />
-                        {sending ? "Enviando…" : "Enviar Pix"}
+                        {sending ? "Validando…" : "Enviar Pix"}
                     </Button>
+
+                    {/* Dialog de confirmação */}
+                    <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Confirmar envio do Pix</DialogTitle>
+                                <DialogDescription>
+                                    Confira os dados abaixo antes de confirmar a transação:
+                                </DialogDescription>
+                            </DialogHeader>
+
+                            {pendingPix?.precheck && (
+                                <div className="mt-2 text-sm grid gap-1 border rounded-md p-3 bg-muted/30">
+                                    <div><span className="text-muted-foreground">Favorecido:</span> {pendingPix.precheck.name ?? "—"}</div>
+                                    <div><span className="text-muted-foreground">Documento:</span> {pendingPix.precheck.taxNumber ?? "—"}</div>
+                                    <div><span className="text-muted-foreground">Banco:</span> {pendingPix.precheck.bankData?.Name ?? "—"}</div>
+                                    <div><span className="text-muted-foreground">Ag/Conta:</span> {pendingPix.precheck.bankData?.Branch}/{pendingPix.precheck.bankData?.Account}</div>
+                                    <div><span className="text-muted-foreground">Valor:</span> R$ {Number(pendingPix.amount).toFixed(2)}</div>
+                                </div>
+                            )}
+
+                            <DialogFooter className="mt-4 flex justify-end gap-2">
+                                <DialogClose asChild>
+                                    <Button variant="outline">Cancelar</Button>
+                                </DialogClose>
+                                <Button onClick={handleConfirmSend} disabled={sending}>
+                                    {sending ? "Enviando…" : "Confirmar envio"}
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+
 
                     {precheck && (
                         <>
