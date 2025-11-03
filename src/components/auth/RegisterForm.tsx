@@ -101,7 +101,7 @@ function RegisterPageInner(): React.JSX.Element {
 
             // 1) registra (NADA de confirm/accept no body)
             const res = await http.post<{ access_token: string; role?: string }>(
-                "/auth/register", // (com rewrites) — use absoluto+absolute:true se não usar rewrites
+                "/users/register", // (com rewrites) — use absoluto+absolute:true se não usar rewrites
                 { name: v.name, email: v.email, password: v.password },
                 { anonymous: true }
             );
@@ -119,7 +119,7 @@ function RegisterPageInner(): React.JSX.Element {
             ].join("; ");
 
             toast.success("Conta criada! Bem-vindo(a).");
-            router.replace("/dashboard");
+            router.replace("/customer/dashboard");
         } catch (e: unknown) {
             const status = getHttpStatus(e);
 
