@@ -169,3 +169,107 @@ export type AccreditationListResponse = {
     page: number;
     pageSize: number;
 };
+
+export function mapPFToExternal(in_: AccreditationPFIn) {
+    return {
+        Identifier: in_.identifier,
+        ProductId: in_.productId,
+        Person: {
+            Name: in_.person.name,
+            SocialName: in_.person.socialName ?? "",
+            Cpf: in_.person.cpf,
+            Birthday: in_.person.birthday,
+            Phone: in_.person.phone,
+            Email: in_.person.email,
+            GenderId: in_.person.genderId,
+            Address: {
+                ZipCode: in_.person.address.zipCode,
+                Street: in_.person.address.street,
+                Number: in_.person.address.number ?? "",
+                Complement: in_.person.address.complement ?? "",
+                Neighborhood: in_.person.address.neighborhood,
+                CityIbgeCode: in_.person.address.cityIbgeCode,
+            },
+        },
+        PixLimits: {
+            SingleTransfer: in_.pixLimits.singleTransfer,
+            DayTime: in_.pixLimits.daytime,   // atenção: API às vezes usa DayTime/NightTime
+            NightTime: in_.pixLimits.nighttime,
+            Monthly: in_.pixLimits.monthly,
+            ServiceId: in_.pixLimits.serviceId,
+        },
+    };
+}
+
+export function mapPJToExternal(in_: AccreditationPJIn) {
+    return {
+        Identifier: in_.identifier,
+        ProductId: in_.productId,
+        Company: {
+            LegalName: in_.company.legalName,
+            TradeName: in_.company.tradeName,
+            Cnpj: in_.company.cnpj,
+            Phone: in_.company.phone,
+            Email: in_.company.email,
+            Address: {
+                ZipCode: in_.company.address.zipCode,
+                Street: in_.company.address.street,
+                Number: in_.company.address.number ?? "",
+                Complement: in_.company.address.complement ?? "",
+                Neighborhood: in_.company.address.neighborhood,
+                CityIbgeCode: in_.company.address.cityIbgeCode,
+            },
+            OwnershipStructure: in_.company.ownershipStructure.map(o => ({
+                Name: o.name,
+                Cpf: o.cpf,
+                Birthday: o.birthday,
+                IsAdministrator: o.isAdministrator,
+            })),
+        },
+        PixLimits: {
+            SingleTransfer: in_.pixLimits.singleTransfer,
+            DayTime: in_.pixLimits.daytime,
+            NightTime: in_.pixLimits.nighttime,
+            Monthly: in_.pixLimits.monthly,
+            ServiceId: in_.pixLimits.serviceId,
+        },
+    };
+}
+
+/* ===========================================================
+   ADMIN — LISTAGEM DE CLIENTES (CUSTOMERS)
+   =========================================================== */
+
+export type CustomerKycStatus =
+    | "not_requested" // KYC não iniciado
+    | "in_review"     // aguardando análise
+    | "approved"      // aprovado
+    | "rejected";     // rejeitado
+
+export type CustomerType = "PF" | "PJ";
+
+/**
+ * Item individual da listagem de clientes
+ * (baseado no model Customer do Prisma)
+ */
+export type AdminCustomerItem = {
+    id: string;
+    type: CustomerType;
+    name: string | null;       // nome (PF) ou razão social (PJ)
+    taxId: string | null;      // CPF/CNPJ
+    phone: string;
+    userEmail: string | null;  // email do usuário vinculado
+    kycStatus: CustomerKycStatus;
+    createdAt: string;         // ISO string
+};
+
+/**
+ * Resposta paginada de listagem de clientes
+ */
+export type AdminCustomersListResponse = {
+    items: AdminCustomerItem[];
+    total: number;
+    page: number;
+    pageSize: number;
+};
+

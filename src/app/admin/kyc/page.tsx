@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useDebouncedCallback } from "use-debounce";
 import { toast } from "sonner";
 import { http } from "@/lib/http";
@@ -10,24 +11,25 @@ import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import Link from "next/link";
-import type { AccreditationListResponse, AccreditationStatus } from "@/lib/kyc/types";
+import type { AdminCustomersListResponse, AdminCustomerItem } from "@/lib/kyc/types";
 
-function badgeClass(status: AccreditationStatus): string {
+function badgeClass(status: AdminCustomerItem["kycStatus"]): string {
     switch (status) {
         case "approved": return "text-green-700 bg-green-100";
-        case "processing": return "text-blue-700 bg-blue-100";
-        case "received": return "text-gray-700 bg-gray-100";
+        case "in_review": return "text-blue-700 bg-blue-100";
+        case "not_requested": return "text-gray-700 bg-gray-100";
         case "rejected": return "text-red-700 bg-red-100";
     }
 }
 
-export default function KycIndexPage(): React.JSX.Element {
-    const [items, setItems] = React.useState<AccreditationListResponse["items"]>([]);
+export default function AdminCustomersPage(): React.JSX.Element {
+    const [items, setItems] = React.useState<AdminCustomerItem[]>([]);
     const [total, setTotal] = React.useState(0);
     const [page, setPage] = React.useState(1);
     const [pageSize] = React.useState(10);
     const [q, setQ] = React.useState("");
+    const [type, setType] = React.useState<"" | "PF" | "PJ">("");
+    const [status, setStatus] = React.useState<"" | "not_requested" | "in_review" | "approved" | "rejected">("");
     const [loading, setLoading] = React.useState(false);
 
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -35,18 +37,24 @@ export default function KycIndexPage(): React.JSX.Element {
     const load = React.useCallback(async () => {
         try {
             setLoading(true);
-            const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
+            const params = new URLSearchParams({
+                page: String(page),
+                pageSize: String(pageSize),
+            });
             if (q) params.set("q", q);
-            // endpoint de listagem (ajuste pro seu backend)
-            const res = await http.get<AccreditationListResponse>(`/accreditation?${params.toString()}`);
+            if (type) params.set("type", type);
+            if (status) params.set("status", status);
+
+            const res = await http.get<AdminCustomersListResponse>(`/admin/customers?${params.toString()}`);
             setItems(res.items);
             setTotal(res.total);
-        } catch {
-            toast.error("Falha ao carregar credenciamentos");
+        } catch (err) {
+            console.error(err);
+            toast.error("Falha ao carregar clientes");
         } finally {
             setLoading(false);
         }
-    }, [page, pageSize, q]);
+    }, [page, pageSize, q, type, status]);
 
     React.useEffect(() => { void load(); }, [load]);
 
@@ -59,8 +67,10 @@ export default function KycIndexPage(): React.JSX.Element {
         <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-semibold">Usuários</h1>
-                    <p className="text-sm text-muted-foreground">Listagem de clientes PF/PJ</p>
+                    <h1 className="text-2xl font-semibold">Clientes</h1>
+                    <p className="text-sm text-muted-foreground">
+                        Veja todas as contas cadastradas e seus status de verificação KYC.
+                    </p>
                 </div>
                 <div className="flex gap-2">
                     <Link href="/admin/kyc/new/pf"><Button variant="outline">+ PF</Button></Link>
@@ -70,53 +80,99 @@ export default function KycIndexPage(): React.JSX.Element {
 
             <Card className="rounded-2xl">
                 <CardHeader>
-                    <CardTitle>Clientes</CardTitle>
+                    <CardTitle>Listagem</CardTitle>
                 </CardHeader>
+
                 <CardContent className="grid gap-4">
-                    <div className="flex items-center gap-3">
+                    {/* filtros */}
+                    <div className="flex flex-wrap items-end gap-3">
                         <div className="grid gap-1">
                             <Label>Buscar</Label>
-                            <Input placeholder="nome, documento, e-mail…" onChange={(e) => debouncedSearch(e.target.value)} />
+                            <Input
+                                placeholder="nome, doc, e-mail, telefone…"
+                                onChange={(e) => debouncedSearch(e.target.value)}
+                            />
                         </div>
-                        <Button variant="ghost" onClick={() => load()} disabled={loading}>Atualizar</Button>
+
+                        <div className="grid gap-1">
+                            <Label>Tipo</Label>
+                            <select
+                                value={type}
+                                onChange={(e) => { setPage(1); setType(e.target.value as typeof type); }}
+                                className="h-9 rounded-md border bg-background px-2 text-sm"
+                            >
+                                <option value="">Todos</option>
+                                <option value="PF">PF</option>
+                                <option value="PJ">PJ</option>
+                            </select>
+                        </div>
+
+                        <div className="grid gap-1">
+                            <Label>Status KYC</Label>
+                            <select
+                                value={status}
+                                onChange={(e) => { setPage(1); setStatus(e.target.value as typeof status); }}
+                                className="h-9 rounded-md border bg-background px-2 text-sm"
+                            >
+                                <option value="">Todos</option>
+                                <option value="not_requested">Não iniciado</option>
+                                <option value="in_review">Em análise</option>
+                                <option value="approved">Aprovado</option>
+                                <option value="rejected">Rejeitado</option>
+                            </select>
+                        </div>
+
+                        <Button variant="ghost" onClick={() => load()} disabled={loading}>
+                            {loading ? "Carregando..." : "Atualizar"}
+                        </Button>
                     </div>
 
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Tipo</TableHead>
-                                <TableHead>Nome/Razão</TableHead>
-                                <TableHead>Documento</TableHead>
-                                <TableHead>E-mail</TableHead>
-                                <TableHead>Telefone</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Criação</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {items.length ? items.map((i) => (
-                                <TableRow key={i.accreditationId}>
-                                    <TableCell>{i.type}</TableCell>
-                                    <TableCell>{i.name}</TableCell>
-                                    <TableCell className="font-mono text-xs">{i.taxId}</TableCell>
-                                    <TableCell>{i.email}</TableCell>
-                                    <TableCell>{i.phone}</TableCell>
-                                    <TableCell>
-                                        <span className={`rounded px-2 py-0.5 text-xs ${badgeClass(i.status)}`}>{i.status}</span>
-                                    </TableCell>
-                                    <TableCell>{new Date(i.createdAt).toLocaleString()}</TableCell>
-                                </TableRow>
-                            )) : (
+                    {/* tabela */}
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
                                 <TableRow>
-                                    <TableCell colSpan={7} className="text-center text-sm text-muted-foreground">
-                                        Nenhum registro encontrado.
-                                    </TableCell>
+                                    <TableHead>Tipo</TableHead>
+                                    <TableHead>Nome/Razão</TableHead>
+                                    <TableHead>Documento</TableHead>
+                                    <TableHead>E-mail</TableHead>
+                                    <TableHead>Telefone</TableHead>
+                                    <TableHead>Status KYC</TableHead>
+                                    <TableHead>Criação</TableHead>
                                 </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+
+                            <TableBody>
+                                {items.length ? items.map((i) => (
+                                    <TableRow key={i.id}>
+                                        <TableCell>{i.type}</TableCell>
+                                        <TableCell>{i.name ?? "—"}</TableCell>
+                                        <TableCell className="font-mono text-xs">{i.taxId ?? "—"}</TableCell>
+                                        <TableCell>{i.userEmail ?? "—"}</TableCell>
+                                        <TableCell>{i.phone}</TableCell>
+                                        <TableCell>
+                                            <span className={`rounded px-2 py-0.5 text-xs ${badgeClass(i.kycStatus)}`}>
+                                                {i.kycStatus === "approved" ? "✅ Aprovado" :
+                                                    i.kycStatus === "in_review" ? "⏳ Em análise" :
+                                                        i.kycStatus === "not_requested" ? "⏺️ Não iniciado" :
+                                                            "❌ Rejeitado"}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>{new Date(i.createdAt).toLocaleString()}</TableCell>
+                                    </TableRow>
+                                )) : (
+                                    <TableRow>
+                                        <TableCell colSpan={7} className="text-center text-sm text-muted-foreground">
+                                            Nenhum cliente encontrado.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
 
                     <Separator />
+                    {/* paginação */}
                     <div className="flex items-center justify-between">
                         <div className="text-sm text-muted-foreground">
                             Página {page} de {totalPages} • {total} registros
