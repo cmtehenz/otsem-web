@@ -149,12 +149,19 @@ export default function AccreditationPage() {
             toast.success("Pessoa física cadastrada com sucesso!");
             console.log("✅ PF:", res);
             personForm.reset();
-        } catch (err: any) {
-            toast.error(err.message ?? "Erro ao cadastrar PF");
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : typeof err === "string"
+                        ? err
+                        : "Erro ao cadastrar PF";
+            toast.error(message);
         } finally {
             setLoading(false);
         }
     }
+
 
     /* -------------------------------------------
        ENVIO PJ
@@ -166,8 +173,14 @@ export default function AccreditationPage() {
             toast.success("Pessoa jurídica cadastrada com sucesso!");
             console.log("✅ PJ:", res);
             companyForm.reset();
-        } catch (err: any) {
-            toast.error(err.message ?? "Erro ao cadastrar PJ");
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : typeof err === "string"
+                        ? err
+                        : "Erro ao cadastrar PF";
+            toast.error(message);
         } finally {
             setLoading(false);
         }
