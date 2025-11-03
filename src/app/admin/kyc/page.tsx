@@ -19,6 +19,7 @@ function badgeClass(status: AdminCustomerItem["kycStatus"]): string {
         case "in_review": return "text-blue-700 bg-blue-100";
         case "not_requested": return "text-gray-700 bg-gray-100";
         case "rejected": return "text-red-700 bg-red-100";
+        default: return "";
     }
 }
 
