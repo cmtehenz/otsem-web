@@ -9,7 +9,6 @@ import {
     ArrowUpRight,
     QrCode,
     RefreshCw,
-    Search,
     Send,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -33,8 +32,6 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
-    DialogDescription,
     DialogFooter,
     DialogClose,
 } from "@/components/ui/dialog";
@@ -208,6 +205,7 @@ export default function AdminPixTransactionsPage(): React.JSX.Element {
             setHistory(res.items);
             setTotal(res.total);
         } catch (e) {
+            console.log(e);
             toast.error("Falha ao carregar histórico");
         } finally {
             setLoadingHistory(false);
