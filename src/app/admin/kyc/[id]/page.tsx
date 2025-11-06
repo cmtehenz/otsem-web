@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { http } from "@/lib/http";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 

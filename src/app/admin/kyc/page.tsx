@@ -34,10 +34,9 @@ type AdminCustomerItem = {
 export default function AdminCustomersPage(): React.JSX.Element {
     const [items, setItems] = React.useState<AdminCustomerItem[]>([]);
     const [loading, setLoading] = React.useState(false);
-    const [processingId, setProcessingId] = React.useState<string | null>(null);
+    // const [processingId, setProcessingId] = React.useState<string | null>(null);
     const [q, setQ] = React.useState("");
 
-    console.log(processingId)
     const load = React.useCallback(async () => {
         try {
             setLoading(true);
