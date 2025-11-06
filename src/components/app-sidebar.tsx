@@ -59,8 +59,8 @@ const nav: Item[] = [
     title: "Usuários & KYC",
     url: "/admin",
     items: [
-      { title: "Usuários", url: "/admin/kyc", icon: Users },
-      { title: "Verificações (KYC)", url: "/admin/verifica", icon: ShieldCheck },
+      { title: "Usuários", url: "/admin/users", icon: Users },
+      { title: "Verificações (KYC)", url: "/admin/kyc", icon: ShieldCheck },
       { title: "Wallets", url: "/admin/wallets", icon: Wallet },
     ],
   },

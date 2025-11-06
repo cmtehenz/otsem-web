@@ -1,4 +1,3 @@
-// src/contexts/auth-context.tsx
 "use client";
 
 import * as React from "react";
@@ -34,16 +33,22 @@ interface AuthContextValue {
 
 const AuthContext = React.createContext<AuthContextValue | undefined>(undefined);
 
-// opcional: se quiser também limpar o cookie "access_token" quando fizer logout
+// limpa cookie de access token ao sair
 function clearCookieAccessToken() {
     try {
         document.cookie = "access_token=; Path=/; Max-Age=0; SameSite=Lax";
-    } catch { /* ignore */ }
+    } catch {
+        /* ignore */
+    }
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const router = useRouter();
-    const [state, setState] = React.useState<AuthState>({ status: "idle", user: null, token: null });
+    const [state, setState] = React.useState<AuthState>({
+        status: "idle",
+        user: null,
+        token: null,
+    });
 
     const fetchMe = React.useCallback(async (token: string): Promise<Me> => {
         return http.get<Me>("/auth/me", {
@@ -52,42 +57,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
     }, []);
 
-    // Bootstrap: checa token salvo e resolve /auth/me
+    // ⚙️ Bootstrap: valida token e obtém o usuário, mas NÃO redireciona
     const bootstrap = React.useCallback(async () => {
         const token = tokenStore.getAccess();
         if (!token) {
             setState({ status: "unauthenticated", user: null, token: null });
             return;
         }
+
         setState({ status: "loading", user: null, token });
+
         try {
             const me = await fetchMe(token);
             setState({ status: "authenticated", user: me, token });
-
-            // redireciona conforme role
-            if (me.role === "ADMIN") router.replace("/admin/dashboard");
-            else router.replace("/customer/dashboard");
         } catch {
             tokenStore.clear();
             clearCookieAccessToken();
             setState({ status: "unauthenticated", user: null, token: null });
         }
-    }, [fetchMe, router]);
+    }, [fetchMe]);
 
     React.useEffect(() => {
         void bootstrap();
     }, [bootstrap]);
 
+    // 🚀 Login: aqui sim redireciona conforme o tipo de usuário
     async function login(accessToken: string, role?: UserRole) {
-        // persiste via tokenStore (ele salva access/refresh se quiser)
-        tokenStore.set({ accessToken: accessToken, refreshToken: null });
+        tokenStore.set({ accessToken, refreshToken: null });
         setState({ status: "loading", user: null, token: accessToken });
+
         try {
             const me = await fetchMe(accessToken);
             setState({ status: "authenticated", user: me, token: accessToken });
 
-            const r = role ?? me.role;
-            if (r === "ADMIN") router.push("/admin/dashboard");
+            const finalRole = role ?? me.role;
+            if (finalRole === "ADMIN") router.push("/admin/dashboard");
             else router.push("/customer/dashboard");
         } catch {
             tokenStore.clear();
@@ -110,6 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setState({ status: "unauthenticated", user: null, token: null });
             return;
         }
+
         setState({ status: "loading", user: null, token });
         try {
             const me = await fetchMe(token);
