@@ -76,7 +76,6 @@ export default function CustomerKycPage(): React.JSX.Element {
                 // Agora usamos o endpoint autenticado
                 const data = await http.get<CustomerResponse>("/customers/me");
 
-                console.log(data);
                 setForm({
                     name: data.name ?? "",
                     cpf: data.cpf ?? "",
@@ -163,6 +162,8 @@ export default function CustomerKycPage(): React.JSX.Element {
                     zipCode: onlyDigits(form.zipCode),
                     street: form.street,
                     number: form.number,
+                    city: form.city,
+                    state: form.state,
                     neighborhood: form.neighborhood,
                     cityIbgeCode: Number(form.cityIbgeCode),
                 },
