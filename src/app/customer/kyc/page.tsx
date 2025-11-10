@@ -52,6 +52,7 @@ export default function CustomerKycPage(): React.JSX.Element {
     const [submitting, setSubmitting] = React.useState(false);
     const [customerId, setCustomerId] = React.useState<string | null>(null);
 
+    console.log(customerId)
 
     const [form, setForm] = React.useState({
         name: "",
