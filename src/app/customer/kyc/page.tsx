@@ -79,7 +79,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                 setForm({
                     name: data.name ?? "",
                     cpf: data.cpf ?? "",
-                    birthday: data.birthday ?? "",
+                    birthday: data.birthday ? data.birthday.split("T")[0] : "",
                     phone: data.phone ?? "",
                     email: data.email ?? user?.email ?? "",
                     zipCode: data.address?.zipCode ?? "",
@@ -146,7 +146,10 @@ export default function CustomerKycPage(): React.JSX.Element {
         try {
             setSubmitting(true);
 
-            if (!customerId) {
+            // 1) Carrega para pegar o ID
+            const me = await http.get<{ success: boolean; data: CustomerResponse } | CustomerResponse>("/customers/me");
+            const customer = "data" in me ? me.data : me;
+            if (!customer?.id) {
                 toast.error("Cliente não encontrado.");
                 return;
             }
@@ -169,7 +172,10 @@ export default function CustomerKycPage(): React.JSX.Element {
                 },
             });
 
-            toast.success("Dados atualizados com sucesso!");
+            // 3) Submete para análise (muda status para in_review)
+            await http.post("/customers/submit-kyc", {});
+
+            toast.success("Verificação enviada! Sua conta está em análise.");
             router.push("/customer/dashboard");
         } catch (err) {
             console.error(err);

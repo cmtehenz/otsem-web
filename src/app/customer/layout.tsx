@@ -45,6 +45,35 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { http } from "@/lib/http";
+import { toast } from "sonner";
+
+type CustomerAddress = {
+    zipCode: string;
+    street: string;
+    number?: string;
+    complement?: string;
+    neighborhood: string;
+    cityIbgeCode: string | number;
+    city?: string;
+    state?: string;
+};
+
+type CustomerResponse = {
+    id: string;
+    type: "PF" | "PJ";
+    accountStatus: "not_requested" | "in_review" | "approved" | "rejected";
+    name?: string;
+    cpf?: string;
+    birthday?: string;         // ISO vindo do backend
+    phone?: string;
+    email: string;
+    address?: CustomerAddress;
+    createdAt: string;
+};
+
+
+type MeAny = CustomerResponse | { success: boolean; data: CustomerResponse | null };
 
 /* -------------------------------------------------------- */
 /* 🔗 Menu agrupado */
@@ -287,16 +316,14 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
     React.useEffect(() => {
         async function loadKyc() {
             try {
-                if (!user?.id || !token) return;
-                const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333"}/customers/${user.id}`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-                if (!res.ok) throw new Error("Erro ao buscar status KYC");
-                const data = await res.json();
-                if (data.accountStatus) setKycStatus(data.accountStatus);
+                const res = await http.get<MeAny>("/customers/me", { anonymous: false });
+                const customer: CustomerResponse | null = ("data" in res ? res.data : res) ?? null;
+                if (!customer) {
+                    toast.error("Nenhum cliente associado.");
+                    return;
+                }
+
+                if (customer.accountStatus) setKycStatus(customer.accountStatus);
             } catch (err) {
                 console.warn("Falha ao carregar status KYC:", err);
             }
