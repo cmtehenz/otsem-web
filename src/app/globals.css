@@ -120,3 +120,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Animações customizadas */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fade-in 0.8s cubic-bezier(0.25, 0.9, 0.35, 1) forwards;
+    opacity: 0;
+  }
+
+  .perspective {
+    perspective: 1200px;
+    transform-style: preserve-3d;
+  }
+}
