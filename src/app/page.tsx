@@ -26,7 +26,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-white via-white to-[#f5f8ff] text-slate-800">
+    <main className="relative min-h-screen overflow-hidden bg-linear-to-b from-white via-white to-[#f5f8ff] text-slate-800">
       <DecorBgLight />
 
       {/* Sticky Header */}
@@ -34,7 +34,7 @@ export default function HomePage() {
         }`}>
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-blue-600 to-indigo-600">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
             <span className="text-lg font-bold tracking-tight text-slate-900">otsempay</span>
@@ -59,7 +59,7 @@ export default function HomePage() {
           className="transition-transform will-change-transform"
         >
           <BadgeLight text="BRL ↔ USDT instantâneo • Taxas a partir de 0.79%" />
-          <h1 className="mt-6 max-w-4xl bg-gradient-to-r from-blue-700 via-indigo-700 to-cyan-700 bg-clip-text text-4xl font-bold leading-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl">
+          <h1 className="mt-6 max-w-4xl bg-linear-to-r from-blue-700 via-indigo-700 to-cyan-700 bg-clip-text text-4xl font-bold leading-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl">
             Pagamentos e câmbio sem fronteiras
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-slate-600 sm:text-xl">
@@ -99,7 +99,7 @@ export default function HomePage() {
           <MockupDeckLight />
         </div>
 
-        <div className="mt-24 h-px w-40 bg-gradient-to-r from-transparent via-blue-400/60 to-transparent" />
+        <div className="mt-24 h-px w-40 bg-linear-to-r from-transparent via-blue-400/60 to-transparent" />
       </section>
 
       {/* Stats */}
@@ -204,7 +204,7 @@ export default function HomePage() {
 
       {/* CTA Final */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 pb-32">
-        <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-r from-blue-50 via-indigo-50 to-cyan-50 p-10 sm:p-16">
+        <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-linear-to-r from-blue-50 via-indigo-50 to-cyan-50 p-10 sm:p-16">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.15),transparent_60%)]" />
           <div className="relative mx-auto max-w-3xl text-center">
             <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
@@ -239,7 +239,7 @@ export default function HomePage() {
           <div className="grid gap-8 md:grid-cols-4">
             <div>
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-blue-600 to-indigo-600">
                   <Sparkles className="h-4 w-4 text-white" />
                 </div>
                 <span className="text-lg font-bold">otsempay</span>
@@ -296,7 +296,7 @@ function BadgeLight({ text }: { text: string }) {
 function StatCard({ number, label, icon }: { number: string; label: string; icon: React.ReactNode }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm">
-      <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50">
+      <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-blue-50 to-indigo-50">
         {icon}
       </div>
       <div className="text-3xl font-bold text-slate-900">{number}</div>
@@ -308,9 +308,9 @@ function StatCard({ number, label, icon }: { number: string; label: string; icon
 function FeatureLight({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 transition duration-300 hover:border-blue-200 hover:shadow-lg">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-indigo-50 opacity-0 transition group-hover:opacity-100" />
+      <div className="absolute inset-0 bg-linear-to-br from-blue-50 via-transparent to-indigo-50 opacity-0 transition group-hover:opacity-100" />
       <div className="relative flex items-start gap-4">
-        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-slate-100 to-slate-50 transition group-hover:from-blue-100 group-hover:to-indigo-100">
+        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-linear-to-br from-slate-100 to-slate-50 transition group-hover:from-blue-100 group-hover:to-indigo-100">
           {icon}
         </div>
         <div>
@@ -335,7 +335,7 @@ function PricingCard({
 }) {
   return (
     <div className={`rounded-2xl border p-8 transition hover:shadow-lg ${highlighted
-      ? "border-blue-300 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-md"
+      ? "border-blue-300 bg-linear-to-br from-blue-50 to-indigo-50 shadow-md"
       : "border-slate-200 bg-white"
       }`}>
       {highlighted && (
@@ -372,7 +372,7 @@ function PricingCard({
 function MockupDeckLight() {
   return (
     <div style={{ perspective: "1200px" }} className="relative flex h-[420px] w-full max-w-4xl items-center justify-center">
-      <div className="absolute inset-0 -z-10 rounded-3xl bg-gradient-to-r from-blue-200/50 via-indigo-200/50 to-cyan-200/50 blur-2xl" />
+      <div className="absolute inset-0 -z-10 rounded-3xl bg-linear-to-r from-blue-200/50 via-indigo-200/50 to-cyan-200/50 blur-2xl" />
       <AnimatedCardLight
         rotate={-14}
         gradientClass="from-blue-500 to-indigo-500"
@@ -420,7 +420,7 @@ function AnimatedCardLight({
       className={`group absolute select-none rounded-2xl border border-slate-200 bg-white px-6 ${small ? "py-4 w-56" : "py-6 w-72"
         } shadow-lg shadow-slate-200/60 backdrop-blur-sm hover:shadow-xl`}
     >
-      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${gradientClass} opacity-10 transition group-hover:opacity-20`} />
+      <div className={`absolute inset-0 rounded-2xl bg-linear-to-br ${gradientClass} opacity-10 transition group-hover:opacity-20`} />
       <div className="relative flex items-center justify-between">
         <span className="text-xs font-medium uppercase tracking-wide text-slate-500">
           {label}
@@ -432,7 +432,7 @@ function AnimatedCardLight({
       <div className="relative mt-2 text-2xl font-semibold tracking-tight text-slate-900">
         {value}
       </div>
-      <div className="relative mt-3 h-1 w-24 rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-500" />
+      <div className="relative mt-3 h-1 w-24 rounded-full bg-linear-to-r from-blue-500 via-indigo-500 to-cyan-500" />
     </div>
   );
 }
@@ -440,10 +440,10 @@ function AnimatedCardLight({
 function DecorBgLight() {
   return (
     <div className="pointer-events-none absolute inset-0 -z-10">
-      <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 blur-3xl" />
-      <div className="absolute top-1/3 -left-24 h-80 w-80 rounded-full bg-gradient-to-tr from-cyan-100 to-teal-100 blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 h-64 w-64 rounded-full bg-gradient-to-tr from-fuchsia-100 to-indigo-100 blur-3xl" />
-      <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:26px_26px]" />
+      <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-linear-to-br from-blue-100 to-indigo-100 blur-3xl" />
+      <div className="absolute top-1/3 -left-24 h-80 w-80 rounded-full bg-linear-to-tr from-cyan-100 to-teal-100 blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 h-64 w-64 rounded-full bg-linear-to-tr from-fuchsia-100 to-indigo-100 blur-3xl" />
+      <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] bg-size-[26px_26px]" />
     </div>
   );
 }

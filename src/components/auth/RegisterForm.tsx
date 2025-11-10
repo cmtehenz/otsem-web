@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Eye, EyeOff, Mail, User, Lock } from "lucide-react";
+import { Eye, EyeOff, Mail, User, Lock, Sparkles, CheckCircle2, Shield } from "lucide-react";
 import http from "@/lib/http";
 import { toast } from "sonner";
 
@@ -36,7 +36,6 @@ const schema = z
 type FormValues = z.infer<typeof schema>;
 const resolver = zodResolver(schema) as unknown as Resolver<FormValues>;
 
-// medidor simples (0..3)
 function passwordScore(pw: string): number {
     let s = 0;
     if (pw.length >= 8) s++;
@@ -46,7 +45,6 @@ function passwordScore(pw: string): number {
 }
 const SCORE_TEXT = ["fraca", "ok", "boa", "forte"] as const;
 
-// ---- helpers seguros para erro HTTP (sem any)
 function getHttpStatus(e: unknown): number {
     if (e && typeof e === "object" && "response" in e) {
         const r = e as { response?: { status?: number } };
@@ -73,7 +71,7 @@ function getHttpMessage(e: unknown, fallback = "Falha no cadastro"): string {
 
 export default function RegisterPage(): React.JSX.Element {
     return (
-        <Suspense fallback={<div className="min-h-dvh grid place-items-center text-sm text-muted-foreground">Carregando…</div>}>
+        <Suspense fallback={<div className="grid min-h-screen place-items-center text-sm text-muted-foreground">Carregando…</div>}>
             <RegisterPageInner />
         </Suspense>
     );
@@ -99,23 +97,19 @@ function RegisterPageInner(): React.JSX.Element {
         try {
             setLoading(true);
 
-            // 1) registra (NADA de confirm/accept no body)
             const res = await http.post<{ access_token: string; role?: string }>(
-                "/users/register", // (com rewrites) — use absoluto+absolute:true se não usar rewrites
+                "/users/register",
                 { name: v.name, email: v.email, password: v.password },
                 {}
             );
 
-            // 2) persiste token
             localStorage.setItem("accessToken", res.data.access_token);
 
-            // (opcional) cookie legível pelo server (para SSR guard)
             document.cookie = [
                 `access_token=${encodeURIComponent(res.data.access_token)}`,
                 "Path=/",
-                "Max-Age=604800", // 7d
+                "Max-Age=604800",
                 "SameSite=Lax",
-                // "Secure", // ative em produção HTTPS
             ].join("; ");
 
             toast.success("Conta criada! Bem-vindo(a).");
@@ -137,141 +131,279 @@ function RegisterPageInner(): React.JSX.Element {
     }
 
     return (
-        <div className="min-h-dvh bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-indigo-50 via-white to-white dark:from-indigo-950/30 dark:via-background dark:to-background">
-            <div className="mx-auto flex min-h-dvh max-w-5xl items-center justify-center px-4">
-                <Card className="w-full max-w-md rounded-2xl shadow-lg shadow-indigo-100/70 dark:shadow-indigo-900/10">
-                    <CardHeader className="space-y-1 text-center">
-                        <div className="mx-auto h-10 w-10 rounded-2xl bg-indigo-600/10 ring-1 ring-indigo-600/20 flex items-center justify-center">
-                            <Lock className="h-5 w-5 text-indigo-600" />
-                        </div>
-                        <CardTitle className="text-2xl">Criar conta</CardTitle>
-                        <p className="text-sm text-muted-foreground">Comece grátis. Leva menos de um minuto.</p>
-                    </CardHeader>
+        <div className="relative min-h-screen w-full overflow-hidden bg-linear-to-b from-[#faffff] via-[#faffff] to-[#f8bc07]/10">
+            {/* Background decoration */}
+            <div className="pointer-events-none absolute inset-0 -z-10">
+                <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-linear-to-br from-[#f8bc07]/20 to-[#b852ff]/20 opacity-60 blur-3xl" />
+                <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-linear-to-tr from-[#b852ff]/20 to-[#f8bc07]/20 opacity-60 blur-3xl" />
+                <div className="absolute inset-0 bg-[radial-gradient(#000000_1px,transparent_1px)] bg-size-[26px_26px] opacity-[0.02]" />
+            </div>
 
-                    <CardContent>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4" noValidate>
-                            {/* Nome */}
-                            <div className="grid gap-2">
-                                <Label htmlFor="name">Nome</Label>
-                                <div className="relative">
-                                    <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                    <Input id="name" className="pl-9" placeholder="Seu nome" {...form.register("name")} />
+            <div className="flex min-h-screen w-full items-center justify-center px-4 py-12 lg:px-8 xl:px-16">
+                <div className="flex w-full max-w-7xl items-center gap-16">
+                    {/* Left side - Form */}
+                    <div className="w-full lg:flex-1 lg:max-w-md">
+                        <Card className="overflow-hidden rounded-3xl border-[#000000]/10 shadow-xl shadow-[#000000]/5 backdrop-blur-sm">
+                            <CardHeader className="space-y-3 border-b border-[#000000]/5 bg-linear-to-b from-[#faffff] to-[#faffff]/50 pb-6">
+                                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#b852ff] shadow-lg shadow-[#b852ff]/25">
+                                    <Lock className="h-6 w-6 text-[#faffff]" />
                                 </div>
-                                {form.formState.errors.name && (
-                                    <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>
-                                )}
-                            </div>
+                                <CardTitle className="text-center text-2xl font-bold text-[#000000]">
+                                    Criar conta
+                                </CardTitle>
+                                <p className="text-center text-sm text-[#000000]/70">
+                                    Preencha os dados abaixo para começar
+                                </p>
+                            </CardHeader>
 
-                            {/* Email */}
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">E-mail</Label>
-                                <div className="relative">
-                                    <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                    <Input id="email" type="email" className="pl-9" placeholder="voce@exemplo.com" {...form.register("email")} />
-                                </div>
-                                {form.formState.errors.email && (
-                                    <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>
-                                )}
-                            </div>
+                            <CardContent className="p-6 sm:p-8">
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-5" noValidate>
+                                    {/* Nome */}
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="name" className="text-sm font-semibold text-[#000000]">
+                                            Nome completo
+                                        </Label>
+                                        <div className="relative">
+                                            <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#000000]/40" />
+                                            <Input
+                                                id="name"
+                                                className="h-11 rounded-xl border-[#000000]/10 pl-10 transition focus:border-[#f8bc07] focus:ring-2 focus:ring-[#f8bc07]/20"
+                                                placeholder="Seu nome"
+                                                {...form.register("name")}
+                                            />
+                                        </div>
+                                        {form.formState.errors.name && (
+                                            <p className="text-xs text-red-600">{form.formState.errors.name.message}</p>
+                                        )}
+                                    </div>
 
-                            {/* Senha */}
-                            <div className="grid gap-2">
-                                <Label htmlFor="password">Senha</Label>
-                                <div className="relative">
-                                    <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                    <Input
-                                        id="password"
-                                        type={showPw ? "text" : "password"}
-                                        className="pl-9 pr-10"
-                                        {...form.register("password")}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPw((v) => !v)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                                        aria-label={showPw ? "Ocultar senha" : "Mostrar senha"}
-                                    >
-                                        {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                    </button>
-                                </div>
+                                    {/* Email */}
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="email" className="text-sm font-semibold text-[#000000]">
+                                            E-mail
+                                        </Label>
+                                        <div className="relative">
+                                            <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#000000]/40" />
+                                            <Input
+                                                id="email"
+                                                type="email"
+                                                className="h-11 rounded-xl border-[#000000]/10 pl-10 transition focus:border-[#f8bc07] focus:ring-2 focus:ring-[#f8bc07]/20"
+                                                placeholder="voce@exemplo.com"
+                                                {...form.register("email")}
+                                            />
+                                        </div>
+                                        {form.formState.errors.email && (
+                                            <p className="text-xs text-red-600">{form.formState.errors.email.message}</p>
+                                        )}
+                                    </div>
 
-                                {/* medidor */}
-                                <div className="mt-1">
-                                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                                        <div
-                                            className={`h-full transition-all ${score <= 1 ? "bg-red-500" : score === 2 ? "bg-yellow-500" : "bg-green-500"}`}
-                                            style={{ width: `${(score / 3) * 100}%` }}
+                                    {/* Senha */}
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="password" className="text-sm font-semibold text-[#000000]">
+                                            Senha
+                                        </Label>
+                                        <div className="relative">
+                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#000000]/40" />
+                                            <Input
+                                                id="password"
+                                                type={showPw ? "text" : "password"}
+                                                className="h-11 rounded-xl border-[#000000]/10 pl-10 pr-10 transition focus:border-[#f8bc07] focus:ring-2 focus:ring-[#f8bc07]/20"
+                                                {...form.register("password")}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPw((v) => !v)}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#000000]/40 transition hover:text-[#000000]/70"
+                                                aria-label={showPw ? "Ocultar senha" : "Mostrar senha"}
+                                            >
+                                                {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            </button>
+                                        </div>
+
+                                        {/* Password strength meter */}
+                                        {pw && (
+                                            <div className="mt-1">
+                                                <div className="flex gap-1">
+                                                    {[0, 1, 2, 3].map((i) => (
+                                                        <div
+                                                            key={i}
+                                                            className={`h-1 flex-1 rounded-full transition-all ${i <= score
+                                                                ? score <= 1
+                                                                    ? "bg-red-500"
+                                                                    : score === 2
+                                                                        ? "bg-[#f8bc07]"
+                                                                        : "bg-green-500"
+                                                                : "bg-[#000000]/10"
+                                                                }`}
+                                                        />
+                                                    ))}
+                                                </div>
+                                                <p className="mt-1.5 text-xs text-[#000000]/60">
+                                                    Força:{" "}
+                                                    <span
+                                                        className={`font-medium ${score <= 1 ? "text-red-600" : score === 2 ? "text-[#f8bc07]" : "text-green-600"
+                                                            }`}
+                                                    >
+                                                        {scoreText}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {form.formState.errors.password && (
+                                            <p className="text-xs text-red-600">{form.formState.errors.password.message}</p>
+                                        )}
+                                    </div>
+
+                                    {/* Confirmar */}
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="confirm" className="text-sm font-semibold text-[#000000]">
+                                            Confirmar senha
+                                        </Label>
+                                        <div className="relative">
+                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#000000]/40" />
+                                            <Input
+                                                id="confirm"
+                                                type={showConfirm ? "text" : "password"}
+                                                className="h-11 rounded-xl border-[#000000]/10 pl-10 pr-10 transition focus:border-[#f8bc07] focus:ring-2 focus:ring-[#f8bc07]/20"
+                                                {...form.register("confirm")}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowConfirm((v) => !v)}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#000000]/40 transition hover:text-[#000000]/70"
+                                                aria-label={showConfirm ? "Ocultar confirmação" : "Mostrar confirmação"}
+                                            >
+                                                {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            </button>
+                                        </div>
+                                        {form.formState.errors.confirm && (
+                                            <p className="text-xs text-red-600">{form.formState.errors.confirm.message}</p>
+                                        )}
+                                    </div>
+
+                                    {/* Termos */}
+                                    <label className="flex items-start gap-3 rounded-lg border border-[#000000]/10 bg-[#faffff]/50 p-3 text-sm transition hover:bg-[#faffff]">
+                                        <input
+                                            type="checkbox"
+                                            className="mt-0.5 h-4 w-4 rounded border-[#000000]/20 text-[#b852ff] focus:ring-2 focus:ring-[#b852ff]/20"
+                                            {...form.register("accept")}
                                         />
-                                    </div>
-                                    <div className="mt-1 text-xs text-muted-foreground">
-                                        Força: <span className="font-medium">{scoreText}</span>
-                                    </div>
-                                </div>
+                                        <span className="text-[#000000]/70">
+                                            Aceito os{" "}
+                                            <a
+                                                className="font-medium text-[#b852ff] underline-offset-2 hover:underline"
+                                                href="/terms"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                            >
+                                                termos de uso
+                                            </a>{" "}
+                                            e a{" "}
+                                            <a
+                                                className="font-medium text-[#b852ff] underline-offset-2 hover:underline"
+                                                href="/privacy"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                            >
+                                                política de privacidade
+                                            </a>
+                                        </span>
+                                    </label>
+                                    {form.formState.errors.accept && (
+                                        <p className="text-xs text-red-600">{form.formState.errors.accept.message}</p>
+                                    )}
 
-                                {form.formState.errors.password && (
-                                    <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>
-                                )}
-                            </div>
-
-                            {/* Confirmar */}
-                            <div className="grid gap-2">
-                                <Label htmlFor="confirm">Confirmar senha</Label>
-                                <div className="relative">
-                                    <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                    <Input
-                                        id="confirm"
-                                        type={showConfirm ? "text" : "password"}
-                                        className="pl-9 pr-10"
-                                        {...form.register("confirm")}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowConfirm((v) => !v)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                                        aria-label={showConfirm ? "Ocultar confirmação" : "Mostrar confirmação"}
+                                    <Button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="h-11 rounded-xl bg-[#b852ff] font-semibold text-[#faffff] shadow-lg shadow-[#b852ff]/25 transition hover:bg-[#b852ff]/90 hover:shadow-xl disabled:opacity-50"
+                                        aria-busy={loading}
                                     >
-                                        {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                    </button>
-                                </div>
-                                {form.formState.errors.confirm && (
-                                    <p className="text-sm text-destructive">{form.formState.errors.confirm.message}</p>
-                                )}
+                                        {loading ? "Criando conta..." : "Criar conta"}
+                                    </Button>
+
+                                    <Separator className="my-2" />
+
+                                    <p className="text-center text-sm text-[#000000]/70">
+                                        Já tem conta?{" "}
+                                        <button
+                                            type="button"
+                                            onClick={() => router.push("/login")}
+                                            className="font-semibold text-[#b852ff] transition hover:text-[#b852ff]/80 hover:underline"
+                                        >
+                                            Entrar
+                                        </button>
+                                    </p>
+                                </form>
+                            </CardContent>
+                        </Card>
+
+                        {/* Trust badges */}
+                        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-[#000000]/60">
+                            <div className="flex items-center gap-1.5">
+                                <Shield className="h-3.5 w-3.5 text-green-600" />
+                                Dados criptografados
                             </div>
+                            <div className="flex items-center gap-1.5">
+                                <CheckCircle2 className="h-3.5 w-3.5 text-[#b852ff]" />
+                                LGPD compliant
+                            </div>
+                        </div>
+                    </div>
 
-                            {/* Termos */}
-                            <label className="inline-flex items-center gap-2 text-sm">
-                                <input type="checkbox" className="accent-indigo-600" {...form.register("accept")} />
-                                Aceito os{" "}
-                                <a className="underline underline-offset-2 hover:text-indigo-600" href="/terms" target="_blank" rel="noreferrer">
-                                    termos
-                                </a>{" "}
-                                e a{" "}
-                                <a className="underline underline-offset-2 hover:text-indigo-600" href="/privacy" target="_blank" rel="noreferrer">
-                                    privacidade
-                                </a>.
-                            </label>
-                            {form.formState.errors.accept && (
-                                <p className="text-sm text-destructive">{form.formState.errors.accept.message}</p>
-                            )}
-
-                            <Button type="submit" disabled={loading} className="mt-2" aria-busy={loading}>
-                                {loading ? "Criando conta..." : "Criar conta"}
-                            </Button>
-
-                            <Separator className="my-2" />
-                            <p className="text-center text-sm text-muted-foreground">
-                                Já tem conta?{" "}
-                                <button
-                                    type="button"
-                                    onClick={() => router.push("/login")}
-                                    className="font-medium text-indigo-600 hover:underline"
-                                >
-                                    Entrar
-                                </button>
+                    {/* Right side - Benefits */}
+                    <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:gap-8">
+                        <div>
+                            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#f8bc07]/30 bg-[#f8bc07]/10 px-4 py-1.5 text-sm font-medium text-[#000000]">
+                                <Sparkles className="h-4 w-4 text-[#f8bc07]" />
+                                Comece grátis
+                            </div>
+                            <h1 className="text-4xl font-bold text-[#000000] xl:text-5xl">
+                                Crie sua conta
+                                <br />
+                                <span className="bg-linear-to-r from-[#f8bc07] to-[#b852ff] bg-clip-text text-transparent">
+                                    em segundos
+                                </span>
+                            </h1>
+                            <p className="mt-4 text-lg text-[#000000]/70">
+                                Acesso completo à plataforma de pagamentos e câmbio BRL ↔ USDT
                             </p>
-                        </form>
-                    </CardContent>
-                </Card>
+                        </div>
+
+                        <div className="space-y-4">
+                            <FeatureItem
+                                icon={<CheckCircle2 className="h-5 w-5 text-green-600" />}
+                                title="Verificação instantânea"
+                                desc="KYC simplificado e rápido"
+                            />
+                            <FeatureItem
+                                icon={<Shield className="h-5 w-5 text-[#b852ff]" />}
+                                title="Segurança avançada"
+                                desc="Criptografia de ponta a ponta"
+                            />
+                            <FeatureItem
+                                icon={<Sparkles className="h-5 w-5 text-[#f8bc07]" />}
+                                title="Taxas competitivas"
+                                desc="A partir de 0.79% por transação"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function FeatureItem({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+    return (
+        <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#faffff] shadow-sm ring-1 ring-[#000000]/10">
+                {icon}
+            </div>
+            <div>
+                <h3 className="text-sm font-semibold text-[#000000]">{title}</h3>
+                <p className="text-sm text-[#000000]/70">{desc}</p>
             </div>
         </div>
     );

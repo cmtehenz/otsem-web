@@ -23,7 +23,8 @@ export function onlyDigits(v: string): string {
  * Verifica se o CEP possui 8 dígitos válidos.
  */
 export function isValidCep(cep: string): boolean {
-    return /^\d{8}$/.test(onlyDigits(cep));
+    const digits = onlyDigits(cep);
+    return /^\d{8}$/.test(digits);
 }
 
 /**
@@ -34,26 +35,81 @@ function isViaCepError(data: unknown): data is { erro: true } {
 }
 
 /**
+ * Valida se a resposta do ViaCEP é válida
+ */
+function isValidViaCepResponse(data: unknown): data is ViaCepResponse {
+    if (typeof data !== "object" || data === null) return false;
+    const obj = data as Record<string, unknown>;
+    return (
+        typeof obj.cep === "string" &&
+        typeof obj.logradouro === "string" &&
+        typeof obj.bairro === "string" &&
+        typeof obj.localidade === "string" &&
+        typeof obj.uf === "string"
+    );
+}
+
+/**
  * Busca informações de endereço no ViaCEP.
  */
 export async function fetchCep(rawCep: string, signal?: AbortSignal): Promise<ViaCepResponse> {
     const cep = onlyDigits(rawCep);
 
+    console.log("[fetchCep] CEP original:", rawCep);
+    console.log("[fetchCep] CEP limpo:", cep);
+
     if (!isValidCep(cep)) {
         throw new Error("CEP inválido. Use 8 dígitos.");
     }
 
-    const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`, { signal });
+    const url = `https://viacep.com.br/ws/${cep}/json/`;
+    console.log("[fetchCep] URL:", url);
 
-    if (!res.ok) {
-        throw new Error("Falha ao consultar CEP");
+    try {
+        const res = await fetch(url, {
+            signal,
+            headers: {
+                'Accept': 'application/json',
+            }
+        });
+
+        console.log("[fetchCep] Status:", res.status);
+
+        if (!res.ok) {
+            throw new Error(`Falha ao consultar CEP (HTTP ${res.status})`);
+        }
+
+        const data: unknown = await res.json();
+        console.log("[fetchCep] Resposta:", data);
+
+        if (isViaCepError(data)) {
+            throw new Error("CEP não encontrado");
+        }
+
+        if (!isValidViaCepResponse(data)) {
+            throw new Error("Resposta inválida do ViaCEP");
+        }
+
+        return data;
+    } catch (error) {
+        console.error("[fetchCep] Erro:", error);
+
+        if (error instanceof Error) {
+            if (error.name === 'AbortError') {
+                throw new Error("Consulta cancelada");
+            }
+            throw error;
+        }
+
+        throw new Error("Erro ao consultar CEP");
     }
+}
 
-    const data: unknown = await res.json();
-
-    if (isViaCepError(data)) {
-        throw new Error("CEP não encontrado");
-    }
-
-    return data as ViaCepResponse;
+/**
+ * Formata CEP para exibição (00000-000)
+ */
+export function formatCep(cep: string): string {
+    const digits = onlyDigits(cep);
+    if (digits.length !== 8) return cep;
+    return `${digits.slice(0, 5)}-${digits.slice(5)}`;
 }
