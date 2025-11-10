@@ -3,20 +3,6 @@
 import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
 import http from "@/lib/http";
-import { toast } from "sonner";
-import {
-    ArrowLeft,
-    CheckCircle2,
-    XCircle,
-    AlertTriangle,
-    User,
-    Mail,
-    Phone,
-    MapPin,
-    Calendar,
-    FileText,
-    Building2,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -32,15 +18,25 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-
-export const dynamic = "force-dynamic";
-
-type KycStatus = "not_requested" | "in_review" | "approved" | "rejected";
+import { toast } from "sonner";
+import {
+    ArrowLeft,
+    CheckCircle2,
+    XCircle,
+    AlertTriangle,
+    User,
+    Mail,
+    Phone,
+    MapPin,
+    Calendar,
+    FileText,
+    Building2,
+} from "lucide-react";
 
 type KycCustomer = {
     id: string;
     type: "PF" | "PJ";
-    accountStatus: KycStatus;
+    accountStatus: "not_requested" | "in_review" | "approved" | "rejected";
     name?: string;
     socialName?: string;
     cpf?: string;
@@ -61,56 +57,16 @@ type KycCustomer = {
 
 type ActionType = "approve" | "reject" | "review" | null;
 
-function statusConfig(status: KycStatus) {
-    switch (status) {
-        case "approved":
-            return {
-                label: "Aprovado",
-                icon: CheckCircle2,
-                className: "bg-green-100 text-green-700 border-green-200",
-            };
-        case "in_review":
-            return {
-                label: "Em análise",
-                icon: AlertTriangle,
-                className: "bg-blue-100 text-blue-700 border-blue-200",
-            };
-        case "rejected":
-            return {
-                label: "Rejeitado",
-                icon: XCircle,
-                className: "bg-red-100 text-red-700 border-red-200",
-            };
-        default:
-            return {
-                label: "Não iniciado",
-                icon: FileText,
-                className: "bg-gray-100 text-gray-700 border-gray-200",
-            };
-    }
-}
-
-function getAxiosStatus(e: unknown): number | undefined {
-    if (e && typeof e === "object" && "response" in e) {
-        const r = e as { response?: { status?: number } };
-        return r.response?.status;
-    }
-    return undefined;
-}
-
 export default function AdminKycDetailPage(): React.JSX.Element {
     const router = useRouter();
     const { id } = useParams<{ id: string }>();
-
     const [data, setData] = React.useState<KycCustomer | null>(null);
     const [loading, setLoading] = React.useState(true);
-
     const [actionType, setActionType] = React.useState<ActionType>(null);
     const [actionLoading, setActionLoading] = React.useState(false);
     const [rejectionReason, setRejectionReason] = React.useState("");
     const [reviewNotes, setReviewNotes] = React.useState("");
 
-    // Load details
     React.useEffect(() => {
         if (!id) return;
         (async () => {
@@ -126,158 +82,97 @@ export default function AdminKycDetailPage(): React.JSX.Element {
         })();
     }, [id]);
 
-    // Try a list of routes until one succeeds or a non-404 error happens
-    async function trySequence<T = unknown>(
-        seq: Array<{ method: "patch" | "post"; url: string; body?: unknown }>
-    ): Promise<T> {
-        let last404 = false;
-        for (const step of seq) {
-            try {
-                const res =
-                    step.method === "patch"
-                        ? await http.patch<T>(step.url, step.body ?? {})
-                        : await http.post<T>(step.url, step.body ?? {});
-                return res.data;
-            } catch (e) {
-                const status = getAxiosStatus(e);
-                if (status === 404) {
-                    last404 = true;
-                    continue; // try next
-                }
-                throw e; // other errors: stop
-            }
-        }
-        if (last404) {
-            throw new Error(
-                "Endpoint não encontrado (404). Verifique as rotas do backend para KYC. "
-            );
-        }
-        throw new Error("Falha ao processar ação de KYC.");
-    }
-
-    async function refresh() {
-        if (!id) return;
-        const res = await http.get<KycCustomer>(`/customers/${id}`);
-        setData(res.data);
-    }
-
     async function handleAction() {
-        if (!data || !actionType) return;
+        if (!actionType || !data) return;
 
         try {
             setActionLoading(true);
 
-            if (actionType === "approve") {
-                await trySequence([
-                    // Tente as variações mais prováveis primeiro
-                    { method: "patch", url: `/customers/${data.id}/approve-kyc` },
-                    { method: "patch", url: `/customers/${data.id}/kyc/approve` },
-                    { method: "patch", url: `/customers/${data.id}/approve` },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/status`,
-                        body: { accountStatus: "approved" as KycStatus },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}`,
-                        body: { accountStatus: "approved" as KycStatus },
-                    },
-                ]);
-                toast.success("KYC aprovado com sucesso!");
+            switch (actionType) {
+                case "approve":
+                    try {
+                        await http.patch(`/customers/${data.id}/approve-kyc`);
+                    } catch (err) {
+                        await http.patch(`/customers/${data.id}`, {
+                            accountStatus: "approved"
+                        });
+                    }
+                    toast.success("KYC aprovado com sucesso!");
+                    break;
+
+                case "reject":
+                    if (!rejectionReason.trim()) {
+                        toast.error("Informe o motivo da rejeição");
+                        setActionLoading(false);
+                        return;
+                    }
+                    try {
+                        await http.patch(`/customers/${data.id}/reject-kyc`, {
+                            reason: rejectionReason,
+                        });
+                    } catch (err) {
+                        await http.patch(`/customers/${data.id}`, {
+                            accountStatus: "rejected",
+                            rejectionReason: rejectionReason,
+                        });
+                    }
+                    toast.success("KYC rejeitado");
+                    break;
+
+                case "review":
+                    try {
+                        await http.patch(`/customers/${data.id}/request-review`, {
+                            notes: reviewNotes,
+                        });
+                    } catch (err) {
+                        await http.patch(`/customers/${data.id}`, {
+                            accountStatus: "in_review",
+                            reviewNotes: reviewNotes,
+                        });
+                    }
+                    toast.success("Solicitação de revisão enviada");
+                    break;
             }
 
-            if (actionType === "reject") {
-                if (!rejectionReason.trim()) {
-                    toast.error("Informe o motivo da rejeição");
-                    return;
-                }
-                await trySequence([
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/reject-kyc`,
-                        body: { reason: rejectionReason },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/kyc/reject`,
-                        body: { reason: rejectionReason },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/reject`,
-                        body: { reason: rejectionReason },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/status`,
-                        body: {
-                            accountStatus: "rejected" as KycStatus,
-                            rejectionReason,
-                        },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}`,
-                        body: {
-                            accountStatus: "rejected" as KycStatus,
-                            rejectionReason,
-                        },
-                    },
-                ]);
-                toast.success("KYC rejeitado");
-            }
-
-            if (actionType === "review") {
-                await trySequence([
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/request-review`,
-                        body: { notes: reviewNotes || undefined },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/kyc/review`,
-                        body: { notes: reviewNotes || undefined },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/review`,
-                        body: { notes: reviewNotes || undefined },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/status`,
-                        body: {
-                            accountStatus: "in_review" as KycStatus,
-                            reviewNotes: reviewNotes || undefined,
-                        },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}`,
-                        body: {
-                            accountStatus: "in_review" as KycStatus,
-                            reviewNotes: reviewNotes || undefined,
-                        },
-                    },
-                ]);
-                toast.success("Solicitação de revisão enviada");
-            }
-
-            await refresh();
+            const res = await http.get<KycCustomer>(`/customers/${id}`);
+            setData(res.data);
             setActionType(null);
             setRejectionReason("");
             setReviewNotes("");
         } catch (err) {
             console.error(err);
-            const status = getAxiosStatus(err);
-            if (status === 403) toast.error("Sem permissão para executar esta ação.");
-            else if (status === 400) toast.error("Requisição inválida.");
-            else if (status === 404) toast.error("Rota não encontrada no backend.");
-            else toast.error(err instanceof Error ? err.message : "Falha ao processar ação.");
+            toast.error("Falha ao processar ação");
         } finally {
             setActionLoading(false);
+        }
+    }
+
+    function getStatusConfig(status: KycCustomer["accountStatus"]) {
+        switch (status) {
+            case "approved":
+                return {
+                    label: "Aprovado",
+                    icon: CheckCircle2,
+                    className: "bg-green-100 text-green-700 border-green-200",
+                };
+            case "in_review":
+                return {
+                    label: "Em análise",
+                    icon: AlertTriangle,
+                    className: "bg-blue-100 text-blue-700 border-blue-200",
+                };
+            case "rejected":
+                return {
+                    label: "Rejeitado",
+                    icon: XCircle,
+                    className: "bg-red-100 text-red-700 border-red-200",
+                };
+            default:
+                return {
+                    label: "Não iniciado",
+                    icon: FileText,
+                    className: "bg-gray-100 text-gray-700 border-gray-200",
+                };
         }
     }
 
@@ -285,7 +180,7 @@ export default function AdminKycDetailPage(): React.JSX.Element {
         return (
             <div className="flex h-96 items-center justify-center">
                 <div className="text-center">
-                    <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-[#b852ff] border-t-transparent" />
+                    <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-[#b852ff] border-t-transparent"></div>
                     <p className="text-sm text-muted-foreground">Carregando…</p>
                 </div>
             </div>
@@ -296,7 +191,7 @@ export default function AdminKycDetailPage(): React.JSX.Element {
         return (
             <div className="flex h-96 items-center justify-center">
                 <div className="text-center">
-                    <p className="mb-4 text-muted-foreground">Cliente não encontrado</p>
+                    <p className="text-muted-foreground mb-4">Cliente não encontrado</p>
                     <Button onClick={() => router.push("/admin/kyc")} variant="outline">
                         <ArrowLeft className="mr-2 size-4" />
                         Voltar
@@ -306,12 +201,11 @@ export default function AdminKycDetailPage(): React.JSX.Element {
         );
     }
 
-    const sc = statusConfig(data.accountStatus);
-    const StatusIcon = sc.icon;
+    const statusConfig = getStatusConfig(data.accountStatus);
+    const StatusIcon = statusConfig.icon;
 
     return (
         <div className="flex flex-col gap-6 p-6">
-            {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
                     <Button
@@ -322,20 +216,20 @@ export default function AdminKycDetailPage(): React.JSX.Element {
                     >
                         <ArrowLeft className="mr-1 size-4" /> Voltar
                     </Button>
-                    <h1 className="text-2xl font-bold text-[#000000]">Detalhes do Cliente</h1>
+                    <h1 className="text-2xl font-bold text-[#000000]">
+                        Detalhes do Cliente
+                    </h1>
                 </div>
                 <Badge
                     variant="outline"
-                    className={`flex w-fit items-center gap-1.5 border px-3 py-1 ${sc.className}`}
+                    className={`flex w-fit items-center gap-1.5 border px-3 py-1 ${statusConfig.className}`}
                 >
                     <StatusIcon className="size-4" />
-                    {sc.label}
+                    {statusConfig.label}
                 </Badge>
             </div>
 
-            {/* Grid */}
             <div className="grid gap-6 lg:grid-cols-2">
-                {/* Dados pessoais */}
                 <Card className="rounded-2xl border-[#000000]/10 shadow-sm">
                     <CardHeader className="border-b border-[#000000]/5 bg-linear-to-b from-[#faffff] to-[#faffff]/50">
                         <CardTitle className="flex items-center gap-2 text-lg">
@@ -377,7 +271,6 @@ export default function AdminKycDetailPage(): React.JSX.Element {
                     </CardContent>
                 </Card>
 
-                {/* Endereço */}
                 <Card className="rounded-2xl border-[#000000]/10 shadow-sm">
                     <CardHeader className="border-b border-[#000000]/5 bg-linear-to-b from-[#faffff] to-[#faffff]/50">
                         <CardTitle className="flex items-center gap-2 text-lg">
@@ -395,9 +288,7 @@ export default function AdminKycDetailPage(): React.JSX.Element {
                                     <p className="text-[#000000]/60">{data.address.complement}</p>
                                 )}
                                 <p>{data.address.neighborhood}</p>
-                                <p>
-                                    {data.address.city} {data.address.state ? `- ${data.address.state}` : ""}
-                                </p>
+                                <p>{data.address.city} - {data.address.state}</p>
                                 <p className="mt-2 rounded-lg bg-[#000000]/5 px-3 py-2 font-mono">
                                     CEP: {data.address.zipCode}
                                 </p>
@@ -409,7 +300,6 @@ export default function AdminKycDetailPage(): React.JSX.Element {
                 </Card>
             </div>
 
-            {/* Ações */}
             <Card className="rounded-2xl border-[#000000]/10 shadow-sm">
                 <CardHeader className="border-b border-[#000000]/5 bg-linear-to-b from-[#faffff] to-[#faffff]/50">
                     <CardTitle className="text-lg">Ações do KYC</CardTitle>
@@ -445,7 +335,7 @@ export default function AdminKycDetailPage(): React.JSX.Element {
                 </CardContent>
             </Card>
 
-            {/* Dialog: Aprovar */}
+            {/* Dialogs */}
             <AlertDialog open={actionType === "approve"} onOpenChange={() => setActionType(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
@@ -454,7 +344,7 @@ export default function AdminKycDetailPage(): React.JSX.Element {
                             Aprovar KYC
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                            Confirma a aprovação do KYC de <strong>{data.name || data.email}</strong>?
+                            Tem certeza que deseja aprovar o KYC de <strong>{data.name || data.email}</strong>?
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -470,7 +360,6 @@ export default function AdminKycDetailPage(): React.JSX.Element {
                 </AlertDialogContent>
             </AlertDialog>
 
-            {/* Dialog: Rejeitar */}
             <AlertDialog
                 open={actionType === "reject"}
                 onOpenChange={() => {
@@ -484,13 +373,14 @@ export default function AdminKycDetailPage(): React.JSX.Element {
                             <XCircle className="size-5 text-red-600" />
                             Rejeitar KYC
                         </AlertDialogTitle>
-                        <AlertDialogDescription>Informe o motivo da rejeição.</AlertDialogDescription>
+                        <AlertDialogDescription>
+                            Informe o motivo da rejeição:
+                        </AlertDialogDescription>
                     </AlertDialogHeader>
                     <div className="grid gap-2 py-4">
                         <Label htmlFor="reason">Motivo *</Label>
                         <Textarea
                             id="reason"
-                            placeholder="Ex: Documentos ilegíveis, informações inconsistentes..."
                             value={rejectionReason}
                             onChange={(e) => setRejectionReason(e.target.value)}
                             className="min-h-24"
@@ -509,7 +399,6 @@ export default function AdminKycDetailPage(): React.JSX.Element {
                 </AlertDialogContent>
             </AlertDialog>
 
-            {/* Dialog: Revisão */}
             <AlertDialog
                 open={actionType === "review"}
                 onOpenChange={() => {
@@ -524,14 +413,13 @@ export default function AdminKycDetailPage(): React.JSX.Element {
                             Solicitar Revisão
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                            Adicione observações sobre o que precisa ser revisado (opcional).
+                            Adicione observações (opcional):
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <div className="grid gap-2 py-4">
                         <Label htmlFor="notes">Observações</Label>
                         <Textarea
                             id="notes"
-                            placeholder="Ex: Por favor, reenviar documento com mais nitidez..."
                             value={reviewNotes}
                             onChange={(e) => setReviewNotes(e.target.value)}
                             className="min-h-24"
@@ -553,15 +441,7 @@ export default function AdminKycDetailPage(): React.JSX.Element {
     );
 }
 
-function InfoRow({
-    icon,
-    label,
-    value,
-}: {
-    icon: React.ReactNode;
-    label: string;
-    value: string;
-}) {
+function InfoRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
     return (
         <div className="flex items-start gap-3 rounded-lg border border-[#000000]/5 bg-[#faffff]/50 p-3">
             <div className="mt-0.5">{icon}</div>
