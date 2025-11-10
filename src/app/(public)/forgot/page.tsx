@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { http } from "@/lib/http";
+import http from "@/lib/http";
 
 // Evita cache estático nessa página sensível
 export const dynamic = "force-dynamic";
@@ -75,7 +75,7 @@ export default function ForgotPage(): React.JSX.Element {
             );
 
             // em dev podemos exibir a URL de reset, em prod mantemos resposta neutra
-            setResetUrl(SHOW_RESET_URL ? res.resetUrl ?? null : null);
+            setResetUrl(SHOW_RESET_URL ? res.data.resetUrl ?? null : null);
 
             // mensagem neutra (não revela se o email existe)
             toast.success("Se o e-mail existir, enviaremos as instruções.");
@@ -104,7 +104,7 @@ export default function ForgotPage(): React.JSX.Element {
     }
 
     return (
-        <div className="min-h-dvh bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-50 via-white to-white dark:from-indigo-950/30 dark:via-background dark:to-background">
+        <div className="min-h-dvh bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-indigo-50 via-white to-white dark:from-indigo-950/30 dark:via-background dark:to-background">
             <div className="mx-auto flex min-h-dvh max-w-5xl items-center justify-center px-4">
                 <Card className="w-full max-w-md rounded-2xl shadow-lg shadow-indigo-100/70 dark:shadow-indigo-900/10">
                     <CardHeader className="space-y-1">
