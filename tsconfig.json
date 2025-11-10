@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
     "moduleResolution": "bundler",
     "verbatimModuleSyntax": true,
     "target": "ES2017",

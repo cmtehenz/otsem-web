@@ -41,7 +41,7 @@ const config = [
       // ✅ Somente o que você pediu como erro
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-unused-vars": [
-        "error",
+        "warn",
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",

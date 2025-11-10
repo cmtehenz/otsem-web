@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { toast } from "sonner";
 import { QrCode, Copy, Shield, Wallet, RefreshCw } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 // shadcn/ui
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -119,7 +120,7 @@ export default function ReceiveUSDTPage() {
                 <CardContent>
                     <div className="flex items-center justify-center border rounded-xl p-4 min-h-[220px]">
                         {data?.qrCode ? (
-                            <img src={data.qrCode} alt="QR USDT" className="rounded-xl w-full max-w-xs" />
+                            <Image src={data.qrCode} alt="QR USDT" className="rounded-xl w-full max-w-xs" width={200} height={200} priority />
                         ) : (
                             <div className="text-sm text-muted-foreground">QR indisponível para esta rede/endereço.</div>
                         )}

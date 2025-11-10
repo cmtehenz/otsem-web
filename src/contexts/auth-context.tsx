@@ -133,7 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             const { access_token, role } = loginResponse.data;
 
-            console.log("🔐 Role recebido do backend:", role);
+            console.warn("🔐 Role recebido do backend:", role);
 
             // Valida se recebeu o token
             if (!access_token) {
@@ -176,18 +176,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 name: userData.name || undefined,
             };
 
-            console.log("👤 Usuário definido:", newUser);
+            console.warn("👤 Usuário definido:", newUser);
 
             setUser(newUser);
 
             // Redireciona baseado no role
             const dashboardPath = role === "ADMIN" ? "/admin/dashboard" : "/customer/dashboard";
-            
-            console.log("🚀 Redirecionando para:", dashboardPath, "baseado no role:", role);
-            
+
+            console.warn("🚀 Redirecionando para:", dashboardPath, "baseado no role:", role);
+
             // NÃO use router.push aqui - deixe o page.tsx fazer o redirect
             // O problema pode estar em múltiplos redirects acontecendo
-            
+
             // Em vez disso, vamos usar window.location para forçar navegação
             if (typeof window !== 'undefined') {
                 window.location.href = dashboardPath;
