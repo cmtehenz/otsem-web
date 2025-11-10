@@ -4,31 +4,35 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { SpinnerCustom } from "@/components/ui/spinner"; // use o seu SpinnerCustom
+import { SpinnerCustom } from "@/components/ui/spinner";
 
-type Props = { roles: string[]; children: React.ReactNode; redirectTo?: string };
+type Props = {
+  roles: Array<"ADMIN" | "CUSTOMER">;
+  children: React.ReactNode;
+  redirectTo?: string;
+};
 
-export function RoleGuard({ roles, children, redirectTo = "/customer/dashboard" }: Props) {
-    const { isLoading, user } = useAuth();
-    const router = useRouter();
+export function RoleGuard({ roles, children, redirectTo = "/login" }: Props) {
+  const { loading, user } = useAuth(); // was isLoading
+  const router = useRouter();
 
-    React.useEffect(() => {
-        if (isLoading) return;
-        if (!user) {
-            router.replace("/login");
-            return;
-        }
-        const ok = !!user.role && roles.includes(String(user.role).toUpperCase());
-        if (!ok) router.replace(redirectTo);
-    }, [isLoading, user, roles, router, redirectTo]);
-
-    if (isLoading || !user) {
-        return (
-            <div className="min-h-dvh grid place-items-center">
-                <SpinnerCustom />
-            </div>
-        );
+  React.useEffect(() => {
+    if (loading) return;
+    if (!user) {
+      router.replace("/login");
+      return;
     }
+    const ok = roles.includes(user.role);
+    if (!ok) router.replace(redirectTo);
+  }, [loading, user, roles, router, redirectTo]);
 
-    return <>{children}</>;
+  if (loading || !user) {
+    return (
+      <div className="min-h-dvh grid place-items-center">
+        <SpinnerCustom />
+      </div>
+    );
+  }
+
+  return <>{children}</>;
 }
