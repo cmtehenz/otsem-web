@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 // import { apiPost } from "@/lib/api"; // ❌ não usamos mais
-import { http } from "@/lib/http"; // ✅ novo client
+import http from "@/lib/http"; // ✅ novo client
 
 // Evita cache estático nessa página sensível
 export const dynamic = "force-dynamic";
@@ -66,7 +66,7 @@ function ResetPageInner(): React.JSX.Element {
     async function onSubmit(v: FormValues): Promise<void> {
         try {
             // chama sua API NestJS diretamente
-            await http.post("/auth/reset", { token, password: v.password }, { anonymous: true });
+            await http.post("/auth/reset", { token, password: v.password });
 
             toast.success("Senha alterada. Faça login para continuar.");
             router.replace("/login");
@@ -98,7 +98,7 @@ function ResetPageInner(): React.JSX.Element {
     const tokenMissing = !token;
 
     return (
-        <div className="min-h-dvh bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-50 via-white to-white dark:from-indigo-950/30 dark:via-background dark:to-background">
+        <div className="min-h-dvh bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-indigo-50 via-white to-white dark:from-indigo-950/30 dark:via-background dark:to-background">
             <div className="mx-auto flex min-h-dvh max-w-5xl items-center justify-center px-4">
                 <Card className="w-full max-w-md rounded-2xl shadow-lg shadow-indigo-100/70 dark:shadow-indigo-900/10">
                     <CardHeader className="space-y-1 text-center">
