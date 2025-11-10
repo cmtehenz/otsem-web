@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, Mail, User, Lock } from "lucide-react";
-import { http } from "@/lib/http";
+import http from "@/lib/http";
 import { toast } from "sonner";
 
 // Evita cache estático
@@ -103,15 +103,15 @@ function RegisterPageInner(): React.JSX.Element {
             const res = await http.post<{ access_token: string; role?: string }>(
                 "/users/register", // (com rewrites) — use absoluto+absolute:true se não usar rewrites
                 { name: v.name, email: v.email, password: v.password },
-                { anonymous: true }
+                {}
             );
 
             // 2) persiste token
-            localStorage.setItem("accessToken", res.access_token);
+            localStorage.setItem("accessToken", res.data.access_token);
 
             // (opcional) cookie legível pelo server (para SSR guard)
             document.cookie = [
-                `access_token=${encodeURIComponent(res.access_token)}`,
+                `access_token=${encodeURIComponent(res.data.access_token)}`,
                 "Path=/",
                 "Max-Age=604800", // 7d
                 "SameSite=Lax",
@@ -137,7 +137,7 @@ function RegisterPageInner(): React.JSX.Element {
     }
 
     return (
-        <div className="min-h-dvh bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-50 via-white to-white dark:from-indigo-950/30 dark:via-background dark:to-background">
+        <div className="min-h-dvh bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-indigo-50 via-white to-white dark:from-indigo-950/30 dark:via-background dark:to-background">
             <div className="mx-auto flex min-h-dvh max-w-5xl items-center justify-center px-4">
                 <Card className="w-full max-w-md rounded-2xl shadow-lg shadow-indigo-100/70 dark:shadow-indigo-900/10">
                     <CardHeader className="space-y-1 text-center">

@@ -7,12 +7,12 @@ import { useAuth } from "@/contexts/auth-context";
 import { FullscreenSpinner } from "@/components/ui/spinner";
 
 export function Protected({ children, roles }: { children: React.ReactNode; roles?: string[] }) {
-    const { isLoading, user } = useAuth();
+    const { loading, user } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
 
     React.useEffect(() => {
-        if (isLoading) return;
+        if (loading) return;
         if (!user) {
             const next = pathname ? `?next=${encodeURIComponent(pathname)}` : "";
             router.replace(`/login${next}`);
@@ -21,9 +21,9 @@ export function Protected({ children, roles }: { children: React.ReactNode; role
         if (roles && user.role && !roles.includes(user.role)) {
             router.replace("/"); // ou uma página 403
         }
-    }, [isLoading, user, roles, pathname, router]);
+    }, [loading, user, roles, pathname, router]);
 
-    if (isLoading || !user) {
+    if (loading || !user) {
         return <FullscreenSpinner label="Verificando sessão…" />;
     }
 

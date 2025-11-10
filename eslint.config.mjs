@@ -74,6 +74,18 @@ const config = [
       curly: ["off"],
     },
   },
+  {
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact"
+    ],
+    "eslint.format.enable": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    }
+  }
 ];
 
 export default config;

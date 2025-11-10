@@ -16,8 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-import { authLogin, toErrorMessage } from '@/lib/auth';
-import { useAuth } from '@/contexts/auth-context'; // 👈 usa o contexto
+import { useAuth } from '@/contexts/auth-context';
 
 // evita cache estático
 export const dynamic = 'force-dynamic';
@@ -30,23 +29,8 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 const loginResolver = zodResolver(loginSchema) as unknown as Resolver<LoginForm>;
 
-// Cookie opcional para SSR/middleware (não é HttpOnly)
-function setAuthCookie(token: string, remember: boolean): void {
-    const maxAge = remember ? 60 * 60 * 24 * 7 : 60 * 60 * 4; // 7d ou 4h
-    const parts = [
-        `access_token=${encodeURIComponent(token)}`,
-        'Path=/',
-        `Max-Age=${maxAge}`,
-        'SameSite=Lax',
-    ];
-    if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
-        parts.push('Secure');
-    }
-    document.cookie = parts.join('; ');
-}
-
 // Sanitiza "next" para evitar open redirect
-function safeNext(nextParam: string | null | undefined, fallback = '/dashboard') {
+function safeNext(nextParam: string | null | undefined, fallback = '/customer/dashboard'): string {
     if (!nextParam) return fallback;
     try {
         return nextParam.startsWith('/') ? nextParam : fallback;
@@ -67,7 +51,7 @@ function LoginPageInner(): React.JSX.Element {
     const router = useRouter();
     const sp = useSearchParams();
     const next = safeNext(sp.get('next'));
-    const { login } = useAuth(); // 👈 pega o login do contexto
+    const { login } = useAuth();
 
     const {
         register,
@@ -82,23 +66,19 @@ function LoginPageInner(): React.JSX.Element {
 
     const onSubmit: SubmitHandler<LoginForm> = async (values) => {
         try {
-            // 1) autentica na API (recebe access_token)
-            const res = await authLogin(values.email, values.password); // { access_token, role? }
-
-            await login(res.access_token, res.role);
-
-            // 3) (opcional) cookie para middleware/SSR
-            setAuthCookie(res.access_token, values.remember);
+            // Chama o método login do contexto (que já faz tudo)
+            await login(values.email, values.password);
 
             toast.success('Bem-vindo de volta!');
             router.replace(next);
-        } catch (e) {
-            toast.error(toErrorMessage(e, 'Falha no login'));
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Falha no login';
+            toast.error(message);
         }
     };
 
     return (
-        <div className="min-h-dvh bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-50 via-white to-white dark:from-indigo-950/30 dark:via-background dark:to-background">
+        <div className="min-h-dvh bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-indigo-50 via-white to-white dark:from-indigo-950/30 dark:via-background dark:to-background">
             <div className="mx-auto flex min-h-dvh max-w-5xl items-center justify-center px-4">
                 <Card className="w-full max-w-md rounded-2xl shadow-lg shadow-indigo-100/70 dark:shadow-indigo-900/10">
                     <CardHeader className="space-y-1 text-center">

@@ -1,51 +1,31 @@
 // src/lib/token.ts
-const ACCESS_KEY = "accessToken";
-const REFRESH_KEY = "refreshToken";
+const ACCESS_TOKEN_KEY = '@otsem:access_token';
+const REFRESH_TOKEN_KEY = '@otsem:refresh_token';
 
-export type Tokens = { accessToken: string; refreshToken?: string | null };
-
-function hasWindow(): boolean {
-    return typeof window !== "undefined";
+export function getAccessToken(): string | null {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem(ACCESS_TOKEN_KEY);
 }
 
-export const tokenStore = {
-    getAccess(): string | null {
-        if (!hasWindow()) {
-            return null;
-        }
-        return localStorage.getItem(ACCESS_KEY);
-    },
+export function getRefreshToken(): string | null {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem(REFRESH_TOKEN_KEY);
+}
 
-    getRefresh(): string | null {
-        if (!hasWindow()) {
-            return null;
-        }
-        return localStorage.getItem(REFRESH_KEY);
-    },
+export function setTokens(accessToken: string, refreshToken: string): void {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+}
 
-    set(tokens: Tokens): void {
-        if (!hasWindow()) {
-            return;
-        }
+export function clearTokens(): void {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem(ACCESS_TOKEN_KEY);
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
+    localStorage.removeItem('@otsem:user'); // Remove dados do usuário também
+}
 
-        if (tokens.accessToken) {
-            localStorage.setItem(ACCESS_KEY, tokens.accessToken);
-        }
-
-        if (typeof tokens.refreshToken !== "undefined") {
-            if (tokens.refreshToken) {
-                localStorage.setItem(REFRESH_KEY, tokens.refreshToken);
-            } else {
-                localStorage.removeItem(REFRESH_KEY);
-            }
-        }
-    },
-
-    clear(): void {
-        if (!hasWindow()) {
-            return;
-        }
-        localStorage.removeItem(ACCESS_KEY);
-        localStorage.removeItem(REFRESH_KEY);
-    },
-};
+export function hasValidToken(): boolean {
+    const token = getAccessToken();
+    return !!token;
+}

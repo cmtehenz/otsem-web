@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { http } from "@/lib/http";
+import http from "@/lib/http";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -202,8 +202,8 @@ export default function AdminPixTransactionsPage(): React.JSX.Element {
             qs.set("pageSize", String(pageSize));
             if (statusFilter) qs.set("status", statusFilter);
             const res = await http.get<HistoryResponse>(HISTORY_URL(ACCOUNT_HOLDER_ID, qs));
-            setHistory(res.items);
-            setTotal(res.total);
+            setHistory(res.data.items);
+            setTotal(res.data.total);
         } catch (e) {
             console.log(e);
             toast.error("Falha ao carregar histórico");
@@ -227,11 +227,11 @@ export default function AdminPixTransactionsPage(): React.JSX.Element {
             const pre = await http.get<PrecheckResponse>(
                 PRECHECK_URL(ACCOUNT_HOLDER_ID, pixKey.trim(), amount.trim())
             );
-            if (!pre.endToEndPixKey) {
+            if (!pre.data.endToEndPixKey) {
                 toast.error("Não foi possível validar a chave Pix.");
                 return;
             }
-            setPendingPix({ pixKey, amount, description, precheck: pre });
+            setPendingPix({ pixKey, amount, description, precheck: pre.data });
             setConfirmDialogOpen(true);
         } catch {
             toast.error("Erro ao validar chave Pix");
@@ -248,14 +248,14 @@ export default function AdminPixTransactionsPage(): React.JSX.Element {
             setSending(true);
             const payload = { pixKey, amount, description };
             const res = await http.post<SendPixResponse>(SEND_URL(ACCOUNT_HOLDER_ID), payload);
-            if (res.ok) {
-                toast.success(res.message ?? "PIX enviado com sucesso!");
+            if (res.data.ok) {
+                toast.success(res.data.message ?? "PIX enviado com sucesso!");
                 await loadHistory();
                 sendForm.reset();
                 setConfirmDialogOpen(false);
                 setPendingPix(null);
             } else {
-                toast.error(res.message ?? "Falha ao enviar PIX");
+                toast.error(res.data.message ?? "Falha ao enviar PIX");
             }
         } catch {
             toast.error("Erro ao enviar PIX");
@@ -286,11 +286,11 @@ export default function AdminPixTransactionsPage(): React.JSX.Element {
                 payload
             );
 
-            if (res.ok && res.data) {
-                setReceiveResult(res.data);
+            if (res.data.ok && res.data.data) {
+                setReceiveResult(res.data.data);
                 toast.success("QR Code gerado!");
             } else {
-                toast.error(res.message ?? "Falha ao gerar QR Code");
+                toast.error(res.data.message ?? "Falha ao gerar QR Code");
             }
         } catch {
             toast.error("Erro ao gerar QR Code");

@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { http } from "@/lib/http";
+import http from "@/lib/http";
 import { toast } from "sonner";
 import { fetchCep, isValidCep, onlyDigits } from "@/lib/cep"; // ✅ importa suas funções
 
@@ -74,7 +74,8 @@ export default function CustomerKycPage(): React.JSX.Element {
             try {
                 setLoading(true);
                 // Agora usamos o endpoint autenticado
-                const data = await http.get<CustomerResponse>("/customers/me");
+                const response = await http.get<CustomerResponse>("/customers/me");
+                const data = response.data;
 
                 setForm({
                     name: data.name ?? "",
@@ -148,14 +149,17 @@ export default function CustomerKycPage(): React.JSX.Element {
 
             // 1) Carrega para pegar o ID
             const me = await http.get<{ success: boolean; data: CustomerResponse } | CustomerResponse>("/customers/me");
-            const customer = "data" in me ? me.data : me;
-            if (!customer?.id) {
+            const responseData = me.data;
+            const customerIdValue =
+                "data" in responseData && responseData.data
+                    ? (responseData as { success: boolean; data: CustomerResponse }).data.id
+                    : (responseData as CustomerResponse).id;
+            if (!customerIdValue) {
                 toast.error("Cliente não encontrado.");
                 return;
             }
-
             // Atualiza os dados do cliente existente
-            await http.patch(`/customers/${customerId}`, {
+            await http.patch(`/customers/${customerIdValue}`, {
                 name: form.name,
                 cpf: onlyDigits(form.cpf),
                 birthday: form.birthday,

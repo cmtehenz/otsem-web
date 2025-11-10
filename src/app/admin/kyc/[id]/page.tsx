@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
-import { http } from "@/lib/http";
+import http from "@/lib/http";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 // import { Separator } from "@/components/ui/separator";
@@ -48,7 +48,7 @@ export default function AdminKycDetailPage(): React.JSX.Element {
         (async () => {
             try {
                 const res = await http.get<KycCustomer>(`/customers/${id}`);
-                setData(res);
+                setData(res.data);
             } catch (err) {
                 console.error(err);
                 toast.error("Falha ao carregar informações do cliente");

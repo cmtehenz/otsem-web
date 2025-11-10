@@ -4,39 +4,38 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname, useSelectedLayoutSegments } from "next/navigation";
 import {
-    LogOut,
     LayoutDashboard,
     Wallet,
     KeyRound,
+    ShieldCheck,
     Send,
     CreditCard,
     Settings,
-    ArrowLeftCircle,
-    ShieldCheck,
-    ShieldAlert,
-    ShieldQuestion,
     LifeBuoy,
-    MessageCirclePlus,
+    LogOut,
+    ShieldQuestion,
+    ShieldAlert,
 } from "lucide-react";
 
-import { AuthProvider, useAuth } from "@/contexts/auth-context";
+// ✅ Use o contexto que você já tem
+import { useAuth } from "@/contexts/auth-context";
 import { Protected } from "@/components/auth/Protected";
-import { RoleGuard } from "@/components/auth/RoleGuard";
-import { HeaderUserChip } from "@/components/auth/HeaderUserChip";
+import http from "@/lib/http";
+
 import {
     Sidebar,
     SidebarContent,
     SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
     SidebarHeader,
-    SidebarInset,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarProvider,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -45,9 +44,13 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { http } from "@/lib/http";
-import { toast } from "sonner";
 
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+
+/* -------------------------------------------------------- */
+/* 📦 Types */
+/* -------------------------------------------------------- */
 type CustomerAddress = {
     zipCode: string;
     street: string;
@@ -65,15 +68,12 @@ type CustomerResponse = {
     accountStatus: "not_requested" | "in_review" | "approved" | "rejected";
     name?: string;
     cpf?: string;
-    birthday?: string;         // ISO vindo do backend
+    birthday?: string;
     phone?: string;
     email: string;
     address?: CustomerAddress;
     createdAt: string;
 };
-
-
-type MeAny = CustomerResponse | { success: boolean; data: CustomerResponse | null };
 
 /* -------------------------------------------------------- */
 /* 🔗 Menu agrupado */
@@ -83,10 +83,8 @@ const menuGroups = [
         title: "Conta",
         items: [
             { label: "Dashboard", href: "/customer/dashboard", icon: LayoutDashboard },
-            { label: "Carteiras", href: "/customer/wallets", icon: Wallet },
+            { label: "Carteiras", href: "/customer/wallet/usdt/receive", icon: Wallet },
             { label: "Pix", href: "/customer/pix", icon: KeyRound },
-
-            // 🧾 Aqui entra o novo item:
             { label: "Verificar Identidade", href: "/customer/kyc", icon: ShieldCheck },
         ],
     },
@@ -94,23 +92,18 @@ const menuGroups = [
         title: "Pagamentos",
         items: [
             { label: "Payouts", href: "/customer/payouts", icon: Send },
-            { label: "Cartões", href: "/customer/cards", icon: CreditCard },
+            { label: "Cartões", href: "/customer/card", icon: CreditCard },
         ],
     },
     {
         title: "Outros",
-        items: [
-            { label: "Configurações", href: "/customer/settings", icon: Settings },
-        ],
+        items: [{ label: "Configurações", href: "/customer/settings", icon: Settings }],
     },
     {
         title: "Ajuda e Suporte",
-        items: [
-            { label: "Central de Ajuda", href: "/customer/support", icon: LifeBuoy },
-        ],
+        items: [{ label: "Central de Ajuda", href: "/customer/support", icon: LifeBuoy }],
     },
 ];
-
 
 /* -------------------------------------------------------- */
 /* 🧭 Helpers */
@@ -120,9 +113,52 @@ function isActive(pathname: string, href: string): boolean {
 }
 
 /* -------------------------------------------------------- */
+/* 🛡️ Badge KYC */
+/* -------------------------------------------------------- */
+function KycBadge({
+    status,
+}: {
+    status: "approved" | "in_review" | "not_requested" | "rejected";
+}) {
+    const config = {
+        approved: {
+            style: "bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400",
+            icon: ShieldCheck,
+            label: "Verificado",
+        },
+        in_review: {
+            style: "bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400",
+            icon: ShieldQuestion,
+            label: "Em Análise",
+        },
+        rejected: {
+            style: "bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400",
+            icon: ShieldAlert,
+            label: "Rejeitado",
+        },
+        not_requested: {
+            style: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
+            icon: ShieldAlert,
+            label: "Pendente",
+        },
+    };
+
+    const { style, icon: Icon, label } = config[status];
+
+    return (
+        <div
+            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${style}`}
+        >
+            <Icon className="h-3.5 w-3.5" />
+            {label}
+        </div>
+    );
+}
+
+/* -------------------------------------------------------- */
 /* 🧩 Sidebar */
 /* -------------------------------------------------------- */
-function CustomerSidebar() {
+function CustomerSidebar({ kycStatus }: { kycStatus: CustomerResponse["accountStatus"] }) {
     const pathname = usePathname();
 
     return (
@@ -133,73 +169,55 @@ function CustomerSidebar() {
             {/* Header */}
             <SidebarHeader className="px-4 py-3 border-b border-border/30">
                 <Link
-                    href="/"
+                    href="/customer/dashboard"
                     className="flex items-center gap-2 text-lg font-semibold text-indigo-600 dark:text-indigo-400"
                 >
-                    Otsem Bank 💸
+                    💸 Otsem Bank
                 </Link>
             </SidebarHeader>
 
             {/* Conteúdo */}
             <SidebarContent>
+                {/* Badge KYC */}
                 <SidebarGroup className="p-2">
-                    <SidebarMenu className="gap-1.5">
-                        <SidebarMenuItem>
-                            <SidebarMenuButton asChild>
-                                <Link
-                                    href="/customer/dashboard"
-                                    className="flex items-center gap-2 font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
-                                >
-                                    <ArrowLeftCircle className="h-4 w-4" />
-                                    Voltar ao Painel
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-
-                        <Separator className="my-2" />
-                    </SidebarMenu>
+                    <div className="px-3 py-2">
+                        <KycBadge status={kycStatus} />
+                    </div>
                 </SidebarGroup>
 
+                {/* Menu Groups */}
                 {menuGroups.map((group) => (
-                    <SidebarGroup key={group.title} className="px-2">
-                        <p className="px-3 pt-2 pb-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                    <SidebarGroup key={group.title}>
+                        <SidebarGroupLabel className="text-xs text-muted-foreground px-3">
                             {group.title}
-                        </p>
-                        <SidebarMenu className="gap-1.5">
-                            {group.items.map((it) => {
-                                const Icon = it.icon;
-                                const active = isActive(pathname, it.href);
-                                return (
-                                    <SidebarMenuItem key={it.href}>
-                                        <SidebarMenuButton asChild isActive={active}>
-                                            <Link
-                                                href={it.href}
-                                                className="flex items-center gap-2 text-sm transition-colors"
-                                            >
-                                                <Icon className="h-4 w-4 opacity-80" />
-                                                {it.label}
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                );
-                            })}
-                        </SidebarMenu>
+                        </SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {group.items.map((item) => {
+                                    const Icon = item.icon;
+                                    const active = isActive(pathname, item.href);
+
+                                    return (
+                                        <SidebarMenuItem key={item.href}>
+                                            <SidebarMenuButton asChild isActive={active}>
+                                                <Link href={item.href} className="flex items-center gap-3">
+                                                    <Icon className="h-4 w-4" />
+                                                    <span>{item.label}</span>
+                                                </Link>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    );
+                                })}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
                     </SidebarGroup>
                 ))}
 
-                {/* 💬 Botão de ticket fixo */}
-                <div className="p-3 mt-auto">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full justify-center border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/20"
-                        asChild
-                    >
-                        <Link href="/customer/support/ticket">
-                            <MessageCirclePlus className="h-4 w-4 mr-1" />
-                            Abrir Ticket
-                        </Link>
-                    </Button>
+                {/* Footer */}
+                <div className="mt-auto p-4 border-t border-border/30">
+                    <p className="text-xs text-muted-foreground text-center">
+                        © 2025 Otsem Bank
+                    </p>
                 </div>
             </SidebarContent>
         </Sidebar>
@@ -212,6 +230,7 @@ function CustomerSidebar() {
 function AutoBreadcrumb() {
     const segments = useSelectedLayoutSegments();
     const parts = ["customer", ...segments];
+
     const titleCase = (s: string) =>
         s.replace(/[-_]/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
 
@@ -219,20 +238,23 @@ function AutoBreadcrumb() {
         <Breadcrumb>
             <BreadcrumbList>
                 {parts.map((seg, idx) => {
-                    const href = "/" + parts.slice(0, idx + 1).join("/");
-                    const label = titleCase(seg);
                     const isLast = idx === parts.length - 1;
+                    const href = "/" + parts.slice(0, idx + 1).join("/");
 
                     return (
-                        <React.Fragment key={href}>
-                            <BreadcrumbItem className={idx === 0 ? "hidden md:block" : undefined}>
+                        <React.Fragment key={seg}>
+                            <BreadcrumbItem>
                                 {isLast ? (
-                                    <BreadcrumbPage>{label}</BreadcrumbPage>
+                                    <BreadcrumbPage className="font-medium">
+                                        {titleCase(seg)}
+                                    </BreadcrumbPage>
                                 ) : (
-                                    <BreadcrumbLink href={href}>{label}</BreadcrumbLink>
+                                    <BreadcrumbLink href={href}>
+                                        {titleCase(seg)}
+                                    </BreadcrumbLink>
                                 )}
                             </BreadcrumbItem>
-                            {!isLast && <BreadcrumbSeparator className="hidden md:block" />}
+                            {!isLast && <BreadcrumbSeparator />}
                         </React.Fragment>
                     );
                 })}
@@ -242,60 +264,17 @@ function AutoBreadcrumb() {
 }
 
 /* -------------------------------------------------------- */
-/* 🛡️ Badge KYC */
-/* -------------------------------------------------------- */
-function KycBadge({
-    status,
-}: {
-    status: "approved" | "in_review" | "not_requested" | "rejected";
-}) {
-    const style =
-        status === "approved"
-            ? "bg-green-100 text-green-700"
-            : status === "in_review"
-                ? "bg-blue-100 text-blue-700"
-                : status === "rejected"
-                    ? "bg-red-100 text-red-700"
-                    : "bg-gray-100 text-gray-600";
-
-    const Icon =
-        status === "approved"
-            ? ShieldCheck
-            : status === "in_review"
-                ? ShieldQuestion
-                : ShieldAlert;
-
-    const label =
-        status === "approved"
-            ? "Verificado"
-            : status === "in_review"
-                ? "Em Análise"
-                : status === "rejected"
-                    ? "Rejeitado"
-                    : "Pendente";
-
-    return (
-        <div
-            className={`flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium ${style}`}
-        >
-            <Icon className="h-3.5 w-3.5" />
-            {label}
-        </div>
-    );
-}
-
-/* -------------------------------------------------------- */
 /* 🚪 Logout */
 /* -------------------------------------------------------- */
 function HeaderLogout() {
     const { logout } = useAuth();
+
     return (
         <Button
             variant="ghost"
             size="icon"
             onClick={logout}
             title="Sair da conta"
-            aria-label="Sair da conta"
             className="hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/30 dark:hover:text-red-400"
         >
             <LogOut className="h-5 w-5" />
@@ -307,59 +286,64 @@ function HeaderLogout() {
 /* 🧱 Layout Principal */
 /* -------------------------------------------------------- */
 export default function CustomerLayout({ children }: { children: React.ReactNode }) {
-    const { user, token } = useAuth();
-    const [kycStatus, setKycStatus] = React.useState<
-        "approved" | "in_review" | "not_requested" | "rejected"
-    >("not_requested");
+    const { user } = useAuth();
+    const [kycStatus, setKycStatus] = React.useState<CustomerResponse["accountStatus"]>(
+        "not_requested"
+    );
+    const [loading, setLoading] = React.useState(true);
 
-    // Busca o status KYC real do customer logado
+    // Busca o status KYC real
     React.useEffect(() => {
         async function loadKyc() {
             try {
-                const res = await http.get<MeAny>("/customers/me", { anonymous: false });
-                const customer: CustomerResponse | null = ("data" in res ? res.data : res) ?? null;
-                if (!customer) {
-                    toast.error("Nenhum cliente associado.");
-                    return;
-                }
+                const response = await http.get<{ data: CustomerResponse }>("/customers/me");
+                const customer = response.data.data;
 
-                if (customer.accountStatus) setKycStatus(customer.accountStatus);
+                if (customer?.accountStatus) {
+                    setKycStatus(customer.accountStatus);
+                }
             } catch (err) {
-                console.warn("Falha ao carregar status KYC:", err);
+                console.error("Erro ao buscar KYC:", err);
+            } finally {
+                setLoading(false);
             }
         }
-        loadKyc();
-    }, [user, token]);
+
+        if (user) {
+            loadKyc();
+        }
+    }, [user]);
 
     return (
-        <AuthProvider>
-            <Protected>
-                <RoleGuard roles={["CUSTOMER"]} redirectTo="/admin/dashboard">
-                    <SidebarProvider style={{ "--sidebar-width": "17rem" } as React.CSSProperties}>
-                        <CustomerSidebar />
-                        <SidebarInset>
-                            {/* Header */}
-                            <header className="flex h-16 shrink-0 items-center gap-3 px-4 bg-background/80 backdrop-blur-md border-b border-border/40">
-                                <SidebarTrigger className="-ml-1" />
-                                <Separator orientation="vertical" className="mr-2 h-4" />
-                                <AutoBreadcrumb />
+        <Protected>
+            <SidebarProvider>
+                <div className="flex min-h-screen w-full">
+                    <CustomerSidebar kycStatus={kycStatus} />
 
-                                <div className="ml-auto flex items-center gap-3">
-                                    <KycBadge status={kycStatus} />
-                                    <HeaderUserChip />
-                                    <Separator orientation="vertical" className="h-6" />
-                                    <HeaderLogout />
+                    <div className="flex flex-1 flex-col">
+                        {/* Header */}
+                        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4">
+                            <SidebarTrigger className="-ml-1" />
+                            <Separator orientation="vertical" className="h-6" />
+                            <AutoBreadcrumb />
+                            <div className="ml-auto flex items-center gap-2">
+                                <HeaderLogout />
+                            </div>
+                        </header>
+
+                        {/* Main Content */}
+                        <main className="flex-1 p-4 md:p-6 lg:p-8">
+                            {loading ? (
+                                <div className="flex items-center justify-center h-full">
+                                    <div className="text-muted-foreground">Carregando...</div>
                                 </div>
-                            </header>
-
-                            {/* Conteúdo principal */}
-                            <main className="flex flex-1 flex-col gap-6 p-6 bg-muted/10 rounded-tl-2xl">
-                                {children}
-                            </main>
-                        </SidebarInset>
-                    </SidebarProvider>
-                </RoleGuard>
-            </Protected>
-        </AuthProvider>
+                            ) : (
+                                children
+                            )}
+                        </main>
+                    </div>
+                </div>
+            </SidebarProvider>
+        </Protected>
     );
 }

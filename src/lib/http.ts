@@ -1,110 +1,80 @@
 // src/lib/http.ts
-import { tokenStore } from "@/lib/token";
+import axios, { type AxiosInstance, type AxiosRequestConfig, type InternalAxiosRequestConfig } from 'axios';
+import { getAccessToken, clearTokens } from './token';
 
-const BASE_URL = (typeof window !== "undefined" && process.env.NEXT_PUBLIC_API_URL) || "";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
 
-type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-
-export type RequestOpts = {
-    headers?: Record<string, string>;
-    body?: unknown;
+interface CustomAxiosConfig extends AxiosRequestConfig {
     anonymous?: boolean;
-    noRefresh?: boolean;
-    absolute?: boolean;
-    credentials?: RequestCredentials;
-    signal?: AbortSignal;
-};
+}
 
-type ErrorPayload = { message?: string | string[]; error?: string; statusCode?: number };
+const httpClient: AxiosInstance = axios.create({
+    baseURL: BASE_URL,
+    timeout: 30000,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
 
-let refreshInFlight: Promise<string | null> | null = null;
-
-async function refreshAccessToken(): Promise<string | null> {
-    if (refreshInFlight) return refreshInFlight;
-
-    const refreshToken = tokenStore.getRefresh();
-    if (!refreshToken) return null;
-
-    refreshInFlight = (async () => {
-        try {
-            const res = await fetch(joinUrl("/auth/refresh"), {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ refreshToken }),
-            });
-            if (!res.ok) throw new Error(`refresh failed: ${res.status}`);
-
-            const data = (await res.json()) as { accessToken: string; refreshToken?: string };
-            tokenStore.set({ accessToken: data.accessToken, refreshToken: data.refreshToken ?? refreshToken });
-            return data.accessToken;
-        } catch {
-            tokenStore.clear();
-            return null;
-        } finally {
-            refreshInFlight = null;
+// Interceptor para adicionar o token em todas as requisições
+httpClient.interceptors.request.use(
+    (config: InternalAxiosRequestConfig) => {
+        // Se a requisição tiver header X-Anonymous, não adiciona o token
+        if (config.headers?.['X-Anonymous']) {
+            delete config.headers['X-Anonymous'];
+            return config;
         }
-    })();
 
-    return refreshInFlight;
-}
+        const token = getAccessToken();
 
-function joinUrl(path: string, absolute?: boolean) {
-    if (absolute || /^https?:\/\//i.test(path)) return path;
-    return `${BASE_URL}${path}`;
-}
-
-async function request<T>(method: HttpMethod, path: string, opts: RequestOpts = {}, _retry = false): Promise<T> {
-    const headers: Record<string, string> = { ...(opts.headers || {}) };
-    const hasBody = opts.body !== undefined && opts.body !== null;
-
-    const isJsonBody = hasBody && typeof opts.body === "object" && !(opts.body instanceof FormData);
-    if (isJsonBody && !headers["Content-Type"]) headers["Content-Type"] = "application/json";
-
-    if (!opts.anonymous) {
-        const token = tokenStore.getAccess();
-        if (token) headers["Authorization"] = `Bearer ${token}`;
-    }
-
-    const res = await fetch(joinUrl(path, opts.absolute), {
-        method,
-        headers,
-        body: isJsonBody ? JSON.stringify(opts.body) : (opts.body as BodyInit | undefined),
-        credentials: opts.credentials,
-        signal: opts.signal,
-    });
-
-    if (res.status === 204) return undefined as unknown as T;
-
-    if (res.ok) {
-        const ct = res.headers.get("content-type") || "";
-        if (ct.includes("application/json")) return (await res.json()) as T;
-        const text = await res.text();
-        return text as unknown as T;
-    }
-
-    if (res.status === 401 && !opts.noRefresh && !opts.anonymous && !_retry) {
-        const newToken = await refreshAccessToken();
-        if (newToken) {
-            return request<T>(method, path, opts, true);
+        if (token && config.headers) {
+            config.headers.Authorization = `Bearer ${token}`;
         }
+
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
     }
+);
 
-    let message = `HTTP ${res.status}`;
-    try {
-        const payload = (await res.json()) as ErrorPayload;
-        const msg = Array.isArray(payload.message) ? payload.message.join(", ") : payload.message || payload.error;
-        if (msg) message = msg;
-    } catch { /* ignore */ }
+// Interceptor para tratar erros de autenticação
+httpClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        // Se receber 401, limpa os tokens e redireciona para login
+        if (error.response?.status === 401) {
+            clearTokens();
 
-    const error = new Error(message) as Error & { status?: number };
-    error.status = res.status;
-    throw error;
+            // Apenas redireciona se não estiver em rotas públicas
+            if (typeof window !== 'undefined' &&
+                !window.location.pathname.includes('/login') &&
+                !window.location.pathname.includes('/register')) {
+                window.location.href = '/login';
+            }
+        }
+
+        return Promise.reject(error);
+    }
+);
+
+export default httpClient;
+
+// Método helper para requisições autenticadas
+function withAnonymous(config?: CustomAxiosConfig): AxiosRequestConfig {
+    if (!config) return {};
+    const { anonymous, ...rest } = config;
+    return rest;
 }
 
-export const http = {
-    get: <T>(path: string, opts?: RequestOpts) => request<T>("GET", path, opts),
-    post: <T>(path: string, body?: unknown, opts?: RequestOpts) => request<T>("POST", path, { ...(opts || {}), body }),
-    put: <T>(path: string, body?: unknown, opts?: RequestOpts) => request<T>("PUT", path, { ...(opts || {}), body }),
-    patch: <T>(path: string, body?: unknown, opts?: RequestOpts) => request<T>("PATCH", path, { ...(opts || {}), body }),
-    delete: <T>(path: string, opts?: RequestOpts) => request<T>("DELETE", path, opts),
-};
+export const get = <T = unknown>(url: string, config?: CustomAxiosConfig) =>
+    httpClient.get<T>(url, withAnonymous(config));
+
+export const post = <T = unknown>(url: string, data?: unknown, config?: CustomAxiosConfig) =>
+    httpClient.post<T>(url, data, withAnonymous(config));
+
+export const put = <T = unknown>(url: string, data?: unknown, config?: CustomAxiosConfig) =>
+    httpClient.put<T>(url, data, withAnonymous(config));
+
+export const del = <T = unknown>(url: string, config?: CustomAxiosConfig) =>
+    httpClient.delete<T>(url, withAnonymous(config));

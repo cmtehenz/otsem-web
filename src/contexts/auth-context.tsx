@@ -1,146 +1,230 @@
 "use client";
 
-import * as React from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { http } from "@/lib/http";
-import { tokenStore } from "@/lib/token";
-import { toast } from "sonner";
+import httpClient from "@/lib/http";
+import { setTokens, clearTokens, getAccessToken } from "@/lib/token";
 
-export type UserRole = "ADMIN" | "CUSTOMER" | "STAFF" | string;
+interface User {
+    id: string;
+    email: string;
+    role: "ADMIN" | "CUSTOMER";
+    name?: string;
+}
 
-export interface Me {
+interface AuthContextData {
+    user: User | null;
+    loading: boolean;
+    login: (email: string, password: string) => Promise<void>;
+    logout: () => void;
+}
+
+interface LoginResponse {
+    access_token: string;
+    role: "ADMIN" | "CUSTOMER";
+}
+
+interface CustomerMeResponse {
     id: string;
     email: string;
     name?: string;
-    role?: UserRole;
+    type?: string;
+    accountStatus?: string;
 }
 
-type AuthState =
-    | { status: "idle"; user: null; token: null }
-    | { status: "loading"; user: null; token: string | null }
-    | { status: "authenticated"; user: Me; token: string }
-    | { status: "unauthenticated"; user: null; token: null };
-
-interface AuthContextValue {
-    state: AuthState;
-    isLoading: boolean;
-    user: Me | null;
-    token: string | null;
-    login: (accessToken: string, role?: UserRole) => Promise<void>;
-    logout: () => void;
-    refreshMe: () => Promise<void>;
+interface AdminMeResponse {
+    email: string;
+    name?: string;
+    role?: string;
 }
 
-const AuthContext = React.createContext<AuthContextValue | undefined>(undefined);
+const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-// limpa cookie de access token ao sair
-function clearCookieAccessToken() {
+// Helper para decodificar JWT sem dependências externas
+function decodeJwt(token: string): { sub: string; email: string; role: "ADMIN" | "CUSTOMER"; exp: number } | null {
     try {
-        document.cookie = "access_token=; Path=/; Max-Age=0; SameSite=Lax";
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload;
     } catch {
-        /* ignore */
+        return null;
     }
 }
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
-    const [state, setState] = React.useState<AuthState>({
-        status: "idle",
-        user: null,
-        token: null,
-    });
 
-    const fetchMe = React.useCallback(async (token: string): Promise<Me> => {
-        return http.get<Me>("/auth/me", {
-            anonymous: true,
-            headers: { Authorization: `Bearer ${token}` },
-        });
+    // Carrega o usuário ao montar o componente
+    useEffect(() => {
+        async function loadUser() {
+            try {
+                const token = getAccessToken();
+
+                if (!token) {
+                    setLoading(false);
+                    return;
+                }
+
+                // Decodifica o token JWT para pegar o role e id
+                const payload = decodeJwt(token);
+
+                if (!payload) {
+                    console.warn("Token inválido ou malformado");
+                    clearTokens();
+                    setLoading(false);
+                    return;
+                }
+
+                // Verifica se o token expirou
+                const now = Math.floor(Date.now() / 1000);
+                if (payload.exp < now) {
+                    console.warn("Token expirado");
+                    clearTokens();
+                    setLoading(false);
+                    return;
+                }
+
+                const role = payload.role;
+                const userId = payload.sub; // ID sempre vem do JWT
+
+                // Endpoint varia conforme o role
+                const endpoint = role === "ADMIN" ? "/auth/me" : "/customers/me";
+
+                // Tenta buscar dados do usuário
+                const response = await httpClient.get<CustomerMeResponse | AdminMeResponse>(endpoint);
+                const userData = response.data;
+
+                // Para CUSTOMER, precisa do id na resposta
+                if (role === "CUSTOMER" && !("id" in userData)) {
+                    console.error("❌ Customer sem campo id:", userData);
+                    clearTokens();
+                    setLoading(false);
+                    return;
+                }
+
+                setUser({
+                    id: role === "ADMIN" ? userId : (userData as CustomerMeResponse).id,
+                    email: userData.email,
+                    role: role,
+                    name: userData.name || undefined,
+                });
+            } catch (error) {
+                console.error("Erro ao carregar usuário:", error);
+                clearTokens();
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        loadUser();
     }, []);
 
-    // ⚙️ Bootstrap: valida token e obtém o usuário, mas NÃO redireciona
-    const bootstrap = React.useCallback(async () => {
-        const token = tokenStore.getAccess();
-        if (!token) {
-            setState({ status: "unauthenticated", user: null, token: null });
-            return;
-        }
-
-        setState({ status: "loading", user: null, token });
-
+    async function login(email: string, password: string) {
         try {
-            const me = await fetchMe(token);
-            setState({ status: "authenticated", user: me, token });
-        } catch {
-            tokenStore.clear();
-            clearCookieAccessToken();
-            setState({ status: "unauthenticated", user: null, token: null });
-        }
-    }, [fetchMe]);
+            // 1. Faz login e recebe o token
+            const loginResponse = await httpClient.post<LoginResponse>(
+                "/auth/login",
+                { email, password },
+                { headers: { "X-Anonymous": "true" } }
+            );
 
-    React.useEffect(() => {
-        void bootstrap();
-    }, [bootstrap]);
+            const { access_token, role } = loginResponse.data;
 
-    // 🚀 Login: aqui sim redireciona conforme o tipo de usuário
-    async function login(accessToken: string, role?: UserRole) {
-        tokenStore.set({ accessToken, refreshToken: null });
-        setState({ status: "loading", user: null, token: accessToken });
+            console.log("🔐 Role recebido do backend:", role);
 
-        try {
-            const me = await fetchMe(accessToken);
-            setState({ status: "authenticated", user: me, token: accessToken });
+            // Valida se recebeu o token
+            if (!access_token) {
+                throw new Error("Token de acesso não recebido da API");
+            }
 
-            const finalRole = role ?? me.role;
-            if (finalRole === "ADMIN") router.push("/admin/dashboard");
-            else router.push("/customer/dashboard");
-        } catch {
-            tokenStore.clear();
-            clearCookieAccessToken();
-            setState({ status: "unauthenticated", user: null, token: null });
-            toast.error("Sessão inválida.");
+            // Decodifica o token para pegar o id do usuário (sub)
+            const payload = decodeJwt(access_token);
+            if (!payload) {
+                throw new Error("Token inválido");
+            }
+
+            const userId = payload.sub;
+
+            // Salva os tokens
+            setTokens(access_token, "");
+
+            // 2. Endpoint varia conforme o role
+            const endpoint = role === "ADMIN" ? "/auth/me" : "/customers/me";
+
+            // Busca os dados do usuário usando o token
+            const userResponse = await httpClient.get<CustomerMeResponse | AdminMeResponse>(endpoint);
+            const userData = userResponse.data;
+
+            // Valida se recebeu os dados do usuário
+            if (!userData) {
+                throw new Error("Dados do usuário não recebidos da API");
+            }
+
+            // Para CUSTOMER, valida se tem id
+            if (role === "CUSTOMER" && !("id" in userData)) {
+                throw new Error("Dados do usuário não recebidos da API (campo id ausente)");
+            }
+
+            // Define o usuário (importante fazer isso ANTES do redirect)
+            const newUser = {
+                id: role === "ADMIN" ? userId : (userData as CustomerMeResponse).id,
+                email: userData.email,
+                role: role,
+                name: userData.name || undefined,
+            };
+
+            console.log("👤 Usuário definido:", newUser);
+
+            setUser(newUser);
+
+            // Redireciona baseado no role
+            const dashboardPath = role === "ADMIN" ? "/admin/dashboard" : "/customer/dashboard";
+            
+            console.log("🚀 Redirecionando para:", dashboardPath, "baseado no role:", role);
+            
+            // NÃO use router.push aqui - deixe o page.tsx fazer o redirect
+            // O problema pode estar em múltiplos redirects acontecendo
+            
+            // Em vez disso, vamos usar window.location para forçar navegação
+            if (typeof window !== 'undefined') {
+                window.location.href = dashboardPath;
+            }
+        } catch (error) {
+            console.error("Erro no login:", error);
+
+            // Limpa tokens em caso de erro
+            clearTokens();
+
+            if (error instanceof Error) {
+                throw error;
+            }
+
+            throw new Error("Erro ao fazer login");
         }
     }
 
     function logout() {
-        tokenStore.clear();
-        clearCookieAccessToken();
-        setState({ status: "unauthenticated", user: null, token: null });
+        clearTokens();
+        setUser(null);
         router.push("/login");
     }
 
-    async function refreshMe() {
-        const token = tokenStore.getAccess();
-        if (!token) {
-            setState({ status: "unauthenticated", user: null, token: null });
-            return;
-        }
-
-        setState({ status: "loading", user: null, token });
-        try {
-            const me = await fetchMe(token);
-            setState({ status: "authenticated", user: me, token });
-        } catch {
-            tokenStore.clear();
-            clearCookieAccessToken();
-            setState({ status: "unauthenticated", user: null, token: null });
-        }
-    }
-
-    const value: AuthContextValue = {
-        state,
-        isLoading: state.status === "idle" || state.status === "loading",
-        user: state.status === "authenticated" ? state.user : null,
-        token: state.token ?? null,
-        login,
-        logout,
-        refreshMe,
-    };
-
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return (
+        <AuthContext.Provider value={{ user, loading, login, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
-export function useAuth(): AuthContextValue {
-    const ctx = React.useContext(AuthContext);
-    if (!ctx) throw new Error("useAuth must be used within <AuthProvider>");
-    return ctx;
+export function useAuth() {
+    const context = useContext(AuthContext);
+
+    if (!context) {
+        throw new Error("useAuth must be used within an AuthProvider");
+    }
+
+    return context;
 }
