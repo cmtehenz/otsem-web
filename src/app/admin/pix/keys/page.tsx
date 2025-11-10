@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { RefreshCw, KeyRound, Plus, Search, Trash2, Loader2 } from "lucide-react";
 
-import { http } from "@/lib/http";
+import http from "@/lib/http";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -168,9 +168,9 @@ export default function AdminPixKeysPage(): React.JSX.Element {
             setLoadingList(true);
             const res = await http.get<ListKeysResponse>(LIST_URL);
 
-            setKeys(res.keys ?? []);
-            setBankName(res.bank?.name);
-            toast.success(res.message || "Chaves carregadas com sucesso");
+            setKeys(res.data.keys ?? []);
+            setBankName(res.data.bank?.name);
+            toast.success(res.data.message || "Chaves carregadas com sucesso");
         } catch (e) {
             const msg = e instanceof Error ? e.message : "Erro ao carregar chaves";
             toast.error(msg);
@@ -200,7 +200,7 @@ export default function AdminPixKeysPage(): React.JSX.Element {
             }
 
             const res = await http.post<CreateKeyResponse>(CREATE_URL, payload);
-            const message = res?.extensions?.message ?? "Chave criada com sucesso!";
+            const message = res?.data?.extensions?.message ?? "Chave criada com sucesso!";
             toast.success(message);
             await loadKeys();
         } catch (e) {
@@ -239,7 +239,7 @@ export default function AdminPixKeysPage(): React.JSX.Element {
             const res = await http.get<PrecheckResponse>(
                 PRECHECK_URL(pixKey.trim(), amount.trim())
             );
-            const data = res?.Extensions?.Data ?? null;
+            const data = res?.data?.Extensions?.Data ?? null;
             setPrecheck(data);
             if (data?.EndToEnd) toast.success("Pré-consulta concluída!");
             else toast.message("Consulta OK (sem EndToEnd)");

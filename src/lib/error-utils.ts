@@ -1,20 +1,3 @@
-// src/lib/auth.ts
-import { http } from "@/lib/http";
-import { tokenStore } from "@/lib/token";
-
-export interface LoginResponse {
-    access_token: string;
-    refresh_token?: string;
-    role?: string;
-}
-
-export async function authLogin(email: string, password: string): Promise<LoginResponse> {
-    const res = await http.post<LoginResponse>("/auth/login", { email, password }, { anonymous: true });
-    tokenStore.set({ accessToken: res.access_token, refreshToken: res.refresh_token ?? null });
-    return res;
-}
-
-// ------ erros http -> string amigável (sem any)
 type HttpLikeError = {
     status?: number;
     message?: string | string[];
