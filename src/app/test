@@ -1,0 +1,31 @@
+curl --location 'https://apisbank.brxbank.com.br/accreditation/accreditations/accreditate/person' \
+-H "Authorization: Bearer $TOKEN" \
+-H "Content-Type: application/json" \
+--data-raw '{
+    "Identifier": "572aac8c-949e-40d5-8b87-66cc164e9000",
+    "ProductId": 1,
+    "Person": {
+        "Name": "Gustavo Altevir da Costa",
+        "SocialName": "Gustavo Costa",
+        "Cpf": "04236358913",
+        "Birthday": "1986-03-14",
+        "Phone": "+5547988160462",
+        "Email": "ccmtgcosta@gmail.com",
+        "GenderId": 1,
+        "Address": {
+            "ZipCode": "88400000",
+            "Street": "Rua Odinei Becker",
+            "Number": "478",
+            "Complement": "Nossa Senhora de Fátima",
+            "Neighborhood": "Centro",
+            "CityIbgeCode": "4208500"
+        }
+    },
+    "PixLimits": {
+        "SingleTransfer": 2000.00,
+        "DayTime": 10000.00,
+        "NightTime": 1000.00,
+        "Monthly": 100000.00,
+        "ServiceId": 1
+    }
+}'

@@ -394,7 +394,7 @@ export default function AdminDashboardPage(): React.JSX.Element {
             <Separator />
 
             {/* Ações rápidas */}
-            <div className="rounded-2xl border border-[#000000]/10 bg-gradient-to-br from-[#faffff] to-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-[#000000]/10 bg-linear-to-br from-[#faffff] to-white p-6 shadow-sm">
                 <h3 className="mb-4 text-sm font-semibold text-muted-foreground">Ações Rápidas</h3>
                 <div className="flex flex-wrap gap-2">
                     <Button asChild variant="outline" className="border-[#b852ff]/20 hover:bg-[#b852ff]/5">
