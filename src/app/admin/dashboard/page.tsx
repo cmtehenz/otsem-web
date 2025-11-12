@@ -11,6 +11,37 @@ import RecentTransactions from "./RecentTransactions";
 import RecentUsers from "./RecentUsers";
 import QuickActions from "./QuickActions";
 
+type DashboardStats = {
+    summary: {
+        customers: {
+            total: number;
+            pending: number;
+            approved: number;
+            rejected: number;
+        };
+        transactions: {
+            total: number;
+            volume: number;
+        };
+    };
+    interBalance: {
+        disponivel: number;
+        bloqueadoCheque: number;
+        bloqueadoJudicialmente: number;
+        bloqueadoAdministrativo: number;
+        limite: number;
+        total: number;
+    };
+    latestUsers: Array<{
+        id: string;
+        name: string;
+        email: string;
+        status: string;
+        createdAt: string;
+    }>;
+    latestTransactions: any[];
+};
+
 type Summary = {
     totalUsers: number;
     activeToday: number;
@@ -18,7 +49,6 @@ type Summary = {
     pixKeys: number;
     cardTxs: number;
     chargebacks: number;
-    accountHolderId?: string; // pode não existir
 };
 
 type Balance = {
@@ -28,16 +58,6 @@ type Balance = {
     totalBalance: number;
     currency: string;
     updatedAt: string;
-};
-
-type Tx = {
-    id: string;
-    createdAt: string;
-    type: "PIX" | "CARD" | "PAYOUT" | "CRYPTO";
-    asset: string; // moeda (ex: BRL)
-    amount: number;
-    status: "pending" | "processing" | "completed" | "failed";
-    description?: string;
 };
 
 type User = {
@@ -52,9 +72,8 @@ export default function AdminDashboardPage(): React.JSX.Element {
     const [loading, setLoading] = React.useState(true);
     const [summary, setSummary] = React.useState<Summary | null>(null);
     const [balance, setBalance] = React.useState<Balance | null>(null);
-    const [recentTxs, setRecentTxs] = React.useState<Tx[]>([]);
+    const [recentTxs, setRecentTxs] = React.useState<any[]>([]);
     const [recentUsers, setRecentUsers] = React.useState<User[]>([]);
-    const [balanceHint, setBalanceHint] = React.useState<string | null>(null);
 
     React.useEffect(() => {
         let cancelled = false;
@@ -63,67 +82,47 @@ export default function AdminDashboardPage(): React.JSX.Element {
             try {
                 setLoading(true);
 
-                // 1) Resumo
-                const summaryRes = await http.get<Summary>("/admin/dashboard/summary");
-                if (cancelled) return;
-                setSummary(summaryRes.data);
-
-                // 2) Descobrir o accountHolderId (para rotas Pix)
-                const envMasterId = process.env.NEXT_PUBLIC_MASTER_CUSTOMER_ID as string | undefined;
-                const accountHolderId = summaryRes.data.accountHolderId || envMasterId;
-
-                if (!accountHolderId) {
-                    setBalanceHint(
-                        "accountHolderId ausente. Defina NEXT_PUBLIC_MASTER_CUSTOMER_ID no .env.local ou retorne no /admin/dashboard/summary."
-                    );
-                }
-
-                // 3) Transações: usar rota Pix por account holder (evita 404)
-                let txsP: Promise<Tx[]>;
-                if (accountHolderId) {
-                    txsP = http
-                        .get<{ items: Tx[] } | Tx[]>(
-                            `/pix/transactions/account-holders/${encodeURIComponent(accountHolderId)}`,
-                            { params: { limit: 5 } }
-                        )
-                        .then((r) =>
-                            Array.isArray(r.data) ? (r.data as Tx[]) : ((r.data as any)?.items ?? [])
-                        )
-                        .catch(() => []);
-                } else {
-                    txsP = Promise.resolve([]);
-                }
-
-                // 4) Usuários (mantém como está)
-                const usersP = http
-                    .get<{ items: User[] }>("/users", {
-                        params: { limit: 5, sort: "createdAt:desc" },
-                    })
-                    .then((r) => r.data.items || [])
-                    .catch(() => []);
-
-                // 5) Saldo (403 é esperado se IP bloqueado)
-                const balanceP = accountHolderId
-                    ? http
-                        .get<Balance>(`/customers/${accountHolderId}/balance`)
-                        .then((r) => r.data)
-                        .catch((err) => {
-                            if (err?.response?.status === 403) {
-                                setBalanceHint("Sem permissão para consultar saldo (403).");
-                                return null;
-                            }
-                            console.warn("Falha ao buscar saldo:", err);
-                            setBalanceHint("Falha ao buscar saldo.");
-                            return null;
-                        })
-                    : Promise.resolve(null);
-
-                const [txs, users, maybeBalance] = await Promise.all([txsP, usersP, balanceP]);
+                // Buscar dados do dashboard
+                const statsRes = await http.get<DashboardStats>("/admin/dashboard/stats");
                 if (cancelled) return;
 
-                setRecentTxs(txs);
-                setRecentUsers(users);
-                if (maybeBalance) setBalance(maybeBalance);
+                const stats = statsRes.data;
+
+                // Converter os dados para o formato esperado pelos componentes
+                const convertedSummary: Summary = {
+                    totalUsers: stats.summary.customers.total,
+                    activeToday: stats.summary.customers.approved,
+                    volumeBRL: stats.summary.transactions.volume,
+                    pixKeys: 0, // não disponível no novo endpoint
+                    cardTxs: stats.summary.transactions.total,
+                    chargebacks: 0, // não disponível no novo endpoint
+                };
+
+                const convertedBalance: Balance = {
+                    accountHolderId: "master", // placeholder
+                    availableBalance: stats.interBalance.disponivel,
+                    blockedBalance:
+                        stats.interBalance.bloqueadoCheque +
+                        stats.interBalance.bloqueadoJudicialmente +
+                        stats.interBalance.bloqueadoAdministrativo,
+                    totalBalance: stats.interBalance.total,
+                    currency: "BRL",
+                    updatedAt: new Date().toISOString(),
+                };
+
+                const convertedUsers: User[] = stats.latestUsers.map(user => ({
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    createdAt: user.createdAt,
+                    accountStatus: user.status,
+                }));
+
+                setSummary(convertedSummary);
+                setBalance(convertedBalance);
+                setRecentUsers(convertedUsers);
+                setRecentTxs(stats.latestTransactions);
+
             } catch (err: any) {
                 if (!cancelled) {
                     console.error(err);
@@ -153,11 +152,6 @@ export default function AdminDashboardPage(): React.JSX.Element {
         <div className="space-y-6 p-6">
             <h1 className="text-2xl font-bold tracking-tight">Dashboard Admin</h1>
             <AccountBalance balance={balance} />
-            {balanceHint && (
-                <p className="text-xs text-muted-foreground">
-                    {balanceHint}
-                </p>
-            )}
             <DashboardSummary summary={summary} />
             <RecentTransactions transactions={recentTxs} />
             <RecentUsers users={recentUsers} />

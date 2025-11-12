@@ -62,7 +62,7 @@ export default function AdminCustomersPage(): React.JSX.Element {
             }
 
             const res = await http.get<CustomersResponse>(
-                `/admin/customers?${params.toString()}`
+                `/customers?${params.toString()}`
             );
 
             setItems(res.data.data);
