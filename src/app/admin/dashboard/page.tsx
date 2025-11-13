@@ -11,35 +11,43 @@ import RecentTransactions from "./RecentTransactions";
 import RecentUsers from "./RecentUsers";
 import QuickActions from "./QuickActions";
 
+type BankingTransaction = {
+    dataEntrada: string;
+    tipoTransacao: string;
+    tipoOperacao: string;
+    valor: string;
+    titulo: string;
+    descricao: string;
+};
+
 type DashboardStats = {
-    summary: {
-        customers: {
-            total: number;
-            pending: number;
-            approved: number;
-            rejected: number;
-        };
-        transactions: {
-            total: number;
-            volume: number;
-        };
-    };
-    interBalance: {
-        disponivel: number;
-        bloqueadoCheque: number;
-        bloqueadoJudicialmente: number;
-        bloqueadoAdministrativo: number;
-        limite: number;
+    customers: {
         total: number;
     };
-    latestUsers: Array<{
-        id: string;
-        name: string;
-        email: string;
-        status: string;
-        createdAt: string;
-    }>;
-    latestTransactions: any[];
+    deposits: {
+        total: number;
+        pending: number;
+        confirmed: number;
+        totalValue: number;
+    };
+    payouts: {
+        total: number;
+        totalValue: number;
+    };
+    banking: {
+        saldo: {
+            bloqueadoCheque: number;
+            disponivel: number;
+            bloqueadoJudicialmente: number;
+            bloqueadoAdministrativo: number;
+            limite: number;
+        };
+        extrato: {
+            transacoes: BankingTransaction[];
+        };
+        timestamp: string;
+    };
+    timestamp: string;
 };
 
 type Summary = {
@@ -90,38 +98,48 @@ export default function AdminDashboardPage(): React.JSX.Element {
 
                 // Converter os dados para o formato esperado pelos componentes
                 const convertedSummary: Summary = {
-                    totalUsers: stats.summary.customers.total,
-                    activeToday: stats.summary.customers.approved,
-                    volumeBRL: stats.summary.transactions.volume,
+                    totalUsers: stats.customers.total,
+                    activeToday: stats.deposits.confirmed, // Usando depósitos confirmados como proxy
+                    volumeBRL: stats.deposits.totalValue + stats.payouts.totalValue,
                     pixKeys: 0, // não disponível no novo endpoint
-                    cardTxs: stats.summary.transactions.total,
+                    cardTxs: stats.deposits.total + stats.payouts.total,
                     chargebacks: 0, // não disponível no novo endpoint
                 };
 
                 const convertedBalance: Balance = {
                     accountHolderId: "master", // placeholder
-                    availableBalance: stats.interBalance.disponivel,
+                    availableBalance: stats.banking.saldo.disponivel,
                     blockedBalance:
-                        stats.interBalance.bloqueadoCheque +
-                        stats.interBalance.bloqueadoJudicialmente +
-                        stats.interBalance.bloqueadoAdministrativo,
-                    totalBalance: stats.interBalance.total,
+                        stats.banking.saldo.bloqueadoCheque +
+                        stats.banking.saldo.bloqueadoJudicialmente +
+                        stats.banking.saldo.bloqueadoAdministrativo,
+                    totalBalance:
+                        stats.banking.saldo.disponivel +
+                        stats.banking.saldo.bloqueadoCheque +
+                        stats.banking.saldo.bloqueadoJudicialmente +
+                        stats.banking.saldo.bloqueadoAdministrativo,
                     currency: "BRL",
-                    updatedAt: new Date().toISOString(),
+                    updatedAt: stats.banking.timestamp,
                 };
 
-                const convertedUsers: User[] = stats.latestUsers.map(user => ({
-                    id: user.id,
-                    name: user.name,
-                    email: user.email,
-                    createdAt: user.createdAt,
-                    accountStatus: user.status,
+                // Converter transações bancárias para o formato esperado
+                const convertedTransactions = stats.banking.extrato.transacoes.map((tx, index) => ({
+                    id: `tx-${index}`,
+                    type: tx.tipoOperacao === 'C' ? 'credit' : 'debit',
+                    amount: parseFloat(tx.valor),
+                    description: tx.descricao,
+                    title: tx.titulo,
+                    transactionType: tx.tipoTransacao,
+                    createdAt: tx.dataEntrada,
+                    status: 'completed',
                 }));
 
                 setSummary(convertedSummary);
                 setBalance(convertedBalance);
-                setRecentUsers(convertedUsers);
-                setRecentTxs(stats.latestTransactions);
+                setRecentTxs(convertedTransactions);
+
+                // Como não temos latestUsers no novo formato, deixamos vazio
+                setRecentUsers([]);
 
             } catch (err: any) {
                 if (!cancelled) {
