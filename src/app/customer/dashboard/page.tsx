@@ -14,30 +14,53 @@ import {
     TableHead,
     TableHeader,
     TableRow,
+    TableBody,
+    TableCell,
 } from "@/components/ui/table";
 
-type CustomerData = {
+type AccountSummary = {
     id: string;
-    name: string | null;
-    email: string;
-    accountStatus: string;
-    externalClientId: string | null;
-    externalAccredId: string | null;
-};
-
-type Balance = {
-    available: number;
-    blocked: number;
-    total: number;
-};
-
-type Transaction = {
-    id: string;
-    type: string;
-    amount: number;
-    description: string;
-    createdAt: string;
+    balance: number;
     status: string;
+    pixKey: string;
+    pixKeyType: string;
+    dailyLimit: number;
+    monthlyLimit: number;
+    blockedAmount: number;
+    createdAt: string;
+    updatedAt: string;
+    payments: Payment[];
+};
+
+type Payment = {
+    id: string;
+    paymentValue: number;
+    paymentDate: string;
+    receiverPixKey: string;
+    endToEnd: string;
+    bankPayload: BankPayload;
+};
+
+type BankPayload = {
+    valor: string;
+    titulo: string;
+    detalhes: {
+        txId: string;
+        endToEndId: string;
+        nomePagador: string;
+        tipoDetalhe: string;
+        descricaoPix: string;
+        cpfCnpjPagador: string;
+        chavePixRecebedor: string;
+        nomeEmpresaPagador: string;
+    };
+    descricao: string;
+    idTransacao: string;
+    dataInclusao: string;
+    tipoOperacao: string;
+    dataTransacao: string;
+    tipoTransacao: string;
+    numeroDocumento: string;
 };
 
 function formatCurrency(value: number): string {
@@ -47,21 +70,10 @@ function formatCurrency(value: number): string {
     }).format(value);
 }
 
-const fmtUSD = (v: number) =>
-    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(v ?? 0);
-
 export default function Dashboard() {
     const { user } = useAuth();
     const [loading, setLoading] = React.useState(true);
-    const [customer, setCustomer] = React.useState<CustomerData | null>(null);
-    const [balance, setBalance] = React.useState<Balance | null>(null);
-    const [transactions, setTransactions] = React.useState<Transaction[]>([]);
-
-    const brl = balance?.available ?? 0;
-    const usdt = 0;
-
-    const totalBRL = React.useMemo(() => brl, [brl]);
-    const totalUSDT = React.useMemo(() => usdt, [usdt]);
+    const [account, setAccount] = React.useState<AccountSummary | null>(null);
 
     React.useEffect(() => {
         let cancelled = false;
@@ -71,30 +83,22 @@ export default function Dashboard() {
                 setLoading(true);
 
                 // Buscar dados do customer
-                const customerRes = await http.get<CustomerData>("/customers/me");
-                if (cancelled) return;
-                setCustomer(customerRes.data);
-
-                // Buscar saldo do cliente
-                const balanceRes = await http.get<Balance>(
-                    `/customers/${customerRes.data.id}/balance`
-                );
-                if (!cancelled) setBalance(balanceRes.data);
-
-                // Buscar transações recentes
-                try {
-                    const txRes = await http.get<{ data: Transaction[] }>(
-                        `/customers/${customerRes.data.id}/statement?limit=5`
-                    );
-                    if (!cancelled) setTransactions(txRes.data.data || []);
-                } catch (err) {
-                    console.log("Transações ainda não disponíveis");
+                const customerId = user?.id;
+                if (!customerId) {
+                    toast.error("Usuário não encontrado");
+                    return;
                 }
+
+                // Buscar resumo da conta
+                const res = await http.get<AccountSummary>(
+                    `/accounts/${customerId}/summary`
+                );
+                if (!cancelled) setAccount(res.data);
 
             } catch (err: any) {
                 if (!cancelled) {
                     console.error(err);
-                    toast.error("Falha ao carregar dados");
+                    toast.error("Falha ao carregar dados da conta");
                 }
             } finally {
                 if (!cancelled) setLoading(false);
@@ -105,7 +109,7 @@ export default function Dashboard() {
         return () => {
             cancelled = true;
         };
-    }, []);
+    }, [user?.id]);
 
     if (loading) {
         return (
@@ -116,28 +120,6 @@ export default function Dashboard() {
         );
     }
 
-    const getStatusLabel = (status: string) => {
-        const labels: Record<string, string> = {
-            not_requested: "Não solicitado",
-            requested: "Em análise",
-            in_review: "Em revisão",
-            approved: "Aprovado",
-            rejected: "Rejeitado",
-        };
-        return labels[status] || status;
-    };
-
-    const getStatusColor = (status: string) => {
-        const colors: Record<string, string> = {
-            not_requested: "bg-gray-100 text-gray-700",
-            requested: "bg-yellow-100 text-yellow-700",
-            in_review: "bg-blue-100 text-blue-700",
-            approved: "bg-green-100 text-green-700",
-            rejected: "bg-red-100 text-red-700",
-        };
-        return colors[status] || "bg-gray-100 text-gray-700";
-    };
-
     return (
         <div className="space-y-6 p-6">
             {/* Topbar */}
@@ -145,102 +127,105 @@ export default function Dashboard() {
                 <div>
                     <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
                     <p className="text-sm text-muted-foreground">
-                        Acompanhe saldos, adicione BRL via Pix e envie USDT on-chain.
+                        Saldo, limites e histórico Pix da sua conta.
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="secondary">
-                        Carregar demo
-                    </Button>
-                    <Button variant="ghost" className="gap-2">
+                    <Button variant="ghost" className="gap-2" onClick={() => window.location.reload()}>
                         <RefreshCw className="size-4" /> Atualizar
                     </Button>
                 </div>
             </div>
 
-            {/* Status KYC */}
-            {customer && customer.accountStatus !== "approved" && (
-                <Card className="border-yellow-200 bg-yellow-50">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h3 className="font-semibold">Verificação de Conta</h3>
-                                <p className="text-sm text-muted-foreground">
-                                    Status: {" "}
-                                    <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${getStatusColor(customer.accountStatus)}`}>
-                                        {getStatusLabel(customer.accountStatus)}
-                                    </span>
-                                </p>
-                            </div>
-                            {customer.accountStatus === "not_requested" && (
-                                <Link
-                                    href="/customer/kyc"
-                                    className="rounded bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90"
-                                >
-                                    Completar Verificação
-                                </Link>
-                            )}
+            {/* Saldo e limites */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <Card className="rounded-2xl">
+                    <CardHeader>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                            Saldo disponível
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-3xl font-semibold">
+                            {formatCurrency(account?.balance ?? 0)}
+                        </div>
+                        <div className="mt-2 text-xs text-muted-foreground">
+                            Atualizado em: {account?.updatedAt ? new Date(account.updatedAt).toLocaleString("pt-BR") : "--"}
                         </div>
                     </CardContent>
                 </Card>
-            )}
-
-            {/* Saldos */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <Card className="rounded-2xl">
-                    <CardHeader className="pb-2 flex flex-row items-center justify-between">
+                    <CardHeader>
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Saldo em Reais (BRL)
+                            Limite diário Pix
                         </CardTitle>
-                        <Wallet className="size-4 opacity-60" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-semibold">{formatCurrency(totalBRL)}</div>
-                        <div className="mt-2 text-xs text-muted-foreground">
-                            Disponível para conversão
+                        <div className="text-2xl font-semibold">
+                            {formatCurrency(account?.dailyLimit ?? 0)}
                         </div>
                     </CardContent>
                 </Card>
-
                 <Card className="rounded-2xl">
-                    <CardHeader className="pb-2 flex flex-row items-center justify-between">
+                    <CardHeader>
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Saldo em Dólar Tether (USDT)
+                            Limite mensal Pix
                         </CardTitle>
-                        <Wallet className="size-4 opacity-60" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-semibold">{fmtUSD(totalUSDT)}</div>
-                        <div className="mt-2 text-xs text-muted-foreground">
-                            Disponível para envios on-chain
+                        <div className="text-2xl font-semibold">
+                            {formatCurrency(account?.monthlyLimit ?? 0)}
                         </div>
                     </CardContent>
                 </Card>
             </div>
 
-            {/* Histórico de transações */}
+            {/* Histórico de transações Pix */}
             <Card className="rounded-2xl">
-                <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
-                        Últimas transações
-                    </CardTitle>
-                    <Link href="/transactions" className="text-xs underline">
-                        Ver tudo
-                    </Link>
+                <CardHeader>
+                    <CardTitle>Histórico Pix</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="overflow-x-auto">
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Quando</TableHead>
-                                    <TableHead>Tipo</TableHead>
-                                    <TableHead>Moeda</TableHead>
-                                    <TableHead className="text-right">Valor</TableHead>
+                                    <TableHead>Data</TableHead>
+                                    <TableHead>Valor</TableHead>
+                                    <TableHead>Pagador</TableHead>
+                                    <TableHead>Banco</TableHead>
                                     <TableHead>Descrição</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            {/* Adicione TableBody quando tiver dados */}
+                            <TableBody>
+                                {account?.payments && account.payments.length > 0 ? (
+                                    account.payments.map((p) => (
+                                        <TableRow key={p.id}>
+                                            <TableCell>
+                                                {new Date(p.paymentDate).toLocaleString("pt-BR")}
+                                            </TableCell>
+                                            <TableCell>
+                                                {formatCurrency(Number(p.bankPayload.valor))}
+                                            </TableCell>
+                                            <TableCell>
+                                                {p.bankPayload.detalhes.nomePagador}
+                                            </TableCell>
+                                            <TableCell>
+                                                {p.bankPayload.detalhes.nomeEmpresaPagador}
+                                            </TableCell>
+                                            <TableCell>
+                                                {p.bankPayload.titulo}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="text-center text-sm text-muted-foreground py-8">
+                                            Nenhuma transação Pix encontrada.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
                         </Table>
                     </div>
                 </CardContent>
