@@ -70,31 +70,25 @@ export default function Dashboard() {
             try {
                 setLoading(true);
 
-                // 1. Buscar dados do customer
+                // Buscar dados do customer
                 const customerRes = await http.get<CustomerData>("/customers/me");
                 if (cancelled) return;
                 setCustomer(customerRes.data);
 
-                // 2. Buscar saldo (se o customer tiver ID externo)
-                if (customerRes.data.externalClientId) {
-                    try {
-                        const balanceRes = await http.get<Balance>(
-                            `/customers/${customerRes.data.id}/balance`
-                        );
-                        if (!cancelled) setBalance(balanceRes.data);
-                    } catch (err) {
-                        console.log("Saldo ainda não disponível");
-                    }
+                // Buscar saldo do cliente
+                const balanceRes = await http.get<Balance>(
+                    `/customers/${customerRes.data.id}/balance`
+                );
+                if (!cancelled) setBalance(balanceRes.data);
 
-                    // 3. Buscar transações recentes
-                    try {
-                        const txRes = await http.get<{ data: Transaction[] }>(
-                            `/customers/${customerRes.data.id}/statement?limit=5`
-                        );
-                        if (!cancelled) setTransactions(txRes.data.data || []);
-                    } catch (err) {
-                        console.log("Transações ainda não disponíveis");
-                    }
+                // Buscar transações recentes
+                try {
+                    const txRes = await http.get<{ data: Transaction[] }>(
+                        `/customers/${customerRes.data.id}/statement?limit=5`
+                    );
+                    if (!cancelled) setTransactions(txRes.data.data || []);
+                } catch (err) {
+                    console.log("Transações ainda não disponíveis");
                 }
 
             } catch (err: any) {
