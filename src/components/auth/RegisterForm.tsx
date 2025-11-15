@@ -98,7 +98,7 @@ function RegisterPageInner(): React.JSX.Element {
             setLoading(true);
 
             const res = await http.post<{ access_token: string; role?: string }>(
-                "/users/register",
+                "/auth/register",
                 { name: v.name, email: v.email, password: v.password },
                 {}
             );
