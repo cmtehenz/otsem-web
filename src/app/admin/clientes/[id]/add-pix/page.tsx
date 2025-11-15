@@ -110,6 +110,7 @@ export default function PixCrudPage() {
             setEditingKey("");
             setEditingType("RANDOM");
             await loadCustomerAndPixKeys();
+            window.dispatchEvent(new Event("pixkey-updated"));
         } catch (err) {
             toast.error("Erro ao atualizar chave Pix");
         } finally {

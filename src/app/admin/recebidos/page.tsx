@@ -157,8 +157,25 @@ export default function PaymentsRecebidosPage() {
         return customer ? customer.name : id;
     }
 
+    function getTotalValue(payments: Payment[]) {
+        // Soma todos os valores e divide por 100 para converter de centavos para reais
+        const total = payments.reduce((sum, p) => sum + p.paymentValue, 0);
+        return formatCurrency(total);
+    }
+
     return (
         <div className="w-full p-6">
+            {/* Card com valor total */}
+            <Card className="mb-6 w-full">
+                <CardHeader>
+                    <CardTitle>Valor total recebido</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="text-3xl font-bold text-green-700">
+                        {getTotalValue(payments)}
+                    </div>
+                </CardContent>
+            </Card>
             <Card className="w-full">
                 <CardHeader>
                     <CardTitle>Pagamentos Recebidos (Pix)</CardTitle>

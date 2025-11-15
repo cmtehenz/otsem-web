@@ -17,6 +17,7 @@ import {
   Flag,
   GalleryVerticalEnd,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import {
   Sidebar,
@@ -30,6 +31,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { Badge } from "@/components/ui/badge";
+import http from "@/lib/http";
 
 type Item = {
   title: string;
@@ -50,7 +53,7 @@ const nav: Item[] = [
     url: "/admin",
     items: [
       { title: "Transações", url: "/admin/recebidos", icon: Banknote },
-      { title: "Chaves Pix", url: "/admin/pix/keys", icon: KeyRound },
+      // { title: "Chaves Pix", url: "/admin/pix/keys", icon: KeyRound },
       // { title: "Pagamentos Cartão", url: "/admin/cards", icon: CreditCard },
       // { title: "Payouts", url: "/admin/payouts", icon: Send },
     ],
@@ -61,7 +64,7 @@ const nav: Item[] = [
     items: [
       { title: "Usuários", url: "/admin/clientes", icon: Users },
       { title: "Verificações (KYC)", url: "/admin/kyc", icon: ShieldCheck },
-      { title: "Wallets", url: "/admin/wallets", icon: Wallet },
+      // { title: "Wallets", url: "/admin/wallets", icon: Wallet },
     ],
   },
   {
@@ -84,6 +87,26 @@ function isActive(pathname: string, href: string) {
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
+  const [hasPendingPixKey, setHasPendingPixKey] = useState(false);
+
+  useEffect(() => {
+    async function checkPendingPixKeys() {
+      try {
+        const res = await http.get("/pix-keys?status=PENDING");
+        setHasPendingPixKey(Array.isArray(res.data) && res.data.length > 0);
+      } catch {
+        setHasPendingPixKey(false);
+      }
+    }
+    checkPendingPixKeys();
+
+    function handlePixKeyUpdated() {
+      checkPendingPixKeys();
+    }
+
+    window.addEventListener("pixkey-updated", handlePixKeyUpdated);
+    return () => window.removeEventListener("pixkey-updated", handlePixKeyUpdated);
+  }, []);
 
   return (
     <Sidebar variant="floating" {...props}>
@@ -128,9 +151,10 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
               return (
                 <SidebarMenuItem key={group.title}>
                   <SidebarMenuButton asChild>
-                    <span className="font-medium">{group.title}</span>
+                    <span className="font-medium flex items-center gap-2 relative">
+                      {group.title}
+                    </span>
                   </SidebarMenuButton>
-
                   <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
                     {group.items!.map((item) => {
                       const active = isActive(pathname, item.url);
@@ -138,9 +162,12 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
                       return (
                         <SidebarMenuSubItem key={item.title}>
                           <SidebarMenuSubButton asChild isActive={active}>
-                            <Link href={item.url} className="flex items-center gap-2">
+                            <Link href={item.url} className="flex items-center gap-2 relative">
                               <Icon className="size-4" />
-                              {item.title}
+                              <span className="flex-1">{item.title}</span>
+                              {item.title === "Usuários" && hasPendingPixKey && (
+                                <Badge variant="destructive" className="ml-auto">!</Badge>
+                              )}
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
