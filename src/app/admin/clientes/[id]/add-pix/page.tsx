@@ -103,6 +103,7 @@ export default function PixCrudPage() {
             await http.patch(`/pix-keys/${editingId}`, {
                 keyType: editingType,
                 keyValue: editingKey,
+                status: "ACTIVE",
             });
             toast.success("Chave Pix atualizada!");
             setEditingId(null);
@@ -120,12 +121,29 @@ export default function PixCrudPage() {
         switch (status) {
             case "ACTIVE":
                 return "bg-green-100 text-green-800";
+            case "PENDING":
+                return "bg-yellow-100 text-yellow-800";
+            case "BLOCKED":
+                return "bg-gray-200 text-gray-800";
             case "DELETED":
                 return "bg-red-100 text-red-800";
-            case "INACTIVE":
-                return "bg-yellow-100 text-yellow-800";
             default:
                 return "bg-gray-100 text-gray-800";
+        }
+    }
+
+    function getStatusLabel(status: string) {
+        switch (status) {
+            case "ACTIVE":
+                return "Ativa";
+            case "PENDING":
+                return "Pendente";
+            case "BLOCKED":
+                return "Bloqueada";
+            case "DELETED":
+                return "Removida";
+            default:
+                return status;
         }
     }
 
@@ -179,7 +197,7 @@ export default function PixCrudPage() {
                                                         <TableCell>{pix.keyType}</TableCell>
                                                         <TableCell>
                                                             <span className={`px-2 py-1 rounded text-xs font-semibold ${getStatusColor(pix.status)}`}>
-                                                                {pix.status === "ACTIVE" ? "Ativa" : pix.status === "DELETED" ? "Removida" : pix.status}
+                                                                {getStatusLabel(pix.status)}
                                                             </span>
                                                         </TableCell>
                                                         <TableCell>{formatDate(pix.createdAt)}</TableCell>
