@@ -59,7 +59,8 @@ type ActionType = "approve" | "reject" | "review" | null;
 
 export default function AdminKycDetailPage(): React.JSX.Element {
     const router = useRouter();
-    const { id } = useParams<{ id: string }>();
+    const params = useParams<{ id: string }>();
+    const id = params?.id ?? "";
     const [data, setData] = React.useState<KycCustomer | null>(null);
     const [loading, setLoading] = React.useState(true);
     const [actionType, setActionType] = React.useState<ActionType>(null);
