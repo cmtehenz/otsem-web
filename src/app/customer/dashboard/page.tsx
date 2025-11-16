@@ -17,6 +17,7 @@ import {
     TableBody,
     TableCell,
 } from "@/components/ui/table";
+import { useUsdtRate } from "@/lib/useUsdtRate";
 
 type AccountSummary = {
     id: string;
@@ -63,17 +64,36 @@ type BankPayload = {
     numeroDocumento: string;
 };
 
-function formatCurrency(value: number): string {
-    return new Intl.NumberFormat("pt-BR", {
+function getValueColor(value: number) {
+    if (value > 0) return "text-blue-600";
+    if (value < 0) return "text-red-600";
+    return "text-[#000000]";
+}
+
+function formatCurrency(value: number, decimals = 2): string {
+    return value.toLocaleString("pt-BR", {
         style: "currency",
         currency: "BRL",
-    }).format(value);
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+    });
 }
 
 export default function Dashboard() {
     const { user } = useAuth();
     const [loading, setLoading] = React.useState(true);
     const [account, setAccount] = React.useState<AccountSummary | null>(null);
+
+    const { rate: usdtRate, loading: usdtLoading, updatedAt } = useUsdtRate();
+    const [timer, setTimer] = React.useState(15);
+
+    React.useEffect(() => {
+        setTimer(15); // reinicia o timer quando updatedAt muda
+        const interval = setInterval(() => {
+            setTimer((prev) => (prev > 0 ? prev - 1 : 0));
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [updatedAt]);
 
     React.useEffect(() => {
         let cancelled = false;
@@ -82,14 +102,12 @@ export default function Dashboard() {
             try {
                 setLoading(true);
 
-                // Buscar dados do customer
                 const customerId = user?.id;
                 if (!customerId) {
                     toast.error("Usuário não encontrado");
                     return;
                 }
 
-                // Buscar resumo da conta
                 const res = await http.get<AccountSummary>(
                     `/accounts/${customerId}/summary`
                 );
@@ -113,88 +131,85 @@ export default function Dashboard() {
 
     if (loading) {
         return (
-            <div className="flex h-96 flex-col items-center justify-center">
+            <div className="flex h-96 flex-col items-center justify-center bg-[#faffff]">
                 <Loader2 className="mb-4 h-8 w-8 animate-spin text-[#b852ff]" />
-                <p className="text-sm text-muted-foreground">Carregando...</p>
+                <p className="text-sm text-[#b852ff]">Carregando...</p>
             </div>
         );
     }
 
     return (
-        <div className="space-y-6 p-6">
+        <div className="space-y-6 p-6 min-h-screen bg-[#faffff]">
             {/* Topbar */}
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-                    <p className="text-sm text-muted-foreground">
-                        Saldo, limites e histórico Pix da sua conta.
+                    <h1 className="text-2xl font-bold tracking-tight text-[#000000]">Dashboard</h1>
+                    <p className="text-sm text-[#000000] opacity-70">
+                        Saldo e cotação USDT da sua conta.
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="ghost" className="gap-2" onClick={() => window.location.reload()}>
+                    <Button
+                        variant="ghost"
+                        className="gap-2 text-[#b852ff] hover:bg-[#f8bc07]/20"
+                        onClick={() => window.location.reload()}
+                    >
                         <RefreshCw className="size-4" /> Atualizar
                     </Button>
                 </div>
             </div>
 
-            {/* Saldo e limites */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <Card className="rounded-2xl">
+            {/* Cotação USDT e Saldo */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <Card className="rounded-2xl shadow-sm bg-[#faffff] border border-[#b852ff]/30">
                     <CardHeader>
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Saldo disponível
+                        <CardTitle className="text-sm font-medium text-[#000000] flex items-center gap-2">
+                            <Wallet className="w-5 h-5 text-[#b852ff]" />
+                            Cotação USDT
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-semibold">
+                        <div className="text-3xl font-bold text-blue-600">
+                            {usdtLoading ? "..." : formatCurrency(usdtRate ?? 0, 4)}
+                        </div>
+                        <div className="mt-2 text-xs text-[#000000] opacity-60">
+                            Atualização em {timer}s
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card className="rounded-2xl shadow-sm bg-[#faffff] border border-[#b852ff]/30">
+                    <CardHeader>
+                        <CardTitle className="text-sm font-medium text-[#000000] flex items-center gap-2">
+                            <Wallet className="w-5 h-5 text-[#f8bc07]" />
+                            Saldo na Conta
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className={`text-3xl font-bold ${getValueColor(account?.balance ?? 0)}`}>
                             {formatCurrency(account?.balance ?? 0)}
                         </div>
-                        <div className="mt-2 text-xs text-muted-foreground">
+                        <div className="mt-2 text-xs text-[#000000] opacity-60">
                             Atualizado em: {account?.updatedAt ? new Date(account.updatedAt).toLocaleString("pt-BR") : "--"}
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="rounded-2xl">
-                    <CardHeader>
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Limite diário Pix
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-semibold">
-                            {formatCurrency(account?.dailyLimit ?? 0)}
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="rounded-2xl">
-                    <CardHeader>
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Limite mensal Pix
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-semibold">
-                            {formatCurrency(account?.monthlyLimit ?? 0)}
                         </div>
                     </CardContent>
                 </Card>
             </div>
 
             {/* Histórico de transações Pix */}
-            <Card className="rounded-2xl">
+            <Card className="rounded-2xl shadow-sm bg-[#faffff] border border-[#b852ff]/30">
                 <CardHeader>
-                    <CardTitle>Histórico Pix</CardTitle>
+                    <CardTitle className="text-[#b852ff] font-semibold text-base">Histórico Pix</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="overflow-x-auto">
                         <Table>
-                            <TableHeader>
+                            <TableHeader className="sticky top-0 bg-[#f8bc07]/10 z-10">
                                 <TableRow>
-                                    <TableHead>Data</TableHead>
-                                    <TableHead>Valor</TableHead>
-                                    <TableHead>Pagador</TableHead>
-                                    <TableHead>Banco</TableHead>
-                                    <TableHead>Descrição</TableHead>
+                                    <TableHead className="text-[#000000] font-semibold">Data</TableHead>
+                                    <TableHead className="text-[#000000] font-semibold">Valor</TableHead>
+                                    <TableHead className="text-[#000000] font-semibold">Pagador</TableHead>
+                                    <TableHead className="text-[#000000] font-semibold">Banco</TableHead>
+                                    <TableHead className="text-[#000000] font-semibold">Descrição</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -205,7 +220,9 @@ export default function Dashboard() {
                                                 {new Date(p.paymentDate).toLocaleString("pt-BR")}
                                             </TableCell>
                                             <TableCell>
-                                                {formatCurrency(Number(p.bankPayload.valor))}
+                                                <span className={`font-bold ${getValueColor(Number(p.bankPayload.valor))}`}>
+                                                    {formatCurrency(Number(p.bankPayload.valor))}
+                                                </span>
                                             </TableCell>
                                             <TableCell>
                                                 {p.bankPayload.detalhes.nomePagador}
@@ -220,7 +237,7 @@ export default function Dashboard() {
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="text-center text-sm text-muted-foreground py-8">
+                                        <TableCell colSpan={5} className="text-center text-sm text-[#b852ff] py-8">
                                             Nenhuma transação Pix encontrada.
                                         </TableCell>
                                     </TableRow>
@@ -232,7 +249,7 @@ export default function Dashboard() {
             </Card>
 
             {/* Footer note */}
-            <p className="mt-6 text-center text-xs text-muted-foreground">
+            <p className="mt-6 text-center text-xs text-[#b852ff] opacity-70">
                 OtsemBank — MVP • UI preview
             </p>
         </div>
