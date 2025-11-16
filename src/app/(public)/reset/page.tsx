@@ -49,9 +49,8 @@ export default function ResetPage(): React.JSX.Element {
 
 function ResetPageInner(): React.JSX.Element {
     const router = useRouter();
-    const sp = useSearchParams(); // seguro dentro do <Suspense/>
-    // normaliza o token (trim) e evita undefined
-    const rawToken = sp.get("token") ?? "";
+    const sp = useSearchParams();
+    const rawToken = sp ? sp.get("token") ?? "" : "";
     const token = rawToken.trim();
 
     const {
