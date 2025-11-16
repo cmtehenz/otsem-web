@@ -86,7 +86,7 @@ function isActive(pathname: string, href: string) {
 }
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
   const [hasPendingPixKey, setHasPendingPixKey] = useState(false);
 
   useEffect(() => {
