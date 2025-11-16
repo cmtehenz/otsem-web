@@ -49,7 +49,7 @@ export default function LoginPage(): React.JSX.Element {
 function LoginPageInner(): React.JSX.Element {
     const router = useRouter();
     const sp = useSearchParams();
-    const next = safeNext(sp.get('next'));
+    const next = safeNext(sp ? sp.get('next') : undefined);
     const { login } = useAuth();
 
     const {
