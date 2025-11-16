@@ -33,7 +33,7 @@ function titleCase(s: string) {
 }
 
 function AutoBreadcrumb() {
-    const segments = useSelectedLayoutSegments(); // ex.: ["users","123"]
+    const segments = useSelectedLayoutSegments() ?? []; // ex.: ["users","123"]
     const parts = ["admin", ...segments];
 
     if (parts.length <= 1) {
