@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useSelectedLayoutSegments } from "next/navigation";
 import {
     LayoutDashboard,
-    Wallet,
     KeyRound,
     ShieldCheck,
     Send,
@@ -83,7 +82,7 @@ const menuGroups = [
         title: "Conta",
         items: [
             { label: "Dashboard", href: "/customer/dashboard", icon: LayoutDashboard },
-            { label: "Carteiras", href: "/customer/wallet/usdt/receive", icon: Wallet },
+            // { label: "Carteiras", href: "/customer/wallet/usdt/receive", icon: Wallet },
             { label: "Pix", href: "/customer/pix", icon: KeyRound },
             { label: "Verificar Identidade", href: "/customer/kyc", icon: ShieldCheck },
         ],
@@ -122,22 +121,22 @@ function KycBadge({
 }) {
     const config = {
         approved: {
-            style: "bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400",
+            style: "bg-green-100 text-green-700",
             icon: ShieldCheck,
             label: "Verificado",
         },
         in_review: {
-            style: "bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400",
+            style: "bg-blue-100 text-blue-700",
             icon: ShieldQuestion,
             label: "Em Análise",
         },
         rejected: {
-            style: "bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400",
+            style: "bg-red-100 text-red-700",
             icon: ShieldAlert,
             label: "Rejeitado",
         },
         not_requested: {
-            style: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
+            style: "bg-[#f8bc07]/20 text-[#f8bc07]",
             icon: ShieldAlert,
             label: "Pendente",
         },
@@ -159,18 +158,18 @@ function KycBadge({
 /* 🧩 Sidebar */
 /* -------------------------------------------------------- */
 function CustomerSidebar({ kycStatus }: { kycStatus: CustomerResponse["accountStatus"] }) {
-    const pathname = usePathname();
+    const pathname = usePathname() ?? "";
 
     return (
         <Sidebar
             variant="floating"
-            className="border-r border-border/40 bg-background/60 backdrop-blur-sm"
+            className="border-r border-[#b852ff]/20 bg-[#faffff] backdrop-blur-sm"
         >
             {/* Header */}
-            <SidebarHeader className="px-4 py-3 border-b border-border/30">
+            <SidebarHeader className="px-4 py-3 border-b border-[#b852ff]/10 bg-[#faffff]">
                 <Link
                     href="/customer/dashboard"
-                    className="flex items-center gap-2 text-lg font-semibold text-indigo-600 dark:text-indigo-400"
+                    className="flex items-center gap-2 text-lg font-semibold text-[#b852ff]"
                 >
                     💸 Otsem Bank
                 </Link>
@@ -188,7 +187,7 @@ function CustomerSidebar({ kycStatus }: { kycStatus: CustomerResponse["accountSt
                 {/* Menu Groups */}
                 {menuGroups.map((group) => (
                     <SidebarGroup key={group.title}>
-                        <SidebarGroupLabel className="text-xs text-muted-foreground px-3">
+                        <SidebarGroupLabel className="text-xs px-3 text-[#b852ff]/70">
                             {group.title}
                         </SidebarGroupLabel>
                         <SidebarGroupContent>
@@ -199,9 +198,17 @@ function CustomerSidebar({ kycStatus }: { kycStatus: CustomerResponse["accountSt
 
                                     return (
                                         <SidebarMenuItem key={item.href}>
-                                            <SidebarMenuButton asChild isActive={active}>
+                                            <SidebarMenuButton
+                                                asChild
+                                                isActive={active}
+                                                className={
+                                                    active
+                                                        ? "bg-[#b852ff] text-[#faffff] hover:bg-[#b852ff]/90"
+                                                        : "text-[#000000] hover:bg-[#b852ff]/10"
+                                                }
+                                            >
                                                 <Link href={item.href} className="flex items-center gap-3">
-                                                    <Icon className="h-4 w-4" />
+                                                    <Icon className={active ? "h-4 w-4 text-[#faffff]" : "h-4 w-4 text-[#b852ff]"} />
                                                     <span>{item.label}</span>
                                                 </Link>
                                             </SidebarMenuButton>
@@ -214,8 +221,8 @@ function CustomerSidebar({ kycStatus }: { kycStatus: CustomerResponse["accountSt
                 ))}
 
                 {/* Footer */}
-                <div className="mt-auto p-4 border-t border-border/30">
-                    <p className="text-xs text-muted-foreground text-center">
+                <div className="mt-auto p-4 border-t border-[#b852ff]/10">
+                    <p className="text-xs text-[#b852ff]/70 text-center">
                         © 2025 Otsem Bank
                     </p>
                 </div>
@@ -228,7 +235,7 @@ function CustomerSidebar({ kycStatus }: { kycStatus: CustomerResponse["accountSt
 /* 🧭 Breadcrumb */
 /* -------------------------------------------------------- */
 function AutoBreadcrumb() {
-    const segments = useSelectedLayoutSegments();
+    const segments = useSelectedLayoutSegments() ?? [];
     const parts = ["customer", ...segments];
 
     const titleCase = (s: string) =>
