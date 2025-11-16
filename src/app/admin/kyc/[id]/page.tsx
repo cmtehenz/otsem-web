@@ -100,7 +100,8 @@ function getAxiosStatus(e: unknown): number | undefined {
 
 export default function AdminKycDetailPage(): React.JSX.Element {
     const router = useRouter();
-    const { id } = useParams<{ id: string }>();
+    const params = useParams<{ id: string }>() ?? { id: "" };
+    const id = params.id;
 
     const [data, setData] = React.useState<KycCustomer | null>(null);
     const [loading, setLoading] = React.useState(true);
