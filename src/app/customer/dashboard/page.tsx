@@ -18,6 +18,8 @@ import {
     TableCell,
 } from "@/components/ui/table";
 import { useUsdtRate } from "@/lib/useUsdtRate";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 type AccountSummary = {
     id: string;
@@ -129,6 +131,25 @@ export default function Dashboard() {
         };
     }, [user?.id]);
 
+    // Saldo em reais (já vem do usuário)
+    const saldoBRL = account?.balance ?? 0;
+    // Saldo em USDT (convertido)
+    const saldoUsdt = account && usdtRate ? account.balance / usdtRate : 0;
+
+    // Modal compra USDT
+    const [showBuyModal, setShowBuyModal] = React.useState(false);
+    const [buyValue, setBuyValue] = React.useState(10);
+    const minValue = 10;
+    const usdtAmount = usdtRate ? buyValue / usdtRate : 0;
+
+    function handleBuyUsdt(e: React.FormEvent) {
+        e.preventDefault();
+        // Aqui você pode integrar a lógica real de compra
+        toast.success(`Compra de USDT solicitada: R$ ${buyValue} ≈ ${usdtAmount.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} USDT`);
+        setShowBuyModal(false);
+        setBuyValue(minValue);
+    }
+
     if (loading) {
         return (
             <div className="flex h-96 flex-col items-center justify-center bg-[#faffff]">
@@ -159,41 +180,121 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* Cotação USDT e Saldo */}
+            {/* Cards de saldo */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {/* Saldo BRL */}
                 <Card className="rounded-2xl shadow-sm bg-[#faffff] border border-[#b852ff]/30">
                     <CardHeader>
                         <CardTitle className="text-sm font-medium text-[#000000] flex items-center gap-2">
                             <Wallet className="w-5 h-5 text-[#b852ff]" />
-                            Cotação USDT
+                            Saldo em Reais (BRL)
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-blue-600">
-                            {usdtLoading ? "..." : formatCurrency(usdtRate ?? 0, 4)}
+                        <div className="text-3xl font-bold text-[#b852ff]">
+                            {formatCurrency(saldoBRL)}
                         </div>
                         <div className="mt-2 text-xs text-[#000000] opacity-60">
-                            Atualização em {timer}s
+                            {account?.updatedAt ? `Atualizado em: ${new Date(account.updatedAt).toLocaleString("pt-BR")}` : "--"}
                         </div>
                     </CardContent>
                 </Card>
+                {/* Saldo USDT */}
                 <Card className="rounded-2xl shadow-sm bg-[#faffff] border border-[#b852ff]/30">
                     <CardHeader>
                         <CardTitle className="text-sm font-medium text-[#000000] flex items-center gap-2">
                             <Wallet className="w-5 h-5 text-[#f8bc07]" />
-                            Saldo na Conta
+                            Saldo em USDT
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className={`text-3xl font-bold ${getValueColor(account?.balance ?? 0)}`}>
-                            {formatCurrency(account?.balance ?? 0)}
+                        <div className="text-3xl font-bold text-[#b852ff]">
+                            {usdtLoading || !account
+                                ? "..."
+                                : saldoUsdt.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 }) + " USDT"}
                         </div>
                         <div className="mt-2 text-xs text-[#000000] opacity-60">
-                            Atualizado em: {account?.updatedAt ? new Date(account.updatedAt).toLocaleString("pt-BR") : "--"}
+                            {account?.updatedAt ? `Atualizado em: ${new Date(account.updatedAt).toLocaleString("pt-BR")}` : "--"}
                         </div>
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Card Cotação USDT + Botão Comprar */}
+            <Card className="rounded-2xl shadow-sm bg-[#faffff] border border-[#b852ff]/30 mb-6">
+                <CardHeader>
+                    <CardTitle className="text-sm font-medium text-[#000000] flex items-center gap-2">
+                        <Wallet className="w-5 h-5 text-[#b852ff]" />
+                        Cotação USDT
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div>
+                            <div className="text-3xl font-bold text-blue-600">
+                                {usdtLoading ? "..." : formatCurrency(usdtRate ?? 0, 4)}
+                            </div>
+                            <div className="mt-2 text-xs text-[#000000] opacity-60">
+                                Atualização em {timer}s
+                            </div>
+                        </div>
+                        <Button
+                            className="bg-[#f8bc07] text-[#000000] hover:bg-[#b852ff] hover:text-[#faffff] transition font-semibold"
+                            size="lg"
+                            onClick={() => setShowBuyModal(true)}
+                        >
+                            Comprar USDT
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Modal de compra USDT */}
+            <Dialog open={showBuyModal} onOpenChange={setShowBuyModal}>
+                <DialogContent className="bg-[#faffff] border border-[#b852ff]/10">
+                    <DialogHeader>
+                        <DialogTitle className="text-[#b852ff]">Comprar USDT</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleBuyUsdt} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium mb-1 text-[#000000]">
+                                Valor em reais (mínimo R$ 10,00)
+                            </label>
+                            <Input
+                                type="number"
+                                min={minValue}
+                                step={0.01}
+                                value={buyValue}
+                                onChange={e => setBuyValue(Number(e.target.value))}
+                                className="border-[#b852ff]/30 bg-[#faffff] text-[#000000]"
+                                required
+                            />
+                        </div>
+                        <div className="text-sm text-[#000000]">
+                            Você receberá: <span className="font-bold text-[#b852ff]">
+                                {usdtRate ? usdtAmount.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 }) : "--"} USDT
+                            </span>
+                        </div>
+                        <div className="flex gap-2 justify-end pt-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setShowBuyModal(false)}
+                                className="border-[#b852ff] text-[#b852ff] hover:bg-[#b852ff] hover:text-[#faffff] transition"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                type="submit"
+                                disabled={buyValue < minValue || !usdtRate}
+                                className="bg-[#f8bc07] text-[#000000] hover:bg-[#b852ff] hover:text-[#faffff] transition"
+                            >
+                                Comprar USDT
+                            </Button>
+                        </div>
+                    </form>
+                </DialogContent>
+            </Dialog>
 
             {/* Histórico de transações Pix */}
             <Card className="rounded-2xl shadow-sm bg-[#faffff] border border-[#b852ff]/30">
