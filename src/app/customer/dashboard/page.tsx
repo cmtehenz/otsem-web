@@ -66,6 +66,16 @@ type BankPayload = {
     numeroDocumento: string;
 };
 
+type Wallet = {
+    id: string;
+    customerId: string;
+    currency: string;
+    balance: string;
+    externalAddress: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
 function getValueColor(value: number) {
     if (value > 0) return "text-blue-600";
     if (value < 0) return "text-red-600";
@@ -85,6 +95,10 @@ export default function Dashboard() {
     const { user } = useAuth();
     const [loading, setLoading] = React.useState(true);
     const [account, setAccount] = React.useState<AccountSummary | null>(null);
+    const [wallets, setWallets] = React.useState<Wallet[]>([]);
+    const [walletsLoading, setWalletsLoading] = React.useState(true);
+    const [usdtBalance, setUsdtBalance] = React.useState<number | null>(null);
+    const [usdtBalanceLoading, setUsdtBalanceLoading] = React.useState(true);
 
     const { rate: usdtRate, loading: usdtLoading, updatedAt } = useUsdtRate();
     const [timer, setTimer] = React.useState(15);
@@ -130,6 +144,45 @@ export default function Dashboard() {
             cancelled = true;
         };
     }, [user?.id]);
+
+    // Buscar carteiras do usuário
+    React.useEffect(() => {
+        async function fetchWallets() {
+            setWalletsLoading(true);
+            try {
+                const res = await http.get<Wallet[]>("/wallet/usdt");
+                setWallets(res.data);
+            } catch (err) {
+                setWallets([]);
+            } finally {
+                setWalletsLoading(false);
+            }
+        }
+        fetchWallets();
+    }, []);
+
+    // Buscar saldo USDT da carteira Solana principal
+    React.useEffect(() => {
+        async function fetchUsdtBalance() {
+            setUsdtBalanceLoading(true);
+            try {
+                const solanaAddress = wallets[0]?.externalAddress;
+                if (solanaAddress) {
+                    const res = await http.get(
+                        `/wallet/solana-usdt-balance?address=${solanaAddress}`
+                    );
+                    setUsdtBalance(res.data);
+                } else {
+                    setUsdtBalance(null);
+                }
+            } catch (err) {
+                setUsdtBalance(null);
+            } finally {
+                setUsdtBalanceLoading(false);
+            }
+        }
+        if (wallets.length > 0) fetchUsdtBalance();
+    }, [wallets]);
 
     // Saldo em reais (já vem do usuário)
     const saldoBRL = account?.balance ?? 0;
@@ -209,12 +262,16 @@ export default function Dashboard() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-[#b852ff]">
-                            {usdtLoading || !account
-                                ? "..."
-                                : saldoUsdt.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 }) + " USDT"}
+                            {usdtBalanceLoading
+                                ? <Loader2 className="inline-block animate-spin mr-2" />
+                                : typeof usdtBalance === "number"
+                                    ? usdtBalance.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 }) + " USDT"
+                                    : "..."}
                         </div>
                         <div className="mt-2 text-xs text-[#000000] opacity-60">
-                            {account?.updatedAt ? `Atualizado em: ${new Date(account.updatedAt).toLocaleString("pt-BR")}` : "--"}
+                            {wallets[0]?.externalAddress
+                                ? `Endereço: ${wallets[0].externalAddress}`
+                                : "Nenhuma carteira Solana encontrada"}
                         </div>
                     </CardContent>
                 </Card>
