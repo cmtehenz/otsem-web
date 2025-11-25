@@ -14,6 +14,7 @@ import {
     LogOut,
     ShieldQuestion,
     ShieldAlert,
+    Wallet,
 } from "lucide-react";
 
 // ✅ Use o contexto que você já tem
@@ -82,7 +83,7 @@ const menuGroups = [
         title: "Conta",
         items: [
             { label: "Dashboard", href: "/customer/dashboard", icon: LayoutDashboard },
-            // { label: "Carteiras", href: "/customer/wallet/usdt/receive", icon: Wallet },
+            { label: "Carteiras", href: "/customer/wallet", icon: Wallet },
             { label: "Pix", href: "/customer/pix", icon: KeyRound },
             { label: "Verificar Identidade", href: "/customer/kyc", icon: ShieldCheck },
         ],
