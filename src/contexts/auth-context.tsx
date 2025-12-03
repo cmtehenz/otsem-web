@@ -131,6 +131,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 { headers: { "X-Anonymous": "true" } }
             );
 
+            console.log(loginResponse.data)
+
             const { access_token, role } = loginResponse.data;
 
             console.warn("🔐 Role recebido do backend:", role);
