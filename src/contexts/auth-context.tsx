@@ -21,8 +21,12 @@ interface AuthContextData {
 }
 
 interface LoginResponse {
-    accessToken: string;
-    role: "ADMIN" | "CUSTOMER";
+    success: boolean;
+    data: {
+        user: User;
+        accessToken: string;
+        refreshToken: string;
+    };
 }
 
 interface CustomerMeResponse {
@@ -133,7 +137,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             console.log(loginResponse.data)
 
-            const { accessToken, role } = loginResponse.data;
+            const { accessToken, user } = loginResponse.data.data;
+            const role = user.role;
 
             console.warn("🔐 Role recebido do backend:", role);
 
