@@ -21,7 +21,7 @@ interface AuthContextData {
 }
 
 interface LoginResponse {
-    access_token: string;
+    accessToken: string;
     role: "ADMIN" | "CUSTOMER";
 }
 
@@ -133,17 +133,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             console.log(loginResponse.data)
 
-            const { access_token, role } = loginResponse.data;
+            const { accessToken, role } = loginResponse.data;
 
             console.warn("🔐 Role recebido do backend:", role);
 
             // Valida se recebeu o token
-            if (!access_token) {
+            if (!accessToken) {
                 throw new Error("Token de acesso não recebido da API");
             }
 
             // Decodifica o token para pegar o id do usuário (sub)
-            const payload = decodeJwt(access_token);
+            const payload = decodeJwt(accessToken);
             if (!payload) {
                 throw new Error("Token inválido");
             }
@@ -151,7 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const userId = payload.sub;
 
             // Salva os tokens
-            setTokens(access_token, "");
+            setTokens(accessToken, "");
 
             // 2. Endpoint varia conforme o role
             const endpoint = role === "ADMIN" ? "/auth/me" : "/customers/me";
