@@ -11,6 +11,7 @@ interface User {
     email: string;
     role: "ADMIN" | "CUSTOMER";
     name?: string;
+    spreadValue?: number;
 }
 
 interface AuthContextData {

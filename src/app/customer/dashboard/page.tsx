@@ -103,6 +103,12 @@ export default function Dashboard() {
     const { rate: usdtRate, loading: usdtLoading, updatedAt } = useUsdtRate();
     const [timer, setTimer] = React.useState(15);
 
+    const customerSpread = user?.spreadValue ?? 0.95;
+
+    // Cotação USDT com spread
+    const usdtRateWithSpread = usdtRate ? usdtRate * (1 + customerSpread / 100) : 0;
+
+
     React.useEffect(() => {
         setTimer(15); // reinicia o timer quando updatedAt muda
         const interval = setInterval(() => {
@@ -193,14 +199,42 @@ export default function Dashboard() {
     const [showBuyModal, setShowBuyModal] = React.useState(false);
     const [buyValue, setBuyValue] = React.useState(10);
     const minValue = 10;
-    const usdtAmount = usdtRate ? buyValue / usdtRate : 0;
 
-    function handleBuyUsdt(e: React.FormEvent) {
+    // Usar usdtRateWithSpread para calcular o valor de USDT na compra
+    const usdtAmount = usdtRateWithSpread ? buyValue / usdtRateWithSpread : 0;
+
+    async function handleBuyUsdt(e: React.FormEvent) {
         e.preventDefault();
-        // Aqui você pode integrar a lógica real de compra
-        toast.success(`Compra de USDT solicitada: R$ ${buyValue} ≈ ${usdtAmount.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} USDT`);
-        setShowBuyModal(false);
-        setBuyValue(minValue);
+        if (buyValue < minValue || !usdtRate) {
+            toast.error("Valor mínimo não atingido ou cotação indisponível.");
+            return;
+        }
+        try {
+            // Exemplo de chamada para API real:
+            // const res = await http.post("/wallet/buy-usdt", {
+            //     amountBRL: buyValue,
+            //     amountUSDT: usdtAmount,
+            //     walletAddress: wallets[0]?.externalAddress,
+            // });
+            // if (res.data.success) {
+            //     toast.success("Compra de USDT realizada com sucesso!");
+            // } else {
+            //     toast.error(res.data.message || "Erro ao comprar USDT.");
+            // }
+
+            // Simulação:
+            toast.success(
+                `Compra de USDT solicitada: R$ ${buyValue} ≈ ${usdtAmount.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} USDT`
+            );
+            setShowBuyModal(false);
+            setBuyValue(minValue);
+        } catch (err: any) {
+            toast.error(
+                err?.response?.data?.message ||
+                err?.message ||
+                "Erro ao comprar USDT."
+            );
+        }
     }
 
     if (loading) {
@@ -289,7 +323,7 @@ export default function Dashboard() {
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                         <div>
                             <div className="text-3xl font-bold text-blue-600">
-                                {usdtLoading ? "..." : formatCurrency(usdtRate ?? 0, 4)}
+                                {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread ?? 0, 4)}
                             </div>
                             <div className="mt-2 text-xs text-[#000000] opacity-60">
                                 Atualização em {timer}s
@@ -329,7 +363,7 @@ export default function Dashboard() {
                         </div>
                         <div className="text-sm text-[#000000]">
                             Você receberá: <span className="font-bold text-[#b852ff]">
-                                {usdtRate ? usdtAmount.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 }) : "--"} USDT
+                                {usdtRateWithSpread ? usdtAmount.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 }) : "--"} USDT
                             </span>
                         </div>
                         <div className="flex gap-2 justify-end pt-2">
