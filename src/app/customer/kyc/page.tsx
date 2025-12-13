@@ -190,16 +190,12 @@ export default function CustomerKycPage(): React.JSX.Element {
             setSubmitting(true);
             await http.patch(`/customers/${customerId}`, {
                 name: form.name,
-                cpf: onlyDigits(form.cpf),
                 birthday: form.birthday,
                 phone: form.phone,
-                email: form.email,
                 address: {
                     zipCode: onlyDigits(form.zipCode),
                     street: form.street,
-                    number: form.number,
-                    city: form.city,
-                    state: form.state,
+                    number: form.number || undefined,
                     neighborhood: form.neighborhood,
                     cityIbgeCode: Number(form.cityIbgeCode),
                 },
