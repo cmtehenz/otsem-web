@@ -123,7 +123,7 @@ export default function CustomerKycPage(): React.JSX.Element {
         async function loadCustomer() {
             try {
                 setLoading(true);
-                const response = await http.get<{ data: CustomerResponse } | CustomerResponse>("/auth/me");
+                const response = await http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me");
                 const data = "data" in response.data ? response.data.data : response.data;
 
                 setForm({
@@ -188,7 +188,7 @@ export default function CustomerKycPage(): React.JSX.Element {
 
         try {
             setSubmitting(true);
-            await http.patch("/auth/me", {
+            await http.patch(`/customers/${customerId}`, {
                 name: form.name,
                 birthday: form.birthday,
                 phone: form.phone,
@@ -237,7 +237,7 @@ export default function CustomerKycPage(): React.JSX.Element {
             setStartingVerification(true);
 
             const response = await http.post<{ verificationUrl: string }>(
-                "/auth/me/kyc/request"
+                `/customers/${customerId}/kyc/request`
             );
 
             const verificationUrl = response.data?.verificationUrl;
@@ -261,10 +261,11 @@ export default function CustomerKycPage(): React.JSX.Element {
         if (!customerId) return;
         
         try {
-            const response = await http.get<{ accountStatus: CustomerResponse["accountStatus"] }>(
-                "/auth/me/kyc/status"
+            const response = await http.get<{ data: CustomerResponse } | CustomerResponse>(
+                "/customers/me"
             );
-            setAccountStatus(response.data.accountStatus);
+            const data = "data" in response.data ? (response.data as any).data : response.data;
+            setAccountStatus(data.accountStatus);
             toast.success("Status atualizado!");
         } catch {
             toast.error("Erro ao atualizar status");

@@ -125,28 +125,15 @@ export default function Dashboard() {
             try {
                 setLoading(true);
 
-                if (!user?.id) {
+                const customerId = user?.id;
+                if (!customerId) {
                     return;
                 }
 
-                const res = await http.get<{ data: AccountSummary } | AccountSummary>("/auth/me");
-                const data = "data" in res.data ? res.data.data : res.data;
-                
-                if (!cancelled) {
-                    setAccount({
-                        id: data.id || user.id,
-                        balance: data.balance ?? 0,
-                        status: data.status ?? "active",
-                        pixKey: data.pixKey ?? "",
-                        pixKeyType: data.pixKeyType ?? "",
-                        dailyLimit: data.dailyLimit ?? 0,
-                        monthlyLimit: data.monthlyLimit ?? 0,
-                        blockedAmount: data.blockedAmount ?? 0,
-                        createdAt: data.createdAt ?? "",
-                        updatedAt: data.updatedAt ?? "",
-                        payments: data.payments ?? [],
-                    });
-                }
+                const res = await http.get<AccountSummary>(
+                    `/accounts/${customerId}/summary`
+                );
+                if (!cancelled) setAccount(res.data);
 
             } catch (err: any) {
                 if (!cancelled) {
