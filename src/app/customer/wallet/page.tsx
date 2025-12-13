@@ -3,11 +3,27 @@
 import React, { useState, useEffect } from "react";
 import http from "@/lib/http";
 import { toast } from "sonner";
-import { Copy, Shield, Wallet, RefreshCw, Plus, QrCode, ExternalLink, Loader2 } from "lucide-react";
+import { Copy, Shield, Wallet, RefreshCw, Plus, ExternalLink, Loader2, Star, Trash2, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type WalletKeys = {
     publicKey: string;
@@ -23,6 +39,7 @@ type WalletType = {
     createdAt: string;
     updatedAt: string;
     label?: string;
+    isMain?: boolean;
 };
 
 export default function WalletPage() {
@@ -32,6 +49,8 @@ export default function WalletPage() {
     const [walletKeys, setWalletKeys] = useState<WalletKeys | null>(null);
     const [editWallet, setEditWallet] = useState<WalletType | null>(null);
     const [editLabel, setEditLabel] = useState("");
+    const [deleteWallet, setDeleteWallet] = useState<WalletType | null>(null);
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         fetchWallets();
@@ -85,14 +104,40 @@ export default function WalletPage() {
         setEditLabel(wallet.label || "");
     }
 
-    async function handleSaveEdit() {
+    async function handleSaveLabel() {
+        if (!editWallet) return;
         try {
-            await http.patch(`/wallet/usdt/${editWallet?.id}`, { label: editLabel });
-            toast.success("Carteira atualizada!");
+            await http.patch(`/wallet/${editWallet.id}/label`, { label: editLabel });
+            toast.success("Carteira renomeada!");
             setEditWallet(null);
             fetchWallets();
-        } catch {
-            toast.error("Erro ao editar carteira.");
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message || "Erro ao renomear carteira.");
+        }
+    }
+
+    async function handleSetMain(wallet: WalletType) {
+        try {
+            await http.patch(`/wallet/${wallet.id}/set-main`);
+            toast.success("Carteira definida como principal!");
+            fetchWallets();
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message || "Erro ao definir carteira principal.");
+        }
+    }
+
+    async function handleDeleteWallet() {
+        if (!deleteWallet) return;
+        setDeleting(true);
+        try {
+            await http.delete(`/wallet/${deleteWallet.id}`);
+            toast.success("Carteira excluída!");
+            setDeleteWallet(null);
+            fetchWallets();
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message || "Erro ao excluir carteira.");
+        } finally {
+            setDeleting(false);
         }
     }
 
@@ -164,11 +209,19 @@ export default function WalletPage() {
                     {wallets.map((wallet, index) => (
                         <div
                             key={wallet.id}
-                            className="bg-[#1a1025] border border-white/10 rounded-2xl p-5 hover:border-violet-500/30 transition"
+                            className={`bg-[#1a1025] border rounded-2xl p-5 transition ${
+                                wallet.isMain 
+                                    ? "border-violet-500/50 shadow-lg shadow-violet-500/10" 
+                                    : "border-white/10 hover:border-violet-500/30"
+                            }`}
                         >
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex items-center gap-4">
-                                    <div className="p-3 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20">
+                                    <div className={`p-3 rounded-xl ${
+                                        wallet.isMain 
+                                            ? "bg-gradient-to-br from-violet-500/30 to-purple-500/30" 
+                                            : "bg-gradient-to-br from-violet-500/20 to-purple-500/20"
+                                    }`}>
                                         <Wallet className="w-6 h-6 text-violet-400" />
                                     </div>
                                     <div>
@@ -176,12 +229,13 @@ export default function WalletPage() {
                                             <span className="text-white font-semibold">
                                                 {wallet.label || `Carteira ${index + 1}`}
                                             </span>
-                                            {index === 0 && (
-                                                <span className="px-2 py-0.5 text-xs font-medium bg-green-500/20 text-green-400 rounded-full">
+                                            {wallet.isMain && (
+                                                <span className="px-2 py-0.5 text-xs font-medium bg-violet-500/20 text-violet-400 rounded-full flex items-center gap-1">
+                                                    <Star className="w-3 h-3" />
                                                     Principal
                                                 </span>
                                             )}
-                                            <span className="px-2 py-0.5 text-xs font-medium bg-violet-500/20 text-violet-400 rounded-full">
+                                            <span className="px-2 py-0.5 text-xs font-medium bg-green-500/20 text-green-400 rounded-full">
                                                 Solana
                                             </span>
                                         </div>
@@ -199,53 +253,72 @@ export default function WalletPage() {
                                     </div>
                                 </div>
 
-                                <div className="text-right">
-                                    <p className="text-2xl font-bold text-white">
-                                        {Number(wallet.balance).toLocaleString("pt-BR", {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 4,
-                                        })}
-                                        <span className="text-white/50 text-base ml-1">USDT</span>
-                                    </p>
-                                    <p className="text-white/40 text-xs mt-1">
-                                        Criada em {new Date(wallet.createdAt).toLocaleDateString("pt-BR")}
-                                    </p>
-                                </div>
-                            </div>
+                                <div className="flex items-start gap-4">
+                                    <div className="text-right">
+                                        <p className="text-2xl font-bold text-white">
+                                            {Number(wallet.balance).toLocaleString("pt-BR", {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 4,
+                                            })}
+                                            <span className="text-white/50 text-base ml-1">USDT</span>
+                                        </p>
+                                        <p className="text-white/40 text-xs mt-1">
+                                            Criada em {new Date(wallet.createdAt).toLocaleDateString("pt-BR")}
+                                        </p>
+                                    </div>
 
-                            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/5">
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => onCopy(wallet.externalAddress)}
-                                    className="text-white/60 hover:text-white hover:bg-white/10"
-                                >
-                                    <Copy className="w-4 h-4 mr-2" />
-                                    Copiar Endereço
-                                </Button>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleEdit(wallet)}
-                                    className="text-white/60 hover:text-white hover:bg-white/10"
-                                >
-                                    Renomear
-                                </Button>
-                                <a
-                                    href={`https://solscan.io/account/${wallet.externalAddress}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="ml-auto"
-                                >
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="text-white/60 hover:text-white hover:bg-white/10"
-                                    >
-                                        <ExternalLink className="w-4 h-4 mr-2" />
-                                        Ver no Solscan
-                                    </Button>
-                                </a>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="text-white/40 hover:text-white hover:bg-white/10"
+                                            >
+                                                <MoreVertical className="w-5 h-5" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end" className="bg-[#1a1025] border-white/10">
+                                            <DropdownMenuItem
+                                                onClick={() => onCopy(wallet.externalAddress)}
+                                                className="text-white/70 hover:text-white hover:bg-white/10 cursor-pointer"
+                                            >
+                                                <Copy className="w-4 h-4 mr-2" />
+                                                Copiar Endereço
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem
+                                                onClick={() => handleEdit(wallet)}
+                                                className="text-white/70 hover:text-white hover:bg-white/10 cursor-pointer"
+                                            >
+                                                Renomear
+                                            </DropdownMenuItem>
+                                            {!wallet.isMain && (
+                                                <DropdownMenuItem
+                                                    onClick={() => handleSetMain(wallet)}
+                                                    className="text-white/70 hover:text-white hover:bg-white/10 cursor-pointer"
+                                                >
+                                                    <Star className="w-4 h-4 mr-2" />
+                                                    Definir como Principal
+                                                </DropdownMenuItem>
+                                            )}
+                                            <DropdownMenuItem
+                                                onClick={() => window.open(`https://solscan.io/account/${wallet.externalAddress}`, "_blank")}
+                                                className="text-white/70 hover:text-white hover:bg-white/10 cursor-pointer"
+                                            >
+                                                <ExternalLink className="w-4 h-4 mr-2" />
+                                                Ver no Solscan
+                                            </DropdownMenuItem>
+                                            {!wallet.isMain && wallets.length > 1 && (
+                                                <DropdownMenuItem
+                                                    onClick={() => setDeleteWallet(wallet)}
+                                                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10 cursor-pointer"
+                                                >
+                                                    <Trash2 className="w-4 h-4 mr-2" />
+                                                    Excluir Carteira
+                                                </DropdownMenuItem>
+                                            )}
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
                             </div>
                         </div>
                     ))}
@@ -358,7 +431,7 @@ export default function WalletPage() {
                                 Cancelar
                             </Button>
                             <Button
-                                onClick={handleSaveEdit}
+                                onClick={handleSaveLabel}
                                 className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
                             >
                                 Salvar
@@ -367,6 +440,34 @@ export default function WalletPage() {
                     </div>
                 </DialogContent>
             </Dialog>
+
+            <AlertDialog open={!!deleteWallet} onOpenChange={() => setDeleteWallet(null)}>
+                <AlertDialogContent className="bg-[#1a1025] border border-white/10">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-white">Excluir Carteira</AlertDialogTitle>
+                        <AlertDialogDescription className="text-white/60">
+                            Tem certeza que deseja excluir esta carteira? Esta ação não pode ser desfeita.
+                            <div className="mt-3 p-3 bg-white/5 rounded-lg">
+                                <code className="text-white/70 text-sm font-mono">
+                                    {deleteWallet?.externalAddress}
+                                </code>
+                            </div>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-white/10 border border-white/20 text-white hover:bg-white/20">
+                            Cancelar
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleDeleteWallet}
+                            disabled={deleting}
+                            className="bg-red-500 hover:bg-red-600 text-white"
+                        >
+                            {deleting ? "Excluindo..." : "Excluir"}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }
