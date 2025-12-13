@@ -1,4 +1,3 @@
-// src/app/(public)/register/page.tsx
 "use client";
 
 import * as React from "react";
@@ -7,19 +6,16 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Eye, EyeOff, Mail, User, Lock, Sparkles, CheckCircle2, Shield } from "lucide-react";
+import { Eye, EyeOff, Mail, User, Lock, Sparkles, CheckCircle2, Shield, Zap, Globe2, UserPlus } from "lucide-react";
 import http from "@/lib/http";
 import { toast } from "sonner";
 
-// Evita cache estático
-export const dynamic = "force-dynamic";
-
-// ---------------- Schema ----------------
 const schema = z
     .object({
         name: z.string().min(3, "Informe seu nome").transform((v) => v.trim()),
@@ -52,6 +48,7 @@ function getHttpStatus(e: unknown): number {
     }
     return 0;
 }
+
 function getHttpMessage(e: unknown, fallback = "Falha no cadastro"): string {
     if (e && typeof e === "object") {
         const obj = e as {
@@ -69,9 +66,13 @@ function getHttpMessage(e: unknown, fallback = "Falha no cadastro"): string {
     return fallback;
 }
 
-export default function RegisterPage(): React.JSX.Element {
+export default function RegisterForm(): React.JSX.Element {
     return (
-        <Suspense fallback={<div className="grid min-h-screen place-items-center text-sm text-muted-foreground">Carregando…</div>}>
+        <Suspense fallback={
+            <div className="grid min-h-screen place-items-center bg-[#0a0118] text-sm text-white/50">
+                Carregando…
+            </div>
+        }>
             <RegisterPageInner />
         </Suspense>
     );
@@ -131,96 +132,146 @@ function RegisterPageInner(): React.JSX.Element {
     }
 
     return (
-        <div className="relative min-h-screen w-full overflow-hidden bg-linear-to-b from-[#faffff] via-[#faffff] to-[#f8bc07]/10">
-            {/* Background decoration */}
+        <div className="relative min-h-screen w-full overflow-hidden bg-[#0a0118]">
             <div className="pointer-events-none absolute inset-0 -z-10">
-                <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-linear-to-br from-[#f8bc07]/20 to-[#b852ff]/20 opacity-60 blur-3xl" />
-                <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-linear-to-tr from-[#b852ff]/20 to-[#f8bc07]/20 opacity-60 blur-3xl" />
-                <div className="absolute inset-0 bg-[radial-gradient(#000000_1px,transparent_1px)] bg-size-[26px_26px] opacity-[0.02]" />
+                <div className="absolute -top-1/2 left-1/2 h-[1000px] w-[1000px] -translate-x-1/2 rounded-full bg-gradient-to-b from-violet-600/30 via-purple-600/20 to-transparent blur-3xl" />
+                <div className="absolute top-1/4 -left-1/4 h-[600px] w-[600px] rounded-full bg-gradient-to-r from-violet-600/20 to-transparent blur-3xl" />
+                <div className="absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-gradient-to-t from-purple-600/20 to-transparent blur-3xl" />
             </div>
 
-            <div className="flex min-h-screen w-full items-center justify-center px-4 py-12 lg:px-8 xl:px-16">
-                <div className="flex w-full max-w-7xl items-center gap-16">
-                    {/* Left side - Form */}
+            <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0118]/80 backdrop-blur-xl">
+                <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
+                    <Link href="/" className="flex items-center gap-3">
+                        <img src="/images/logo.png" alt="OtsemPay" className="h-10 w-10 object-contain" />
+                        <span className="text-xl font-bold tracking-tight">
+                            <span className="text-amber-400">Otsem</span>
+                            <span className="text-violet-400">Pay</span>
+                        </span>
+                    </Link>
+                    
+                    <Link href="/login">
+                        <Button variant="ghost" className="rounded-full border border-white/10 px-6 text-sm font-medium text-white hover:bg-white/5">
+                            Entrar
+                        </Button>
+                    </Link>
+                </div>
+            </header>
+
+            <div className="flex min-h-screen w-full items-center justify-center px-4 py-24 lg:px-8 xl:px-16">
+                <div className="flex w-full max-w-6xl items-center gap-16">
+                    <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:gap-8">
+                        <div>
+                            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-1.5 text-sm font-medium text-violet-200">
+                                <Sparkles className="h-4 w-4 text-violet-400" />
+                                Comece grátis
+                            </div>
+                            <h1 className="text-4xl font-bold text-white xl:text-5xl">
+                                Crie sua conta
+                                <br />
+                                <span className="bg-gradient-to-r from-amber-400 to-violet-400 bg-clip-text text-transparent">
+                                    em segundos
+                                </span>
+                            </h1>
+                            <p className="mt-4 text-lg text-white/60">
+                                Acesso completo à plataforma de operações OTC e câmbio BRL ↔ USDT com as melhores taxas.
+                            </p>
+                        </div>
+
+                        <div className="space-y-4">
+                            <FeatureItem
+                                icon={<CheckCircle2 className="h-5 w-5 text-green-500" />}
+                                title="Verificação rápida"
+                                desc="KYC simplificado em minutos"
+                            />
+                            <FeatureItem
+                                icon={<Zap className="h-5 w-5 text-yellow-500" />}
+                                title="Taxas competitivas"
+                                desc="A partir de 3% de spread"
+                            />
+                            <FeatureItem
+                                icon={<Globe2 className="h-5 w-5 text-violet-400" />}
+                                title="Sem fronteiras"
+                                desc="Opere de qualquer lugar"
+                            />
+                        </div>
+                    </div>
+
                     <div className="w-full lg:flex-1 lg:max-w-md">
-                        <Card className="overflow-hidden rounded-3xl border-[#000000]/10 shadow-xl shadow-[#000000]/5 backdrop-blur-sm">
-                            <CardHeader className="space-y-3 border-b border-[#000000]/5 bg-linear-to-b from-[#faffff] to-[#faffff]/50 pb-6">
-                                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#b852ff] shadow-lg shadow-[#b852ff]/25">
-                                    <Lock className="h-6 w-6 text-[#faffff]" />
+                        <Card className="overflow-hidden rounded-3xl border-white/10 bg-white/5 backdrop-blur-xl">
+                            <CardHeader className="space-y-3 border-b border-white/5 pb-6">
+                                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600">
+                                    <UserPlus className="h-7 w-7 text-white" />
                                 </div>
-                                <CardTitle className="text-center text-2xl font-bold text-[#000000]">
+                                <CardTitle className="text-center text-2xl font-bold text-white">
                                     Criar conta
                                 </CardTitle>
-                                <p className="text-center text-sm text-[#000000]/70">
+                                <p className="text-center text-sm text-white/60">
                                     Preencha os dados abaixo para começar
                                 </p>
                             </CardHeader>
 
                             <CardContent className="p-6 sm:p-8">
-                                <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-5" noValidate>
-                                    {/* Nome */}
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4" noValidate>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="name" className="text-sm font-semibold text-[#000000]">
+                                        <Label htmlFor="name" className="text-sm font-semibold text-white">
                                             Nome completo
                                         </Label>
                                         <div className="relative">
-                                            <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#000000]/40" />
+                                            <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                             <Input
                                                 id="name"
-                                                className="h-11 rounded-xl border-[#000000]/10 pl-10 transition focus:border-[#f8bc07] focus:ring-2 focus:ring-[#f8bc07]/20"
+                                                className="h-11 rounded-xl border-white/10 bg-white/5 pl-10 text-white placeholder:text-white/40 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
                                                 placeholder="Seu nome"
                                                 {...form.register("name")}
                                             />
                                         </div>
                                         {form.formState.errors.name && (
-                                            <p className="text-xs text-red-600">{form.formState.errors.name.message}</p>
+                                            <p className="text-xs text-red-400">{form.formState.errors.name.message}</p>
                                         )}
                                     </div>
 
-                                    {/* Email */}
                                     <div className="grid gap-2">
-                                        <Label htmlFor="email" className="text-sm font-semibold text-[#000000]">
+                                        <Label htmlFor="email" className="text-sm font-semibold text-white">
                                             E-mail
                                         </Label>
                                         <div className="relative">
-                                            <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#000000]/40" />
+                                            <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                             <Input
                                                 id="email"
                                                 type="email"
-                                                className="h-11 rounded-xl border-[#000000]/10 pl-10 transition focus:border-[#f8bc07] focus:ring-2 focus:ring-[#f8bc07]/20"
+                                                className="h-11 rounded-xl border-white/10 bg-white/5 pl-10 text-white placeholder:text-white/40 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
                                                 placeholder="voce@exemplo.com"
                                                 {...form.register("email")}
                                             />
                                         </div>
                                         {form.formState.errors.email && (
-                                            <p className="text-xs text-red-600">{form.formState.errors.email.message}</p>
+                                            <p className="text-xs text-red-400">{form.formState.errors.email.message}</p>
                                         )}
                                     </div>
 
-                                    {/* Senha */}
                                     <div className="grid gap-2">
-                                        <Label htmlFor="password" className="text-sm font-semibold text-[#000000]">
+                                        <Label htmlFor="password" className="text-sm font-semibold text-white">
                                             Senha
                                         </Label>
                                         <div className="relative">
-                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#000000]/40" />
+                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                             <Input
                                                 id="password"
                                                 type={showPw ? "text" : "password"}
-                                                className="h-11 rounded-xl border-[#000000]/10 pl-10 pr-10 transition focus:border-[#f8bc07] focus:ring-2 focus:ring-[#f8bc07]/20"
+                                                className="h-11 rounded-xl border-white/10 bg-white/5 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                                                placeholder="Mínimo 8 caracteres"
                                                 {...form.register("password")}
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPw((v) => !v)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#000000]/40 transition hover:text-[#000000]/70"
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white/70"
                                                 aria-label={showPw ? "Ocultar senha" : "Mostrar senha"}
                                             >
                                                 {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                             </button>
                                         </div>
 
-                                        {/* Password strength meter */}
                                         {pw && (
                                             <div className="mt-1">
                                                 <div className="flex gap-1">
@@ -231,18 +282,17 @@ function RegisterPageInner(): React.JSX.Element {
                                                                 ? score <= 1
                                                                     ? "bg-red-500"
                                                                     : score === 2
-                                                                        ? "bg-[#f8bc07]"
+                                                                        ? "bg-yellow-500"
                                                                         : "bg-green-500"
-                                                                : "bg-[#000000]/10"
+                                                                : "bg-white/10"
                                                                 }`}
                                                         />
                                                     ))}
                                                 </div>
-                                                <p className="mt-1.5 text-xs text-[#000000]/60">
+                                                <p className="mt-1.5 text-xs text-white/50">
                                                     Força:{" "}
                                                     <span
-                                                        className={`font-medium ${score <= 1 ? "text-red-600" : score === 2 ? "text-[#f8bc07]" : "text-green-600"
-                                                            }`}
+                                                        className={`font-medium ${score <= 1 ? "text-red-400" : score === 2 ? "text-yellow-400" : "text-green-400"}`}
                                                     >
                                                         {scoreText}
                                                     </span>
@@ -251,49 +301,48 @@ function RegisterPageInner(): React.JSX.Element {
                                         )}
 
                                         {form.formState.errors.password && (
-                                            <p className="text-xs text-red-600">{form.formState.errors.password.message}</p>
+                                            <p className="text-xs text-red-400">{form.formState.errors.password.message}</p>
                                         )}
                                     </div>
 
-                                    {/* Confirmar */}
                                     <div className="grid gap-2">
-                                        <Label htmlFor="confirm" className="text-sm font-semibold text-[#000000]">
+                                        <Label htmlFor="confirm" className="text-sm font-semibold text-white">
                                             Confirmar senha
                                         </Label>
                                         <div className="relative">
-                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#000000]/40" />
+                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                             <Input
                                                 id="confirm"
                                                 type={showConfirm ? "text" : "password"}
-                                                className="h-11 rounded-xl border-[#000000]/10 pl-10 pr-10 transition focus:border-[#f8bc07] focus:ring-2 focus:ring-[#f8bc07]/20"
+                                                className="h-11 rounded-xl border-white/10 bg-white/5 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                                                placeholder="Repita a senha"
                                                 {...form.register("confirm")}
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowConfirm((v) => !v)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#000000]/40 transition hover:text-[#000000]/70"
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white/70"
                                                 aria-label={showConfirm ? "Ocultar confirmação" : "Mostrar confirmação"}
                                             >
                                                 {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                             </button>
                                         </div>
                                         {form.formState.errors.confirm && (
-                                            <p className="text-xs text-red-600">{form.formState.errors.confirm.message}</p>
+                                            <p className="text-xs text-red-400">{form.formState.errors.confirm.message}</p>
                                         )}
                                     </div>
 
-                                    {/* Termos */}
-                                    <label className="flex items-start gap-3 rounded-lg border border-[#000000]/10 bg-[#faffff]/50 p-3 text-sm transition hover:bg-[#faffff]">
+                                    <label className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-3 text-sm transition hover:bg-white/10">
                                         <input
                                             type="checkbox"
-                                            className="mt-0.5 h-4 w-4 rounded border-[#000000]/20 text-[#b852ff] focus:ring-2 focus:ring-[#b852ff]/20"
+                                            className="mt-0.5 h-4 w-4 rounded border-white/20 bg-white/5 text-violet-500 focus:ring-2 focus:ring-violet-500/20"
                                             {...form.register("accept")}
                                         />
-                                        <span className="text-[#000000]/70">
+                                        <span className="text-white/60">
                                             Aceito os{" "}
                                             <a
-                                                className="font-medium text-[#b852ff] underline-offset-2 hover:underline"
-                                                href="/terms"
+                                                className="font-medium text-violet-400 underline-offset-2 hover:underline"
+                                                href="/termos"
                                                 target="_blank"
                                                 rel="noreferrer"
                                             >
@@ -301,8 +350,8 @@ function RegisterPageInner(): React.JSX.Element {
                                             </a>{" "}
                                             e a{" "}
                                             <a
-                                                className="font-medium text-[#b852ff] underline-offset-2 hover:underline"
-                                                href="/privacy"
+                                                className="font-medium text-violet-400 underline-offset-2 hover:underline"
+                                                href="/privacidade"
                                                 target="_blank"
                                                 rel="noreferrer"
                                             >
@@ -311,82 +360,42 @@ function RegisterPageInner(): React.JSX.Element {
                                         </span>
                                     </label>
                                     {form.formState.errors.accept && (
-                                        <p className="text-xs text-red-600">{form.formState.errors.accept.message}</p>
+                                        <p className="text-xs text-red-400">{form.formState.errors.accept.message}</p>
                                     )}
 
                                     <Button
                                         type="submit"
                                         disabled={loading}
-                                        className="h-11 rounded-xl bg-[#b852ff] font-semibold text-[#faffff] shadow-lg shadow-[#b852ff]/25 transition hover:bg-[#b852ff]/90 hover:shadow-xl disabled:opacity-50"
+                                        className="h-11 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 font-semibold text-white shadow-lg shadow-violet-500/25 transition hover:shadow-xl hover:shadow-violet-500/30 disabled:opacity-50"
                                         aria-busy={loading}
                                     >
                                         {loading ? "Criando conta..." : "Criar conta"}
                                     </Button>
 
-                                    <Separator className="my-2" />
+                                    <Separator className="my-2 bg-white/10" />
 
-                                    <p className="text-center text-sm text-[#000000]/70">
+                                    <p className="text-center text-sm text-white/60">
                                         Já tem conta?{" "}
-                                        <button
-                                            type="button"
-                                            onClick={() => router.push("/login")}
-                                            className="font-semibold text-[#b852ff] transition hover:text-[#b852ff]/80 hover:underline"
+                                        <Link
+                                            href="/login"
+                                            className="font-semibold text-violet-400 transition hover:text-violet-300 hover:underline"
                                         >
                                             Entrar
-                                        </button>
+                                        </Link>
                                     </p>
                                 </form>
                             </CardContent>
                         </Card>
 
-                        {/* Trust badges */}
-                        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-[#000000]/60">
+                        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-white/50">
                             <div className="flex items-center gap-1.5">
-                                <Shield className="h-3.5 w-3.5 text-green-600" />
+                                <Shield className="h-3.5 w-3.5 text-green-500" />
                                 Dados criptografados
                             </div>
                             <div className="flex items-center gap-1.5">
-                                <CheckCircle2 className="h-3.5 w-3.5 text-[#b852ff]" />
+                                <CheckCircle2 className="h-3.5 w-3.5 text-violet-400" />
                                 LGPD compliant
                             </div>
-                        </div>
-                    </div>
-
-                    {/* Right side - Benefits */}
-                    <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:gap-8">
-                        <div>
-                            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#f8bc07]/30 bg-[#f8bc07]/10 px-4 py-1.5 text-sm font-medium text-[#000000]">
-                                <Sparkles className="h-4 w-4 text-[#f8bc07]" />
-                                Comece grátis
-                            </div>
-                            <h1 className="text-4xl font-bold text-[#000000] xl:text-5xl">
-                                Crie sua conta
-                                <br />
-                                <span className="bg-linear-to-r from-[#f8bc07] to-[#b852ff] bg-clip-text text-transparent">
-                                    em segundos
-                                </span>
-                            </h1>
-                            <p className="mt-4 text-lg text-[#000000]/70">
-                                Acesso completo à plataforma de pagamentos e câmbio BRL ↔ USDT
-                            </p>
-                        </div>
-
-                        <div className="space-y-4">
-                            <FeatureItem
-                                icon={<CheckCircle2 className="h-5 w-5 text-green-600" />}
-                                title="Verificação instantânea"
-                                desc="KYC simplificado e rápido"
-                            />
-                            <FeatureItem
-                                icon={<Shield className="h-5 w-5 text-[#b852ff]" />}
-                                title="Segurança avançada"
-                                desc="Criptografia de ponta a ponta"
-                            />
-                            <FeatureItem
-                                icon={<Sparkles className="h-5 w-5 text-[#f8bc07]" />}
-                                title="Taxas competitivas"
-                                desc="A partir de 0.79% por transação"
-                            />
                         </div>
                     </div>
                 </div>
@@ -398,12 +407,12 @@ function RegisterPageInner(): React.JSX.Element {
 function FeatureItem({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
     return (
         <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#faffff] shadow-sm ring-1 ring-[#000000]/10">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
                 {icon}
             </div>
             <div>
-                <h3 className="text-sm font-semibold text-[#000000]">{title}</h3>
-                <p className="text-sm text-[#000000]/70">{desc}</p>
+                <h3 className="text-sm font-semibold text-white">{title}</h3>
+                <p className="text-sm text-white/60">{desc}</p>
             </div>
         </div>
     );
