@@ -1,9 +1,8 @@
-// src/app/(app)/page.tsx
 "use client";
 
 import * as React from "react";
 import Link from "next/link";
-import { Loader2, RefreshCw, Wallet } from "lucide-react";
+import { Loader2, RefreshCw, Wallet, TrendingUp, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import http from "@/lib/http";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
@@ -66,7 +65,7 @@ type BankPayload = {
     numeroDocumento: string;
 };
 
-type Wallet = {
+type WalletType = {
     id: string;
     customerId: string;
     currency: string;
@@ -77,9 +76,9 @@ type Wallet = {
 };
 
 function getValueColor(value: number) {
-    if (value > 0) return "text-blue-600";
-    if (value < 0) return "text-red-600";
-    return "text-[#000000]";
+    if (value > 0) return "text-green-400";
+    if (value < 0) return "text-red-400";
+    return "text-white";
 }
 
 function formatCurrency(value: number, decimals = 2): string {
@@ -95,7 +94,7 @@ export default function Dashboard() {
     const { user } = useAuth();
     const [loading, setLoading] = React.useState(true);
     const [account, setAccount] = React.useState<AccountSummary | null>(null);
-    const [wallets, setWallets] = React.useState<Wallet[]>([]);
+    const [wallets, setWallets] = React.useState<WalletType[]>([]);
     const [walletsLoading, setWalletsLoading] = React.useState(true);
     const [usdtBalance, setUsdtBalance] = React.useState<number | null>(null);
     const [usdtBalanceLoading, setUsdtBalanceLoading] = React.useState(true);
@@ -104,13 +103,10 @@ export default function Dashboard() {
     const [timer, setTimer] = React.useState(15);
 
     const customerSpread = user?.spreadValue ?? 0.95;
-
-    // Cotação USDT com spread
     const usdtRateWithSpread = usdtRate ? usdtRate * (1 + customerSpread / 100) : 0;
 
-
     React.useEffect(() => {
-        setTimer(15); // reinicia o timer quando updatedAt muda
+        setTimer(15);
         const interval = setInterval(() => {
             setTimer((prev) => (prev > 0 ? prev - 1 : 0));
         }, 1000);
@@ -151,12 +147,11 @@ export default function Dashboard() {
         };
     }, [user?.id]);
 
-    // Buscar carteiras do usuário
     React.useEffect(() => {
         async function fetchWallets() {
             setWalletsLoading(true);
             try {
-                const res = await http.get<Wallet[]>("/wallet/usdt");
+                const res = await http.get<WalletType[]>("/wallet/usdt");
                 setWallets(res.data);
             } catch (err) {
                 setWallets([]);
@@ -167,7 +162,6 @@ export default function Dashboard() {
         fetchWallets();
     }, []);
 
-    // Buscar saldo USDT da carteira Solana principal
     React.useEffect(() => {
         async function fetchUsdtBalance() {
             setUsdtBalanceLoading(true);
@@ -190,17 +184,13 @@ export default function Dashboard() {
         if (wallets.length > 0) fetchUsdtBalance();
     }, [wallets]);
 
-    // Saldo em reais (já vem do usuário)
     const saldoBRL = account?.balance ?? 0;
-    // Saldo em USDT (convertido)
     const saldoUsdt = account && usdtRate ? account.balance / usdtRate : 0;
 
-    // Modal compra USDT
     const [showBuyModal, setShowBuyModal] = React.useState(false);
     const [buyValue, setBuyValue] = React.useState(10);
     const minValue = 10;
 
-    // Usar usdtRateWithSpread para calcular o valor de USDT na compra
     const usdtAmount = usdtRateWithSpread ? buyValue / usdtRateWithSpread : 0;
 
     async function handleBuyUsdt(e: React.FormEvent) {
@@ -210,19 +200,6 @@ export default function Dashboard() {
             return;
         }
         try {
-            // Exemplo de chamada para API real:
-            // const res = await http.post("/wallet/buy-usdt", {
-            //     amountBRL: buyValue,
-            //     amountUSDT: usdtAmount,
-            //     walletAddress: wallets[0]?.externalAddress,
-            // });
-            // if (res.data.success) {
-            //     toast.success("Compra de USDT realizada com sucesso!");
-            // } else {
-            //     toast.error(res.data.message || "Erro ao comprar USDT.");
-            // }
-
-            // Simulação:
             toast.success(
                 `Compra de USDT solicitada: R$ ${buyValue} ≈ ${usdtAmount.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} USDT`
             );
@@ -239,211 +216,239 @@ export default function Dashboard() {
 
     if (loading) {
         return (
-            <div className="flex h-96 flex-col items-center justify-center bg-[#faffff]">
-                <Loader2 className="mb-4 h-8 w-8 animate-spin text-[#b852ff]" />
-                <p className="text-sm text-[#b852ff]">Carregando...</p>
+            <div className="flex h-96 flex-col items-center justify-center">
+                <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-purple-600 rounded-full blur-xl opacity-50 animate-pulse"></div>
+                    <Loader2 className="relative mb-4 h-10 w-10 animate-spin text-violet-400" />
+                </div>
+                <p className="text-sm text-white/60 mt-4">Carregando...</p>
             </div>
         );
     }
 
     return (
-        <div className="space-y-6 p-6 min-h-screen bg-[#faffff]">
-            {/* Topbar */}
-            <div className="flex items-center justify-between mb-6">
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight text-[#000000]">Dashboard</h1>
-                    <p className="text-sm text-[#000000] opacity-70">
-                        Saldo e cotação USDT da sua conta.
-                    </p>
-                </div>
-                <div className="flex items-center gap-2">
+        <div className="space-y-6 min-h-screen">
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-violet-600/20 via-purple-600/10 to-transparent rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-amber-500/10 via-orange-500/5 to-transparent rounded-full blur-3xl"></div>
+            </div>
+
+            <div className="relative z-10">
+                <div className="flex items-center justify-between mb-8">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight text-white">Dashboard</h1>
+                        <p className="text-sm text-white/50 mt-1">
+                            Gerencie seu saldo e acompanhe a cotação USDT em tempo real
+                        </p>
+                    </div>
                     <Button
                         variant="ghost"
-                        className="gap-2 text-[#b852ff] hover:bg-[#f8bc07]/20"
+                        className="gap-2 text-white/70 hover:text-white hover:bg-white/10 border border-white/10 rounded-xl"
                         onClick={() => window.location.reload()}
                     >
                         <RefreshCw className="size-4" /> Atualizar
                     </Button>
                 </div>
-            </div>
 
-            {/* Cards de saldo */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                {/* Saldo BRL */}
-                <Card className="rounded-2xl shadow-sm bg-[#faffff] border border-[#b852ff]/30">
-                    <CardHeader>
-                        <CardTitle className="text-sm font-medium text-[#000000] flex items-center gap-2">
-                            <Wallet className="w-5 h-5 text-[#b852ff]" />
-                            Saldo em Reais (BRL)
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <Card className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-500/20 to-transparent rounded-full blur-2xl"></div>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-medium text-white/60 flex items-center gap-2">
+                                <div className="p-2 rounded-lg bg-green-500/20">
+                                    <Wallet className="w-4 h-4 text-green-400" />
+                                </div>
+                                Saldo em Reais
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-3xl font-bold text-white">
+                                {formatCurrency(saldoBRL)}
+                            </div>
+                            <div className="mt-3 text-xs text-white/40">
+                                {account?.updatedAt ? `Atualizado: ${new Date(account.updatedAt).toLocaleString("pt-BR")}` : "--"}
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-amber-500/20 to-transparent rounded-full blur-2xl"></div>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-medium text-white/60 flex items-center gap-2">
+                                <div className="p-2 rounded-lg bg-amber-500/20">
+                                    <Wallet className="w-4 h-4 text-amber-400" />
+                                </div>
+                                Saldo em USDT
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-3xl font-bold text-white">
+                                {usdtBalanceLoading
+                                    ? <Loader2 className="inline-block animate-spin text-violet-400" />
+                                    : typeof usdtBalance === "number"
+                                        ? usdtBalance.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 }) + " USDT"
+                                        : "0.0000 USDT"}
+                            </div>
+                            <div className="mt-3 text-xs text-white/40 truncate">
+                                {wallets[0]?.externalAddress
+                                    ? `${wallets[0].externalAddress.slice(0, 12)}...${wallets[0].externalAddress.slice(-8)}`
+                                    : "Nenhuma carteira encontrada"}
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden md:col-span-2 lg:col-span-1">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-violet-500/20 to-transparent rounded-full blur-2xl"></div>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-medium text-white/60 flex items-center gap-2">
+                                <div className="p-2 rounded-lg bg-violet-500/20">
+                                    <TrendingUp className="w-4 h-4 text-violet-400" />
+                                </div>
+                                Cotação USDT/BRL
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-end justify-between">
+                                <div>
+                                    <div className="text-3xl font-bold text-white">
+                                        {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread ?? 0, 4)}
+                                    </div>
+                                    <div className="mt-2 flex items-center gap-2">
+                                        <span className="text-xs text-white/40">
+                                            Atualiza em {timer}s
+                                        </span>
+                                        <div className="h-1.5 w-12 bg-white/10 rounded-full overflow-hidden">
+                                            <div 
+                                                className="h-full bg-gradient-to-r from-violet-500 to-purple-500 transition-all duration-1000"
+                                                style={{ width: `${(timer / 15) * 100}%` }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <Button
+                                    className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl shadow-lg shadow-violet-500/25"
+                                    onClick={() => setShowBuyModal(true)}
+                                >
+                                    Comprar USDT
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                <Dialog open={showBuyModal} onOpenChange={setShowBuyModal}>
+                    <DialogContent className="bg-[#0a0118] border border-white/10 backdrop-blur-xl">
+                        <DialogHeader>
+                            <DialogTitle className="text-white text-xl">Comprar USDT</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={handleBuyUsdt} className="space-y-6">
+                            <div>
+                                <label className="block text-sm font-medium mb-2 text-white/70">
+                                    Valor em reais (mínimo R$ 10,00)
+                                </label>
+                                <Input
+                                    type="number"
+                                    min={minValue}
+                                    step={0.01}
+                                    value={buyValue}
+                                    onChange={e => setBuyValue(Number(e.target.value))}
+                                    className="border-white/10 bg-white/5 text-white placeholder:text-white/30 rounded-xl"
+                                    required
+                                />
+                            </div>
+                            <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                                <p className="text-sm text-white/60">Você receberá aproximadamente:</p>
+                                <p className="text-2xl font-bold text-violet-400 mt-1">
+                                    {usdtRateWithSpread ? usdtAmount.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 }) : "--"} USDT
+                                </p>
+                            </div>
+                            <div className="flex gap-3 pt-2">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setShowBuyModal(false)}
+                                    className="flex-1 border-white/10 text-white/70 hover:bg-white/5 hover:text-white rounded-xl"
+                                >
+                                    Cancelar
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    disabled={buyValue < minValue || !usdtRate}
+                                    className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl disabled:opacity-50"
+                                >
+                                    Confirmar Compra
+                                </Button>
+                            </div>
+                        </form>
+                    </DialogContent>
+                </Dialog>
+
+                <Card className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
+                    <CardHeader className="border-b border-white/5">
+                        <CardTitle className="text-white font-semibold text-lg flex items-center gap-2">
+                            <div className="p-2 rounded-lg bg-violet-500/20">
+                                <ArrowDownLeft className="w-4 h-4 text-violet-400" />
+                            </div>
+                            Histórico de Transações Pix
                         </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-[#b852ff]">
-                            {formatCurrency(saldoBRL)}
-                        </div>
-                        <div className="mt-2 text-xs text-[#000000] opacity-60">
-                            {account?.updatedAt ? `Atualizado em: ${new Date(account.updatedAt).toLocaleString("pt-BR")}` : "--"}
-                        </div>
-                    </CardContent>
-                </Card>
-                {/* Saldo USDT */}
-                <Card className="rounded-2xl shadow-sm bg-[#faffff] border border-[#b852ff]/30">
-                    <CardHeader>
-                        <CardTitle className="text-sm font-medium text-[#000000] flex items-center gap-2">
-                            <Wallet className="w-5 h-5 text-[#f8bc07]" />
-                            Saldo em USDT
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-[#b852ff]">
-                            {usdtBalanceLoading
-                                ? <Loader2 className="inline-block animate-spin mr-2" />
-                                : typeof usdtBalance === "number"
-                                    ? usdtBalance.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 }) + " USDT"
-                                    : "..."}
-                        </div>
-                        <div className="mt-2 text-xs text-[#000000] opacity-60">
-                            {wallets[0]?.externalAddress
-                                ? `Endereço: ${wallets[0].externalAddress}`
-                                : "Nenhuma carteira Solana encontrada"}
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Card Cotação USDT + Botão Comprar */}
-            <Card className="rounded-2xl shadow-sm bg-[#faffff] border border-[#b852ff]/30 mb-6">
-                <CardHeader>
-                    <CardTitle className="text-sm font-medium text-[#000000] flex items-center gap-2">
-                        <Wallet className="w-5 h-5 text-[#b852ff]" />
-                        Cotação USDT
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <div>
-                            <div className="text-3xl font-bold text-blue-600">
-                                {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread ?? 0, 4)}
-                            </div>
-                            <div className="mt-2 text-xs text-[#000000] opacity-60">
-                                Atualização em {timer}s
-                            </div>
-                        </div>
-                        <Button
-                            className="bg-[#f8bc07] text-[#000000] hover:bg-[#b852ff] hover:text-[#faffff] transition font-semibold"
-                            size="lg"
-                            onClick={() => setShowBuyModal(true)}
-                        >
-                            Comprar USDT
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Modal de compra USDT */}
-            <Dialog open={showBuyModal} onOpenChange={setShowBuyModal}>
-                <DialogContent className="bg-[#faffff] border border-[#b852ff]/10">
-                    <DialogHeader>
-                        <DialogTitle className="text-[#b852ff]">Comprar USDT</DialogTitle>
-                    </DialogHeader>
-                    <form onSubmit={handleBuyUsdt} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-1 text-[#000000]">
-                                Valor em reais (mínimo R$ 10,00)
-                            </label>
-                            <Input
-                                type="number"
-                                min={minValue}
-                                step={0.01}
-                                value={buyValue}
-                                onChange={e => setBuyValue(Number(e.target.value))}
-                                className="border-[#b852ff]/30 bg-[#faffff] text-[#000000]"
-                                required
-                            />
-                        </div>
-                        <div className="text-sm text-[#000000]">
-                            Você receberá: <span className="font-bold text-[#b852ff]">
-                                {usdtRateWithSpread ? usdtAmount.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 }) : "--"} USDT
-                            </span>
-                        </div>
-                        <div className="flex gap-2 justify-end pt-2">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setShowBuyModal(false)}
-                                className="border-[#b852ff] text-[#b852ff] hover:bg-[#b852ff] hover:text-[#faffff] transition"
-                            >
-                                Cancelar
-                            </Button>
-                            <Button
-                                type="submit"
-                                disabled={buyValue < minValue || !usdtRate}
-                                className="bg-[#f8bc07] text-[#000000] hover:bg-[#b852ff] hover:text-[#faffff] transition"
-                            >
-                                Comprar USDT
-                            </Button>
-                        </div>
-                    </form>
-                </DialogContent>
-            </Dialog>
-
-            {/* Histórico de transações Pix */}
-            <Card className="rounded-2xl shadow-sm bg-[#faffff] border border-[#b852ff]/30">
-                <CardHeader>
-                    <CardTitle className="text-[#b852ff] font-semibold text-base">Histórico Pix</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="overflow-x-auto">
-                        <Table>
-                            <TableHeader className="sticky top-0 bg-[#f8bc07]/10 z-10">
-                                <TableRow>
-                                    <TableHead className="text-[#000000] font-semibold">Data</TableHead>
-                                    <TableHead className="text-[#000000] font-semibold">Valor</TableHead>
-                                    <TableHead className="text-[#000000] font-semibold">Pagador</TableHead>
-                                    <TableHead className="text-[#000000] font-semibold">Banco</TableHead>
-                                    <TableHead className="text-[#000000] font-semibold">Descrição</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {account?.payments && account.payments.length > 0 ? (
-                                    account.payments.map((p) => (
-                                        <TableRow key={p.id}>
-                                            <TableCell>
-                                                {new Date(p.paymentDate).toLocaleString("pt-BR")}
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className={`font-bold ${getValueColor(Number(p.bankPayload.valor))}`}>
-                                                    {formatCurrency(Number(p.bankPayload.valor))}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>
-                                                {p.bankPayload.detalhes.nomePagador}
-                                            </TableCell>
-                                            <TableCell>
-                                                {p.bankPayload.detalhes.nomeEmpresaPagador}
-                                            </TableCell>
-                                            <TableCell>
-                                                {p.bankPayload.titulo}
+                    <CardContent className="p-0">
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="border-white/5 hover:bg-transparent">
+                                        <TableHead className="text-white/50 font-medium">Data</TableHead>
+                                        <TableHead className="text-white/50 font-medium">Valor</TableHead>
+                                        <TableHead className="text-white/50 font-medium">Pagador</TableHead>
+                                        <TableHead className="text-white/50 font-medium">Banco</TableHead>
+                                        <TableHead className="text-white/50 font-medium">Descrição</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {account?.payments && account.payments.length > 0 ? (
+                                        account.payments.map((p) => (
+                                            <TableRow key={p.id} className="border-white/5 hover:bg-white/5">
+                                                <TableCell className="text-white/70">
+                                                    {new Date(p.paymentDate).toLocaleString("pt-BR")}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span className={`font-bold ${getValueColor(Number(p.bankPayload.valor))}`}>
+                                                        {formatCurrency(Number(p.bankPayload.valor))}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell className="text-white/70">
+                                                    {p.bankPayload.detalhes.nomePagador}
+                                                </TableCell>
+                                                <TableCell className="text-white/70">
+                                                    {p.bankPayload.detalhes.nomeEmpresaPagador}
+                                                </TableCell>
+                                                <TableCell className="text-white/70">
+                                                    {p.bankPayload.titulo}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow className="hover:bg-transparent">
+                                            <TableCell colSpan={5} className="text-center text-sm text-white/40 py-12">
+                                                <div className="flex flex-col items-center gap-2">
+                                                    <div className="p-4 rounded-full bg-white/5">
+                                                        <ArrowDownLeft className="w-6 h-6 text-white/20" />
+                                                    </div>
+                                                    <p>Nenhuma transação Pix encontrada</p>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
-                                    ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell colSpan={5} className="text-center text-sm text-[#b852ff] py-8">
-                                            Nenhuma transação Pix encontrada.
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
-                </CardContent>
-            </Card>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </CardContent>
+                </Card>
 
-            {/* Footer note */}
-            <p className="mt-6 text-center text-xs text-[#b852ff] opacity-70">
-                OtsemBank — MVP • UI preview
-            </p>
+                <p className="mt-8 text-center text-xs text-white/30">
+                    OtsemPay — Sua plataforma de pagamentos digitais
+                </p>
+            </div>
         </div>
     );
 }
