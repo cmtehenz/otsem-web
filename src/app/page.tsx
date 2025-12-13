@@ -663,8 +663,8 @@ function PricingCard({
 }) {
   return (
     <div className={`relative overflow-hidden rounded-2xl border p-8 ${highlighted
-        ? "border-violet-500/50 bg-gradient-to-br from-violet-600/20 to-purple-600/20"
-        : "border-white/10 bg-white/5"
+      ? "border-violet-500/50 bg-gradient-to-br from-violet-600/20 to-purple-600/20"
+      : "border-white/10 bg-white/5"
       }`}>
       {highlighted && (
         <div className="absolute -right-12 top-6 rotate-45 bg-violet-600 px-12 py-1 text-xs font-semibold">
@@ -687,8 +687,8 @@ function PricingCard({
       </ul>
       <Link href="/register" className="mt-8 block">
         <Button className={`w-full rounded-xl py-6 font-semibold ${highlighted
-            ? "bg-white text-[#0a0118] hover:bg-white/90"
-            : "bg-white/10 hover:bg-white/20"
+          ? "bg-white text-[#0a0118] hover:bg-white/90"
+          : "bg-white/10 hover:bg-white/20"
           }`}>
           Começar agora
         </Button>
