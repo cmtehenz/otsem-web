@@ -100,8 +100,9 @@ export default function CustomerKycPage(): React.JSX.Element {
     const [loading, setLoading] = React.useState(true);
     const [submitting, setSubmitting] = React.useState(false);
     const [startingVerification, setStartingVerification] = React.useState(false);
-    const [customerId, setCustomerId] = React.useState<string | null>(null);
     const [accountStatus, setAccountStatus] = React.useState<CustomerResponse["accountStatus"]>("not_requested");
+    
+    const customerId = user?.id ?? null;
 
     const [form, setForm] = React.useState({
         name: "",
@@ -140,7 +141,6 @@ export default function CustomerKycPage(): React.JSX.Element {
                     state: data.address?.state ?? "",
                 });
 
-                setCustomerId(data.id);
                 setAccountStatus(data.accountStatus);
             } catch (err) {
                 console.error(err);
