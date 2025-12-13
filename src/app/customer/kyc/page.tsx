@@ -188,7 +188,7 @@ export default function CustomerKycPage(): React.JSX.Element {
 
         try {
             setSubmitting(true);
-            await http.patch(`/customers/${customerId}`, {
+            await http.patch("/customers/me", {
                 name: form.name,
                 birthday: form.birthday,
                 phone: form.phone,
