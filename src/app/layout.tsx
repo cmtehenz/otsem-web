@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/contexts/auth-context";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-
 export const metadata = {
-  title: "OtsemPay • BRL ↔ USDT",
+  title: "OtsemPay • BRL ↔ USDTS",
   description: "Pagamentos e conversão BRL ↔ USDT com transparência.",
   icons: {
     icon: "/favicon-32.png",
@@ -25,7 +24,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Toaster position="top-right" richColors />
           <Analytics />
         </AuthProvider>
-
       </body>
     </html>
   );
