@@ -232,7 +232,7 @@ export default function Dashboard() {
             toast.error(
                 err?.response?.data?.message ||
                 err?.message ||
-                "Erro ao comprar USDT."
+                "Erro ao comprar USDT"
             );
         }
     }
