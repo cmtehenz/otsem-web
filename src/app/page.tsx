@@ -12,7 +12,18 @@ import {
   CheckCircle2,
   Sparkles,
   TrendingUp,
-  Lock
+  Lock,
+  Clock,
+  BadgeCheck,
+  Building2,
+  Users,
+  ChevronRight,
+  Star,
+  ArrowRight,
+  Shield,
+  Smartphone,
+  Banknote,
+  PiggyBank,
 } from "lucide-react";
 import * as React from "react";
 
@@ -26,25 +37,38 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-linear-to-b from-white via-white to-[#f5f8ff] text-slate-800">
-      <DecorBgLight />
-
-      {/* Sticky Header */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${scrollY > 50 ? "bg-white/80 backdrop-blur-lg shadow-sm" : ""
-        }`}>
+    <main className="relative min-h-screen bg-[#0a0118] text-white">
+      <GradientBackground />
+      
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrollY > 50 ? "bg-[#0a0118]/80 backdrop-blur-xl border-b border-white/5" : ""
+      }`}>
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-blue-600 to-indigo-600">
-              <Sparkles className="h-4 w-4 text-white" />
+          <Link href="/" className="flex items-center gap-3">
+            <div className="relative flex h-10 w-10 items-center justify-center">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 blur-sm opacity-80" />
+              <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
+                <Sparkles className="h-5 w-5 text-white" />
+              </div>
             </div>
-            <span className="text-lg font-bold tracking-tight text-slate-900">otsempay</span>
-          </div>
-          <nav className="hidden gap-8 text-sm font-medium text-slate-600 md:flex">
-            <Link href="#features" className="transition hover:text-slate-900">Recursos</Link>
-            <Link href="#pricing" className="transition hover:text-slate-900">Preços</Link>
-            <Link href="/login" className="transition hover:text-slate-900">Entrar</Link>
-            <Link href="/login">
-              <Button size="sm" className="rounded-lg bg-blue-600 hover:bg-blue-500">
+            <span className="text-xl font-bold tracking-tight">otsempay</span>
+          </Link>
+          
+          <nav className="hidden items-center gap-8 md:flex">
+            <Link href="#como-funciona" className="text-sm font-medium text-white/70 transition hover:text-white">
+              Como funciona
+            </Link>
+            <Link href="#recursos" className="text-sm font-medium text-white/70 transition hover:text-white">
+              Recursos
+            </Link>
+            <Link href="#precos" className="text-sm font-medium text-white/70 transition hover:text-white">
+              Preços
+            </Link>
+            <Link href="/login" className="text-sm font-medium text-white/70 transition hover:text-white">
+              Entrar
+            </Link>
+            <Link href="/register">
+              <Button className="rounded-full bg-white px-6 text-sm font-semibold text-[#0a0118] hover:bg-white/90">
                 Criar conta
               </Button>
             </Link>
@@ -52,229 +76,333 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Hero com parallax */}
-      <section className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-6 pt-12 text-center md:pt-20">
-        <div
-          style={{ transform: `translateY(${scrollY * 0.15}px)` }}
-          className="transition-transform will-change-transform"
-        >
-          <BadgeLight text="BRL ↔ USDT instantâneo • Taxas a partir de 0.79%" />
-          <h1 className="mt-6 max-w-4xl bg-linear-to-r from-blue-700 via-indigo-700 to-cyan-700 bg-clip-text text-4xl font-bold leading-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl">
-            Pagamentos e câmbio sem fronteiras
+      <section className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center px-6 pt-20">
+        <div className="text-center animate-fade-in">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-2 backdrop-blur-sm">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+            </span>
+            <span className="text-sm font-medium text-violet-200">
+              Mais de R$ 50M transacionados com segurança
+            </span>
+          </div>
+
+          <h1 className="mx-auto max-w-5xl text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+            <span className="bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent">
+              Seu dinheiro sem
+            </span>
+            <br />
+            <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+              fronteiras
+            </span>
           </h1>
-          <p className="mt-6 max-w-2xl text-lg text-slate-600 sm:text-xl">
-            Converta BRL para USDT instantaneamente com transparência total, segurança avançada e taxas competitivas.
+
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-white/60 sm:text-xl">
+            Converta BRL para USDT instantaneamente. Taxas transparentes, 
+            segurança de nível bancário e liquidação em segundos.
           </p>
-          <div className="mt-10">
-            <Link href="/login">
-              <Button className="h-12 rounded-xl bg-blue-600 px-8 text-base font-semibold text-white shadow-lg shadow-blue-600/25 transition hover:bg-blue-500 hover:shadow-xl">
-                Começar agora
-                <ArrowUpRight className="ml-2 h-5 w-5" />
+
+          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <Link href="/register">
+              <Button className="group h-14 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-8 text-base font-semibold shadow-lg shadow-violet-500/25 transition-all hover:shadow-xl hover:shadow-violet-500/30">
+                Começar gratuitamente
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
+            <Link href="#como-funciona">
+              <Button variant="ghost" className="h-14 rounded-full border border-white/10 px-8 text-base font-medium text-white hover:bg-white/5">
+                Ver como funciona
               </Button>
             </Link>
           </div>
 
-          {/* Social proof */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
+          <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-white/50">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
-              <span>Liquidação T+0</span>
+              <ShieldCheck className="h-5 w-5 text-green-500" />
+              <span>Verificação KYC</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
-              <span>99.98% uptime</span>
+              <Zap className="h-5 w-5 text-yellow-500" />
+              <span>Liquidação instantânea</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
-              <span>Segurança KYC</span>
+              <Lock className="h-5 w-5 text-violet-400" />
+              <span>Criptografia end-to-end</span>
             </div>
           </div>
         </div>
 
-        {/* Mockups com parallax */}
-        <div
-          style={{ transform: `translateY(${scrollY * -0.05}px)` }}
-          className="relative mt-16 w-full transition-transform will-change-transform"
-        >
-          <MockupDeckLight />
+        <div className="relative mt-16 w-full max-w-4xl animate-fade-in-up">
+          <PhoneMockup />
         </div>
 
-        <div className="mt-24 h-px w-40 bg-linear-to-r from-transparent via-blue-400/60 to-transparent" />
-      </section>
-
-      {/* Stats */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 py-16">
-        <div className="grid gap-8 sm:grid-cols-3">
-          <StatCard
-            number="R$ 50M+"
-            label="Volume transacionado"
-            icon={<TrendingUp className="h-6 w-6 text-blue-600" />}
-          />
-          <StatCard
-            number="5.000+"
-            label="Usuários ativos"
-            icon={<Globe2 className="h-6 w-6 text-indigo-600" />}
-          />
-          <StatCard
-            number="< 30s"
-            label="Tempo médio de conversão"
-            icon={<Zap className="h-6 w-6 text-cyan-600" />}
-          />
-        </div>
-      </section>
-
-      {/* Features */}
-      <section id="features" className="relative z-10 mx-auto max-w-7xl px-6 pb-24 pt-10">
-        <div className="mb-12 text-center">
-          <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
-            Tudo o que você precisa
-          </h2>
-          <p className="mt-3 text-lg text-slate-600">
-            Uma plataforma completa para gerenciar seus pagamentos e câmbio
-          </p>
-        </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <FeatureLight
-            icon={<Repeat className="h-5 w-5 text-blue-600" />}
-            title="Conversão instantânea"
-            desc="Swap BRL ↔ USDT com liquidação otimizada e cotação em tempo real."
-          />
-          <FeatureLight
-            icon={<CreditCard className="h-5 w-5 text-indigo-600" />}
-            title="Pagamentos integrados"
-            desc="PIX, boleto e saída para carteiras externas com conciliação automática."
-          />
-          <FeatureLight
-            icon={<ShieldCheck className="h-5 w-5 text-teal-600" />}
-            title="Segurança e KYC"
-            desc="Verificação robusta, antifraude e criptografia de ponta a ponta."
-          />
-          <FeatureLight
-            icon={<Zap className="h-5 w-5 text-amber-600" />}
-            title="Performance"
-            desc="Baixa latência, alta disponibilidade e infraestrutura escalável."
-          />
-          <FeatureLight
-            icon={<Globe2 className="h-5 w-5 text-cyan-600" />}
-            title="Multi-região"
-            desc="Preparado para expansão global com suporte a múltiplas moedas."
-          />
-          <FeatureLight
-            icon={<Lock className="h-5 w-5 text-fuchsia-600" />}
-            title="Compliance total"
-            desc="Adequado às regulamentações locais e internacionais."
-          />
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section id="pricing" className="relative z-10 mx-auto max-w-7xl px-6 pb-24">
-        <div className="mb-12 text-center">
-          <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
-            Preços transparentes
-          </h2>
-          <p className="mt-3 text-lg text-slate-600">
-            Sem taxas escondidas. Simples e direto.
-          </p>
-        </div>
-        <div className="grid gap-6 md:grid-cols-2">
-          <PricingCard
-            title="Conversão BRL → USDT"
-            price="0.79%"
-            features={[
-              "Liquidação instantânea",
-              "Sem valor mínimo",
-              "Suporte prioritário",
-              "API futura incluída"
-            ]}
-          />
-          <PricingCard
-            title="Conversão USDT → BRL"
-            price="0.99%"
-            features={[
-              "Saque via PIX",
-              "Processamento em até 1h",
-              "Suporte 24/7",
-              "Dashboard avançado"
-            ]}
-            highlighted
-          />
-        </div>
-      </section>
-
-      {/* CTA Final */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 pb-32">
-        <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-linear-to-r from-blue-50 via-indigo-50 to-cyan-50 p-10 sm:p-16">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.15),transparent_60%)]" />
-          <div className="relative mx-auto max-w-3xl text-center">
-            <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
-              Pronto para começar?
-            </h2>
-            <p className="mt-4 text-lg text-slate-600">
-              Crie sua conta gratuitamente e comece a transacionar BRL ↔ USDT em minutos.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Link href="/login">
-                <Button className="h-12 rounded-xl bg-blue-600 px-8 text-base font-semibold text-white hover:bg-blue-500">
-                  Criar conta grátis
-                  <ArrowUpRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="/login">
-                <Button
-                  variant="ghost"
-                  className="h-12 rounded-xl px-8 text-base font-semibold text-slate-700 hover:bg-slate-100"
-                >
-                  Falar com vendas
-                </Button>
-              </Link>
-            </div>
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
+          <div className="flex flex-col items-center gap-2 text-white/40 animate-bounce">
+            <span className="text-xs">Role para explorar</span>
+            <ChevronRight className="h-4 w-4 rotate-90" />
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-12">
-          <div className="grid gap-8 md:grid-cols-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-blue-600 to-indigo-600">
-                  <Sparkles className="h-4 w-4 text-white" />
-                </div>
-                <span className="text-lg font-bold">otsempay</span>
+      <section className="relative z-10 border-y border-white/5 bg-white/[0.02] py-16">
+        <div className="mx-auto max-w-7xl px-6">
+          <p className="mb-8 text-center text-sm font-medium uppercase tracking-wider text-white/40">
+            Confiado por empresas e traders
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-12 opacity-50">
+            {["Mercado Bitcoin", "Binance", "Coinbase", "FTX", "Kraken"].map((partner) => (
+              <div key={partner} className="text-lg font-bold text-white/60">
+                {partner}
               </div>
-              <p className="mt-4 text-sm text-slate-600">
-                Pagamentos e câmbio BRL ↔ USDT com transparência total.
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <StatCard number="R$ 50M+" label="Volume total transacionado" icon={<TrendingUp />} />
+            <StatCard number="5.000+" label="Usuários ativos" icon={<Users />} />
+            <StatCard number="<30s" label="Tempo médio de conversão" icon={<Clock />} />
+            <StatCard number="99.9%" label="Uptime garantido" icon={<ShieldCheck />} />
+          </div>
+        </div>
+      </section>
+
+      <section id="como-funciona" className="relative z-10 py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-16 text-center">
+            <span className="mb-4 inline-block rounded-full bg-violet-500/10 px-4 py-1.5 text-sm font-medium text-violet-400">
+              Simples e rápido
+            </span>
+            <h2 className="text-3xl font-bold sm:text-4xl lg:text-5xl">
+              Como funciona
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-white/60">
+              Em apenas 3 passos, converta seu dinheiro de forma segura e instantânea
+            </p>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-3">
+            <StepCard 
+              step="01" 
+              title="Crie sua conta" 
+              description="Cadastro rápido com verificação KYC em minutos. Só precisamos de alguns dados básicos."
+              icon={<Users />}
+            />
+            <StepCard 
+              step="02" 
+              title="Deposite via PIX" 
+              description="Transfira BRL para sua carteira usando PIX. O saldo é creditado instantaneamente."
+              icon={<Banknote />}
+            />
+            <StepCard 
+              step="03" 
+              title="Converta para USDT" 
+              description="Com um clique, converta seu saldo para USDT com a melhor taxa do mercado."
+              icon={<Repeat />}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section id="recursos" className="relative z-10 py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-16">
+            <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+              <div>
+                <span className="mb-4 inline-block rounded-full bg-violet-500/10 px-4 py-1.5 text-sm font-medium text-violet-400">
+                  Recursos
+                </span>
+                <h2 className="text-3xl font-bold sm:text-4xl lg:text-5xl">
+                  Tudo que você precisa em um só lugar
+                </h2>
+                <p className="mt-4 text-lg text-white/60">
+                  Ferramentas poderosas para gerenciar suas conversões com total controle e transparência.
+                </p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FeatureCard icon={<Repeat />} title="Conversão instantânea" description="BRL ↔ USDT em segundos" />
+                <FeatureCard icon={<CreditCard />} title="PIX integrado" description="Depósitos e saques rápidos" />
+                <FeatureCard icon={<Shield />} title="Segurança total" description="Criptografia de ponta" />
+                <FeatureCard icon={<Globe2 />} title="Sem fronteiras" description="Opere de qualquer lugar" />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-24 grid gap-6 lg:grid-cols-3">
+            <BigFeatureCard
+              icon={<ShieldCheck />}
+              title="Segurança de nível bancário"
+              description="Seus fundos são protegidos com a mesma tecnologia usada pelos maiores bancos do mundo. Autenticação em duas etapas, monitoramento 24/7 e criptografia end-to-end."
+              gradient="from-green-500/20 to-emerald-500/20"
+            />
+            <BigFeatureCard
+              icon={<Zap />}
+              title="Velocidade incomparável"
+              description="Conversões processadas em menos de 30 segundos. Infraestrutura otimizada para performance máxima e disponibilidade 99.9%."
+              gradient="from-yellow-500/20 to-orange-500/20"
+            />
+            <BigFeatureCard
+              icon={<BadgeCheck />}
+              title="100% em conformidade"
+              description="Operamos dentro de todas as regulamentações brasileiras. KYC rigoroso, políticas AML e total transparência nas operações."
+              gradient="from-violet-500/20 to-purple-500/20"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section id="precos" className="relative z-10 py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-16 text-center">
+            <span className="mb-4 inline-block rounded-full bg-violet-500/10 px-4 py-1.5 text-sm font-medium text-violet-400">
+              Preços
+            </span>
+            <h2 className="text-3xl font-bold sm:text-4xl lg:text-5xl">
+              Taxas transparentes
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-white/60">
+              Sem taxas escondidas. Você sabe exatamente quanto vai pagar.
+            </p>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-2 lg:mx-auto lg:max-w-4xl">
+            <PricingCard
+              title="BRL → USDT"
+              price="0.79%"
+              description="Converta reais para dólares digitais"
+              features={[
+                "Liquidação instantânea",
+                "Sem valor mínimo",
+                "Cotação em tempo real",
+                "Suporte prioritário"
+              ]}
+            />
+            <PricingCard
+              title="USDT → BRL"
+              price="0.99%"
+              description="Saque seus dólares em reais"
+              features={[
+                "Saque via PIX",
+                "Processamento em até 1h",
+                "Dashboard completo",
+                "Suporte 24/7"
+              ]}
+              highlighted
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-violet-600/20 via-purple-600/20 to-fuchsia-600/20 p-12 sm:p-16">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(139,92,246,0.3),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(192,132,252,0.2),transparent_60%)]" />
+            
+            <div className="relative mx-auto max-w-3xl text-center">
+              <h2 className="text-3xl font-bold sm:text-4xl lg:text-5xl">
+                Pronto para começar?
+              </h2>
+              <p className="mt-4 text-lg text-white/70">
+                Crie sua conta gratuitamente e comece a transacionar BRL ↔ USDT em minutos. 
+                Sem compromisso, cancele quando quiser.
               </p>
+              <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+                <Link href="/register">
+                  <Button className="h-14 rounded-full bg-white px-8 text-base font-semibold text-[#0a0118] hover:bg-white/90">
+                    Criar conta grátis
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button variant="ghost" className="h-14 rounded-full border border-white/20 px-8 text-base font-medium text-white hover:bg-white/10">
+                    Já tenho conta
+                  </Button>
+                </Link>
+              </div>
+              
+              <div className="mt-8 flex items-center justify-center gap-4 text-sm text-white/50">
+                <div className="flex items-center gap-1">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span>Cadastro grátis</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span>Sem mensalidade</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span>Cancele quando quiser</span>
+                </div>
+              </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="relative z-10 border-t border-white/5 bg-[#0a0118]">
+        <div className="mx-auto max-w-7xl px-6 py-16">
+          <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
             <div>
-              <h3 className="text-sm font-semibold text-slate-900">Produto</h3>
-              <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                <li><Link href="#features" className="hover:text-slate-900">Recursos</Link></li>
-                <li><Link href="#pricing" className="hover:text-slate-900">Preços</Link></li>
-                <li><Link href="/login" className="hover:text-slate-900">API</Link></li>
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
+                  <Sparkles className="h-5 w-5 text-white" />
+                </div>
+                <span className="text-xl font-bold">otsempay</span>
+              </div>
+              <p className="mt-4 text-sm text-white/50">
+                Pagamentos e câmbio BRL ↔ USDT com transparência total e segurança de nível bancário.
+              </p>
+              <div className="mt-6 flex items-center gap-2">
+                <div className="flex items-center gap-1 rounded-full bg-green-500/10 px-3 py-1 text-xs font-medium text-green-400">
+                  <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                  Todos os sistemas operacionais
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-white/40">Produto</h3>
+              <ul className="mt-4 space-y-3">
+                <li><Link href="#recursos" className="text-sm text-white/60 transition hover:text-white">Recursos</Link></li>
+                <li><Link href="#precos" className="text-sm text-white/60 transition hover:text-white">Preços</Link></li>
+                <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">API</Link></li>
+                <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Integrações</Link></li>
               </ul>
             </div>
+            
             <div>
-              <h3 className="text-sm font-semibold text-slate-900">Empresa</h3>
-              <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                <li><Link href="/login" className="hover:text-slate-900">Sobre</Link></li>
-                <li><Link href="/login" className="hover:text-slate-900">Blog</Link></li>
-                <li><Link href="/login" className="hover:text-slate-900">Carreiras</Link></li>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-white/40">Empresa</h3>
+              <ul className="mt-4 space-y-3">
+                <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Sobre nós</Link></li>
+                <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Blog</Link></li>
+                <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Carreiras</Link></li>
+                <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Contato</Link></li>
               </ul>
             </div>
+            
             <div>
-              <h3 className="text-sm font-semibold text-slate-900">Legal</h3>
-              <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                <li><Link href="/login" className="hover:text-slate-900">Termos</Link></li>
-                <li><Link href="/login" className="hover:text-slate-900">Privacidade</Link></li>
-                <li><Link href="/login" className="hover:text-slate-900">Status</Link></li>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-white/40">Legal</h3>
+              <ul className="mt-4 space-y-3">
+                <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Termos de uso</Link></li>
+                <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Política de privacidade</Link></li>
+                <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Política de cookies</Link></li>
+                <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Status</Link></li>
               </ul>
             </div>
           </div>
-          <div className="mt-12 border-t border-slate-200 pt-8 text-center text-sm text-slate-500">
-            © {new Date().getFullYear()} otsempay. Todos os direitos reservados.
+          
+          <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 sm:flex-row">
+            <p className="text-sm text-white/40">
+              © {new Date().getFullYear()} otsempay. Todos os direitos reservados.
+            </p>
+            <div className="flex items-center gap-6">
+              <span className="text-xs text-white/30">CNPJ: 00.000.000/0001-00</span>
+            </div>
           </div>
         </div>
       </footer>
@@ -282,168 +410,192 @@ export default function HomePage() {
   );
 }
 
-/* Components */
-
-function BadgeLight({ text }: { text: string }) {
+function GradientBackground() {
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-1.5 text-xs font-medium text-blue-700 shadow-sm">
-      <Zap className="h-3.5 w-3.5 text-blue-500" />
-      {text}
-    </span>
+    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      <div className="absolute -top-1/2 left-1/2 h-[1000px] w-[1000px] -translate-x-1/2 rounded-full bg-gradient-to-b from-violet-600/30 via-purple-600/20 to-transparent blur-3xl" />
+      <div className="absolute top-1/4 -left-1/4 h-[600px] w-[600px] rounded-full bg-gradient-to-r from-fuchsia-600/20 to-transparent blur-3xl" />
+      <div className="absolute bottom-0 right-0 h-[800px] w-[800px] rounded-full bg-gradient-to-l from-violet-600/15 to-transparent blur-3xl" />
+      <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
+    </div>
+  );
+}
+
+function PhoneMockup() {
+  return (
+    <div className="relative mx-auto w-full max-w-md">
+      <div className="absolute inset-0 -z-10 scale-110 rounded-[3rem] bg-gradient-to-r from-violet-500/30 via-purple-500/30 to-fuchsia-500/30 blur-3xl" />
+      
+      <div className="relative mx-auto w-72 rounded-[2.5rem] border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-2 shadow-2xl backdrop-blur-xl">
+        <div className="absolute left-1/2 top-4 h-6 w-20 -translate-x-1/2 rounded-full bg-black" />
+        
+        <div className="overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#1a0a2e] to-[#0f0520]">
+          <div className="p-6 pt-10">
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <p className="text-xs text-white/50">Saldo total</p>
+                <p className="text-2xl font-bold">R$ 12.540,10</p>
+              </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-500/20">
+                <PiggyBank className="h-5 w-5 text-violet-400" />
+              </div>
+            </div>
+            
+            <div className="mb-6 grid grid-cols-2 gap-3">
+              <div className="rounded-xl bg-white/5 p-3">
+                <p className="text-xs text-white/50">BRL</p>
+                <p className="text-lg font-semibold">R$ 5.200</p>
+              </div>
+              <div className="rounded-xl bg-white/5 p-3">
+                <p className="text-xs text-white/50">USDT</p>
+                <p className="text-lg font-semibold">$ 1.468</p>
+              </div>
+            </div>
+            
+            <div className="mb-4 flex gap-2">
+              <button className="flex-1 rounded-xl bg-violet-600 py-3 text-sm font-semibold">
+                Converter
+              </button>
+              <button className="flex-1 rounded-xl bg-white/10 py-3 text-sm font-semibold">
+                Depositar
+              </button>
+            </div>
+            
+            <div className="space-y-3">
+              <p className="text-xs font-medium text-white/40">Últimas transações</p>
+              <div className="flex items-center justify-between rounded-lg bg-white/5 p-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20">
+                    <ArrowUpRight className="h-4 w-4 text-green-400 rotate-180" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Depósito PIX</p>
+                    <p className="text-xs text-white/50">Hoje, 14:32</p>
+                  </div>
+                </div>
+                <p className="text-sm font-semibold text-green-400">+R$ 500</p>
+              </div>
+              <div className="flex items-center justify-between rounded-lg bg-white/5 p-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-500/20">
+                    <Repeat className="h-4 w-4 text-violet-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">BRL → USDT</p>
+                    <p className="text-xs text-white/50">Ontem, 18:15</p>
+                  </div>
+                </div>
+                <p className="text-sm font-semibold">$100</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
 function StatCard({ number, label, icon }: { number: string; label: string; icon: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm">
-      <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-blue-50 to-indigo-50">
-        {icon}
-      </div>
-      <div className="text-3xl font-bold text-slate-900">{number}</div>
-      <div className="mt-1 text-sm text-slate-600">{label}</div>
-    </div>
-  );
-}
-
-function FeatureLight({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
-  return (
-    <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 transition duration-300 hover:border-blue-200 hover:shadow-lg">
-      <div className="absolute inset-0 bg-linear-to-br from-blue-50 via-transparent to-indigo-50 opacity-0 transition group-hover:opacity-100" />
-      <div className="relative flex items-start gap-4">
-        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-linear-to-br from-slate-100 to-slate-50 transition group-hover:from-blue-100 group-hover:to-indigo-100">
+    <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition hover:border-violet-500/30 hover:bg-white/10">
+      <div className="absolute inset-0 bg-gradient-to-br from-violet-600/10 to-transparent opacity-0 transition group-hover:opacity-100" />
+      <div className="relative">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-violet-500/10 text-violet-400">
           {icon}
         </div>
-        <div>
-          <h3 className="text-base font-semibold text-slate-900">{title}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-slate-600">{desc}</p>
-        </div>
+        <div className="text-3xl font-bold">{number}</div>
+        <div className="mt-1 text-sm text-white/50">{label}</div>
       </div>
     </div>
   );
 }
 
-function PricingCard({
-  title,
-  price,
-  features,
-  highlighted
-}: {
-  title: string;
-  price: string;
-  features: string[];
-  highlighted?: boolean
+function StepCard({ step, title, description, icon }: { step: string; title: string; description: string; icon: React.ReactNode }) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
+      <div className="absolute -right-4 -top-4 text-8xl font-bold text-white/[0.03]">{step}</div>
+      <div className="relative">
+        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/20 to-purple-500/20 text-violet-400">
+          {icon}
+        </div>
+        <h3 className="text-xl font-semibold">{title}</h3>
+        <p className="mt-2 text-white/60">{description}</p>
+      </div>
+    </div>
+  );
+}
+
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+  return (
+    <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition hover:border-violet-500/30 hover:bg-white/10">
+      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-violet-500/10 text-violet-400 transition group-hover:bg-violet-500/20">
+        {icon}
+      </div>
+      <h3 className="font-semibold">{title}</h3>
+      <p className="mt-1 text-sm text-white/50">{description}</p>
+    </div>
+  );
+}
+
+function BigFeatureCard({ icon, title, description, gradient }: { icon: React.ReactNode; title: string; description: string; gradient: string }) {
+  return (
+    <div className={`relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br ${gradient} p-8 backdrop-blur-sm`}>
+      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-white">
+        {icon}
+      </div>
+      <h3 className="text-xl font-semibold">{title}</h3>
+      <p className="mt-3 text-white/70">{description}</p>
+    </div>
+  );
+}
+
+function PricingCard({ 
+  title, 
+  price, 
+  description, 
+  features, 
+  highlighted 
+}: { 
+  title: string; 
+  price: string; 
+  description: string; 
+  features: string[]; 
+  highlighted?: boolean 
 }) {
   return (
-    <div className={`rounded-2xl border p-8 transition hover:shadow-lg ${highlighted
-      ? "border-blue-300 bg-linear-to-br from-blue-50 to-indigo-50 shadow-md"
-      : "border-slate-200 bg-white"
+    <div className={`relative overflow-hidden rounded-2xl border p-8 ${
+        highlighted 
+          ? "border-violet-500/50 bg-gradient-to-br from-violet-600/20 to-purple-600/20" 
+          : "border-white/10 bg-white/5"
       }`}>
       {highlighted && (
-        <div className="mb-4 inline-flex items-center gap-1 rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
-          <Sparkles className="h-3 w-3" />
-          Mais popular
+        <div className="absolute -right-12 top-6 rotate-45 bg-violet-600 px-12 py-1 text-xs font-semibold">
+          Popular
         </div>
       )}
-      <h3 className="text-xl font-semibold text-slate-900">{title}</h3>
-      <div className="mt-4 flex items-baseline gap-1">
-        <span className="text-4xl font-bold text-slate-900">{price}</span>
-        <span className="text-sm text-slate-600">por transação</span>
+      <h3 className="text-xl font-semibold">{title}</h3>
+      <p className="mt-1 text-sm text-white/50">{description}</p>
+      <div className="mt-6 flex items-baseline gap-1">
+        <span className="text-4xl font-bold">{price}</span>
+        <span className="text-white/50">por transação</span>
       </div>
-      <ul className="mt-6 space-y-3">
+      <ul className="mt-8 space-y-4">
         {features.map((feature, i) => (
-          <li key={i} className="flex items-center gap-3 text-sm text-slate-700">
-            <CheckCircle2 className="h-5 w-5 shrink-0 text-green-600" />
-            {feature}
+          <li key={i} className="flex items-center gap-3">
+            <CheckCircle2 className="h-5 w-5 shrink-0 text-green-500" />
+            <span className="text-white/80">{feature}</span>
           </li>
         ))}
       </ul>
-      <Link href="/login" className="mt-8 block">
-        <Button className={`w-full rounded-xl ${highlighted
-          ? "bg-blue-600 hover:bg-blue-500"
-          : "bg-slate-900 hover:bg-slate-800"
-          }`}>
+      <Link href="/register" className="mt-8 block">
+        <Button className={`w-full rounded-xl py-6 font-semibold ${
+          highlighted 
+            ? "bg-white text-[#0a0118] hover:bg-white/90" 
+            : "bg-white/10 hover:bg-white/20"
+        }`}>
           Começar agora
         </Button>
       </Link>
-    </div>
-  );
-}
-
-function MockupDeckLight() {
-  return (
-    <div style={{ perspective: "1200px" }} className="relative flex h-[420px] w-full max-w-4xl items-center justify-center">
-      <div className="absolute inset-0 -z-10 rounded-3xl bg-linear-to-r from-blue-200/50 via-indigo-200/50 to-cyan-200/50 blur-2xl" />
-      <AnimatedCardLight
-        rotate={-14}
-        gradientClass="from-blue-500 to-indigo-500"
-        label="Saldo USDT"
-        value="2,340.88"
-        code="USDT"
-      />
-      <AnimatedCardLight
-        rotate={6}
-        gradientClass="from-cyan-500 to-teal-500"
-        label="Saldo BRL"
-        value="12,540.10"
-        code="BRL"
-      />
-      <AnimatedCardLight
-        rotate={-4}
-        gradientClass="from-fuchsia-500 to-violet-500"
-        label="Cotação hoje"
-        value="R$ 5,01"
-        code="1 USDT"
-        small
-      />
-    </div>
-  );
-}
-
-function AnimatedCardLight({
-  rotate,
-  gradientClass,
-  label,
-  value,
-  code,
-  small,
-}: {
-  rotate: number;
-  gradientClass: string;
-  label: string;
-  value: string;
-  code: string;
-  small?: boolean;
-}) {
-  return (
-    <div
-      style={{ transform: `rotate(${rotate}deg)` }}
-      className={`group absolute select-none rounded-2xl border border-slate-200 bg-white px-6 ${small ? "py-4 w-56" : "py-6 w-72"
-        } shadow-lg shadow-slate-200/60 backdrop-blur-sm hover:shadow-xl`}
-    >
-      <div className={`absolute inset-0 rounded-2xl bg-linear-to-br ${gradientClass} opacity-10 transition group-hover:opacity-20`} />
-      <div className="relative flex items-center justify-between">
-        <span className="text-xs font-medium uppercase tracking-wide text-slate-500">
-          {label}
-        </span>
-        <span className="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-semibold text-slate-700">
-          {code}
-        </span>
-      </div>
-      <div className="relative mt-2 text-2xl font-semibold tracking-tight text-slate-900">
-        {value}
-      </div>
-      <div className="relative mt-3 h-1 w-24 rounded-full bg-linear-to-r from-blue-500 via-indigo-500 to-cyan-500" />
-    </div>
-  );
-}
-
-function DecorBgLight() {
-  return (
-    <div className="pointer-events-none absolute inset-0 -z-10">
-      <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-linear-to-br from-blue-100 to-indigo-100 blur-3xl" />
-      <div className="absolute top-1/3 -left-24 h-80 w-80 rounded-full bg-linear-to-tr from-cyan-100 to-teal-100 blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 h-64 w-64 rounded-full bg-linear-to-tr from-fuchsia-100 to-indigo-100 blur-3xl" />
-      <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] bg-size-[26px_26px]" />
     </div>
   );
 }
