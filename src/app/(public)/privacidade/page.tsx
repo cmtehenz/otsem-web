@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Sparkles, Shield, Database, Eye, Lock, Users, Globe2, Mail, FileText } from "lucide-react";
+import { ArrowLeft, Shield, Database, Eye, Lock, Users, Globe2, Mail, FileText } from "lucide-react";
 
 export default function PrivacyPolicyPage() {
   return (
@@ -14,10 +14,11 @@ export default function PrivacyPolicyPage() {
       <header className="border-b border-white/5 bg-[#0a0118]/80 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
-              <Sparkles className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-xl font-bold tracking-tight">Otsem Bank</span>
+            <img src="/images/logo.png" alt="OtsemPay" className="h-10 w-10 object-contain" />
+            <span className="text-xl font-bold tracking-tight">
+              <span className="text-amber-400">Otsem</span>
+              <span className="text-violet-400">Pay</span>
+            </span>
           </Link>
           <Link href="/">
             <Button variant="ghost" className="gap-2 text-white/70 hover:text-white">
@@ -44,7 +45,7 @@ export default function PrivacyPolicyPage() {
 
         <div className="mb-8 rounded-2xl border border-violet-500/20 bg-violet-500/10 p-6">
           <p className="text-white/80 leading-relaxed">
-            A Otsem Bank está comprometida com a proteção da sua privacidade e dos seus dados pessoais. Esta Política de Privacidade descreve como coletamos, usamos, armazenamos e protegemos suas informações pessoais em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018).
+            A OtsemPay está comprometida com a proteção da sua privacidade e dos seus dados pessoais. Esta Política de Privacidade descreve como coletamos, usamos, armazenamos e protegemos suas informações pessoais em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018).
           </p>
         </div>
 
@@ -290,7 +291,7 @@ A data da última atualização será sempre indicada no topo desta página.`}
                 </p>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-                <h4 className="font-semibold text-violet-400">Otsem Bank</h4>
+                <h4 className="font-semibold text-violet-400">OtsemPay</h4>
                 <p className="mt-2 text-white/70">
                   E-mail: privacidade@otsembank.com.br<br />
                   Endereço: São Paulo, SP - Brasil<br />
@@ -318,7 +319,7 @@ A data da última atualização será sempre indicada no topo desta página.`}
       <footer className="border-t border-white/5 bg-[#0a0118]">
         <div className="mx-auto max-w-7xl px-6 py-8">
           <p className="text-center text-sm text-white/40">
-            © {new Date().getFullYear()} Otsem Bank. Todos os direitos reservados.
+            © {new Date().getFullYear()} OtsemPay. Todos os direitos reservados.
           </p>
         </div>
       </footer>

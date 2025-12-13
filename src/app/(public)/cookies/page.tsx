@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Sparkles, Cookie, Shield, Settings, Info, Clock, Mail } from "lucide-react";
+import { ArrowLeft, Cookie, Shield, Settings, Info, Clock, Mail } from "lucide-react";
 
 export default function CookiesPolicyPage() {
   return (
@@ -14,10 +14,11 @@ export default function CookiesPolicyPage() {
       <header className="border-b border-white/5 bg-[#0a0118]/80 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
-              <Sparkles className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-xl font-bold tracking-tight">Otsem Bank</span>
+            <img src="/images/logo.png" alt="OtsemPay" className="h-10 w-10 object-contain" />
+            <span className="text-xl font-bold tracking-tight">
+              <span className="text-amber-400">Otsem</span>
+              <span className="text-violet-400">Pay</span>
+            </span>
           </Link>
           <Link href="/">
             <Button variant="ghost" className="gap-2 text-white/70 hover:text-white">
@@ -54,7 +55,7 @@ Os cookies permitem que nosso site reconheça seu dispositivo e lembre-se de sua
           <Section
             icon={<Settings />}
             title="2. Como Utilizamos os Cookies"
-            content={`A Otsem Bank utiliza cookies para diversos fins:`}
+            content={`A OtsemPay utiliza cookies para diversos fins:`}
           >
             <ul className="mt-4 space-y-3 text-white/70">
               <li className="flex items-start gap-3">
@@ -173,7 +174,7 @@ A data da última atualização será sempre indicada no topo desta página.`}
           >
             <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-6">
               <p className="text-white/70">
-                <strong className="text-white">Otsem Bank</strong><br />
+                <strong className="text-white">OtsemPay</strong><br />
                 E-mail: privacidade@otsembank.com.br<br />
                 Endereço: São Paulo, SP - Brasil
               </p>
@@ -193,7 +194,7 @@ A data da última atualização será sempre indicada no topo desta página.`}
       <footer className="border-t border-white/5 bg-[#0a0118]">
         <div className="mx-auto max-w-7xl px-6 py-8">
           <p className="text-center text-sm text-white/40">
-            © {new Date().getFullYear()} Otsem Bank. Todos os direitos reservados.
+            © {new Date().getFullYear()} OtsemPay. Todos os direitos reservados.
           </p>
         </div>
       </footer>

@@ -45,13 +45,11 @@ export default function HomePage() {
       }`}>
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-3">
-            <div className="relative flex h-10 w-10 items-center justify-center">
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 blur-sm opacity-80" />
-              <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-            </div>
-            <span className="text-xl font-bold tracking-tight">Otsem Bank</span>
+            <img src="/images/logo.png" alt="OtsemPay" className="h-10 w-10 object-contain" />
+            <span className="text-xl font-bold tracking-tight">
+              <span className="text-amber-400">Otsem</span>
+              <span className="text-violet-400">Pay</span>
+            </span>
           </Link>
           
           <nav className="hidden items-center gap-8 md:flex">
@@ -450,10 +448,11 @@ export default function HomePage() {
           <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
             <div>
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
-                  <Sparkles className="h-5 w-5 text-white" />
-                </div>
-                <span className="text-xl font-bold">Otsem Bank</span>
+                <img src="/images/logo.png" alt="OtsemPay" className="h-10 w-10 object-contain" />
+                <span className="text-xl font-bold">
+                  <span className="text-amber-400">Otsem</span>
+                  <span className="text-violet-400">Pay</span>
+                </span>
               </div>
               <p className="mt-4 text-sm text-white/50">
                 Revolucionando a forma como o mundo interage com o dinheiro. Transparência, responsabilidade e agilidade em cada transação.
@@ -499,7 +498,7 @@ export default function HomePage() {
           
           <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 sm:flex-row">
             <p className="text-sm text-white/40">
-              © {new Date().getFullYear()} Otsem Bank. Todos os direitos reservados.
+              © {new Date().getFullYear()} OtsemPay. Todos os direitos reservados.
             </p>
             <div className="flex items-center gap-6">
               <span className="text-xs text-white/30">CNPJ: 00.000.000/0001-00</span>
