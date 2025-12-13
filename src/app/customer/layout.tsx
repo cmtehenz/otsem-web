@@ -284,7 +284,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
     React.useEffect(() => {
         async function loadKyc() {
             try {
-                const response = await http.get<{ data: CustomerResponse }>("/customers/me");
+                const response = await http.get<{ data: CustomerResponse }>("/auth/me");
                 const customer = response.data.data;
 
                 if (customer?.accountStatus) {

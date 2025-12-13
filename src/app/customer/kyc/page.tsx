@@ -122,7 +122,7 @@ export default function CustomerKycPage(): React.JSX.Element {
         async function loadCustomer() {
             try {
                 setLoading(true);
-                const response = await http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me");
+                const response = await http.get<{ data: CustomerResponse } | CustomerResponse>("/auth/me");
                 const data = "data" in response.data ? response.data.data : response.data;
 
                 setForm({
@@ -188,7 +188,7 @@ export default function CustomerKycPage(): React.JSX.Element {
 
         try {
             setSubmitting(true);
-            await http.patch("/customers/me", {
+            await http.patch("/auth/me", {
                 name: form.name,
                 birthday: form.birthday,
                 phone: form.phone,
@@ -237,7 +237,7 @@ export default function CustomerKycPage(): React.JSX.Element {
             setStartingVerification(true);
 
             const response = await http.post<{ verificationUrl: string }>(
-                "/customers/me/kyc/request"
+                "/auth/me/kyc/request"
             );
 
             const verificationUrl = response.data?.verificationUrl;
@@ -262,7 +262,7 @@ export default function CustomerKycPage(): React.JSX.Element {
         
         try {
             const response = await http.get<{ accountStatus: CustomerResponse["accountStatus"] }>(
-                "/customers/me/kyc/status"
+                "/auth/me/kyc/status"
             );
             setAccountStatus(response.data.accountStatus);
             toast.success("Status atualizado!");
