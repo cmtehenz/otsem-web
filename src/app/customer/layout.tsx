@@ -148,8 +148,8 @@ function CustomerSidebar({ kycStatus }: { kycStatus: CustomerResponse["accountSt
 
     return (
         <Sidebar
-            variant="floating"
-            className="border-none bg-[#0a0118]"
+            variant="sidebar"
+            className="border-none bg-[#0a0118] [&>div]:border-none [&>div]:shadow-none"
         >
             <SidebarHeader className="px-4 py-4 border-b border-white/10 bg-[#0a0118]">
                 <Link
@@ -157,7 +157,7 @@ function CustomerSidebar({ kycStatus }: { kycStatus: CustomerResponse["accountSt
                     className="flex items-center gap-3"
                 >
                     <Image
-                        src="/logo-otsempay.png"
+                        src="/images/logo.png"
                         alt="OtsemPay"
                         width={36}
                         height={36}
