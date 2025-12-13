@@ -1,5 +1,12 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
+  allowedDevOrigins: [
+    '*.replit.dev',
+    '*.replit.app', 
+    '*.riker.replit.dev',
+    '*.picard.replit.dev',
+  ],
   async rewrites() {
     const base =
       (process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_URL || "")
@@ -20,4 +27,5 @@ const nextConfig = {
     ];
   },
 };
-module.exports = nextConfig;
+
+export default nextConfig;
