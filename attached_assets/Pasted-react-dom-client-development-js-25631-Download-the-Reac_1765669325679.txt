@@ -1,0 +1,68 @@
+react-dom-client.development.js:25631 Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+script.debug.js:1 [Vercel Web Analytics] Debug mode is enabled by default in development. No requests will be sent to the server.
+script.debug.js:1 [Vercel Web Analytics] Running queued event pageview Object
+script.debug.js:1 [Vercel Web Analytics] [pageview] https://0a982c3a-3382-4b9c-bea3-d0188fd5863f-00-2xden0cue9y8d.riker.replit.dev/login?next=%2Fcustomer%2Fkyc Object
+auth-context.tsx:139 Object
+auth-context.tsx:144 🔐 Role recebido do backend: CUSTOMER
+login @ auth-context.tsx:144
+api.otsembank.com/customers/me:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+intercept-console-error.js:57 Erro no login: AxiosError
+error @ intercept-console-error.js:57
+auth-context.tsx:139 Object
+auth-context.tsx:144 🔐 Role recebido do backend: CUSTOMER
+login @ auth-context.tsx:144
+api.otsembank.com/customers/me:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+intercept-console-error.js:57 Erro no login: AxiosError
+error @ intercept-console-error.js:57
+auth-context.tsx:139 {success: true, data: {…}}
+auth-context.tsx:144 🔐 Role recebido do backend: CUSTOMER
+login @ auth-context.tsx:144
+await in login
+onSubmit @ LoginPageClient.tsx:70
+eval @ index.esm.mjs:2104
+await in eval
+executeDispatch @ react-dom-client.development.js:16971
+runWithFiberInDEV @ react-dom-client.development.js:872
+processDispatchQueue @ react-dom-client.development.js:17021
+eval @ react-dom-client.development.js:17622
+batchedUpdates$1 @ react-dom-client.development.js:3312
+dispatchEventForPluginEventSystem @ react-dom-client.development.js:17175
+dispatchEvent @ react-dom-client.development.js:21358
+dispatchDiscreteEvent @ react-dom-client.development.js:21326
+auth-context.tsx:166  GET https://api.otsembank.com/customers/me 500 (Internal Server Error)
+dispatchXhrRequest @ xhr.js:212
+xhr @ xhr.js:29
+dispatchRequest @ dispatchRequest.js:61
+Promise.then
+_request @ Axios.js:175
+request @ Axios.js:52
+Axios.<computed> @ Axios.js:223
+wrap @ bind.js:16
+login @ auth-context.tsx:166
+await in login
+onSubmit @ LoginPageClient.tsx:70
+eval @ index.esm.mjs:2104
+await in eval
+executeDispatch @ react-dom-client.development.js:16971
+runWithFiberInDEV @ react-dom-client.development.js:872
+processDispatchQueue @ react-dom-client.development.js:17021
+eval @ react-dom-client.development.js:17622
+batchedUpdates$1 @ react-dom-client.development.js:3312
+dispatchEventForPluginEventSystem @ react-dom-client.development.js:17175
+dispatchEvent @ react-dom-client.development.js:21358
+dispatchDiscreteEvent @ react-dom-client.development.js:21326
+auth-context.tsx:204 Erro no login: AxiosError {message: 'Request failed with status code 500', name: 'AxiosError', code: 'ERR_BAD_RESPONSE', config: {…}, request: XMLHttpRequest, …}
+error @ intercept-console-error.js:57
+login @ auth-context.tsx:204
+await in login
+onSubmit @ LoginPageClient.tsx:70
+eval @ index.esm.mjs:2104
+await in eval
+executeDispatch @ react-dom-client.development.js:16971
+runWithFiberInDEV @ react-dom-client.development.js:872
+processDispatchQueue @ react-dom-client.development.js:17021
+eval @ react-dom-client.development.js:17622
+batchedUpdates$1 @ react-dom-client.development.js:3312
+dispatchEventForPluginEventSystem @ react-dom-client.development.js:17175
+dispatchEvent @ react-dom-client.development.js:21358
+dispatchDiscreteEvent @ react-dom-client.development.js:21326
