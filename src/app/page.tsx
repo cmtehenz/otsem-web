@@ -39,10 +39,9 @@ export default function HomePage() {
   return (
     <main className="relative min-h-screen bg-[#0a0118] text-white">
       <GradientBackground />
-      
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrollY > 50 ? "bg-[#0a0118]/80 backdrop-blur-xl border-b border-white/5" : ""
-      }`}>
+
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrollY > 50 ? "bg-[#0a0118]/80 backdrop-blur-xl border-b border-white/5" : ""
+        }`}>
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-3">
             <img src="/images/logo.png" alt="OtsemPay" className="h-10 w-10 object-contain" />
@@ -51,7 +50,7 @@ export default function HomePage() {
               <span className="text-violet-400">Pay</span>
             </span>
           </Link>
-          
+
           <nav className="hidden items-center gap-8 md:flex">
             <Link href="#como-funciona" className="text-sm font-medium text-white/70 transition hover:text-white">
               Como funciona
@@ -97,7 +96,7 @@ export default function HomePage() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-lg text-white/60 sm:text-xl">
-            Operações OTC com transparência total. Converta BRL ↔ USDT em minutos 
+            Operações OTC com transparência total. Converta BRL ↔ USDT em minutos
             com taxas até 75% menores que o câmbio tradicional.
           </p>
 
@@ -270,21 +269,21 @@ export default function HomePage() {
           </div>
 
           <div className="grid gap-8 md:grid-cols-3">
-            <StepCard 
-              step="01" 
-              title="Crie sua conta" 
+            <StepCard
+              step="01"
+              title="Crie sua conta"
               description="Cadastro rápido com verificação KYC em minutos. Só precisamos de alguns dados básicos."
               icon={<Users />}
             />
-            <StepCard 
-              step="02" 
-              title="Deposite via PIX" 
+            <StepCard
+              step="02"
+              title="Deposite via PIX"
               description="Transfira BRL para sua carteira usando PIX. O saldo é creditado instantaneamente."
               icon={<Banknote />}
             />
-            <StepCard 
-              step="03" 
-              title="Converta para USDT" 
+            <StepCard
+              step="03"
+              title="Converta para USDT"
               description="Com um clique, converta seu saldo para USDT com a melhor taxa do mercado."
               icon={<Repeat />}
             />
@@ -401,13 +400,13 @@ export default function HomePage() {
           <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-violet-600/20 via-purple-600/20 to-fuchsia-600/20 p-12 sm:p-16">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(139,92,246,0.3),transparent_60%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(192,132,252,0.2),transparent_60%)]" />
-            
+
             <div className="relative mx-auto max-w-3xl text-center">
               <h2 className="text-3xl font-bold sm:text-4xl lg:text-5xl">
                 Pronto para começar?
               </h2>
               <p className="mt-4 text-lg text-white/70">
-                Crie sua conta gratuitamente e comece a transacionar BRL ↔ USDT em minutos. 
+                Crie sua conta gratuitamente e comece a transacionar BRL ↔ USDT em minutos.
                 Sem compromisso, cancele quando quiser.
               </p>
               <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -423,7 +422,7 @@ export default function HomePage() {
                   </Button>
                 </Link>
               </div>
-              
+
               <div className="mt-8 flex items-center justify-center gap-4 text-sm text-white/50">
                 <div className="flex items-center gap-1">
                   <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -435,7 +434,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex items-center gap-1">
                   <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  <span>Cancele quando quiser</span>
+                  <span>Canceler quando quiser</span>
                 </div>
               </div>
             </div>
@@ -464,7 +463,7 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-            
+
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-wider text-white/40">Produto</h3>
               <ul className="mt-4 space-y-3">
@@ -474,7 +473,7 @@ export default function HomePage() {
                 <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Integrações</Link></li>
               </ul>
             </div>
-            
+
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-wider text-white/40">Empresa</h3>
               <ul className="mt-4 space-y-3">
@@ -484,7 +483,7 @@ export default function HomePage() {
                 <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Contato</Link></li>
               </ul>
             </div>
-            
+
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-wider text-white/40">Legal</h3>
               <ul className="mt-4 space-y-3">
@@ -495,7 +494,7 @@ export default function HomePage() {
               </ul>
             </div>
           </div>
-          
+
           <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 sm:flex-row">
             <p className="text-sm text-white/40">
               © {new Date().getFullYear()} OtsemPay. Todos os direitos reservados.
@@ -525,10 +524,10 @@ function PhoneMockup() {
   return (
     <div className="relative mx-auto w-full max-w-md">
       <div className="absolute inset-0 -z-10 scale-110 rounded-[3rem] bg-gradient-to-r from-violet-500/30 via-purple-500/30 to-fuchsia-500/30 blur-3xl" />
-      
+
       <div className="relative mx-auto w-72 rounded-[2.5rem] border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-2 shadow-2xl backdrop-blur-xl">
         <div className="absolute left-1/2 top-4 h-6 w-20 -translate-x-1/2 rounded-full bg-black" />
-        
+
         <div className="overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#1a0a2e] to-[#0f0520]">
           <div className="p-6 pt-10">
             <div className="mb-6 flex items-center justify-between">
@@ -540,7 +539,7 @@ function PhoneMockup() {
                 <PiggyBank className="h-5 w-5 text-violet-400" />
               </div>
             </div>
-            
+
             <div className="mb-6 grid grid-cols-2 gap-3">
               <div className="rounded-xl bg-white/5 p-3">
                 <p className="text-xs text-white/50">BRL</p>
@@ -551,7 +550,7 @@ function PhoneMockup() {
                 <p className="text-lg font-semibold">$ 1.468</p>
               </div>
             </div>
-            
+
             <div className="mb-4 flex gap-2">
               <button className="flex-1 rounded-xl bg-violet-600 py-3 text-sm font-semibold">
                 Converter
@@ -560,7 +559,7 @@ function PhoneMockup() {
                 Depositar
               </button>
             </div>
-            
+
             <div className="space-y-3">
               <p className="text-xs font-medium text-white/40">Últimas transações</p>
               <div className="flex items-center justify-between rounded-lg bg-white/5 p-3">
@@ -649,24 +648,23 @@ function BigFeatureCard({ icon, title, description, gradient }: { icon: React.Re
   );
 }
 
-function PricingCard({ 
-  title, 
-  price, 
-  description, 
-  features, 
-  highlighted 
-}: { 
-  title: string; 
-  price: string; 
-  description: string; 
-  features: string[]; 
-  highlighted?: boolean 
+function PricingCard({
+  title,
+  price,
+  description,
+  features,
+  highlighted
+}: {
+  title: string;
+  price: string;
+  description: string;
+  features: string[];
+  highlighted?: boolean
 }) {
   return (
-    <div className={`relative overflow-hidden rounded-2xl border p-8 ${
-        highlighted 
-          ? "border-violet-500/50 bg-gradient-to-br from-violet-600/20 to-purple-600/20" 
-          : "border-white/10 bg-white/5"
+    <div className={`relative overflow-hidden rounded-2xl border p-8 ${highlighted
+        ? "border-violet-500/50 bg-gradient-to-br from-violet-600/20 to-purple-600/20"
+        : "border-white/10 bg-white/5"
       }`}>
       {highlighted && (
         <div className="absolute -right-12 top-6 rotate-45 bg-violet-600 px-12 py-1 text-xs font-semibold">
@@ -688,11 +686,10 @@ function PricingCard({
         ))}
       </ul>
       <Link href="/register" className="mt-8 block">
-        <Button className={`w-full rounded-xl py-6 font-semibold ${
-          highlighted 
-            ? "bg-white text-[#0a0118] hover:bg-white/90" 
+        <Button className={`w-full rounded-xl py-6 font-semibold ${highlighted
+            ? "bg-white text-[#0a0118] hover:bg-white/90"
             : "bg-white/10 hover:bg-white/20"
-        }`}>
+          }`}>
           Começar agora
         </Button>
       </Link>
