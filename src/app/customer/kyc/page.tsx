@@ -240,30 +240,22 @@ export default function CustomerKycPage(): React.JSX.Element {
         try {
             setStartingVerification(true);
 
-            const response = await fetch("/api/didit/session", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    customerId,
-                    email: form.email,
-                }),
-            });
+            const response = await http.post<{ verificationUrl: string }>(
+                `/customers/${customerId}/kyc/request`
+            );
 
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || "Falha ao iniciar verificação");
-            }
+            const verificationUrl = response.data?.verificationUrl;
 
-            const data = await response.json();
-
-            if (data.verificationUrl) {
-                window.open(data.verificationUrl, "_blank");
+            if (verificationUrl) {
+                window.open(verificationUrl, "_blank");
                 toast.success("Complete a verificação na nova aba.");
                 setAccountStatus("in_review");
+            } else {
+                throw new Error("URL de verificação não recebida");
             }
         } catch (err: any) {
             console.error(err);
-            toast.error(err.message || "Erro ao iniciar verificação");
+            toast.error(err?.response?.data?.message || "Erro ao iniciar verificação");
         } finally {
             setStartingVerification(false);
         }
