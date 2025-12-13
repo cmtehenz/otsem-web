@@ -365,9 +365,9 @@ export default function Dashboard() {
                         <div className="flex gap-3">
                             <Button
                                 type="button"
-                                variant="outline"
+                                variant="ghost"
                                 onClick={() => setShowConvertModal(false)}
-                                className="flex-1 border-white/10 text-white/70 hover:bg-white/5 rounded-xl"
+                                className="flex-1 bg-white/10 border border-white/20 text-white hover:bg-white/20 rounded-xl"
                             >
                                 Cancelar
                             </Button>
