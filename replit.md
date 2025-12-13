@@ -1,0 +1,64 @@
+# OTSEM Bank - Digital Banking Platform
+
+## Overview
+
+OTSEM Bank is a digital banking platform built with Next.js 14 that provides comprehensive financial services including PIX payments, BRL/USDT cryptocurrency conversion, card payments, and KYC management. The application serves two user roles: customers who access banking features and administrators who manage the platform.
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+## System Architecture
+
+### Frontend Framework
+- **Next.js 14 with App Router**: The application uses the modern App Router pattern with server and client components. Route groups organize pages by access level: `(public)` for authentication pages, `customer` for customer-facing features, and `admin` for administrative functions.
+
+### Component Architecture
+- **shadcn/ui + Radix UI**: The UI layer uses shadcn/ui components built on Radix UI primitives, configured in `components.json`. Components live in `src/components/ui/` and follow the "new-york" style variant.
+- **Component Organization**: Custom components are organized by function - `auth/` for authentication, `layout/` for structural components, `modals/` for dialog components, and `brand/` for branding elements.
+
+### State Management
+- **Zustand**: Global UI state (modal visibility) is managed via Zustand stores in `src/stores/ui-modals.ts`.
+- **React Context**: Authentication state uses React Context (`src/contexts/auth-context.tsx`) wrapping the entire application.
+- **SWR pattern**: Some data fetching uses the SWR pattern for caching and revalidation.
+
+### Authentication Flow
+- **JWT-based authentication**: Tokens are stored in localStorage via `src/lib/token.ts`. The HTTP client (`src/lib/http.ts`) automatically attaches Bearer tokens to requests.
+- **Role-based access control**: Two roles exist - ADMIN and CUSTOMER. Protected routes use `<Protected>` and `<RoleGuard>` components to enforce access.
+- **Token refresh**: The auth context handles token validation and automatic logout on 401 responses.
+
+### API Communication
+- **Axios HTTP client**: Centralized in `src/lib/http.ts` with request/response interceptors for authentication and error handling.
+- **API proxy rewrites**: Next.js rewrites in `next.config.ts` proxy `/auth/*` and `/pix/*` routes to the backend API.
+- **Backend expects**: The API follows REST conventions with endpoints documented in `API_SPEC.md`.
+
+### Form Handling
+- **React Hook Form + Zod**: All forms use React Hook Form with Zod schema validation via `@hookform/resolvers`. The pattern casts resolvers to avoid TypeScript strictness issues.
+
+### Styling
+- **Tailwind CSS 4**: Uses the new CSS-based configuration with `@theme` directives in `globals.css`. CSS variables define the color system for light/dark mode support.
+- **Class Variance Authority**: Button and badge variants use CVA for consistent styling patterns.
+
+### Key Application Features
+1. **Customer Dashboard**: Balance display, transaction history, PIX payments
+2. **KYC Onboarding**: Multi-step form for PF (individual) and PJ (business) verification with CEP lookup integration
+3. **Admin Dashboard**: KPIs, user management, transaction monitoring, banking integration
+4. **Cryptocurrency**: USDT rate fetching, BRL/USDT conversion modals
+
+## External Dependencies
+
+### Backend API
+- **REST API**: Backend runs at `NEXT_PUBLIC_API_URL` (default `http://localhost:3333`). Endpoints include `/auth/*`, `/customers/*`, `/pix/*`, and admin routes.
+- **Banking Integration**: The admin dashboard consumes banking data including balance (saldo) and transaction history (extrato).
+
+### Third-Party Services
+- **ViaCEP**: Brazilian postal code lookup API (`https://viacep.com.br/ws/`) for address autocomplete in KYC forms.
+- **Yahoo Finance**: USDT/BRL rate fetching via `/api/usdt-rate` API route that proxies to Yahoo Finance.
+- **Vercel Analytics**: Client-side analytics integration via `@vercel/analytics`.
+
+### UI Libraries
+- **Lucide React**: Icon library used throughout the application.
+- **Sonner**: Toast notification system configured in the root layout.
+- **Framer Motion**: Animation library available for transitions.
+- **date-fns/dayjs**: Date formatting utilities.
+- **qrcode**: QR code generation for PIX and crypto receive addresses.
