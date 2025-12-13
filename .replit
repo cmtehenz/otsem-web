@@ -42,3 +42,4 @@ build = ["npm", "run", "build"]
 
 [userenv.shared]
 NEXT_PUBLIC_API_URL = "https://api.otsembank.com"
+DIDIT_WORKFLOW_ID = "2360158b-7f30-4eeb-bca9-961da2ccfa47"
