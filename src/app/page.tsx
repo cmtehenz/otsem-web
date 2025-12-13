@@ -491,7 +491,7 @@ export default function HomePage() {
               <ul className="mt-4 space-y-3">
                 <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Termos de uso</Link></li>
                 <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Política de privacidade</Link></li>
-                <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Política de cookies</Link></li>
+                <li><Link href="/cookies" className="text-sm text-white/60 transition hover:text-white">Política de cookies</Link></li>
                 <li><Link href="#" className="text-sm text-white/60 transition hover:text-white">Status</Link></li>
               </ul>
             </div>
