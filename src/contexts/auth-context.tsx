@@ -30,20 +30,6 @@ interface LoginResponse {
     };
 }
 
-interface CustomerMeResponse {
-    id: string;
-    email: string;
-    name?: string;
-    type?: string;
-    accountStatus?: string;
-}
-
-interface AdminMeResponse {
-    email: string;
-    name?: string;
-    role?: string;
-}
-
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 // Helper para decodificar JWT sem dependências externas
@@ -61,9 +47,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
-    // Carrega o usuário ao montar o componente
+    // Carrega o usuário ao montar o componente (apenas do JWT, sem chamar API)
     useEffect(() => {
-        async function loadUser() {
+        function loadUser() {
             try {
                 const token = getAccessToken();
 
@@ -72,48 +58,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     return;
                 }
 
-                // Decodifica o token JWT para pegar o role e id
                 const payload = decodeJwt(token);
 
                 if (!payload) {
-                    console.warn("Token inválido ou malformado");
                     clearTokens();
                     setLoading(false);
                     return;
                 }
 
-                // Verifica se o token expirou
                 const now = Math.floor(Date.now() / 1000);
                 if (payload.exp < now) {
-                    console.warn("Token expirado");
-                    clearTokens();
-                    setLoading(false);
-                    return;
-                }
-
-                const role = payload.role;
-                const userId = payload.sub; // ID sempre vem do JWT
-
-                // Endpoint varia conforme o role
-                const endpoint = role === "ADMIN" ? "/auth/me" : "/customers/me";
-
-                // Tenta buscar dados do usuário
-                const response = await httpClient.get<CustomerMeResponse | AdminMeResponse>(endpoint);
-                const userData = response.data;
-
-                // Para CUSTOMER, precisa do id na resposta
-                if (role === "CUSTOMER" && !("id" in userData)) {
-                    console.error("❌ Customer sem campo id:", userData);
                     clearTokens();
                     setLoading(false);
                     return;
                 }
 
                 setUser({
-                    id: role === "ADMIN" ? userId : (userData as CustomerMeResponse).id,
-                    email: userData.email,
-                    role: role,
-                    name: userData.name || undefined,
+                    id: payload.sub,
+                    email: payload.email,
+                    role: payload.role,
                 });
             } catch (error) {
                 console.error("Erro ao carregar usuário:", error);
@@ -129,81 +92,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     async function login(email: string, password: string) {
         try {
-            // 1. Faz login e recebe o token
             const loginResponse = await httpClient.post<LoginResponse>(
                 "/auth/login",
                 { email, password },
                 { headers: { "X-Anonymous": "true" } }
             );
 
-            console.log(loginResponse.data)
+            const { accessToken, user: userData } = loginResponse.data.data;
+            const role = userData.role;
 
-            const { accessToken, user } = loginResponse.data.data;
-            const role = user.role;
-
-            console.warn("🔐 Role recebido do backend:", role);
-
-            // Valida se recebeu o token
             if (!accessToken) {
                 throw new Error("Token de acesso não recebido da API");
             }
 
-            // Decodifica o token para pegar o id do usuário (sub)
             const payload = decodeJwt(accessToken);
             if (!payload) {
                 throw new Error("Token inválido");
             }
 
-            const userId = payload.sub;
-
-            // Salva os tokens
             setTokens(accessToken, "");
 
-            // 2. Endpoint varia conforme o role
-            const endpoint = role === "ADMIN" ? "/auth/me" : "/customers/me";
-
-            // Busca os dados do usuário usando o token
-            const userResponse = await httpClient.get<CustomerMeResponse | AdminMeResponse>(endpoint);
-            const userData = userResponse.data;
-
-            // Valida se recebeu os dados do usuário
-            if (!userData) {
-                throw new Error("Dados do usuário não recebidos da API");
-            }
-
-            // Para CUSTOMER, valida se tem id
-            if (role === "CUSTOMER" && !("id" in userData)) {
-                throw new Error("Dados do usuário não recebidos da API (campo id ausente)");
-            }
-
-            // Define o usuário (importante fazer isso ANTES do redirect)
             const newUser = {
-                id: role === "ADMIN" ? userId : (userData as CustomerMeResponse).id,
-                email: userData.email,
+                id: payload.sub,
+                email: payload.email || userData.email,
                 role: role,
                 name: userData.name || undefined,
             };
 
-            console.warn("👤 Usuário definido:", newUser);
-
             setUser(newUser);
 
-            // Redireciona baseado no role
             const dashboardPath = role === "ADMIN" ? "/admin/dashboard" : "/customer/dashboard";
 
-            console.warn("🚀 Redirecionando para:", dashboardPath, "baseado no role:", role);
-
-            // NÃO use router.push aqui - deixe o page.tsx fazer o redirect
-            // O problema pode estar em múltiplos redirects acontecendo
-
-            // Em vez disso, vamos usar window.location para forçar navegação
             if (typeof window !== 'undefined') {
                 window.location.href = dashboardPath;
             }
         } catch (error) {
             console.error("Erro no login:", error);
-
-            // Limpa tokens em caso de erro
             clearTokens();
 
             if (error instanceof Error) {
