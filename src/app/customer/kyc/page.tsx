@@ -237,7 +237,7 @@ export default function CustomerKycPage(): React.JSX.Element {
             setStartingVerification(true);
 
             const response = await http.post<{ verificationUrl: string }>(
-                `/customers/${customerId}/kyc/request`
+                "/customers/me/kyc/request"
             );
 
             const verificationUrl = response.data?.verificationUrl;
@@ -262,7 +262,7 @@ export default function CustomerKycPage(): React.JSX.Element {
         
         try {
             const response = await http.get<{ accountStatus: CustomerResponse["accountStatus"] }>(
-                `/customers/${customerId}/kyc/status`
+                "/customers/me/kyc/status"
             );
             setAccountStatus(response.data.accountStatus);
             toast.success("Status atualizado!");
