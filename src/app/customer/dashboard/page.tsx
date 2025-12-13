@@ -125,21 +125,32 @@ export default function Dashboard() {
             try {
                 setLoading(true);
 
-                const customerId = user?.id;
-                if (!customerId) {
-                    toast.error("Usuário não encontrado");
+                if (!user?.id) {
                     return;
                 }
 
-                const res = await http.get<AccountSummary>(
-                    `/accounts/${customerId}/summary`
-                );
-                if (!cancelled) setAccount(res.data);
+                const res = await http.get<{ data: AccountSummary } | AccountSummary>("/auth/me");
+                const data = "data" in res.data ? res.data.data : res.data;
+                
+                if (!cancelled) {
+                    setAccount({
+                        id: data.id || user.id,
+                        balance: data.balance ?? 0,
+                        status: data.status ?? "active",
+                        pixKey: data.pixKey ?? "",
+                        pixKeyType: data.pixKeyType ?? "",
+                        dailyLimit: data.dailyLimit ?? 0,
+                        monthlyLimit: data.monthlyLimit ?? 0,
+                        blockedAmount: data.blockedAmount ?? 0,
+                        createdAt: data.createdAt ?? "",
+                        updatedAt: data.updatedAt ?? "",
+                        payments: data.payments ?? [],
+                    });
+                }
 
             } catch (err: any) {
                 if (!cancelled) {
                     console.error(err);
-                    toast.error("Falha ao carregar dados da conta");
                 }
             } finally {
                 if (!cancelled) setLoading(false);
