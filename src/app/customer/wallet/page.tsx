@@ -59,7 +59,7 @@ export default function WalletPage() {
     async function fetchWallets() {
         setLoadingWallets(true);
         try {
-            const res = await http.get<WalletType[]>("/wallet/usdt");
+            const res = await http.get<WalletType[]>("/wallet");
             setWallets(res.data);
         } catch (err) {
             setWallets([]);

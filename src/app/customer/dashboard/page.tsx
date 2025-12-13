@@ -155,7 +155,7 @@ export default function Dashboard() {
     React.useEffect(() => {
         async function fetchWallets() {
             try {
-                const res = await http.get<WalletType[]>("/wallet/usdt");
+                const res = await http.get<WalletType[]>("/wallet");
                 setWallets(res.data);
             } catch (err) {
                 setWallets([]);
