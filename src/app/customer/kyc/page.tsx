@@ -262,10 +262,13 @@ export default function CustomerKycPage(): React.JSX.Element {
     }
 
     async function refreshStatus() {
+        if (!customerId) return;
+        
         try {
-            const response = await http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me");
-            const data = "data" in response.data ? response.data.data : response.data;
-            setAccountStatus(data.accountStatus);
+            const response = await http.get<{ accountStatus: CustomerResponse["accountStatus"] }>(
+                `/customers/${customerId}/kyc/status`
+            );
+            setAccountStatus(response.data.accountStatus);
             toast.success("Status atualizado!");
         } catch {
             toast.error("Erro ao atualizar status");
