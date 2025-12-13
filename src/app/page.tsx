@@ -51,7 +51,7 @@ export default function HomePage() {
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
             </div>
-            <span className="text-xl font-bold tracking-tight">otsempay</span>
+            <span className="text-xl font-bold tracking-tight">Otsem Bank</span>
           </Link>
           
           <nav className="hidden items-center gap-8 md:flex">
@@ -90,17 +90,17 @@ export default function HomePage() {
 
           <h1 className="mx-auto max-w-5xl text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
             <span className="bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent">
-              Seu dinheiro sem
+              Revolucionando a forma
             </span>
             <br />
             <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
-              fronteiras
+              de mover dinheiro
             </span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-lg text-white/60 sm:text-xl">
-            Converta BRL para USDT instantaneamente. Taxas transparentes, 
-            segurança de nível bancário e liquidação em segundos.
+            Operações OTC com transparência total. Converta BRL ↔ USDT em minutos 
+            com taxas até 75% menores que o câmbio tradicional.
           </p>
 
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -163,10 +163,96 @@ export default function HomePage() {
       <section className="relative z-10 py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard number="R$ 50M+" label="Volume total transacionado" icon={<TrendingUp />} />
-            <StatCard number="5.000+" label="Usuários ativos" icon={<Users />} />
-            <StatCard number="<30s" label="Tempo médio de conversão" icon={<Clock />} />
-            <StatCard number="99.9%" label="Uptime garantido" icon={<ShieldCheck />} />
+            <StatCard number="US$ 415B" label="Mercado OTC global em 2024" icon={<TrendingUp />} />
+            <StatCard number="9.1%" label="Volume LATAM do mercado global" icon={<Globe2 />} />
+            <StatCard number="10-30min" label="Tempo de liquidação" icon={<Clock />} />
+            <StatCard number="0% IOF" label="Sem imposto sobre operações" icon={<ShieldCheck />} />
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 py-24 border-y border-white/5 bg-white/[0.02]">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-16 text-center">
+            <span className="mb-4 inline-block rounded-full bg-violet-500/10 px-4 py-1.5 text-sm font-medium text-violet-400">
+              Comparativo
+            </span>
+            <h2 className="text-3xl font-bold sm:text-4xl lg:text-5xl">
+              Por que escolher OTC?
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-white/60">
+              Compare o câmbio tradicional com operações via ativos digitais
+            </p>
+          </div>
+
+          <div className="grid gap-8 lg:grid-cols-2">
+            <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-8">
+              <div className="mb-6 flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/20">
+                  <Building2 className="h-6 w-6 text-red-400" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Câmbio Convencional</h3>
+                  <p className="text-sm text-white/50">Bancos tradicionais</p>
+                </div>
+              </div>
+              <ul className="space-y-4">
+                <li className="flex items-center justify-between border-b border-white/5 pb-3">
+                  <span className="text-white/60">Spread bancário</span>
+                  <span className="font-semibold text-red-400">6% a 12%</span>
+                </li>
+                <li className="flex items-center justify-between border-b border-white/5 pb-3">
+                  <span className="text-white/60">IOF</span>
+                  <span className="font-semibold text-red-400">0,38%</span>
+                </li>
+                <li className="flex items-center justify-between border-b border-white/5 pb-3">
+                  <span className="text-white/60">Tarifa bancária</span>
+                  <span className="font-semibold text-red-400">0,1% a 2%</span>
+                </li>
+                <li className="flex items-center justify-between border-b border-white/5 pb-3">
+                  <span className="text-white/60">Swift internacional</span>
+                  <span className="font-semibold text-red-400">R$ 100 a R$ 450</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-white/60">Tempo de liquidação</span>
+                  <span className="font-semibold text-red-400">2 a 5 dias úteis</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="rounded-2xl border border-green-500/20 bg-green-500/5 p-8 ring-2 ring-green-500/20">
+              <div className="mb-6 flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/20">
+                  <Zap className="h-6 w-6 text-green-400" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">OTC com Stablecoins</h3>
+                  <p className="text-sm text-white/50">Otsem Bank</p>
+                </div>
+              </div>
+              <ul className="space-y-4">
+                <li className="flex items-center justify-between border-b border-white/5 pb-3">
+                  <span className="text-white/60">Spread OTC</span>
+                  <span className="font-semibold text-green-400">A partir de 3%</span>
+                </li>
+                <li className="flex items-center justify-between border-b border-white/5 pb-3">
+                  <span className="text-white/60">IOF</span>
+                  <span className="font-semibold text-green-400">0% (isento)</span>
+                </li>
+                <li className="flex items-center justify-between border-b border-white/5 pb-3">
+                  <span className="text-white/60">Tarifa OTC</span>
+                  <span className="font-semibold text-green-400">Incluso no spread</span>
+                </li>
+                <li className="flex items-center justify-between border-b border-white/5 pb-3">
+                  <span className="text-white/60">Transferência</span>
+                  <span className="font-semibold text-green-400">Sem custo adicional</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-white/60">Tempo de liquidação</span>
+                  <span className="font-semibold text-green-400">10 a 30 minutos</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -234,22 +320,37 @@ export default function HomePage() {
 
           <div className="mt-24 grid gap-6 lg:grid-cols-3">
             <BigFeatureCard
-              icon={<ShieldCheck />}
-              title="Segurança de nível bancário"
-              description="Seus fundos são protegidos com a mesma tecnologia usada pelos maiores bancos do mundo. Autenticação em duas etapas, monitoramento 24/7 e criptografia end-to-end."
-              gradient="from-green-500/20 to-emerald-500/20"
+              icon={<Repeat />}
+              title="Flexibilidade Contratual"
+              description="Contratos ajustados entre as partes. Condições de valores, prazos e volumes personalizados de acordo com a necessidade de cada operação."
+              gradient="from-violet-500/20 to-purple-500/20"
             />
             <BigFeatureCard
               icon={<Zap />}
-              title="Velocidade incomparável"
-              description="Conversões processadas em menos de 30 segundos. Infraestrutura otimizada para performance máxima e disponibilidade 99.9%."
+              title="Maior Agilidade"
+              description="Negociações rápidas e adaptadas à urgência do cliente. Liquidação em 10 a 30 minutos, não em dias. Disponibilidade imediata de recursos."
               gradient="from-yellow-500/20 to-orange-500/20"
             />
             <BigFeatureCard
+              icon={<Lock />}
+              title="Confidencialidade"
+              description="Transações não são públicas como nas bolsas. Vantagem estratégica para operações de alto volume sem impacto no mercado."
+              gradient="from-green-500/20 to-emerald-500/20"
+            />
+          </div>
+
+          <div className="mt-12 grid gap-6 lg:grid-cols-2">
+            <BigFeatureCard
+              icon={<ShieldCheck />}
+              title="Segurança e Compliance"
+              description="Operamos dentro de todas as regulamentações brasileiras. KYC rigoroso, políticas AML e total transparência nas operações. Monitoramento 24/7."
+              gradient="from-blue-500/20 to-cyan-500/20"
+            />
+            <BigFeatureCard
               icon={<BadgeCheck />}
-              title="100% em conformidade"
-              description="Operamos dentro de todas as regulamentações brasileiras. KYC rigoroso, políticas AML e total transparência nas operações."
-              gradient="from-violet-500/20 to-purple-500/20"
+              title="Instrumentos Customizados"
+              description="Acesso a estruturas personalizadas com derivativos OTC que protegem suas operações de riscos cambiais e outros fatores de mercado."
+              gradient="from-fuchsia-500/20 to-pink-500/20"
             />
           </div>
         </div>
@@ -271,25 +372,25 @@ export default function HomePage() {
 
           <div className="grid gap-8 md:grid-cols-2 lg:mx-auto lg:max-w-4xl">
             <PricingCard
-              title="BRL → USDT"
-              price="0.79%"
-              description="Converta reais para dólares digitais"
+              title="Operação OTC"
+              price="A partir de 3%"
+              description="Spread que diminui com volumetria"
               features={[
-                "Liquidação instantânea",
-                "Sem valor mínimo",
-                "Cotação em tempo real",
-                "Suporte prioritário"
+                "Liquidação em 10-30 min",
+                "0% IOF (isento)",
+                "Contratos personalizados",
+                "Suporte dedicado"
               ]}
             />
             <PricingCard
-              title="USDT → BRL"
-              price="0.99%"
-              description="Saque seus dólares em reais"
+              title="Alta Volumetria"
+              price="Sob consulta"
+              description="Para operações acima de R$ 500k"
               features={[
-                "Saque via PIX",
-                "Processamento em até 1h",
-                "Dashboard completo",
-                "Suporte 24/7"
+                "Spreads negociáveis",
+                "Atendimento VIP",
+                "Mesa OTC dedicada",
+                "Condições especiais"
               ]}
               highlighted
             />
@@ -352,10 +453,10 @@ export default function HomePage() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
                   <Sparkles className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-xl font-bold">otsempay</span>
+                <span className="text-xl font-bold">Otsem Bank</span>
               </div>
               <p className="mt-4 text-sm text-white/50">
-                Pagamentos e câmbio BRL ↔ USDT com transparência total e segurança de nível bancário.
+                Revolucionando a forma como o mundo interage com o dinheiro. Transparência, responsabilidade e agilidade em cada transação.
               </p>
               <div className="mt-6 flex items-center gap-2">
                 <div className="flex items-center gap-1 rounded-full bg-green-500/10 px-3 py-1 text-xs font-medium text-green-400">
@@ -398,7 +499,7 @@ export default function HomePage() {
           
           <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 sm:flex-row">
             <p className="text-sm text-white/40">
-              © {new Date().getFullYear()} otsempay. Todos os direitos reservados.
+              © {new Date().getFullYear()} Otsem Bank. Todos os direitos reservados.
             </p>
             <div className="flex items-center gap-6">
               <span className="text-xs text-white/30">CNPJ: 00.000.000/0001-00</span>
