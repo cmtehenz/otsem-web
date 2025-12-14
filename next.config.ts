@@ -24,6 +24,10 @@ const nextConfig: NextConfig = {
     return [
       { source: "/auth/:path*", destination: `${base}/auth/:path*` },
       { source: "/pix/:path*", destination: `${base}/pix/:path*` },
+      { source: "/accounts/:path*", destination: `${base}/accounts/:path*` },
+      { source: "/customers/:path*", destination: `${base}/customers/:path*` },
+      { source: "/wallet/:path*", destination: `${base}/wallet/:path*` },
+      { source: "/fdbank/:path*", destination: `${base}/fdbank/:path*` },
     ];
   },
 };
