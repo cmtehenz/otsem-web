@@ -28,6 +28,7 @@ const nextConfig: NextConfig = {
       { source: "/customers/:path*", destination: `${base}/customers/:path*` },
       { source: "/wallet/:path*", destination: `${base}/wallet/:path*` },
       { source: "/fdbank/:path*", destination: `${base}/fdbank/:path*` },
+      { source: "/inter/:path*", destination: `${base}/inter/:path*` },
     ];
   },
 };

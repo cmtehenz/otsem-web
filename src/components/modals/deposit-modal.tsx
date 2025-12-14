@@ -72,19 +72,12 @@ export function DepositModal() {
             return;
         }
 
-        const pixKeyId = accountData?.pixKeyId || accountData?.id;
-        if (!pixKeyId) {
-            toast.error("Chave PIX não encontrada. Entre em contato com o suporte.");
-            return;
-        }
-
         setLoading(true);
         try {
-            const res = await http.post<DepositResponse>("/fdbank/pix-transfer/generate-dynamic-qrcode", {
-                pixKeyId,
-                value,
-                message: "Depósito via OtsemPay",
-                externalId: `dep-${Date.now()}`,
+            const res = await http.post<DepositResponse>("/inter/pix/cobrancas", {
+                valor: value,
+                descricao: "Depósito via OtsemPay",
+                expiracao: 3600,
             });
 
             const pixCode = res.data.emv || res.data.pixCopiaECola || res.data.copyPaste || res.data.qrCode || res.data.qrcode;
