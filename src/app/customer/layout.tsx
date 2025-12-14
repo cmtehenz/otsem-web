@@ -299,11 +299,14 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
     React.useEffect(() => {
         async function loadKyc() {
             try {
-                const response = await http.get<{ data: CustomerResponse }>("/customers/me");
-                const customer = response.data.data;
+                const response = await http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me");
+                const customer = "data" in response.data && response.data.data ? response.data.data : response.data;
+                
+                console.log("Layout - Customer data:", customer);
+                console.log("Layout - accountStatus:", (customer as CustomerResponse)?.accountStatus);
 
-                if (customer?.accountStatus) {
-                    setKycStatus(customer.accountStatus);
+                if ((customer as CustomerResponse)?.accountStatus) {
+                    setKycStatus((customer as CustomerResponse).accountStatus);
                 }
             } catch (err) {
                 console.error("Erro ao buscar KYC:", err);
