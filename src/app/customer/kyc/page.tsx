@@ -21,7 +21,7 @@ import {
 interface CustomerResponse {
     id: string;
     type: "PF" | "PJ";
-    accountStatus: "not_requested" | "in_review" | "approved" | "rejected";
+    accountStatus: string;
     name?: string;
     email: string;
     createdAt: string;
@@ -111,7 +111,7 @@ export default function CustomerKycPage(): React.JSX.Element {
     const [loading, setLoading] = React.useState(true);
     const [startingVerification, setStartingVerification] = React.useState(false);
     const [refreshing, setRefreshing] = React.useState(false);
-    const [accountStatus, setAccountStatus] = React.useState<CustomerResponse["accountStatus"]>("not_requested");
+    const [accountStatus, setAccountStatus] = React.useState<string>("not_requested");
 
     const customerId = user?.customerId ?? null;
 
