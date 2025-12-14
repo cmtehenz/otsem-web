@@ -8,6 +8,7 @@ import { setTokens, clearTokens, getAccessToken } from "@/lib/token";
 
 interface User {
     id: string;
+    customerId?: string;
     email: string;
     role: "ADMIN" | "CUSTOMER";
     name?: string;
@@ -47,9 +48,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
-    // Carrega o usuário ao montar o componente (apenas do JWT, sem chamar API)
+    // Carrega o usuário ao montar o componente
     useEffect(() => {
-        function loadUser() {
+        async function loadUser() {
             try {
                 const token = getAccessToken();
 
@@ -73,8 +74,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     return;
                 }
 
+                // Busca o customerId do localStorage ou da API
+                let customerId = localStorage.getItem("customerId");
+                
+                if (!customerId && payload.role === "CUSTOMER") {
+                    try {
+                        const res = await httpClient.get<{ data: { id: string } } | { id: string }>("/customers/me");
+                        const data = "data" in res.data ? (res.data as any).data : res.data;
+                        customerId = data.id;
+                        if (customerId) {
+                            localStorage.setItem("customerId", customerId);
+                        }
+                    } catch {
+                        // Ignora erro ao buscar customer
+                    }
+                }
+
                 setUser({
                     id: payload.sub,
+                    customerId: customerId || undefined,
                     email: payload.email,
                     role: payload.role,
                 });
@@ -112,8 +130,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             setTokens(accessToken, "");
 
+            // Para CUSTOMER, busca o customerId
+            let customerId: string | undefined;
+            if (role === "CUSTOMER") {
+                try {
+                    const res = await httpClient.get<{ data: { id: string } } | { id: string }>("/customers/me");
+                    const data = "data" in res.data ? (res.data as any).data : res.data;
+                    customerId = data.id;
+                    if (customerId) {
+                        localStorage.setItem("customerId", customerId);
+                    }
+                } catch {
+                    // Ignora erro ao buscar customer
+                }
+            }
+
             const newUser = {
                 id: payload.sub,
+                customerId,
                 email: payload.email || userData.email,
                 role: role,
                 name: userData.name || undefined,
@@ -129,6 +163,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } catch (error) {
             console.error("Erro no login:", error);
             clearTokens();
+            localStorage.removeItem("customerId");
 
             if (error instanceof Error) {
                 throw error;
@@ -140,6 +175,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     function logout() {
         clearTokens();
+        localStorage.removeItem("customerId");
         setUser(null);
         router.push("/login");
     }

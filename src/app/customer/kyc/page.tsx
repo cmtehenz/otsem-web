@@ -102,7 +102,7 @@ export default function CustomerKycPage(): React.JSX.Element {
     const [startingVerification, setStartingVerification] = React.useState(false);
     const [accountStatus, setAccountStatus] = React.useState<CustomerResponse["accountStatus"]>("not_requested");
     
-    const customerId = user?.id ?? null;
+    const customerId = user?.customerId ?? null;
 
     const [form, setForm] = React.useState({
         name: "",

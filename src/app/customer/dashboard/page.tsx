@@ -125,7 +125,7 @@ export default function Dashboard() {
             try {
                 setLoading(true);
 
-                const customerId = user?.id;
+                const customerId = user?.customerId;
                 if (!customerId) {
                     return;
                 }
