@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useUsdtRate } from "@/lib/useUsdtRate";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useUiModals } from "@/stores/ui-modals";
 
 type AccountSummary = {
     id: string;
@@ -98,6 +99,7 @@ function formatDate(dateString: string): string {
 
 export default function Dashboard() {
     const { user } = useAuth();
+    const { openModal } = useUiModals();
     const [loading, setLoading] = React.useState(true);
     const [account, setAccount] = React.useState<AccountSummary | null>(null);
     const [wallets, setWallets] = React.useState<WalletType[]>([]);
@@ -267,6 +269,7 @@ export default function Dashboard() {
                     Converter
                 </Button>
                 <Button
+                    onClick={() => openModal("deposit")}
                     className="bg-[#1a1025] border border-white/10 hover:bg-[#2a2035] text-white font-semibold rounded-xl py-6 text-base"
                 >
                     <ArrowDownLeft className="w-5 h-5 mr-2" />

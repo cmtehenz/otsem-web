@@ -10,6 +10,7 @@ export const MODAL_KEYS = [
     "convertUsdtBrl",
     "sendUsdt",
     "receiveUsdt",
+    "deposit",
 ] as const;
 
 export type ModalKey = typeof MODAL_KEYS[number];
@@ -30,6 +31,7 @@ const initialOpen: OpenState = {
     convertUsdtBrl: false,
     sendUsdt: false,
     receiveUsdt: false,
+    deposit: false,
 };
 
 export const useUiModals = create<UiModalsState>((set) => ({
