@@ -105,8 +105,18 @@ export function DepositModal() {
             setStep("qrcode");
         } catch (err: any) {
             console.error("Error generating PIX:", err);
-            const message = err?.response?.data?.message || "Erro ao gerar QR code PIX";
-            toast.error(message);
+            const status = err?.response?.status;
+            const message = err?.response?.data?.message;
+            
+            if (status === 401) {
+                toast.error("Sessão expirada. Por favor, faça login novamente.");
+            } else if (status === 404) {
+                toast.error("Serviço de depósito indisponível no momento.");
+            } else if (status === 400) {
+                toast.error(message || "Dados inválidos. Verifique o valor e tente novamente.");
+            } else {
+                toast.error(message || "Erro ao gerar QR code PIX. Tente novamente.");
+            }
         } finally {
             setLoading(false);
         }
