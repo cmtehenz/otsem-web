@@ -27,7 +27,7 @@ interface CustomerResponse {
     createdAt: string;
 }
 
-type AccountStatus = "not_requested" | "in_review" | "approved" | "rejected" | "pending" | "completed";
+type AccountStatus = "not_requested" | "requested" | "in_review" | "approved" | "rejected" | "pending" | "completed";
 
 const statusConfig: Record<string, {
     icon: typeof ShieldCheck;
@@ -57,6 +57,14 @@ const statusConfig: Record<string, {
         icon: ShieldQuestion,
         title: "Em Análise",
         description: "Sua verificação está sendo processada. Isso pode levar alguns minutos.",
+        color: "text-blue-400",
+        bgColor: "bg-blue-500/20",
+        borderColor: "border-blue-500/30",
+    },
+    requested: {
+        icon: ShieldQuestion,
+        title: "Em Análise",
+        description: "Sua verificação foi solicitada e está sendo processada.",
         color: "text-blue-400",
         bgColor: "bg-blue-500/20",
         borderColor: "border-blue-500/30",
@@ -113,6 +121,8 @@ export default function CustomerKycPage(): React.JSX.Element {
                 setLoading(true);
                 const response = await http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me");
                 const data = "data" in response.data ? response.data.data : response.data;
+                console.log("KYC - Customer data:", data);
+                console.log("KYC - accountStatus:", data.accountStatus);
                 setAccountStatus(data.accountStatus);
             } catch (err) {
                 console.error(err);
@@ -183,7 +193,7 @@ export default function CustomerKycPage(): React.JSX.Element {
     const StatusIcon = statusInfo.icon;
     
     const isApproved = accountStatus === "approved" || accountStatus === "completed";
-    const isInReview = accountStatus === "in_review" || accountStatus === "pending";
+    const isInReview = accountStatus === "in_review" || accountStatus === "pending" || accountStatus === "requested";
     const needsVerification = accountStatus === "not_requested" || accountStatus === "rejected" || !statusConfig[accountStatus];
 
     return (
