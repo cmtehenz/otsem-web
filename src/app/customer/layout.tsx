@@ -62,7 +62,7 @@ type CustomerAddress = {
 type CustomerResponse = {
     id: string;
     type: "PF" | "PJ";
-    accountStatus: "not_requested" | "in_review" | "approved" | "rejected";
+    accountStatus: string;
     name?: string;
     cpf?: string;
     birthday?: string;
@@ -103,18 +103,29 @@ function isActive(pathname: string, href: string): boolean {
     return pathname === href || pathname.startsWith(href + "/");
 }
 
-function KycBadge({
-    status,
-}: {
-    status: "approved" | "in_review" | "not_requested" | "rejected";
-}) {
-    const config = {
+function KycBadge({ status }: { status: string }) {
+    const config: Record<string, { style: string; icon: typeof ShieldCheck; label: string }> = {
         approved: {
             style: "bg-green-500/20 text-green-400 border border-green-500/30",
             icon: ShieldCheck,
             label: "Verificado",
         },
+        completed: {
+            style: "bg-green-500/20 text-green-400 border border-green-500/30",
+            icon: ShieldCheck,
+            label: "Verificado",
+        },
         in_review: {
+            style: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
+            icon: ShieldQuestion,
+            label: "Em Análise",
+        },
+        requested: {
+            style: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
+            icon: ShieldQuestion,
+            label: "Em Análise",
+        },
+        pending: {
             style: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
             icon: ShieldQuestion,
             label: "Em Análise",
@@ -131,7 +142,13 @@ function KycBadge({
         },
     };
 
-    const { style, icon: Icon, label } = config[status];
+    const defaultConfig = {
+        style: "bg-amber-500/20 text-amber-400 border border-amber-500/30",
+        icon: ShieldAlert,
+        label: "Pendente",
+    };
+
+    const { style, icon: Icon, label } = config[status] || defaultConfig;
 
     return (
         <div
@@ -143,7 +160,7 @@ function KycBadge({
     );
 }
 
-function CustomerSidebar({ kycStatus }: { kycStatus: CustomerResponse["accountStatus"] }) {
+function CustomerSidebar({ kycStatus }: { kycStatus: string }) {
     const pathname = usePathname() ?? "";
 
     return (
@@ -276,9 +293,7 @@ function HeaderLogout() {
 
 export default function CustomerLayout({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
-    const [kycStatus, setKycStatus] = React.useState<CustomerResponse["accountStatus"]>(
-        "not_requested"
-    );
+    const [kycStatus, setKycStatus] = React.useState<string>("not_requested");
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
