@@ -301,9 +301,6 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
             try {
                 const response = await http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me");
                 const customer = "data" in response.data && response.data.data ? response.data.data : response.data;
-                
-                console.log("Layout - Customer data:", customer);
-                console.log("Layout - accountStatus:", (customer as CustomerResponse)?.accountStatus);
 
                 if ((customer as CustomerResponse)?.accountStatus) {
                     setKycStatus((customer as CustomerResponse).accountStatus);

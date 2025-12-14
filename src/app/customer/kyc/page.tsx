@@ -121,8 +121,6 @@ export default function CustomerKycPage(): React.JSX.Element {
                 setLoading(true);
                 const response = await http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me");
                 const data = "data" in response.data ? response.data.data : response.data;
-                console.log("KYC - Customer data:", data);
-                console.log("KYC - accountStatus:", data.accountStatus);
                 setAccountStatus(data.accountStatus);
             } catch (err) {
                 console.error(err);
