@@ -52,7 +52,7 @@ Preferred communication style: Simple, everyday language.
 - **Banking Integration**: The admin dashboard consumes banking data including balance (saldo) and transaction history (extrato).
 
 ### Third-Party Services
-- **Didit**: AI-powered identity verification service for KYC. Integrated via backend API endpoints: `POST /customers/:id/kyc/request` creates session and returns verification URL, `GET /customers/:id/kyc/status` checks status. Webhooks are handled by the backend at `/didit/webhooks/verification`.
+- **Didit**: AI-powered identity verification service for KYC. Simplified flow - user clicks "Iniciar Verificação" and is redirected to Didit for document + selfie verification. Backend endpoints: `POST /customers/:id/kyc/request` creates session and returns verification URL. Webhooks handled by backend at `/didit/webhooks/verification`. The KYC page (`/customer/kyc`) shows current status and allows starting verification directly without pre-filling forms.
 - **ViaCEP**: Brazilian postal code lookup API (`https://viacep.com.br/ws/`) for address autocomplete in KYC forms.
 - **Yahoo Finance**: USDT/BRL rate fetching via `/api/usdt-rate` API route that proxies to Yahoo Finance.
 - **Vercel Analytics**: Client-side analytics integration via `@vercel/analytics`.
