@@ -12,10 +12,19 @@ import http from "@/lib/http";
 import QRCode from "qrcode";
 
 type DepositResponse = {
-    qrCode: string;
-    copyPaste: string;
+    qrCode?: string;
+    qrcode?: string;
+    copyPaste?: string;
+    emv?: string;
+    pixCopiaECola?: string;
     transactionId?: string;
-    expiresAt?: string;
+    externalId?: string;
+};
+
+type AccountData = {
+    id: string;
+    pixKey: string;
+    pixKeyId?: string;
 };
 
 type Step = "amount" | "qrcode";
@@ -29,8 +38,22 @@ export function DepositModal() {
     const [qrCodeUrl, setQrCodeUrl] = React.useState<string | null>(null);
     const [pixCopyPaste, setPixCopyPaste] = React.useState<string | null>(null);
     const [loading, setLoading] = React.useState(false);
+    const [accountData, setAccountData] = React.useState<AccountData | null>(null);
 
     const minAmount = 10;
+
+    React.useEffect(() => {
+        async function fetchAccount() {
+            if (!open.deposit || !user?.customerId) return;
+            try {
+                const res = await http.get<AccountData>(`/accounts/${user.customerId}/summary`);
+                setAccountData(res.data);
+            } catch (err) {
+                console.error("Error fetching account:", err);
+            }
+        }
+        fetchAccount();
+    }, [open.deposit, user?.customerId]);
 
     function resetModal() {
         setStep("amount");
@@ -49,18 +72,26 @@ export function DepositModal() {
             return;
         }
 
+        const pixKeyId = accountData?.pixKeyId || accountData?.id;
+        if (!pixKeyId) {
+            toast.error("Chave PIX não encontrada. Entre em contato com o suporte.");
+            return;
+        }
+
         setLoading(true);
         try {
-            const res = await http.post<DepositResponse>("/fdbank/pix-transfer", {
-                amount: value,
-                customerId: user?.customerId,
+            const res = await http.post<DepositResponse>("/fdbank/pix-transfer/generate-dynamic-qrcode", {
+                pixKeyId,
+                value,
+                message: "Depósito via OtsemPay",
+                externalId: `dep-${Date.now()}`,
             });
 
-            const { qrCode, copyPaste } = res.data;
-            setPixCopyPaste(copyPaste || qrCode);
+            const pixCode = res.data.emv || res.data.pixCopiaECola || res.data.copyPaste || res.data.qrCode || res.data.qrcode;
+            setPixCopyPaste(pixCode || null);
 
-            if (qrCode) {
-                const url = await QRCode.toDataURL(qrCode, {
+            if (pixCode) {
+                const url = await QRCode.toDataURL(pixCode, {
                     width: 200,
                     margin: 2,
                     color: {
