@@ -27,7 +27,16 @@ interface CustomerResponse {
     createdAt: string;
 }
 
-const statusConfig = {
+type AccountStatus = "not_requested" | "in_review" | "approved" | "rejected" | "pending" | "completed";
+
+const statusConfig: Record<string, {
+    icon: typeof ShieldCheck;
+    title: string;
+    description: string;
+    color: string;
+    bgColor: string;
+    borderColor: string;
+}> = {
     approved: {
         icon: ShieldCheck,
         title: "Identidade Verificada",
@@ -36,7 +45,23 @@ const statusConfig = {
         bgColor: "bg-green-500/20",
         borderColor: "border-green-500/30",
     },
+    completed: {
+        icon: ShieldCheck,
+        title: "Identidade Verificada",
+        description: "Sua identidade foi verificada com sucesso! Você tem acesso completo à plataforma.",
+        color: "text-green-400",
+        bgColor: "bg-green-500/20",
+        borderColor: "border-green-500/30",
+    },
     in_review: {
+        icon: ShieldQuestion,
+        title: "Em Análise",
+        description: "Sua verificação está sendo processada. Isso pode levar alguns minutos.",
+        color: "text-blue-400",
+        bgColor: "bg-blue-500/20",
+        borderColor: "border-blue-500/30",
+    },
+    pending: {
         icon: ShieldQuestion,
         title: "Em Análise",
         description: "Sua verificação está sendo processada. Isso pode levar alguns minutos.",
@@ -60,6 +85,15 @@ const statusConfig = {
         bgColor: "bg-amber-500/20",
         borderColor: "border-amber-500/30",
     },
+};
+
+const defaultStatus = {
+    icon: Fingerprint,
+    title: "Verificação Pendente",
+    description: "Complete a verificação de identidade para ativar sua conta.",
+    color: "text-amber-400",
+    bgColor: "bg-amber-500/20",
+    borderColor: "border-amber-500/30",
 };
 
 export default function CustomerKycPage(): React.JSX.Element {
@@ -145,8 +179,12 @@ export default function CustomerKycPage(): React.JSX.Element {
         );
     }
 
-    const statusInfo = statusConfig[accountStatus];
+    const statusInfo = statusConfig[accountStatus] || defaultStatus;
     const StatusIcon = statusInfo.icon;
+    
+    const isApproved = accountStatus === "approved" || accountStatus === "completed";
+    const isInReview = accountStatus === "in_review" || accountStatus === "pending";
+    const needsVerification = accountStatus === "not_requested" || accountStatus === "rejected" || !statusConfig[accountStatus];
 
     return (
         <div className="max-w-lg mx-auto space-y-6">
@@ -172,7 +210,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                     </div>
                 </div>
 
-                {accountStatus === "approved" && (
+                {isApproved && (
                     <div className="text-center">
                         <CheckCircle2 className="w-16 h-16 text-green-400 mx-auto mb-4" />
                         <p className="text-white font-medium mb-2">Tudo certo!</p>
@@ -188,7 +226,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                     </div>
                 )}
 
-                {accountStatus === "in_review" && (
+                {isInReview && (
                     <div className="text-center space-y-4">
                         <Loader2 className="w-12 h-12 text-blue-400 mx-auto animate-spin" />
                         <p className="text-white/60 text-sm">
@@ -210,7 +248,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                     </div>
                 )}
 
-                {(accountStatus === "not_requested" || accountStatus === "rejected") && (
+                {needsVerification && (
                     <div className="space-y-6">
                         <div className="bg-white/5 rounded-xl p-4 space-y-3">
                             <h4 className="text-white font-medium">Como funciona:</h4>
