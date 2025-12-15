@@ -1,0 +1,46 @@
+ Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+ [Vercel Web Analytics] Debug mode is enabled by default in development. No requests will be sent to the server.
+ [Vercel Web Analytics] Running queued event pageview Object
+script.debug.js:1 [Vercel Web Analytics] [pageview] http://localhost:3000/customer/dashboard Object
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+:3333/inter/pix/cobrancas:1  Failed to load resource: the server responded with a status of 400 (Bad Request)
+intercept-console-error.js:57 Error criando cobrança PIX: AxiosError
+error @ intercept-console-error.js:57
+:3333/inter/pix/cobrancas:1  Failed to load resource: the server responded with a status of 400 (Bad Request)
+intercept-console-error.js:57 Error criando cobrança PIX: AxiosError
+error @ intercept-console-error.js:57
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+:3333/inter/pix/cobrancas:1  Failed to load resource: the server responded with a status of 400 (Bad Request)
+intercept-console-error.js:57 Error criando cobrança PIX: AxiosError
+error @ intercept-console-error.js:57
+:3333/inter/pix/cobrancas:1  Failed to load resource: the server responded with a status of 400 (Bad Request)
+intercept-console-error.js:57 Error criando cobrança PIX: AxiosError
+error @ intercept-console-error.js:57
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+:3333/inter/pix/cobrancas:1  Failed to load resource: the server responded with a status of 400 (Bad Request)
+intercept-console-error.js:57 Error criando cobrança PIX: AxiosError
+error @ intercept-console-error.js:57
+:3333/inter/pix/cobrancas:1  Failed to load resource: the server responded with a status of 400 (Bad Request)
+intercept-console-error.js:57 Error criando cobrança PIX: AxiosError
+error @ intercept-console-error.js:57
