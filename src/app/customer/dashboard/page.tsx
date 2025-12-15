@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useUsdtRate } from "@/lib/useUsdtRate";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DepositModal } from "@/components/modals/deposit-modal";
 import { Input } from "@/components/ui/input";
 import { useUiModals } from "@/stores/ui-modals";
 
@@ -85,9 +86,9 @@ function formatDate(dateString: string): string {
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-    
+
     const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    
+
     if (dateOnly.getTime() === today.getTime()) {
         return `Hoje, ${date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
     } else if (dateOnly.getTime() === yesterday.getTime()) {
@@ -223,6 +224,8 @@ export default function Dashboard() {
 
     return (
         <div className="space-y-6">
+            <DepositModal />
+            {/* Modal de depósito PIX com QR Code */}
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-white">Dashboard</h1>
@@ -299,7 +302,7 @@ export default function Dashboard() {
                         account.payments.slice(0, 6).map((p) => {
                             const value = Number(p.bankPayload.valor);
                             const isPositive = value > 0;
-                            
+
                             return (
                                 <div key={p.id} className="flex items-center gap-4 p-4 hover:bg-white/5 transition">
                                     <div className={`p-2.5 rounded-full ${isPositive ? "bg-green-500/20" : "bg-violet-500/20"}`}>
