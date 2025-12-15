@@ -11,14 +11,14 @@ import { toast } from "sonner";
 import http from "@/lib/http";
 import QRCode from "qrcode";
 
-type DepositResponse = {
-    qrCode?: string;
-    qrcode?: string;
-    copyPaste?: string;
-    emv?: string;
-    pixCopiaECola?: string;
-    transactionId?: string;
-    externalId?: string;
+type QrCodeEstaticoResponse = {
+    chave: string;
+    valor: number | null;
+    valorAberto: boolean;
+    descricao: string;
+    pixCopiaECola: string;
+    expiracao: null;
+    message: string;
 };
 
 type AccountData = {
@@ -74,13 +74,12 @@ export function DepositModal() {
 
         setLoading(true);
         try {
-            const res = await http.post<DepositResponse>("/inter/pix/cobrancas", {
+            const res = await http.post<QrCodeEstaticoResponse>("/inter/pix/qrcode-estatico", {
                 valor: value,
-                descricao: "Depósito via OtsemPay",
-                expiracao: 3600,
+                descricao: "Depósito via OtsemPay"
             });
 
-            const pixCode = res.data.emv || res.data.pixCopiaECola || res.data.copyPaste || res.data.qrCode || res.data.qrcode;
+            const pixCode = res.data.pixCopiaECola;
             setPixCopyPaste(pixCode || null);
 
             if (pixCode) {
