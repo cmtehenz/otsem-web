@@ -9,24 +9,14 @@ import { toast } from "sonner";
 import http from "@/lib/http";
 import QRCode from "qrcode";
 
-
-type PixCobrancaResponse = {
-    pixCopiaECola: string;
-    location: string;
-    status: string;
-    valor: { original: string };
-    calendario: { expiracao: number; criacao: string };
-    txid: string;
-    revisao: number;
+type QrCodeEstaticoResponse = {
     chave: string;
-    solicitacaoPagador: string;
-    infoAdicionais: any[];
-};
-
-type AccountSummary = {
-    id: string;
-    pixKey: string;
-    pixKeyType: string;
+    valor: number | null;
+    valorAberto: boolean;
+    descricao: string;
+    pixCopiaECola: string;
+    expiracao: null;
+    message: string;
 };
 
 export function DepositModal() {
@@ -34,32 +24,25 @@ export function DepositModal() {
     const [copied, setCopied] = React.useState(false);
     const [qrCodeUrl, setQrCodeUrl] = React.useState<string | null>(null);
     const [pixCopiaECola, setPixCopiaECola] = React.useState<string | null>(null);
-    const [loading, setLoading] = React.useState(true);
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState<string | null>(null);
 
     React.useEffect(() => {
-        async function createPixCobranca() {
-            if (!open.deposit || !user?.customerId) return;
-
+        async function generateQrCode() {
+            if (!open.deposit) return;
+            
             setLoading(true);
             setError(null);
-
+            
             try {
+                const res = await http.post<QrCodeEstaticoResponse>("/inter/pix/qrcode-estatico", {});
 
-                // Parâmetros fixos, pode ser customizado depois
-                const body = {
-                    valor: 10.0,
-                    expiracao: 3600,
-                    descricao: "Pagamento de teste"
-                };
-                const res = await http.post<PixCobrancaResponse>(
-                    "/inter/pix/cobrancas",
-                    body
-                );
-                const copiaCola = res.data.pixCopiaECola;
-                setPixCopiaECola(copiaCola);
-                if (copiaCola) {
-                    const url = await QRCode.toDataURL(copiaCola, {
-                        width: 200,
+                const pixCode = res.data.pixCopiaECola;
+                setPixCopiaECola(pixCode);
+
+                if (pixCode) {
+                    const url = await QRCode.toDataURL(pixCode, {
+                        width: 220,
                         margin: 2,
                         color: {
                             dark: "#000000",
@@ -68,19 +51,22 @@ export function DepositModal() {
                     });
                     setQrCodeUrl(url);
                 }
-
-            } catch (err) {
-                console.error("Error criando cobrança PIX:", err);
-                toast.error("Erro ao criar cobrança PIX");
+            } catch (err: any) {
+                console.error("Error generating PIX:", err);
+                const message = err?.response?.data?.message || "Erro ao gerar QR Code PIX";
+                setError(message);
+                toast.error(message);
             } finally {
                 setLoading(false);
             }
         }
-        createPixCobranca();
-    }, [open.deposit, user?.customerId]);
+        
+        generateQrCode();
+    }, [open.deposit]);
 
     async function handleCopy() {
         if (!pixCopiaECola) return;
+        
         try {
             await navigator.clipboard.writeText(pixCopiaECola);
             setCopied(true);
@@ -117,8 +103,22 @@ export function DepositModal() {
                             <Loader2 className="h-10 w-10 animate-spin text-violet-400" />
                             <p className="text-white/60 text-sm mt-4">Gerando QR Code...</p>
                         </div>
-
-                    ) : pixCopiaECola ? (
+                    ) : error ? (
+                        <div className="flex flex-col items-center py-8">
+                            <QrCode className="h-16 w-16 text-white/20" />
+                            <p className="text-white/60 text-sm mt-4 text-center">{error}</p>
+                            <Button
+                                onClick={() => {
+                                    handleClose();
+                                    setTimeout(() => useUiModals.getState().openModal("deposit"), 300);
+                                }}
+                                variant="outline"
+                                className="mt-4 border-white/20 text-white hover:bg-white/10"
+                            >
+                                Tentar novamente
+                            </Button>
+                        </div>
+                    ) : (
                         <>
                             <div className="text-center">
                                 <p className="text-white/60 text-sm">Valor aberto</p>
@@ -145,16 +145,20 @@ export function DepositModal() {
                                 <p className="text-white/60 text-sm text-center">
                                     Escaneie o QR Code ou copie o código abaixo
                                 </p>
+                                
+                                {pixCopiaECola && (
+                                    <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                                        <p className="text-white/40 text-xs mb-1">PIX Copia e Cola</p>
+                                        <p className="text-white text-xs font-mono break-all line-clamp-3">
+                                            {pixCopiaECola}
+                                        </p>
+                                    </div>
+                                )}
 
-                                <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-                                    <p className="text-white/40 text-xs mb-1">PIX Copia e Cola</p>
-                                    <p className="text-white text-sm font-mono break-all">
-                                        {pixCopiaECola}
-                                    </p>
-                                </div>
                                 <Button
                                     onClick={handleCopy}
-                                    className="w-full bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6"
+                                    disabled={!pixCopiaECola}
+                                    className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6"
                                 >
                                     {copied ? (
                                         <>
@@ -164,8 +168,7 @@ export function DepositModal() {
                                     ) : (
                                         <>
                                             <Copy className="w-5 h-5 mr-2" />
-
-                                            Copiar código PIX
+                                            Copiar Código PIX
                                         </>
                                     )}
                                 </Button>
@@ -175,17 +178,6 @@ export function DepositModal() {
                                 </p>
                             </div>
                         </>
-
-                    ) : (
-                        <div className="text-center py-8">
-                            <QrCode className="w-16 h-16 text-white/20 mx-auto mb-4" />
-                            <p className="text-white/60">
-                                Nenhum código PIX disponível
-                            </p>
-                            <p className="text-white/40 text-sm mt-2">
-                                Tente novamente ou contate o suporte
-                            </p>
-                        </div>
                     )}
                 </div>
             </DialogContent>
