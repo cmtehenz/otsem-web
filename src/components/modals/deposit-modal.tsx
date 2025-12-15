@@ -1,12 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useUiModals } from "@/stores/ui-modals";
-import { useAuth } from "@/contexts/auth-context";
-import { Copy, Check, QrCode, Loader2, ArrowLeft } from "lucide-react";
+import { Copy, Check, QrCode, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import http from "@/lib/http";
 import QRCode from "qrcode";
@@ -21,104 +19,56 @@ type QrCodeEstaticoResponse = {
     message: string;
 };
 
-type AccountData = {
-    id: string;
-    pixKey: string;
-    pixKeyId?: string;
-};
-
-type Step = "amount" | "qrcode";
-
 export function DepositModal() {
     const { open, closeModal } = useUiModals();
-    const { user } = useAuth();
-    const [step, setStep] = React.useState<Step>("amount");
-    const [amount, setAmount] = React.useState<string>("100");
     const [copied, setCopied] = React.useState(false);
     const [qrCodeUrl, setQrCodeUrl] = React.useState<string | null>(null);
-    const [pixCopyPaste, setPixCopyPaste] = React.useState<string | null>(null);
+    const [pixCopiaECola, setPixCopiaECola] = React.useState<string | null>(null);
     const [loading, setLoading] = React.useState(false);
-    const [accountData, setAccountData] = React.useState<AccountData | null>(null);
-
-    const minAmount = 10;
+    const [error, setError] = React.useState<string | null>(null);
 
     React.useEffect(() => {
-        async function fetchAccount() {
-            if (!open.deposit || !user?.customerId) return;
-            try {
-                const res = await http.get<AccountData>(`/accounts/${user.customerId}/summary`);
-                setAccountData(res.data);
-            } catch (err) {
-                console.error("Error fetching account:", err);
-            }
-        }
-        fetchAccount();
-    }, [open.deposit, user?.customerId]);
-
-    function resetModal() {
-        setStep("amount");
-        setAmount("100");
-        setQrCodeUrl(null);
-        setPixCopyPaste(null);
-        setCopied(false);
-    }
-
-    async function handleGenerateQrCode(e: React.FormEvent) {
-        e.preventDefault();
-        
-        const value = parseFloat(amount.replace(",", "."));
-        if (isNaN(value) || value < minAmount) {
-            toast.error(`Valor mínimo é R$ ${minAmount},00`);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const res = await http.post<QrCodeEstaticoResponse>("/inter/pix/qrcode-estatico", {
-                valor: value,
-                descricao: "Depósito via OtsemPay"
-            });
-
-            const pixCode = res.data.pixCopiaECola;
-            setPixCopyPaste(pixCode || null);
-
-            if (pixCode) {
-                const url = await QRCode.toDataURL(pixCode, {
-                    width: 200,
-                    margin: 2,
-                    color: {
-                        dark: "#000000",
-                        light: "#ffffff",
-                    },
-                });
-                setQrCodeUrl(url);
-            }
-
-            setStep("qrcode");
-        } catch (err: any) {
-            console.error("Error generating PIX:", err);
-            const status = err?.response?.status;
-            const message = err?.response?.data?.message;
+        async function generateQrCode() {
+            if (!open.deposit) return;
             
-            if (status === 401) {
-                toast.error("Sessão expirada. Por favor, faça login novamente.");
-            } else if (status === 404) {
-                toast.error("Serviço de depósito indisponível no momento.");
-            } else if (status === 400) {
-                toast.error(message || "Dados inválidos. Verifique o valor e tente novamente.");
-            } else {
-                toast.error(message || "Erro ao gerar QR code PIX. Tente novamente.");
+            setLoading(true);
+            setError(null);
+            
+            try {
+                const res = await http.post<QrCodeEstaticoResponse>("/inter/pix/qrcode-estatico", {});
+
+                const pixCode = res.data.pixCopiaECola;
+                setPixCopiaECola(pixCode);
+
+                if (pixCode) {
+                    const url = await QRCode.toDataURL(pixCode, {
+                        width: 220,
+                        margin: 2,
+                        color: {
+                            dark: "#000000",
+                            light: "#ffffff",
+                        },
+                    });
+                    setQrCodeUrl(url);
+                }
+            } catch (err: any) {
+                console.error("Error generating PIX:", err);
+                const message = err?.response?.data?.message || "Erro ao gerar QR Code PIX";
+                setError(message);
+                toast.error(message);
+            } finally {
+                setLoading(false);
             }
-        } finally {
-            setLoading(false);
         }
-    }
+        
+        generateQrCode();
+    }, [open.deposit]);
 
     async function handleCopy() {
-        if (!pixCopyPaste) return;
+        if (!pixCopiaECola) return;
         
         try {
-            await navigator.clipboard.writeText(pixCopyPaste);
+            await navigator.clipboard.writeText(pixCopiaECola);
             setCopied(true);
             toast.success("Código PIX copiado!");
             setTimeout(() => setCopied(false), 2000);
@@ -129,138 +79,107 @@ export function DepositModal() {
 
     function handleClose() {
         closeModal("deposit");
-        setTimeout(resetModal, 300);
-    }
-
-    function formatCurrency(value: string): string {
-        const num = parseFloat(value.replace(",", "."));
-        if (isNaN(num)) return "R$ 0,00";
-        return num.toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-        });
+        setQrCodeUrl(null);
+        setPixCopiaECola(null);
+        setCopied(false);
+        setError(null);
     }
 
     return (
         <Dialog open={open.deposit} onOpenChange={handleClose}>
             <DialogContent className="bg-[#1a1025] border border-white/10 max-w-sm">
                 <DialogHeader>
-                    <DialogTitle className="text-white text-xl text-center flex items-center justify-center gap-2">
-                        {step === "qrcode" && (
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => setStep("amount")}
-                                className="absolute left-4 top-4 text-white/60 hover:text-white hover:bg-white/10"
-                            >
-                                <ArrowLeft className="h-5 w-5" />
-                            </Button>
-                        )}
+                    <DialogTitle className="text-white text-xl text-center">
                         Depositar via PIX
                     </DialogTitle>
+                    <DialogDescription className="text-white/50 text-center text-sm">
+                        Escaneie o QR Code ou copie o código para depositar
+                    </DialogDescription>
                 </DialogHeader>
 
-                {step === "amount" && (
-                    <form onSubmit={handleGenerateQrCode} className="space-y-6 py-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-2 text-white/70">
-                                Valor do depósito
-                            </label>
-                            <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60">
-                                    R$
-                                </span>
-                                <Input
-                                    type="text"
-                                    inputMode="decimal"
-                                    value={amount}
-                                    onChange={(e) => setAmount(e.target.value)}
-                                    className="pl-12 border-white/10 bg-white/5 text-white text-lg font-semibold rounded-xl h-14"
-                                    placeholder="0,00"
-                                    required
-                                />
-                            </div>
-                            <p className="text-white/40 text-xs mt-2">
-                                Valor mínimo: R$ {minAmount},00
-                            </p>
+                <div className="flex flex-col items-center space-y-6 py-4">
+                    {loading ? (
+                        <div className="flex flex-col items-center py-8">
+                            <Loader2 className="h-10 w-10 animate-spin text-violet-400" />
+                            <p className="text-white/60 text-sm mt-4">Gerando QR Code...</p>
                         </div>
-
-                        <Button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6"
-                        >
-                            {loading ? (
-                                <>
-                                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                    Gerando...
-                                </>
-                            ) : (
-                                <>
-                                    <QrCode className="w-5 h-5 mr-2" />
-                                    Gerar QR Code
-                                </>
-                            )}
-                        </Button>
-                    </form>
-                )}
-
-                {step === "qrcode" && (
-                    <div className="flex flex-col items-center space-y-6 py-4">
-                        <div className="text-center mb-2">
-                            <p className="text-white/60 text-sm">Valor do depósito</p>
-                            <p className="text-2xl font-bold text-white">
-                                {formatCurrency(amount)}
-                            </p>
-                        </div>
-
-                        <div className="bg-white rounded-xl p-4">
-                            {qrCodeUrl ? (
-                                <img
-                                    src={qrCodeUrl}
-                                    alt="QR Code PIX"
-                                    className="w-48 h-48"
-                                />
-                            ) : (
-                                <div className="w-48 h-48 flex items-center justify-center">
-                                    <QrCode className="w-16 h-16 text-gray-400" />
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="w-full space-y-3">
-                            <p className="text-white/60 text-sm text-center">
-                                Escaneie o QR Code ou copie o código abaixo
-                            </p>
-                            
-                            {pixCopyPaste && (
-                                <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-                                    <p className="text-white/40 text-xs mb-1">PIX Copia e Cola</p>
-                                    <p className="text-white text-xs font-mono break-all line-clamp-3">
-                                        {pixCopyPaste}
-                                    </p>
-                                </div>
-                            )}
-
+                    ) : error ? (
+                        <div className="flex flex-col items-center py-8">
+                            <QrCode className="h-16 w-16 text-white/20" />
+                            <p className="text-white/60 text-sm mt-4 text-center">{error}</p>
                             <Button
-                                onClick={handleCopy}
-                                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6"
+                                onClick={() => {
+                                    handleClose();
+                                    setTimeout(() => useUiModals.getState().openModal("deposit"), 300);
+                                }}
+                                variant="outline"
+                                className="mt-4 border-white/20 text-white hover:bg-white/10"
                             >
-                                {copied ? (
-                                    <>
-                                        <Check className="w-5 h-5 mr-2" />
-                                        Copiado!
-                                    </>
-                                ) : (
-                                    <>
-                                        <Copy className="w-5 h-5 mr-2" />
-                                        Copiar Código PIX
-                                    </>
-                                )}
+                                Tentar novamente
                             </Button>
                         </div>
-                    </div>
-                )}
+                    ) : (
+                        <>
+                            <div className="text-center">
+                                <p className="text-white/60 text-sm">Valor aberto</p>
+                                <p className="text-lg font-medium text-white/80">
+                                    O pagador escolhe o valor
+                                </p>
+                            </div>
+
+                            <div className="bg-white rounded-xl p-4">
+                                {qrCodeUrl ? (
+                                    <img
+                                        src={qrCodeUrl}
+                                        alt="QR Code PIX"
+                                        className="w-52 h-52"
+                                    />
+                                ) : (
+                                    <div className="w-52 h-52 flex items-center justify-center">
+                                        <QrCode className="w-16 h-16 text-gray-400" />
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="w-full space-y-3">
+                                <p className="text-white/60 text-sm text-center">
+                                    Escaneie o QR Code ou copie o código abaixo
+                                </p>
+                                
+                                {pixCopiaECola && (
+                                    <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                                        <p className="text-white/40 text-xs mb-1">PIX Copia e Cola</p>
+                                        <p className="text-white text-xs font-mono break-all line-clamp-3">
+                                            {pixCopiaECola}
+                                        </p>
+                                    </div>
+                                )}
+
+                                <Button
+                                    onClick={handleCopy}
+                                    disabled={!pixCopiaECola}
+                                    className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6"
+                                >
+                                    {copied ? (
+                                        <>
+                                            <Check className="w-5 h-5 mr-2" />
+                                            Copiado!
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Copy className="w-5 h-5 mr-2" />
+                                            Copiar Código PIX
+                                        </>
+                                    )}
+                                </Button>
+
+                                <p className="text-white/40 text-xs text-center">
+                                    Este QR Code não expira e pode receber múltiplos pagamentos
+                                </p>
+                            </div>
+                        </>
+                    )}
+                </div>
             </DialogContent>
         </Dialog>
     );
