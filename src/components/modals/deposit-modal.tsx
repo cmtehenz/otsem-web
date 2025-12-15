@@ -30,10 +30,10 @@ export function DepositModal() {
     React.useEffect(() => {
         async function generateQrCode() {
             if (!open.deposit) return;
-            
+
             setLoading(true);
             setError(null);
-            
+
             try {
                 const res = await http.post<QrCodeEstaticoResponse>("/inter/pix/qrcode-estatico", {});
 
@@ -60,13 +60,13 @@ export function DepositModal() {
                 setLoading(false);
             }
         }
-        
+
         generateQrCode();
     }, [open.deposit]);
 
     async function handleCopy() {
         if (!pixCopiaECola) return;
-        
+
         try {
             await navigator.clipboard.writeText(pixCopiaECola);
             setCopied(true);
@@ -145,7 +145,7 @@ export function DepositModal() {
                                 <p className="text-white/60 text-sm text-center">
                                     Escaneie o QR Code ou copie o código abaixo
                                 </p>
-                                
+
                                 {pixCopiaECola && (
                                     <div className="bg-white/5 border border-white/10 rounded-xl p-3">
                                         <p className="text-white/40 text-xs mb-1">PIX Copia e Cola</p>
@@ -174,7 +174,7 @@ export function DepositModal() {
                                 </Button>
 
                                 <p className="text-white/40 text-xs text-center">
-                                    Este QR Code não expira e pode receber múltiplos pagamentos
+                                    Este QR Code não expira e pode receber múltiplos pagamentos.
                                 </p>
                             </div>
                         </>
