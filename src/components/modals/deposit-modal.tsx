@@ -35,7 +35,9 @@ export function DepositModal() {
             setError(null);
 
             try {
-                const res = await http.post<QrCodeEstaticoResponse>("/inter/pix/qrcode-estatico", {});
+                const res = await http.post<QrCodeEstaticoResponse>("/inter/pix/qrcode-estatico", {
+                    expiracao: 31536000
+                });
 
                 const pixCode = res.data.pixCopiaECola;
                 setPixCopiaECola(pixCode);
@@ -174,7 +176,7 @@ export function DepositModal() {
                                 </Button>
 
                                 <p className="text-white/40 text-xs text-center">
-                                    Este QR Code não expira e pode receber múltiplos pagamentos.
+                                    Válido por 1 ano. Pode receber múltiplos pagamentos.
                                 </p>
                             </div>
                         </>
