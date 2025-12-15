@@ -42,7 +42,7 @@ export function DepositModal() {
 
             setLoading(true);
             setError(null);
-            
+
             try {
 
                 // Parâmetros fixos, pode ser customizado depois
@@ -155,7 +155,6 @@ export function DepositModal() {
                                 <Button
                                     onClick={handleCopy}
                                     className="w-full bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6"
-
                                 >
                                     {copied ? (
                                         <>
