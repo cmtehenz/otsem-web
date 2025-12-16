@@ -274,7 +274,7 @@ npm run test:coverage
 
 ## 🤝 Contribuindo
 
-1. Fork o projeto
+1. Fork o projeto.
 2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
 3. Commit suas mudanças (`git commit -m 'Add: Nova feature'`)
 4. Push para a branch (`git push origin feature/MinhaFeature`)
