@@ -36,7 +36,7 @@ type CobrancaResponse = {
 const QUICK_AMOUNTS = [50, 100, 200, 500, 1000];
 
 export function DepositModal() {
-    const { open, closeModal } = useUiModals();
+    const { open, closeModal, triggerRefresh } = useUiModals();
     const [step, setStep] = React.useState<"amount" | "qrcode">("amount");
     const [cents, setCents] = React.useState(0);
     const [copied, setCopied] = React.useState(false);
@@ -129,6 +129,9 @@ export function DepositModal() {
     }
 
     function handleClose() {
+        if (step === "qrcode" && pixCopiaECola) {
+            triggerRefresh();
+        }
         closeModal("deposit");
         setStep("amount");
         setCents(0);

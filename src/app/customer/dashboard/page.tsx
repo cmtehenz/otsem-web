@@ -100,7 +100,7 @@ function formatDate(dateString: string): string {
 
 export default function Dashboard() {
     const { user } = useAuth();
-    const { openModal } = useUiModals();
+    const { openModal, refreshTrigger } = useUiModals();
     const [loading, setLoading] = React.useState(true);
     const [account, setAccount] = React.useState<AccountSummary | null>(null);
     const [wallets, setWallets] = React.useState<WalletType[]>([]);
@@ -151,7 +151,7 @@ export default function Dashboard() {
         return () => {
             cancelled = true;
         };
-    }, [user?.id]);
+    }, [user?.id, refreshTrigger]);
 
     React.useEffect(() => {
         async function fetchWallets() {
