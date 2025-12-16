@@ -3,7 +3,6 @@
 import * as React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useUiModals } from "@/stores/ui-modals";
 import { Copy, Check, QrCode, Loader2, ArrowLeft, Clock } from "lucide-react";
 import { toast } from "sonner";
@@ -39,34 +38,41 @@ const QUICK_AMOUNTS = [50, 100, 200, 500, 1000];
 export function DepositModal() {
     const { open, closeModal } = useUiModals();
     const [step, setStep] = React.useState<"amount" | "qrcode">("amount");
-    const [amount, setAmount] = React.useState("");
+    const [cents, setCents] = React.useState(0);
     const [copied, setCopied] = React.useState(false);
     const [qrCodeUrl, setQrCodeUrl] = React.useState<string | null>(null);
     const [pixCopiaECola, setPixCopiaECola] = React.useState<string | null>(null);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
 
-    function formatCurrency(value: string) {
-        const numbers = value.replace(/\D/g, "");
-        const cents = parseInt(numbers || "0", 10);
-        return (cents / 100).toLocaleString("pt-BR", {
+    const inputRef = React.useRef<HTMLInputElement>(null);
+
+    function formatDisplayValue(centValue: number): string {
+        if (centValue === 0) return "";
+        return (centValue / 100).toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        });
+    }
+
+    function formatCurrency(centValue: number): string {
+        return (centValue / 100).toLocaleString("pt-BR", {
             style: "currency",
             currency: "BRL",
         });
     }
 
-    function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
-        const value = e.target.value.replace(/\D/g, "");
-        setAmount(value);
+    function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const rawValue = e.target.value.replace(/\D/g, "");
+        const newCents = parseInt(rawValue || "0", 10);
+        setCents(newCents);
     }
 
     function handleQuickAmount(reais: number) {
-        const cents = reais * 100;
-        setAmount(cents.toString());
+        setCents(reais * 100);
     }
 
     async function handleGenerateQrCode() {
-        const cents = parseInt(amount || "0", 10);
         if (cents < 100) {
             toast.error("Valor mínimo: R$ 1,00");
             return;
@@ -125,7 +131,7 @@ export function DepositModal() {
     function handleClose() {
         closeModal("deposit");
         setStep("amount");
-        setAmount("");
+        setCents(0);
         setQrCodeUrl(null);
         setPixCopiaECola(null);
         setCopied(false);
@@ -139,8 +145,8 @@ export function DepositModal() {
         setError(null);
     }
 
-    const displayAmount = formatCurrency(amount);
-    const cents = parseInt(amount || "0", 10);
+    const displayAmount = formatCurrency(cents);
+    const inputValue = formatDisplayValue(cents);
 
     return (
         <Dialog open={open.deposit} onOpenChange={handleClose}>
@@ -169,61 +175,63 @@ export function DepositModal() {
 
                 <div className="flex flex-col items-center space-y-5 py-4">
                     {step === "amount" ? (
-                        <>
-                            <div className="w-full space-y-5">
-                                <div className="text-center py-4 bg-gradient-to-b from-violet-500/10 to-transparent rounded-2xl">
-                                    <p className="text-5xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
-                                        {displayAmount}
-                                    </p>
-                                </div>
-
-                                <Input
-                                    type="text"
-                                    inputMode="numeric"
-                                    value={amount}
-                                    onChange={handleAmountChange}
-                                    placeholder="Digite o valor"
-                                    className="text-center text-xl bg-white/5 border-white/10 text-white h-14 rounded-xl focus:border-violet-500/50 focus:ring-violet-500/20"
-                                    autoFocus
-                                />
-
-                                <div className="flex flex-wrap gap-2 justify-center">
-                                    {QUICK_AMOUNTS.map((value) => (
-                                        <Button
-                                            key={value}
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => handleQuickAmount(value)}
-                                            className="border-white/10 text-white/80 hover:bg-violet-500/20 hover:border-violet-500/30 hover:text-white rounded-full px-4"
-                                        >
-                                            R$ {value}
-                                        </Button>
-                                    ))}
-                                </div>
-
-                                <Button
-                                    onClick={handleGenerateQrCode}
-                                    disabled={cents < 100 || loading}
-                                    className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-violet-500/25"
-                                >
-                                    {loading ? (
-                                        <>
-                                            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                            Gerando QR Code...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <QrCode className="w-5 h-5 mr-2" />
-                                            Gerar QR Code
-                                        </>
-                                    )}
-                                </Button>
-
-                                <p className="text-white/40 text-xs text-center">
-                                    Valor mínimo: R$ 1,00
+                        <div className="w-full space-y-5">
+                            <div className="text-center py-4 bg-gradient-to-b from-violet-500/10 to-transparent rounded-2xl">
+                                <p className="text-5xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                                    {displayAmount}
                                 </p>
                             </div>
-                        </>
+
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-xl">
+                                    R$
+                                </span>
+                                <input
+                                    ref={inputRef}
+                                    type="text"
+                                    inputMode="numeric"
+                                    value={inputValue}
+                                    onChange={handleInputChange}
+                                    placeholder="0,00"
+                                    className="w-full pl-12 pr-4 text-center text-xl bg-white/5 border border-white/10 text-white h-14 rounded-xl focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none placeholder:text-white/30"
+                                    autoFocus
+                                />
+                            </div>
+
+                            <div className="flex flex-wrap gap-2 justify-center">
+                                {QUICK_AMOUNTS.map((value) => (
+                                    <button
+                                        key={value}
+                                        onClick={() => handleQuickAmount(value)}
+                                        className="px-4 py-2 text-sm font-medium rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/50 hover:text-violet-200 transition-colors"
+                                    >
+                                        R$ {value}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <Button
+                                onClick={handleGenerateQrCode}
+                                disabled={cents < 100 || loading}
+                                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-violet-500/25"
+                            >
+                                {loading ? (
+                                    <>
+                                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                                        Gerando QR Code...
+                                    </>
+                                ) : (
+                                    <>
+                                        <QrCode className="w-5 h-5 mr-2" />
+                                        Gerar QR Code
+                                    </>
+                                )}
+                            </Button>
+
+                            <p className="text-white/40 text-xs text-center">
+                                Valor mínimo: R$ 1,00
+                            </p>
+                        </div>
                     ) : loading ? (
                         <div className="flex flex-col items-center py-12">
                             <div className="relative">
@@ -238,14 +246,13 @@ export function DepositModal() {
                                 <QrCode className="h-12 w-12 text-red-400/60" />
                             </div>
                             <p className="text-white/60 text-sm text-center mb-4">{error}</p>
-                            <Button
+                            <button
                                 onClick={handleBack}
-                                variant="outline"
-                                className="border-white/20 text-white hover:bg-white/10"
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-violet-500/30 bg-violet-500/10 text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/50 transition-colors"
                             >
-                                <ArrowLeft className="w-4 h-4 mr-2" />
+                                <ArrowLeft className="w-4 h-4" />
                                 Tentar novamente
-                            </Button>
+                            </button>
                         </div>
                     ) : (
                         <>
