@@ -76,7 +76,7 @@ export function DepositModal() {
         setError(null);
 
         try {
-            const valorDecimal = (cents / 100).toFixed(2);
+            const valorDecimal = Number((cents / 100).toFixed(2));
             
             const res = await http.post<CobrancaResponse>("/inter/pix/cobrancas", {
                 valor: valorDecimal,
