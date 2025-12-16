@@ -201,7 +201,7 @@ src/
 - [ ] Sanitização de inputs
 - [ ] Política de senha forte
 - [ ] Sessões expiráveis
-- [ ] IP whitelisting (admin)
+- [ ] IP whitelisting (admin).
 
 ---
 
