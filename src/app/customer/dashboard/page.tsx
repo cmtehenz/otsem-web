@@ -23,38 +23,39 @@ type AccountSummary = {
     blockedAmount: number;
     createdAt: string;
     updatedAt: string;
-    payments: Payment[];
 };
 
-type Payment = {
+type Transaction = {
     id: string;
-    paymentValue: number;
-    paymentDate: string;
-    receiverPixKey: string;
-    endToEnd: string;
-    bankPayload: BankPayload;
-};
-
-type BankPayload = {
-    valor: string;
-    titulo: string;
-    detalhes: {
-        txId: string;
-        endToEndId: string;
-        nomePagador: string;
-        tipoDetalhe: string;
-        descricaoPix: string;
-        cpfCnpjPagador: string;
-        chavePixRecebedor: string;
-        nomeEmpresaPagador: string;
-    };
-    descricao: string;
-    idTransacao: string;
-    dataInclusao: string;
-    tipoOperacao: string;
-    dataTransacao: string;
-    tipoTransacao: string;
-    numeroDocumento: string;
+    accountId: string;
+    type: "PIX_IN" | "PIX_OUT" | "CONVERSION" | "TRANSFER";
+    status: "PENDING" | "COMPLETED" | "FAILED";
+    amount: string;
+    balanceBefore: string;
+    balanceAfter: string;
+    description: string;
+    payerName: string | null;
+    payerTaxNumber: string | null;
+    payerMessage: string | null;
+    receiverName: string | null;
+    receiverPixKey: string | null;
+    endToEnd: string | null;
+    txid: string | null;
+    externalId: string | null;
+    externalData: {
+        txid?: string;
+        chave?: string;
+        valor?: string;
+        horario?: string;
+        pagador?: {
+            nome?: string;
+            cpfCnpj?: string;
+        };
+        endToEndId?: string;
+    } | null;
+    createdAt: string;
+    completedAt: string | null;
+    processedAt: string | null;
 };
 
 type WalletType = {
@@ -103,6 +104,7 @@ export default function Dashboard() {
     const { openModal, refreshTrigger } = useUiModals();
     const [loading, setLoading] = React.useState(true);
     const [account, setAccount] = React.useState<AccountSummary | null>(null);
+    const [transactions, setTransactions] = React.useState<Transaction[]>([]);
     const [wallets, setWallets] = React.useState<WalletType[]>([]);
     const [usdtBalance, setUsdtBalance] = React.useState<number | null>(null);
     const [usdtBalanceLoading, setUsdtBalanceLoading] = React.useState(true);
@@ -133,10 +135,15 @@ export default function Dashboard() {
                     return;
                 }
 
-                const res = await http.get<AccountSummary>(
-                    `/accounts/${customerId}/summary`
-                );
-                if (!cancelled) setAccount(res.data);
+                const [accountRes, transactionsRes] = await Promise.all([
+                    http.get<AccountSummary>(`/accounts/${customerId}/summary`),
+                    http.get<Transaction[]>("/transactions?limit=6")
+                ]);
+                
+                if (!cancelled) {
+                    setAccount(accountRes.data);
+                    setTransactions(transactionsRes.data);
+                }
 
             } catch (err: any) {
                 if (!cancelled) {
@@ -298,15 +305,18 @@ export default function Dashboard() {
                     <h2 className="text-white font-semibold">Últimas transações</h2>
                 </div>
                 <div className="divide-y divide-white/5">
-                    {account?.payments && account.payments.length > 0 ? (
-                        account.payments.slice(0, 6).map((p) => {
-                            const value = Number(p.bankPayload.valor);
-                            const isPositive = value > 0;
+                    {transactions.length > 0 ? (
+                        transactions.map((tx) => {
+                            const amount = Number(tx.amount);
+                            const isIncoming = tx.type === "PIX_IN";
+                            const displayName = tx.description || 
+                                tx.externalData?.pagador?.nome || 
+                                (isIncoming ? "Depósito PIX" : "Transferência PIX");
 
                             return (
-                                <div key={p.id} className="flex items-center gap-4 p-4 hover:bg-white/5 transition">
-                                    <div className={`p-2.5 rounded-full ${isPositive ? "bg-green-500/20" : "bg-violet-500/20"}`}>
-                                        {isPositive ? (
+                                <div key={tx.id} className="flex items-center gap-4 p-4 hover:bg-white/5 transition">
+                                    <div className={`p-2.5 rounded-full ${isIncoming ? "bg-green-500/20" : "bg-violet-500/20"}`}>
+                                        {isIncoming ? (
                                             <ArrowDownLeft className="w-4 h-4 text-green-400" />
                                         ) : (
                                             <ArrowUpRight className="w-4 h-4 text-violet-400" />
@@ -314,14 +324,14 @@ export default function Dashboard() {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-white font-medium truncate">
-                                            {p.bankPayload.titulo || "Depósito PIX"}
+                                            {displayName}
                                         </p>
                                         <p className="text-white/40 text-sm">
-                                            {formatDate(p.paymentDate)}
+                                            {formatDate(tx.createdAt)}
                                         </p>
                                     </div>
-                                    <span className={`font-bold ${isPositive ? "text-green-400" : "text-white"}`}>
-                                        {isPositive ? "+" : ""}{formatCurrency(value)}
+                                    <span className={`font-bold ${isIncoming ? "text-green-400" : "text-white"}`}>
+                                        {isIncoming ? "+" : "-"}{formatCurrency(amount)}
                                     </span>
                                 </div>
                             );
