@@ -118,9 +118,10 @@ export function WithdrawModal() {
             const valorDecimal = Number((cents / 100).toFixed(2));
 
             const res = await http.post<SendPixResponse>("/inter/pix/send-pix", {
-                keyType: selectedKey.keyType,
-                keyValue: selectedKey.keyValue,
-                amount: valorDecimal,
+                chaveDestino: selectedKey.keyValue,
+                valor: valorDecimal,
+                tipoChave: "CHAVE",
+                descricao: "Transferência PIX",
             });
 
             setTxResult(res.data);
