@@ -3,7 +3,7 @@
 import * as React from "react";
 import http from "@/lib/http";
 import { Button } from "@/components/ui/button";
-import { Loader2, KeyRound, Plus, Copy, RefreshCw, Trash2, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { Loader2, KeyRound, Plus, Copy, RefreshCw, Trash2, CheckCircle2, Clock, AlertCircle, ShieldCheck, XCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -16,6 +16,8 @@ type PixKey = {
     status: string;
     validated: boolean;
     validatedAt: string | null;
+    validationAttempted: boolean;
+    validationError: string | null;
     createdAt: string;
 };
 
@@ -67,6 +69,7 @@ export default function CustomerPixPage() {
     const [newValue, setNewValue] = React.useState("");
     const [submitting, setSubmitting] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
+    const [validating, setValidating] = React.useState<string | null>(null);
 
     async function loadPixKeys() {
         try {
@@ -125,6 +128,20 @@ export default function CustomerPixPage() {
         toast.success("Chave copiada!");
     }
 
+    async function handleValidate(pixKeyId: string) {
+        setValidating(pixKeyId);
+        try {
+            await http.post(`/inter/pix/validar-chave/${pixKeyId}`);
+            toast.success("Chave validada com sucesso!");
+            loadPixKeys();
+        } catch (err: any) {
+            const message = err?.response?.data?.message || "Erro ao validar chave";
+            toast.error(message);
+        } finally {
+            setValidating(null);
+        }
+    }
+
     function openDeleteModal(key: PixKey) {
         setKeyToDelete(key);
         setShowDeleteModal(true);
@@ -170,12 +187,13 @@ export default function CustomerPixPage() {
             <div className="bg-[#1a1025] border border-violet-500/20 rounded-xl p-4">
                 <div className="flex items-start gap-3">
                     <div className="p-2 rounded-lg bg-violet-500/20">
-                        <CheckCircle2 className="w-5 h-5 text-violet-400" />
+                        <ShieldCheck className="w-5 h-5 text-violet-400" />
                     </div>
                     <div>
-                        <p className="text-white font-medium text-sm">Validação Automática</p>
+                        <p className="text-white font-medium text-sm">Validação de Chaves</p>
                         <p className="text-white/50 text-xs mt-0.5">
-                            Chaves do tipo CPF, CNPJ, E-mail e Telefone são validadas automaticamente se corresponderem aos seus dados cadastrados.
+                            Chaves CPF, CNPJ, E-mail e Telefone são validadas automaticamente se corresponderem aos seus dados.
+                            Para chaves aleatórias, clique em "Validar" para confirmar via micro-transferência de R$ 0,01.
                         </p>
                     </div>
                 </div>
@@ -222,6 +240,11 @@ export default function CustomerPixPage() {
                                                     <CheckCircle2 className="w-3 h-3" />
                                                     Validada
                                                 </span>
+                                            ) : pix.validationAttempted && pix.validationError ? (
+                                                <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-500/20 text-red-400 border border-red-500/30">
+                                                    <XCircle className="w-3 h-3" />
+                                                    Falhou
+                                                </span>
                                             ) : (
                                                 <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
                                                     <Clock className="w-3 h-3" />
@@ -244,7 +267,7 @@ export default function CustomerPixPage() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-3">
                                     <div className="text-right">
                                         <p className="text-white/40 text-sm">
                                             Criada em {formatDate(pix.createdAt)}
@@ -254,7 +277,27 @@ export default function CustomerPixPage() {
                                                 Validada em {formatDate(pix.validatedAt)}
                                             </p>
                                         )}
+                                        {pix.validationAttempted && pix.validationError && (
+                                            <p className="text-red-400/60 text-xs">
+                                                {pix.validationError}
+                                            </p>
+                                        )}
                                     </div>
+                                    {!pix.validated && !pix.validationAttempted && (
+                                        <button
+                                            onClick={() => handleValidate(pix.id)}
+                                            disabled={validating === pix.id}
+                                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-violet-500/20 text-violet-300 hover:bg-violet-500/30 border border-violet-500/30 transition flex items-center gap-1.5 disabled:opacity-50"
+                                            title="Validar chave (R$ 0,01)"
+                                        >
+                                            {validating === pix.id ? (
+                                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                            ) : (
+                                                <ShieldCheck className="w-3.5 h-3.5" />
+                                            )}
+                                            Validar
+                                        </button>
+                                    )}
                                     <button
                                         onClick={() => openDeleteModal(pix)}
                                         className="p-2 hover:bg-red-500/10 rounded-lg transition text-white/40 hover:text-red-400"
