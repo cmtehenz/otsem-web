@@ -313,8 +313,21 @@ export default function Dashboard() {
                             
                             let displayName = "";
                             
-                            if (isConversion) {
-                                displayName = "Conversão BRL/USDT";
+                            const descLower = (tx.description || "").toLowerCase();
+                            const isConversionByDesc = descLower.includes("usdt") || 
+                                descLower.includes("conversão") || 
+                                descLower.includes("conversao") ||
+                                descLower.includes("buy") ||
+                                descLower.includes("sell");
+                            
+                            if (isConversion || isConversionByDesc) {
+                                if (descLower.includes("buy") || descLower.includes("brl") && descLower.includes("usdt")) {
+                                    displayName = "Compra de USDT";
+                                } else if (descLower.includes("sell")) {
+                                    displayName = "Venda de USDT";
+                                } else {
+                                    displayName = "Conversão BRL/USDT";
+                                }
                             } else if (tx.description && !isUUID(tx.description)) {
                                 displayName = tx.description;
                             } else if (isIncoming && tx.payerName) {
