@@ -7,10 +7,9 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useUsdtRate } from "@/lib/useUsdtRate";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DepositModal } from "@/components/modals/deposit-modal";
 import { WithdrawModal } from "@/components/modals/withdraw-modal";
-import { Input } from "@/components/ui/input";
+import { ConvertModal } from "@/components/modals/convert-modal";
 import { useUiModals } from "@/stores/ui-modals";
 
 type AccountSummary = {
@@ -200,23 +199,6 @@ export default function Dashboard() {
     const saldoTotal = saldoBRL + (saldoUSDT * usdtRateWithSpread);
 
     const [showConvertModal, setShowConvertModal] = React.useState(false);
-    const [convertValue, setConvertValue] = React.useState(100);
-    const minValue = 10;
-
-    const usdtAmount = usdtRateWithSpread ? convertValue / usdtRateWithSpread : 0;
-
-    async function handleConvert(e: React.FormEvent) {
-        e.preventDefault();
-        if (convertValue < minValue || !usdtRate) {
-            toast.error("Valor mínimo não atingido ou cotação indisponível.");
-            return;
-        }
-        toast.success(
-            `Conversão solicitada: R$ ${convertValue} → ${usdtAmount.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDT`
-        );
-        setShowConvertModal(false);
-        setConvertValue(100);
-    }
 
     if (loading) {
         return (
@@ -234,6 +216,12 @@ export default function Dashboard() {
         <div className="space-y-6">
             <DepositModal />
             <WithdrawModal />
+            <ConvertModal
+                open={showConvertModal}
+                onClose={() => setShowConvertModal(false)}
+                brlBalance={saldoBRL}
+                usdtBalance={saldoUSDT}
+            />
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-white">Dashboard</h1>
@@ -383,55 +371,6 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <Dialog open={showConvertModal} onOpenChange={setShowConvertModal}>
-                <DialogContent className="bg-[#1a1025] border border-white/10">
-                    <DialogHeader>
-                        <DialogTitle className="text-white text-xl">Converter BRL → USDT</DialogTitle>
-                    </DialogHeader>
-                    <form onSubmit={handleConvert} className="space-y-6">
-                        <div>
-                            <label className="block text-sm font-medium mb-2 text-white/70">
-                                Valor em BRL
-                            </label>
-                            <Input
-                                type="number"
-                                min={minValue}
-                                step={0.01}
-                                value={convertValue}
-                                onChange={e => setConvertValue(Number(e.target.value))}
-                                className="border-white/10 bg-white/5 text-white rounded-xl"
-                                required
-                            />
-                        </div>
-                        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                            <p className="text-sm text-white/60">Você receberá:</p>
-                            <p className="text-2xl font-bold text-green-400 mt-1">
-                                {usdtRateWithSpread ? formatUSD(usdtAmount) : "--"} USDT
-                            </p>
-                            <p className="text-xs text-white/40 mt-2">
-                                Cotação: {formatCurrency(usdtRateWithSpread, 4)} / USDT
-                            </p>
-                        </div>
-                        <div className="flex gap-3">
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                onClick={() => setShowConvertModal(false)}
-                                className="flex-1 bg-white/10 border border-white/20 text-white hover:bg-white/20 rounded-xl"
-                            >
-                                Cancelar
-                            </Button>
-                            <Button
-                                type="submit"
-                                disabled={convertValue < minValue || !usdtRate}
-                                className="flex-1 bg-green-500 hover:bg-green-400 text-white font-semibold rounded-xl"
-                            >
-                                Converter
-                            </Button>
-                        </div>
-                    </form>
-                </DialogContent>
-            </Dialog>
         </div>
     );
 }
