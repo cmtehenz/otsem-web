@@ -307,10 +307,27 @@ export default function Dashboard() {
                             const isIncoming = tx.type === "PIX_IN";
                             const isPending = tx.status === "PENDING";
                             const isCompleted = tx.status === "COMPLETED";
+                            const isConversion = tx.type === "CONVERSION";
                             
-                            let displayName = tx.description || 
-                                tx.externalData?.pagador?.nome || 
-                                (isIncoming ? "Depósito PIX" : "Transferência PIX");
+                            const isUUID = (str: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+                            
+                            let displayName = "";
+                            
+                            if (isConversion) {
+                                displayName = "Conversão BRL/USDT";
+                            } else if (tx.description && !isUUID(tx.description)) {
+                                displayName = tx.description;
+                            } else if (isIncoming && tx.payerName) {
+                                displayName = `Depósito de ${tx.payerName}`;
+                            } else if (isIncoming && tx.externalData?.pagador?.nome) {
+                                displayName = `Depósito de ${tx.externalData.pagador.nome}`;
+                            } else if (!isIncoming && tx.receiverPixKey) {
+                                displayName = `Transferência PIX para ${tx.receiverPixKey}`;
+                            } else if (!isIncoming && tx.receiverName) {
+                                displayName = `Transferência para ${tx.receiverName}`;
+                            } else {
+                                displayName = isIncoming ? "Depósito PIX" : "Transferência PIX";
+                            }
                             
                             if (isCompleted && displayName.toLowerCase().includes("aguardando")) {
                                 displayName = displayName
