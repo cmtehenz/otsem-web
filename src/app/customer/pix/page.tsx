@@ -2,9 +2,8 @@
 
 import * as React from "react";
 import http from "@/lib/http";
-import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
-import { Loader2, KeyRound, Plus, Copy, RefreshCw } from "lucide-react";
+import { Loader2, KeyRound, Plus, Copy, RefreshCw, Trash2, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -15,34 +14,14 @@ type PixKey = {
     keyType: string;
     keyValue: string;
     status: string;
+    validated: boolean;
+    validatedAt: string | null;
     createdAt: string;
 };
 
 function formatDate(dateStr: string) {
     const d = new Date(dateStr);
     return d.toLocaleDateString("pt-BR");
-}
-
-function getStatusStyle(status: string) {
-    switch (status) {
-        case "ACTIVE":
-            return "bg-green-500/20 text-green-400 border border-green-500/30";
-        case "PENDING":
-            return "bg-amber-500/20 text-amber-400 border border-amber-500/30";
-        default:
-            return "bg-white/10 text-white/60";
-    }
-}
-
-function getStatusLabel(status: string) {
-    switch (status) {
-        case "ACTIVE":
-            return "Ativa";
-        case "PENDING":
-            return "Pendente";
-        default:
-            return status;
-    }
 }
 
 function getKeyTypeLabel(type: string) {
@@ -62,20 +41,38 @@ function getKeyTypeLabel(type: string) {
     }
 }
 
+function getKeyTypeIcon(type: string) {
+    switch (type) {
+        case "CPF":
+        case "CNPJ":
+            return "🆔";
+        case "EMAIL":
+            return "📧";
+        case "PHONE":
+            return "📱";
+        case "RANDOM":
+            return "🔑";
+        default:
+            return "🔑";
+    }
+}
+
 export default function CustomerPixPage() {
-    const { user } = useAuth();
     const [loading, setLoading] = React.useState(true);
     const [pixKeys, setPixKeys] = React.useState<PixKey[]>([]);
     const [showModal, setShowModal] = React.useState(false);
-    const [newType, setNewType] = React.useState("RANDOM");
+    const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+    const [keyToDelete, setKeyToDelete] = React.useState<PixKey | null>(null);
+    const [newType, setNewType] = React.useState("CPF");
     const [newValue, setNewValue] = React.useState("");
     const [submitting, setSubmitting] = React.useState(false);
+    const [deleting, setDeleting] = React.useState(false);
 
     async function loadPixKeys() {
         try {
             setLoading(true);
-            const res = await http.get<PixKey[]>(`/pix-keys/customer/${user?.id}`);
-            setPixKeys(res.data.filter(pk => pk.status === "ACTIVE" || pk.status === "PENDING"));
+            const res = await http.get<PixKey[]>("/pix-keys");
+            setPixKeys(res.data || []);
         } catch (err) {
             setPixKeys([]);
         } finally {
@@ -84,34 +81,53 @@ export default function CustomerPixPage() {
     }
 
     React.useEffect(() => {
-        if (user?.id) loadPixKeys();
-    }, [user?.id]);
+        loadPixKeys();
+    }, []);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setSubmitting(true);
         try {
             await http.post("/pix-keys", {
-                customerId: user?.id,
                 keyType: newType,
                 keyValue: newType === "RANDOM" ? undefined : newValue,
-                status: "PENDING",
             });
-            toast.success("Chave Pix solicitada com sucesso!");
+            toast.success("Chave Pix cadastrada com sucesso!");
             setShowModal(false);
-            setNewType("RANDOM");
+            setNewType("CPF");
             setNewValue("");
             loadPixKeys();
         } catch (err: any) {
-            toast.error(err?.response?.data?.message || "Erro ao solicitar chave Pix");
+            toast.error(err?.response?.data?.message || "Erro ao cadastrar chave Pix");
         } finally {
             setSubmitting(false);
+        }
+    }
+
+    async function handleDelete() {
+        if (!keyToDelete) return;
+        setDeleting(true);
+        try {
+            await http.delete(`/pix-keys/${keyToDelete.id}`);
+            toast.success("Chave Pix removida com sucesso!");
+            setShowDeleteModal(false);
+            setKeyToDelete(null);
+            loadPixKeys();
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message || "Erro ao remover chave Pix");
+        } finally {
+            setDeleting(false);
         }
     }
 
     async function onCopy(text: string) {
         await navigator.clipboard.writeText(text);
         toast.success("Chave copiada!");
+    }
+
+    function openDeleteModal(key: PixKey) {
+        setKeyToDelete(key);
+        setShowDeleteModal(true);
     }
 
     if (loading) {
@@ -129,7 +145,7 @@ export default function CustomerPixPage() {
                 <div>
                     <h1 className="text-2xl font-bold text-white">Chaves Pix</h1>
                     <p className="text-white/50 text-sm mt-1">
-                        Gerencie suas chaves Pix para receber pagamentos
+                        Gerencie suas chaves Pix para receber e enviar pagamentos
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -148,6 +164,20 @@ export default function CustomerPixPage() {
                         <Plus className="w-4 h-4 mr-2" />
                         Nova Chave Pix
                     </Button>
+                </div>
+            </div>
+
+            <div className="bg-[#1a1025] border border-violet-500/20 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-lg bg-violet-500/20">
+                        <CheckCircle2 className="w-5 h-5 text-violet-400" />
+                    </div>
+                    <div>
+                        <p className="text-white font-medium text-sm">Validação Automática</p>
+                        <p className="text-white/50 text-xs mt-0.5">
+                            Chaves do tipo CPF, CNPJ, E-mail e Telefone são validadas automaticamente se corresponderem aos seus dados cadastrados.
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -179,17 +209,25 @@ export default function CustomerPixPage() {
                         >
                             <div className="flex items-center justify-between gap-4">
                                 <div className="flex items-center gap-4">
-                                    <div className="p-3 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20">
-                                        <KeyRound className="w-6 h-6 text-violet-400" />
+                                    <div className="p-3 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20 text-2xl">
+                                        {getKeyTypeIcon(pix.keyType)}
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className="text-white font-semibold">
                                                 {getKeyTypeLabel(pix.keyType)}
                                             </span>
-                                            <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${getStatusStyle(pix.status)}`}>
-                                                {getStatusLabel(pix.status)}
-                                            </span>
+                                            {pix.validated ? (
+                                                <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
+                                                    <CheckCircle2 className="w-3 h-3" />
+                                                    Validada
+                                                </span>
+                                            ) : (
+                                                <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                                                    <Clock className="w-3 h-3" />
+                                                    Pendente
+                                                </span>
+                                            )}
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <code className="text-white/60 text-sm font-mono">
@@ -198,6 +236,7 @@ export default function CustomerPixPage() {
                                             <button
                                                 onClick={() => onCopy(pix.keyValue)}
                                                 className="p-1 hover:bg-white/10 rounded transition"
+                                                title="Copiar chave"
                                             >
                                                 <Copy className="w-3.5 h-3.5 text-white/40 hover:text-white" />
                                             </button>
@@ -205,10 +244,24 @@ export default function CustomerPixPage() {
                                     </div>
                                 </div>
 
-                                <div className="text-right">
-                                    <p className="text-white/40 text-sm">
-                                        Criada em {formatDate(pix.createdAt)}
-                                    </p>
+                                <div className="flex items-center gap-4">
+                                    <div className="text-right">
+                                        <p className="text-white/40 text-sm">
+                                            Criada em {formatDate(pix.createdAt)}
+                                        </p>
+                                        {pix.validated && pix.validatedAt && (
+                                            <p className="text-green-400/60 text-xs">
+                                                Validada em {formatDate(pix.validatedAt)}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <button
+                                        onClick={() => openDeleteModal(pix)}
+                                        className="p-2 hover:bg-red-500/10 rounded-lg transition text-white/40 hover:text-red-400"
+                                        title="Remover chave"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -217,7 +270,7 @@ export default function CustomerPixPage() {
             )}
 
             <Dialog open={showModal} onOpenChange={setShowModal}>
-                <DialogContent className="bg-[#1a1025] border border-white/10">
+                <DialogContent className="bg-[#0a0118] border border-violet-500/20">
                     <DialogHeader>
                         <DialogTitle className="text-white text-xl">Nova Chave Pix</DialogTitle>
                     </DialogHeader>
@@ -231,11 +284,11 @@ export default function CustomerPixPage() {
                                     <SelectValue placeholder="Selecione o tipo" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1a1025] border-white/10">
-                                    <SelectItem value="RANDOM" className="text-white hover:bg-white/10">Aleatória</SelectItem>
                                     <SelectItem value="CPF" className="text-white hover:bg-white/10">CPF</SelectItem>
                                     <SelectItem value="CNPJ" className="text-white hover:bg-white/10">CNPJ</SelectItem>
                                     <SelectItem value="EMAIL" className="text-white hover:bg-white/10">E-mail</SelectItem>
                                     <SelectItem value="PHONE" className="text-white hover:bg-white/10">Telefone</SelectItem>
+                                    <SelectItem value="RANDOM" className="text-white hover:bg-white/10">Aleatória</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -258,14 +311,25 @@ export default function CustomerPixPage() {
                                     required
                                     className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
                                 />
+                                <p className="text-white/40 text-xs mt-2">
+                                    {newType === "CPF" || newType === "CNPJ" || newType === "EMAIL" || newType === "PHONE" 
+                                        ? "Se corresponder aos seus dados cadastrados, será validada automaticamente."
+                                        : ""}
+                                </p>
                             </div>
                         )}
 
                         {newType === "RANDOM" && (
-                            <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
-                                <p className="text-white/70 text-sm">
-                                    Uma chave aleatória será gerada automaticamente pelo sistema.
-                                </p>
+                            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                                <div className="flex items-start gap-3">
+                                    <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                                    <div>
+                                        <p className="text-white/80 text-sm font-medium">Chave Aleatória</p>
+                                        <p className="text-white/50 text-xs mt-1">
+                                            Uma chave será gerada automaticamente. Chaves aleatórias requerem validação manual.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         )}
 
@@ -274,7 +338,7 @@ export default function CustomerPixPage() {
                                 type="button"
                                 variant="ghost"
                                 onClick={() => setShowModal(false)}
-                                className="flex-1 bg-white/10 border border-white/20 text-white hover:bg-white/20"
+                                className="flex-1 bg-white/5 border border-white/10 text-white hover:bg-white/10"
                             >
                                 Cancelar
                             </Button>
@@ -283,10 +347,63 @@ export default function CustomerPixPage() {
                                 disabled={submitting || (newType !== "RANDOM" && !newValue)}
                                 className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold disabled:opacity-50"
                             >
-                                {submitting ? "Solicitando..." : "Solicitar Chave"}
+                                {submitting ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                        Cadastrando...
+                                    </>
+                                ) : (
+                                    "Cadastrar Chave"
+                                )}
                             </Button>
                         </div>
                     </form>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+                <DialogContent className="bg-[#0a0118] border border-red-500/20 max-w-sm">
+                    <DialogHeader>
+                        <DialogTitle className="text-white text-xl">Remover Chave Pix</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <p className="text-white/70">
+                            Tem certeza que deseja remover esta chave Pix?
+                        </p>
+                        {keyToDelete && (
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                                <p className="text-white font-medium">{getKeyTypeLabel(keyToDelete.keyType)}</p>
+                                <code className="text-white/50 text-sm">{keyToDelete.keyValue}</code>
+                            </div>
+                        )}
+                        <div className="flex gap-3 pt-2">
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                onClick={() => setShowDeleteModal(false)}
+                                className="flex-1 bg-white/5 border border-white/10 text-white hover:bg-white/10"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                onClick={handleDelete}
+                                disabled={deleting}
+                                className="flex-1 bg-red-600 hover:bg-red-500 text-white font-semibold"
+                            >
+                                {deleting ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                        Removendo...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Trash2 className="w-4 h-4 mr-2" />
+                                        Remover
+                                    </>
+                                )}
+                            </Button>
+                        </div>
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>
