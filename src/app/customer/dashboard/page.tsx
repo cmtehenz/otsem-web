@@ -309,17 +309,36 @@ export default function Dashboard() {
                         transactions.map((tx) => {
                             const amount = Number(tx.amount);
                             const isIncoming = tx.type === "PIX_IN";
+                            const isPending = tx.status === "PENDING";
                             const displayName = tx.description || 
                                 tx.externalData?.pagador?.nome || 
                                 (isIncoming ? "Depósito PIX" : "Transferência PIX");
 
+                            const iconBgColor = isPending 
+                                ? "bg-amber-500/20" 
+                                : isIncoming 
+                                    ? "bg-green-500/20" 
+                                    : "bg-violet-500/20";
+                            
+                            const iconColor = isPending 
+                                ? "text-amber-400" 
+                                : isIncoming 
+                                    ? "text-green-400" 
+                                    : "text-violet-400";
+                            
+                            const amountColor = isPending 
+                                ? "text-amber-400" 
+                                : isIncoming 
+                                    ? "text-green-400" 
+                                    : "text-white";
+
                             return (
                                 <div key={tx.id} className="flex items-center gap-4 p-4 hover:bg-white/5 transition">
-                                    <div className={`p-2.5 rounded-full ${isIncoming ? "bg-green-500/20" : "bg-violet-500/20"}`}>
+                                    <div className={`p-2.5 rounded-full ${iconBgColor}`}>
                                         {isIncoming ? (
-                                            <ArrowDownLeft className="w-4 h-4 text-green-400" />
+                                            <ArrowDownLeft className={`w-4 h-4 ${iconColor}`} />
                                         ) : (
-                                            <ArrowUpRight className="w-4 h-4 text-violet-400" />
+                                            <ArrowUpRight className={`w-4 h-4 ${iconColor}`} />
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -330,7 +349,7 @@ export default function Dashboard() {
                                             {formatDate(tx.createdAt)}
                                         </p>
                                     </div>
-                                    <span className={`font-bold ${isIncoming ? "text-green-400" : "text-white"}`}>
+                                    <span className={`font-bold ${amountColor}`}>
                                         {isIncoming ? "+" : "-"}{formatCurrency(amount)}
                                     </span>
                                 </div>
