@@ -121,7 +121,7 @@ export function WithdrawModal() {
                 chaveDestino: selectedKey.keyValue,
                 valor: valorDecimal,
                 tipoChave: "CHAVE",
-                descricao: "Transferência PIX",
+                descricao: `Transferência PIX para ${selectedKey.keyValue}`,
             });
 
             setTxResult(res.data);
