@@ -298,7 +298,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 - [shadcn/ui](https://ui.shadcn.com/) - Componentes UI
 - [ViaCEP](https://viacep.com.br/) - API de CEP
-- [Lucide Icons](https://lucide.dev/) - Ícones .
+- [Lucide Icons](https://lucide.dev/) - Ícones ..
 
 ---
 
