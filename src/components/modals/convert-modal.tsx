@@ -86,11 +86,15 @@ export function ConvertModal({ open, onClose, brlBalance, usdtBalance }: Convert
     async function handleConvert() {
         setLoading(true);
         try {
-            await http.post("/wallet/convert", {
-                fromCurrency: sourceCurrency,
-                toCurrency: targetCurrency,
-                amount: numAmount,
-            });
+            if (isBrlToUsdt) {
+                await http.post("/wallet/buy-usdt-with-brl", {
+                    brlAmount: numAmount,
+                });
+            } else {
+                await http.post("/wallet/sell-usdt-for-brl", {
+                    usdtAmount: numAmount,
+                });
+            }
             setStep("success");
             toast.success("Conversão realizada com sucesso!");
         } catch (err: any) {
