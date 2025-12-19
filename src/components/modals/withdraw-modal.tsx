@@ -1,23 +1,19 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useUiModals } from "@/stores/ui-modals";
-import { Loader2, ArrowLeft, Send, AlertCircle, CheckCircle2, Building2, User } from "lucide-react";
+import { Loader2, ArrowLeft, Send, AlertCircle, CheckCircle2, KeyRound, Plus } from "lucide-react";
 import { toast } from "sonner";
 import http from "@/lib/http";
-import { useAuth } from "@/contexts/auth-context";
 
-type KeyType = "CPF" | "CNPJ" | "EMAIL" | "PHONE" | "EVP";
-
-type PrecheckResponse = {
-    valid: boolean;
-    recipientName: string;
-    recipientCpf?: string;
-    recipientCnpj?: string;
-    recipientBank: string;
-    recipientAccountType: string;
+type PixKey = {
+    id: string;
+    keyType: string;
+    keyValue: string;
+    validated: boolean;
 };
 
 type SendPixResponse = {
@@ -28,27 +24,51 @@ type SendPixResponse = {
     createdAt: string;
 };
 
-const KEY_TYPE_LABELS: Record<KeyType, string> = {
+const KEY_TYPE_LABELS: Record<string, string> = {
     CPF: "CPF",
     CNPJ: "CNPJ",
     EMAIL: "E-mail",
     PHONE: "Telefone",
-    EVP: "Chave Aleatória",
+    RANDOM: "Aleatória",
+    EVP: "Aleatória",
 };
 
 const QUICK_AMOUNTS = [50, 100, 200, 500, 1000];
 
 export function WithdrawModal() {
+    const router = useRouter();
     const { open, closeModal, triggerRefresh } = useUiModals();
-    const { user } = useAuth();
-    const [step, setStep] = React.useState<"key" | "amount" | "confirm" | "success">("key");
-    const [keyType, setKeyType] = React.useState<KeyType>("CPF");
-    const [keyValue, setKeyValue] = React.useState("");
+    const [step, setStep] = React.useState<"loading" | "nokeys" | "select" | "amount" | "confirm" | "success">("loading");
+    const [pixKeys, setPixKeys] = React.useState<PixKey[]>([]);
+    const [selectedKey, setSelectedKey] = React.useState<PixKey | null>(null);
     const [cents, setCents] = React.useState(0);
-    const [recipient, setRecipient] = React.useState<PrecheckResponse | null>(null);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
     const [txResult, setTxResult] = React.useState<SendPixResponse | null>(null);
+
+    React.useEffect(() => {
+        if (open.withdraw) {
+            loadPixKeys();
+        }
+    }, [open.withdraw]);
+
+    async function loadPixKeys() {
+        setStep("loading");
+        try {
+            const res = await http.get<PixKey[]>("/pix-keys");
+            const keys = res.data || [];
+            setPixKeys(keys);
+            
+            if (keys.length === 0) {
+                setStep("nokeys");
+            } else {
+                setStep("select");
+            }
+        } catch (err) {
+            setPixKeys([]);
+            setStep("nokeys");
+        }
+    }
 
     function formatDisplayValue(centValue: number): string {
         if (centValue === 0) return "";
@@ -75,84 +95,9 @@ export function WithdrawModal() {
         setCents(reais * 100);
     }
 
-    function formatKeyValue(value: string, type: KeyType): string {
-        const digits = value.replace(/\D/g, "");
-        
-        if (type === "CPF") {
-            return digits
-                .slice(0, 11)
-                .replace(/(\d{3})(\d)/, "$1.$2")
-                .replace(/(\d{3})(\d)/, "$1.$2")
-                .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-        }
-        if (type === "CNPJ") {
-            return digits
-                .slice(0, 14)
-                .replace(/(\d{2})(\d)/, "$1.$2")
-                .replace(/(\d{3})(\d)/, "$1.$2")
-                .replace(/(\d{3})(\d)/, "$1/$2")
-                .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
-        }
-        if (type === "PHONE") {
-            if (digits.length <= 2) return `+${digits}`;
-            if (digits.length <= 4) return `+${digits.slice(0, 2)} (${digits.slice(2)}`;
-            if (digits.length <= 9) return `+${digits.slice(0, 2)} (${digits.slice(2, 4)}) ${digits.slice(4)}`;
-            return `+${digits.slice(0, 2)} (${digits.slice(2, 4)}) ${digits.slice(4, 9)}-${digits.slice(9, 13)}`;
-        }
-        return value;
-    }
-
-    function handleKeyValueChange(e: React.ChangeEvent<HTMLInputElement>) {
-        const value = e.target.value;
-        if (keyType === "EMAIL" || keyType === "EVP") {
-            setKeyValue(value);
-        } else {
-            setKeyValue(formatKeyValue(value, keyType));
-        }
-    }
-
-    function getCleanKeyValue(): string {
-        if (keyType === "EMAIL" || keyType === "EVP") {
-            return keyValue.trim();
-        }
-        return keyValue.replace(/\D/g, "");
-    }
-
-    async function handlePrecheck() {
-        if (!keyValue.trim()) {
-            toast.error("Digite a chave PIX");
-            return;
-        }
-
-        if (!user?.customerId) {
-            toast.error("Usuário não autenticado");
-            return;
-        }
-
-        setLoading(true);
-        setError(null);
-
-        try {
-            const cleanKey = getCleanKeyValue();
-            const res = await http.get<PrecheckResponse>(
-                `/pix/transactions/account-holders/${user.customerId}/precheck`,
-                { params: { keyType, keyValue: cleanKey } }
-            );
-
-            if (res.data.valid) {
-                setRecipient(res.data);
-                setStep("amount");
-            } else {
-                setError("Chave PIX não encontrada ou inválida");
-            }
-        } catch (err: any) {
-            console.error("Precheck error:", err);
-            const message = err?.response?.data?.message || "Chave PIX não encontrada";
-            setError(message);
-            toast.error(message);
-        } finally {
-            setLoading(false);
-        }
+    function handleSelectKey(key: PixKey) {
+        setSelectedKey(key);
+        setStep("amount");
     }
 
     function handleContinueToConfirm() {
@@ -164,24 +109,19 @@ export function WithdrawModal() {
     }
 
     async function handleSendPix() {
-        if (!user?.customerId || !recipient) return;
+        if (!selectedKey) return;
 
         setLoading(true);
         setError(null);
 
         try {
             const valorDecimal = Number((cents / 100).toFixed(2));
-            const cleanKey = getCleanKeyValue();
 
-            const res = await http.post<SendPixResponse>(
-                `/pix/transactions/account-holders/${user.customerId}/send`,
-                {
-                    amount: valorDecimal,
-                    description: `Transferência para ${recipient.recipientName}`,
-                    recipientKeyType: keyType,
-                    recipientKeyValue: cleanKey,
-                }
-            );
+            const res = await http.post<SendPixResponse>("/inter/pix/send-pix", {
+                keyType: selectedKey.keyType,
+                keyValue: selectedKey.keyValue,
+                amount: valorDecimal,
+            });
 
             setTxResult(res.data);
             setStep("success");
@@ -197,25 +137,30 @@ export function WithdrawModal() {
         }
     }
 
+    function handleGoToPixPage() {
+        closeModal("withdraw");
+        router.push("/customer/pix");
+    }
+
     function handleClose() {
         closeModal("withdraw");
         resetState();
     }
 
     function resetState() {
-        setStep("key");
-        setKeyType("CPF");
-        setKeyValue("");
+        setStep("loading");
+        setSelectedKey(null);
         setCents(0);
-        setRecipient(null);
         setError(null);
         setTxResult(null);
+        setPixKeys([]);
     }
 
     function handleBack() {
         if (step === "amount") {
-            setStep("key");
+            setStep("select");
             setCents(0);
+            setSelectedKey(null);
         } else if (step === "confirm") {
             setStep("amount");
         }
@@ -239,13 +184,17 @@ export function WithdrawModal() {
                                 <ArrowLeft className="w-4 h-4" />
                             </Button>
                         )}
-                        {step === "key" && "Transferir via PIX"}
+                        {step === "loading" && "Carregando..."}
+                        {step === "nokeys" && "Nenhuma Chave PIX"}
+                        {step === "select" && "Transferir via PIX"}
                         {step === "amount" && "Valor da Transferência"}
                         {step === "confirm" && "Confirmar Transferência"}
                         {step === "success" && "PIX Enviado!"}
                     </DialogTitle>
                     <DialogDescription className="text-white/50 text-center text-sm">
-                        {step === "key" && "Digite a chave PIX do destinatário"}
+                        {step === "loading" && "Buscando suas chaves PIX..."}
+                        {step === "nokeys" && "Cadastre uma chave para transferir"}
+                        {step === "select" && "Selecione a chave PIX de destino"}
                         {step === "amount" && "Escolha ou digite o valor"}
                         {step === "confirm" && "Revise os dados antes de enviar"}
                         {step === "success" && "Sua transferência foi realizada"}
@@ -253,91 +202,91 @@ export function WithdrawModal() {
                 </DialogHeader>
 
                 <div className="flex flex-col items-center space-y-5 py-4">
-                    {step === "key" && (
-                        <div className="w-full space-y-4">
-                            <div className="grid grid-cols-3 gap-2">
-                                {(Object.keys(KEY_TYPE_LABELS) as KeyType[]).slice(0, 3).map((type) => (
-                                    <button
-                                        key={type}
-                                        onClick={() => { setKeyType(type); setKeyValue(""); }}
-                                        className={`px-3 py-2 text-xs font-medium rounded-lg border transition-colors ${
-                                            keyType === type
-                                                ? "border-violet-500 bg-violet-500/20 text-violet-300"
-                                                : "border-white/10 bg-white/5 text-white/60 hover:bg-white/10"
-                                        }`}
-                                    >
-                                        {KEY_TYPE_LABELS[type]}
-                                    </button>
-                                ))}
+                    {step === "loading" && (
+                        <div className="flex flex-col items-center py-8">
+                            <Loader2 className="w-10 h-10 animate-spin text-violet-400" />
+                            <p className="text-white/50 text-sm mt-4">Carregando chaves PIX...</p>
+                        </div>
+                    )}
+
+                    {step === "nokeys" && (
+                        <div className="w-full space-y-5 text-center">
+                            <div className="p-4 rounded-full bg-violet-500/20 inline-block">
+                                <KeyRound className="w-10 h-10 text-violet-400" />
                             </div>
-                            <div className="grid grid-cols-2 gap-2">
-                                {(Object.keys(KEY_TYPE_LABELS) as KeyType[]).slice(3).map((type) => (
-                                    <button
-                                        key={type}
-                                        onClick={() => { setKeyType(type); setKeyValue(""); }}
-                                        className={`px-3 py-2 text-xs font-medium rounded-lg border transition-colors ${
-                                            keyType === type
-                                                ? "border-violet-500 bg-violet-500/20 text-violet-300"
-                                                : "border-white/10 bg-white/5 text-white/60 hover:bg-white/10"
-                                        }`}
-                                    >
-                                        {KEY_TYPE_LABELS[type]}
-                                    </button>
-                                ))}
+                            <div>
+                                <p className="text-white font-medium mb-2">
+                                    Você ainda não tem chaves PIX cadastradas
+                                </p>
+                                <p className="text-white/50 text-sm">
+                                    Para transferir, primeiro cadastre uma chave PIX vinculada ao seu CPF ou CNPJ.
+                                </p>
                             </div>
-
-                            <input
-                                type={keyType === "EMAIL" ? "email" : "text"}
-                                value={keyValue}
-                                onChange={handleKeyValueChange}
-                                placeholder={
-                                    keyType === "CPF" ? "000.000.000-00" :
-                                    keyType === "CNPJ" ? "00.000.000/0000-00" :
-                                    keyType === "EMAIL" ? "email@exemplo.com" :
-                                    keyType === "PHONE" ? "+55 (00) 00000-0000" :
-                                    "Chave aleatória"
-                                }
-                                className="w-full px-4 text-center text-lg bg-white/5 border border-white/10 text-white h-14 rounded-xl focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none placeholder:text-white/30"
-                                autoFocus
-                            />
-
-                            {error && (
-                                <div className="flex items-center gap-2 text-red-400 text-sm bg-red-500/10 rounded-lg px-3 py-2">
-                                    <AlertCircle className="w-4 h-4 shrink-0" />
-                                    <span>{error}</span>
-                                </div>
-                            )}
-
                             <Button
-                                onClick={handlePrecheck}
-                                disabled={!keyValue.trim() || loading}
-                                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-violet-500/25"
+                                onClick={handleGoToPixPage}
+                                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 shadow-lg shadow-violet-500/25"
                             >
-                                {loading ? (
-                                    <>
-                                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                        Verificando...
-                                    </>
-                                ) : (
-                                    "Continuar"
-                                )}
+                                <Plus className="w-5 h-5 mr-2" />
+                                Cadastrar Chave PIX
                             </Button>
                         </div>
                     )}
 
-                    {step === "amount" && recipient && (
+                    {step === "select" && (
+                        <div className="w-full space-y-3">
+                            {pixKeys.map((key) => (
+                                <button
+                                    key={key.id}
+                                    onClick={() => handleSelectKey(key)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-4 hover:border-violet-500/50 hover:bg-violet-500/10 transition text-left"
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="text-white font-medium">
+                                                    {KEY_TYPE_LABELS[key.keyType] || key.keyType}
+                                                </span>
+                                                {key.validated && (
+                                                    <span className="flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium rounded-full bg-green-500/20 text-green-400">
+                                                        <CheckCircle2 className="w-3 h-3" />
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <code className="text-white/50 text-sm font-mono">
+                                                {key.keyValue}
+                                            </code>
+                                        </div>
+                                        <div className="text-violet-400">
+                                            <ArrowLeft className="w-5 h-5 rotate-180" />
+                                        </div>
+                                    </div>
+                                </button>
+                            ))}
+                            
+                            <button
+                                onClick={handleGoToPixPage}
+                                className="w-full border border-dashed border-white/20 rounded-xl p-4 hover:border-violet-500/50 hover:bg-violet-500/5 transition flex items-center justify-center gap-2 text-white/50 hover:text-violet-300"
+                            >
+                                <Plus className="w-4 h-4" />
+                                <span className="text-sm">Cadastrar nova chave</span>
+                            </button>
+                        </div>
+                    )}
+
+                    {step === "amount" && selectedKey && (
                         <div className="w-full space-y-5">
                             <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
-                                        <User className="w-5 h-5 text-violet-400" />
+                                        <KeyRound className="w-5 h-5 text-violet-400" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-white font-medium truncate">{recipient.recipientName}</p>
-                                        <div className="flex items-center gap-1.5 text-white/50 text-xs">
-                                            <Building2 className="w-3 h-3" />
-                                            <span>{recipient.recipientBank}</span>
-                                        </div>
+                                        <p className="text-white font-medium">
+                                            {KEY_TYPE_LABELS[selectedKey.keyType] || selectedKey.keyType}
+                                        </p>
+                                        <code className="text-white/50 text-xs font-mono">
+                                            {selectedKey.keyValue}
+                                        </code>
                                     </div>
                                 </div>
                             </div>
@@ -389,26 +338,20 @@ export function WithdrawModal() {
                         </div>
                     )}
 
-                    {step === "confirm" && recipient && (
+                    {step === "confirm" && selectedKey && (
                         <div className="w-full space-y-5">
                             <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-4">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
-                                        <User className="w-5 h-5 text-violet-400" />
+                                        <KeyRound className="w-5 h-5 text-violet-400" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-white font-medium truncate">{recipient.recipientName}</p>
-                                        <div className="flex items-center gap-1.5 text-white/50 text-xs">
-                                            <Building2 className="w-3 h-3" />
-                                            <span>{recipient.recipientBank}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div className="border-t border-white/10 pt-4">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-white/50 text-sm">Chave PIX</span>
-                                        <span className="text-white text-sm font-mono">{keyValue}</span>
+                                        <p className="text-white font-medium">
+                                            {KEY_TYPE_LABELS[selectedKey.keyType] || selectedKey.keyType}
+                                        </p>
+                                        <code className="text-white/50 text-xs font-mono">
+                                            {selectedKey.keyValue}
+                                        </code>
                                     </div>
                                 </div>
                             </div>
@@ -460,7 +403,7 @@ export function WithdrawModal() {
                                     {displayAmount}
                                 </p>
                                 <p className="text-white/50 text-sm mt-1">
-                                    enviado para {recipient?.recipientName}
+                                    transferido com sucesso
                                 </p>
                             </div>
 
