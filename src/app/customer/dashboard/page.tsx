@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useUsdtRate } from "@/lib/useUsdtRate";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DepositModal } from "@/components/modals/deposit-modal";
+import { WithdrawModal } from "@/components/modals/withdraw-modal";
 import { Input } from "@/components/ui/input";
 import { useUiModals } from "@/stores/ui-modals";
 
@@ -232,7 +233,7 @@ export default function Dashboard() {
     return (
         <div className="space-y-6">
             <DepositModal />
-            {/* Modal de depósito PIX com QR Code */}
+            <WithdrawModal />
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-white">Dashboard</h1>
@@ -270,20 +271,27 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-                <Button
-                    onClick={() => setShowConvertModal(true)}
-                    className="bg-green-500 hover:bg-green-400 text-white font-semibold rounded-xl py-6 text-base"
-                >
-                    <ArrowRightLeft className="w-5 h-5 mr-2" />
-                    Converter
-                </Button>
+            <div className="grid grid-cols-3 gap-3">
                 <Button
                     onClick={() => openModal("deposit")}
-                    className="bg-[#1a1025] border border-white/10 hover:bg-[#2a2035] text-white font-semibold rounded-xl py-6 text-base"
+                    className="bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl py-6 text-sm"
                 >
-                    <ArrowDownLeft className="w-5 h-5 mr-2" />
+                    <ArrowDownLeft className="w-5 h-5 mr-1.5" />
                     Depositar
+                </Button>
+                <Button
+                    onClick={() => openModal("withdraw")}
+                    className="bg-[#1a1025] border border-white/10 hover:bg-[#2a2035] text-white font-semibold rounded-xl py-6 text-sm"
+                >
+                    <ArrowUpRight className="w-5 h-5 mr-1.5" />
+                    Transferir
+                </Button>
+                <Button
+                    onClick={() => setShowConvertModal(true)}
+                    className="bg-[#1a1025] border border-white/10 hover:bg-[#2a2035] text-white font-semibold rounded-xl py-6 text-sm"
+                >
+                    <ArrowRightLeft className="w-5 h-5 mr-1.5" />
+                    Converter
                 </Button>
             </div>
 

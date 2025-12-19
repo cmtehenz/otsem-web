@@ -48,6 +48,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DepositModal } from "@/components/modals/deposit-modal";
+import { WithdrawModal } from "@/components/modals/withdraw-modal";
 
 type CustomerAddress = {
     zipCode: string;
@@ -321,6 +322,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
     return (
         <Protected>
             <DepositModal />
+            <WithdrawModal />
             <SidebarProvider>
                 <div className="flex min-h-screen w-full bg-[#0a0118]">
                     <CustomerSidebar kycStatus={kycStatus} />
