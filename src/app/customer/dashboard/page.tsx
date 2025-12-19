@@ -309,14 +309,18 @@ export default function Dashboard() {
                         transactions.map((tx) => {
                             const amount = Number(tx.amount);
                             const isIncoming = tx.type === "PIX_IN";
-                            const isPending = tx.status === "PENDING" || tx.description?.toLowerCase().includes("aguardando");
+                            const isPending = tx.status === "PENDING";
+                            const isCompleted = tx.status === "COMPLETED";
                             
                             let displayName = tx.description || 
                                 tx.externalData?.pagador?.nome || 
                                 (isIncoming ? "Depósito PIX" : "Transferência PIX");
                             
-                            if (tx.description?.toLowerCase().includes("aguardando") && tx.externalData?.pagador?.nome) {
-                                displayName = tx.externalData.pagador.nome;
+                            if (isCompleted && displayName.toLowerCase().includes("aguardando")) {
+                                displayName = displayName
+                                    .replace(/aguardando\s*/gi, "")
+                                    .replace(/depósito pix de\s*/gi, "Depósito de ")
+                                    .trim();
                             }
 
                             const iconBgColor = isPending 
