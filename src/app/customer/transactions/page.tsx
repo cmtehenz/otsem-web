@@ -109,9 +109,13 @@ export default function TransactionsPage() {
             if (tx.type !== "PIX_OUT") return true;
             
             const descLower = (tx.description || "").toLowerCase();
-            if (descLower.includes("usdt") || descLower.includes("conversão") || 
-                descLower.includes("conversao") || descLower.includes("buy") || 
-                descLower.includes("compra")) {
+            const isUsdtRelated = descLower.includes("usdt") || 
+                descLower.includes("conversão") || 
+                descLower.includes("conversao") || 
+                descLower.includes("buy usdt") ||
+                descLower.includes("compra usdt");
+            
+            if (isUsdtRelated) {
                 return false;
             }
             
@@ -122,8 +126,7 @@ export default function TransactionsPage() {
                 if (other.id === tx.id) return false;
                 const otherDesc = (other.description || "").toLowerCase();
                 const isConversionType = other.type === "CONVERSION" || 
-                    otherDesc.includes("usdt") || otherDesc.includes("conversão") ||
-                    otherDesc.includes("buy");
+                    otherDesc.includes("usdt") || otherDesc.includes("conversão");
                 if (!isConversionType) return false;
                 
                 const otherTime = new Date(other.createdAt).getTime();
