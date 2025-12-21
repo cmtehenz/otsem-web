@@ -44,7 +44,7 @@ type Transaction = {
     processedAt: string | null;
 };
 
-const ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE = 10;
 
 function formatCurrency(value: number): string {
     return value.toLocaleString("pt-BR", {
