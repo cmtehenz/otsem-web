@@ -75,7 +75,6 @@ export default function TransactionsPage() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [total, setTotal] = useState(0);
-    const [initialTotal, setInitialTotal] = useState<number | null>(null);
 
     useEffect(() => {
         fetchTransactions();
@@ -105,12 +104,8 @@ export default function TransactionsPage() {
             }
             
             setTransactions(txList);
-            
-            if (initialTotal === null || page === 1) {
-                setInitialTotal(txTotal);
-                setTotal(txTotal);
-                setTotalPages(Math.max(1, Math.ceil(txTotal / ITEMS_PER_PAGE)));
-            }
+            setTotal(txTotal);
+            setTotalPages(Math.max(1, Math.ceil(txTotal / ITEMS_PER_PAGE)));
         } catch (err) {
             console.error("Erro ao carregar transações:", err);
             setTransactions([]);
