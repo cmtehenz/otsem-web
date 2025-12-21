@@ -173,25 +173,16 @@ export default function Dashboard() {
     }, []);
 
     React.useEffect(() => {
-        async function fetchUsdtBalance() {
-            setUsdtBalanceLoading(true);
-            try {
-                const solanaAddress = wallets[0]?.externalAddress;
-                if (solanaAddress) {
-                    const res = await http.get(
-                        `/wallet/solana-usdt-balance?address=${solanaAddress}`
-                    );
-                    setUsdtBalance(res.data);
-                } else {
-                    setUsdtBalance(null);
-                }
-            } catch (err) {
-                setUsdtBalance(null);
-            } finally {
-                setUsdtBalanceLoading(false);
-            }
+        if (wallets.length > 0) {
+            const totalUsdt = wallets.reduce((sum, wallet) => {
+                return sum + (parseFloat(wallet.balance) || 0);
+            }, 0);
+            setUsdtBalance(totalUsdt);
+            setUsdtBalanceLoading(false);
+        } else {
+            setUsdtBalance(0);
+            setUsdtBalanceLoading(false);
         }
-        if (wallets.length > 0) fetchUsdtBalance();
     }, [wallets]);
 
     const saldoBRL = account?.balance ?? 0;
