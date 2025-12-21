@@ -108,32 +108,18 @@ export default function TransactionsPage() {
         return txs.filter((tx, _index, allTx) => {
             if (tx.type !== "PIX_OUT") return true;
             
-            const descLower = (tx.description || "").toLowerCase();
-            const isUsdtRelated = descLower.includes("usdt") || 
-                descLower.includes("conversão") || 
-                descLower.includes("conversao") || 
-                descLower.includes("buy usdt") ||
-                descLower.includes("compra usdt");
-            
-            if (isUsdtRelated) {
-                return false;
-            }
-            
             const txTime = new Date(tx.createdAt).getTime();
             const txAmount = Number(tx.amount);
             
             const hasMatchingConversion = allTx.some((other) => {
                 if (other.id === tx.id) return false;
-                const otherDesc = (other.description || "").toLowerCase();
-                const isConversionType = other.type === "CONVERSION" || 
-                    otherDesc.includes("usdt") || otherDesc.includes("conversão");
-                if (!isConversionType) return false;
+                if (other.type !== "CONVERSION") return false;
                 
                 const otherTime = new Date(other.createdAt).getTime();
                 const otherAmount = Number(other.amount);
                 const timeDiff = Math.abs(txTime - otherTime);
                 
-                return Math.abs(txAmount - otherAmount) < 0.01 && timeDiff < 60000;
+                return Math.abs(txAmount - otherAmount) < 0.01 && timeDiff < 120000;
             });
             
             return !hasMatchingConversion;
@@ -194,24 +180,26 @@ export default function TransactionsPage() {
         const iconBgColor = isPending 
             ? "bg-amber-500/20" 
             : isConversionTx
-                ? "bg-emerald-500/20"
+                ? "bg-blue-500/20"
                 : isIncoming 
                     ? "bg-green-500/20" 
-                    : "bg-violet-500/20";
+                    : "bg-red-500/20";
         
         const iconColor = isPending 
             ? "text-amber-500 dark:text-amber-400" 
             : isConversionTx
-                ? "text-emerald-500 dark:text-emerald-400"
+                ? "text-blue-500 dark:text-blue-400"
                 : isIncoming 
                     ? "text-green-500 dark:text-green-400" 
-                    : "text-violet-500 dark:text-violet-400";
+                    : "text-red-500 dark:text-red-400";
         
         const amountColor = isPending 
             ? "text-amber-500 dark:text-amber-400" 
-            : isIncoming 
-                ? "text-green-500 dark:text-green-400" 
-                : "text-foreground";
+            : isConversionTx
+                ? "text-blue-500 dark:text-blue-400"
+                : isIncoming 
+                    ? "text-green-500 dark:text-green-400" 
+                    : "text-red-500 dark:text-red-400";
 
         const statusLabel = isPending ? "Pendente" : tx.status === "FAILED" ? "Falhou" : "";
 
