@@ -11,6 +11,7 @@ import { DepositModal } from "@/components/modals/deposit-modal";
 import { WithdrawModal } from "@/components/modals/withdraw-modal";
 import { ConvertModal } from "@/components/modals/convert-modal";
 import { useUiModals } from "@/stores/ui-modals";
+import Link from "next/link";
 
 type AccountSummary = {
     id: string;
@@ -299,8 +300,11 @@ export default function Dashboard() {
             </div>
 
             <div className="bg-card border border-border rounded-2xl overflow-hidden">
-                <div className="p-4 border-b border-border">
+                <div className="p-4 border-b border-border flex items-center justify-between">
                     <h2 className="text-foreground font-semibold">Últimas transações</h2>
+                    <Link href="/customer/transactions" className="text-sm text-violet-500 hover:text-violet-400 font-medium">
+                        Ver todas
+                    </Link>
                 </div>
                 <div className="divide-y divide-border">
                     {transactions.length > 0 ? (
