@@ -83,6 +83,26 @@ export default function WalletPage() {
         }
     }
 
+    async function syncAllWallets() {
+        try {
+            await http.post("/wallet/sync-all");
+            await fetchWallets();
+            toast.success("Saldos sincronizados!");
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message || "Erro ao sincronizar saldos");
+        }
+    }
+
+    async function syncWallet(walletId: string) {
+        try {
+            await http.post(`/wallet/${walletId}/sync`);
+            await fetchWallets();
+            toast.success("Saldo atualizado!");
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message || "Erro ao sincronizar saldo");
+        }
+    }
+
     async function handleCreateWallet() {
         setCreating(true);
         try {
@@ -236,11 +256,11 @@ export default function WalletPage() {
                 <div className="flex items-center gap-3">
                     <Button
                         variant="ghost"
-                        onClick={fetchWallets}
+                        onClick={syncAllWallets}
                         className="text-muted-foreground hover:text-foreground hover:bg-accent"
                     >
                         <RefreshCw className="w-4 h-4 mr-2" />
-                        Atualizar
+                        Sincronizar Saldos
                     </Button>
                     <Button
                         onClick={openAddModal}
@@ -347,6 +367,13 @@ export default function WalletPage() {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end" className="bg-card border-border">
+                                                <DropdownMenuItem
+                                                    onClick={() => syncWallet(wallet.id)}
+                                                    className="text-foreground/70 hover:text-foreground hover:bg-accent cursor-pointer"
+                                                >
+                                                    <RefreshCw className="w-4 h-4 mr-2" />
+                                                    Sincronizar Saldo
+                                                </DropdownMenuItem>
                                                 <DropdownMenuItem
                                                     onClick={() => onCopy(wallet.externalAddress)}
                                                     className="text-foreground/70 hover:text-foreground hover:bg-accent cursor-pointer"
