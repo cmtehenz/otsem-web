@@ -45,7 +45,6 @@ type Transaction = {
 };
 
 const ITEMS_PER_PAGE = 10;
-const API_LIMIT = 15;
 
 function formatCurrency(value: number): string {
     return value.toLocaleString("pt-BR", {
@@ -76,6 +75,7 @@ export default function TransactionsPage() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [total, setTotal] = useState(0);
+    const [initialTotal, setInitialTotal] = useState<number | null>(null);
 
     useEffect(() => {
         fetchTransactions();
@@ -85,7 +85,7 @@ export default function TransactionsPage() {
         setLoading(true);
         try {
             const res = await http.get<{ data: Transaction[]; total: number; page: number; limit: number } | Transaction[]>(
-                `/transactions?page=${page}&limit=${API_LIMIT}`
+                `/transactions?page=${page}&limit=${ITEMS_PER_PAGE}`
             );
             
             let txList: Transaction[] = [];
@@ -105,8 +105,12 @@ export default function TransactionsPage() {
             }
             
             setTransactions(txList);
-            setTotal(txTotal);
-            setTotalPages(Math.max(1, Math.ceil(txTotal / ITEMS_PER_PAGE)));
+            
+            if (initialTotal === null || page === 1) {
+                setInitialTotal(txTotal);
+                setTotal(txTotal);
+                setTotalPages(Math.max(1, Math.ceil(txTotal / ITEMS_PER_PAGE)));
+            }
         } catch (err) {
             console.error("Erro ao carregar transações:", err);
             setTransactions([]);
@@ -137,7 +141,7 @@ export default function TransactionsPage() {
         });
     }
 
-    const filteredTransactions = filterTransactions(transactions).slice(0, ITEMS_PER_PAGE);
+    const filteredTransactions = filterTransactions(transactions);
 
     function renderTransaction(tx: Transaction) {
         const amount = Number(tx.amount);
