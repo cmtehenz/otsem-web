@@ -3,11 +3,11 @@
 import React, { useState, useEffect } from "react";
 import http from "@/lib/http";
 import { toast } from "sonner";
-import { Copy, Shield, Wallet, RefreshCw, Plus, ExternalLink, Loader2, Star, Trash2, MoreVertical } from "lucide-react";
+import { Copy, Shield, Wallet, RefreshCw, Plus, ExternalLink, Loader2, Star, Trash2, MoreVertical, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -34,6 +34,7 @@ type WalletType = {
     id: string;
     customerId: string;
     currency: string;
+    network: string;
     balance: string;
     externalAddress: string;
     createdAt: string;
@@ -41,6 +42,13 @@ type WalletType = {
     label?: string;
     isMain?: boolean;
 };
+
+type NetworkType = "SOLANA" | "TRON";
+
+const NETWORKS: { id: NetworkType; name: string; icon: string; color: string }[] = [
+    { id: "SOLANA", name: "Solana", icon: "◎", color: "text-green-400 bg-green-500/20" },
+    { id: "TRON", name: "Tron (TRC20)", icon: "◈", color: "text-red-400 bg-red-500/20" },
+];
 
 export default function WalletPage() {
     const [wallets, setWallets] = useState<WalletType[]>([]);
@@ -51,6 +59,13 @@ export default function WalletPage() {
     const [editLabel, setEditLabel] = useState("");
     const [deleteWallet, setDeleteWallet] = useState<WalletType | null>(null);
     const [deleting, setDeleting] = useState(false);
+    
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [addMode, setAddMode] = useState<"create" | "import">("create");
+    const [selectedNetwork, setSelectedNetwork] = useState<NetworkType>("SOLANA");
+    const [importAddress, setImportAddress] = useState("");
+    const [importLabel, setImportLabel] = useState("");
+    const [importing, setImporting] = useState(false);
 
     useEffect(() => {
         fetchWallets();
@@ -71,7 +86,8 @@ export default function WalletPage() {
     async function handleCreateWallet() {
         setCreating(true);
         try {
-            const res = await http.post("/wallet/create-solana");
+            const endpoint = selectedNetwork === "SOLANA" ? "/wallet/create-solana" : "/wallet/create-tron";
+            const res = await http.post(endpoint);
 
             if (
                 (res.status === 200 || res.status === 201) &&
@@ -83,6 +99,7 @@ export default function WalletPage() {
                 setWalletKeys({ publicKey, secretKey });
                 toast.success("Carteira criada com sucesso!");
                 setWallets((prev) => [wallet, ...prev]);
+                setShowAddModal(false);
             } else {
                 toast.error(res.data?.message || "Erro ao criar carteira.");
             }
@@ -90,6 +107,35 @@ export default function WalletPage() {
             toast.error(err?.response?.data?.message || "Erro ao criar carteira.");
         } finally {
             setCreating(false);
+        }
+    }
+
+    async function handleImportWallet() {
+        if (!importAddress.trim()) {
+            toast.error("Digite o endereço da carteira");
+            return;
+        }
+        setImporting(true);
+        try {
+            const res = await http.post("/wallet/import", {
+                externalAddress: importAddress.trim(),
+                network: selectedNetwork,
+                label: importLabel.trim() || undefined,
+            });
+
+            if (res.status === 200 || res.status === 201) {
+                toast.success("Carteira adicionada com sucesso!");
+                setShowAddModal(false);
+                setImportAddress("");
+                setImportLabel("");
+                fetchWallets();
+            } else {
+                toast.error(res.data?.message || "Erro ao adicionar carteira.");
+            }
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message || "Erro ao adicionar carteira.");
+        } finally {
+            setImporting(false);
         }
     }
 
@@ -146,6 +192,25 @@ export default function WalletPage() {
         return `${address.slice(0, 8)}...${address.slice(-8)}`;
     }
 
+    function getExplorerUrl(wallet: WalletType) {
+        if (wallet.network === "TRON") {
+            return `https://tronscan.org/#/address/${wallet.externalAddress}`;
+        }
+        return `https://solscan.io/account/${wallet.externalAddress}`;
+    }
+
+    function getExplorerName(wallet: WalletType) {
+        return wallet.network === "TRON" ? "Tronscan" : "Solscan";
+    }
+
+    function openAddModal() {
+        setShowAddModal(true);
+        setAddMode("create");
+        setSelectedNetwork("SOLANA");
+        setImportAddress("");
+        setImportLabel("");
+    }
+
     if (loadingWallets) {
         return (
             <div className="flex h-[80vh] flex-col items-center justify-center">
@@ -161,7 +226,7 @@ export default function WalletPage() {
                 <div>
                     <h1 className="text-2xl font-bold text-white">Carteiras</h1>
                     <p className="text-white/50 text-sm mt-1">
-                        Gerencie suas carteiras USDT na rede Solana
+                        Gerencie suas carteiras USDT (Solana e Tron)
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -174,12 +239,11 @@ export default function WalletPage() {
                         Atualizar
                     </Button>
                     <Button
-                        onClick={handleCreateWallet}
-                        disabled={creating}
+                        onClick={openAddModal}
                         className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
                     >
                         <Plus className="w-4 h-4 mr-2" />
-                        {creating ? "Criando..." : "Nova Carteira"}
+                        Nova Carteira
                     </Button>
                 </div>
             </div>
@@ -193,135 +257,137 @@ export default function WalletPage() {
                         Nenhuma carteira encontrada
                     </h2>
                     <p className="text-white/50 mb-6 max-w-md mx-auto">
-                        Crie sua primeira carteira Solana para receber USDT. Você pode ter múltiplas carteiras para organizar seus fundos.
+                        Adicione sua primeira carteira para receber USDT. Você pode criar uma nova ou importar uma existente.
                     </p>
                     <Button
-                        onClick={handleCreateWallet}
-                        disabled={creating}
+                        onClick={openAddModal}
                         className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold px-8"
                     >
                         <Plus className="w-4 h-4 mr-2" />
-                        {creating ? "Criando..." : "Criar Primeira Carteira"}
+                        Adicionar Carteira
                     </Button>
                 </div>
             ) : (
                 <div className="grid gap-4">
-                    {wallets.map((wallet, index) => (
-                        <div
-                            key={wallet.id}
-                            className={`bg-[#1a1025] border rounded-2xl p-5 transition ${
-                                wallet.isMain 
-                                    ? "border-violet-500/50 shadow-lg shadow-violet-500/10" 
-                                    : "border-white/10 hover:border-violet-500/30"
-                            }`}
-                        >
-                            <div className="flex items-start justify-between gap-4">
-                                <div className="flex items-center gap-4">
-                                    <div className={`p-3 rounded-xl ${
-                                        wallet.isMain 
-                                            ? "bg-gradient-to-br from-violet-500/30 to-purple-500/30" 
-                                            : "bg-gradient-to-br from-violet-500/20 to-purple-500/20"
-                                    }`}>
-                                        <Wallet className="w-6 h-6 text-violet-400" />
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="text-white font-semibold">
-                                                {wallet.label || `Carteira ${index + 1}`}
-                                            </span>
-                                            {wallet.isMain && (
-                                                <span className="px-2 py-0.5 text-xs font-medium bg-violet-500/20 text-violet-400 rounded-full flex items-center gap-1">
-                                                    <Star className="w-3 h-3" />
-                                                    Principal
+                    {wallets.map((wallet, index) => {
+                        const networkInfo = NETWORKS.find(n => n.id === wallet.network) || NETWORKS[0];
+                        return (
+                            <div
+                                key={wallet.id}
+                                className={`bg-[#1a1025] border rounded-2xl p-5 transition ${
+                                    wallet.isMain 
+                                        ? "border-violet-500/50 shadow-lg shadow-violet-500/10" 
+                                        : "border-white/10 hover:border-violet-500/30"
+                                }`}
+                            >
+                                <div className="flex items-start justify-between gap-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className={`p-3 rounded-xl ${
+                                            wallet.isMain 
+                                                ? "bg-gradient-to-br from-violet-500/30 to-purple-500/30" 
+                                                : "bg-gradient-to-br from-violet-500/20 to-purple-500/20"
+                                        }`}>
+                                            <Wallet className="w-6 h-6 text-violet-400" />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                                <span className="text-white font-semibold">
+                                                    {wallet.label || `Carteira ${index + 1}`}
                                                 </span>
-                                            )}
-                                            <span className="px-2 py-0.5 text-xs font-medium bg-green-500/20 text-green-400 rounded-full">
-                                                Solana
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <code className="text-white/60 text-sm font-mono">
-                                                {formatAddress(wallet.externalAddress)}
-                                            </code>
-                                            <button
-                                                onClick={() => onCopy(wallet.externalAddress)}
-                                                className="p-1 hover:bg-white/10 rounded transition"
-                                            >
-                                                <Copy className="w-3.5 h-3.5 text-white/40 hover:text-white" />
-                                            </button>
+                                                {wallet.isMain && (
+                                                    <span className="px-2 py-0.5 text-xs font-medium bg-violet-500/20 text-violet-400 rounded-full flex items-center gap-1">
+                                                        <Star className="w-3 h-3" />
+                                                        Principal
+                                                    </span>
+                                                )}
+                                                <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${networkInfo.color}`}>
+                                                    {networkInfo.icon} {wallet.network || "SOLANA"}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <code className="text-white/60 text-sm font-mono">
+                                                    {formatAddress(wallet.externalAddress)}
+                                                </code>
+                                                <button
+                                                    onClick={() => onCopy(wallet.externalAddress)}
+                                                    className="p-1 hover:bg-white/10 rounded transition"
+                                                >
+                                                    <Copy className="w-3.5 h-3.5 text-white/40 hover:text-white" />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="flex items-start gap-4">
-                                    <div className="text-right">
-                                        <p className="text-2xl font-bold text-white">
-                                            {Number(wallet.balance).toLocaleString("pt-BR", {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 4,
-                                            })}
-                                            <span className="text-white/50 text-base ml-1">USDT</span>
-                                        </p>
-                                        <p className="text-white/40 text-xs mt-1">
-                                            Criada em {new Date(wallet.createdAt).toLocaleDateString("pt-BR")}
-                                        </p>
-                                    </div>
+                                    <div className="flex items-start gap-4">
+                                        <div className="text-right">
+                                            <p className="text-2xl font-bold text-white">
+                                                {Number(wallet.balance).toLocaleString("pt-BR", {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 4,
+                                                })}
+                                                <span className="text-white/50 text-base ml-1">USDT</span>
+                                            </p>
+                                            <p className="text-white/40 text-xs mt-1">
+                                                Criada em {new Date(wallet.createdAt).toLocaleDateString("pt-BR")}
+                                            </p>
+                                        </div>
 
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="text-white/40 hover:text-white hover:bg-white/10"
-                                            >
-                                                <MoreVertical className="w-5 h-5" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end" className="bg-[#1a1025] border-white/10">
-                                            <DropdownMenuItem
-                                                onClick={() => onCopy(wallet.externalAddress)}
-                                                className="text-white/70 hover:text-white hover:bg-white/10 cursor-pointer"
-                                            >
-                                                <Copy className="w-4 h-4 mr-2" />
-                                                Copiar Endereço
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                onClick={() => handleEdit(wallet)}
-                                                className="text-white/70 hover:text-white hover:bg-white/10 cursor-pointer"
-                                            >
-                                                Renomear
-                                            </DropdownMenuItem>
-                                            {!wallet.isMain && (
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="text-white/40 hover:text-white hover:bg-white/10"
+                                                >
+                                                    <MoreVertical className="w-5 h-5" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end" className="bg-[#1a1025] border-white/10">
                                                 <DropdownMenuItem
-                                                    onClick={() => handleSetMain(wallet)}
+                                                    onClick={() => onCopy(wallet.externalAddress)}
                                                     className="text-white/70 hover:text-white hover:bg-white/10 cursor-pointer"
                                                 >
-                                                    <Star className="w-4 h-4 mr-2" />
-                                                    Definir como Principal
+                                                    <Copy className="w-4 h-4 mr-2" />
+                                                    Copiar Endereço
                                                 </DropdownMenuItem>
-                                            )}
-                                            <DropdownMenuItem
-                                                onClick={() => window.open(`https://solscan.io/account/${wallet.externalAddress}`, "_blank")}
-                                                className="text-white/70 hover:text-white hover:bg-white/10 cursor-pointer"
-                                            >
-                                                <ExternalLink className="w-4 h-4 mr-2" />
-                                                Ver no Solscan
-                                            </DropdownMenuItem>
-                                            {!wallet.isMain && wallets.length > 1 && (
                                                 <DropdownMenuItem
-                                                    onClick={() => setDeleteWallet(wallet)}
-                                                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10 cursor-pointer"
+                                                    onClick={() => handleEdit(wallet)}
+                                                    className="text-white/70 hover:text-white hover:bg-white/10 cursor-pointer"
                                                 >
-                                                    <Trash2 className="w-4 h-4 mr-2" />
-                                                    Excluir Carteira
+                                                    Renomear
                                                 </DropdownMenuItem>
-                                            )}
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                                {!wallet.isMain && (
+                                                    <DropdownMenuItem
+                                                        onClick={() => handleSetMain(wallet)}
+                                                        className="text-white/70 hover:text-white hover:bg-white/10 cursor-pointer"
+                                                    >
+                                                        <Star className="w-4 h-4 mr-2" />
+                                                        Definir como Principal
+                                                    </DropdownMenuItem>
+                                                )}
+                                                <DropdownMenuItem
+                                                    onClick={() => window.open(getExplorerUrl(wallet), "_blank")}
+                                                    className="text-white/70 hover:text-white hover:bg-white/10 cursor-pointer"
+                                                >
+                                                    <ExternalLink className="w-4 h-4 mr-2" />
+                                                    Ver no {getExplorerName(wallet)}
+                                                </DropdownMenuItem>
+                                                {!wallet.isMain && wallets.length > 1 && (
+                                                    <DropdownMenuItem
+                                                        onClick={() => setDeleteWallet(wallet)}
+                                                        className="text-red-400 hover:text-red-300 hover:bg-red-500/10 cursor-pointer"
+                                                    >
+                                                        <Trash2 className="w-4 h-4 mr-2" />
+                                                        Excluir Carteira
+                                                    </DropdownMenuItem>
+                                                )}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
 
@@ -330,11 +396,138 @@ export default function WalletPage() {
                 <div>
                     <p className="text-amber-400 font-medium text-sm">Importante</p>
                     <p className="text-white/60 text-sm mt-1">
-                        Envie <strong className="text-white">apenas USDT</strong> na rede Solana (SPL). 
+                        Envie <strong className="text-white">apenas USDT</strong> na rede correta (Solana SPL ou Tron TRC20). 
                         Envios em redes diferentes serão perdidos permanentemente.
                     </p>
                 </div>
             </div>
+
+            <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
+                <DialogContent className="bg-[#1a1025] border border-white/10">
+                    <DialogHeader>
+                        <DialogTitle className="text-white text-xl">Adicionar Carteira</DialogTitle>
+                        <DialogDescription className="text-white/50">
+                            Escolha a rede e como deseja adicionar sua carteira
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-5">
+                        <div>
+                            <Label className="text-white/70 mb-2 block">Rede</Label>
+                            <div className="grid grid-cols-2 gap-3">
+                                {NETWORKS.map((network) => (
+                                    <button
+                                        key={network.id}
+                                        onClick={() => setSelectedNetwork(network.id)}
+                                        className={`flex items-center justify-center gap-2 p-4 rounded-xl border transition ${
+                                            selectedNetwork === network.id
+                                                ? "border-violet-500 bg-violet-500/20"
+                                                : "border-white/10 bg-white/5 hover:border-white/20"
+                                        }`}
+                                    >
+                                        <span className="text-xl">{network.icon}</span>
+                                        <span className="text-white font-medium">{network.name}</span>
+                                        {selectedNetwork === network.id && (
+                                            <Check className="w-4 h-4 text-violet-400" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <Label className="text-white/70 mb-2 block">Tipo</Label>
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    onClick={() => setAddMode("create")}
+                                    className={`p-4 rounded-xl border transition text-left ${
+                                        addMode === "create"
+                                            ? "border-violet-500 bg-violet-500/20"
+                                            : "border-white/10 bg-white/5 hover:border-white/20"
+                                    }`}
+                                >
+                                    <p className="text-white font-medium">Criar Nova</p>
+                                    <p className="text-white/50 text-xs mt-1">Gerar carteira automaticamente</p>
+                                </button>
+                                <button
+                                    onClick={() => setAddMode("import")}
+                                    className={`p-4 rounded-xl border transition text-left ${
+                                        addMode === "import"
+                                            ? "border-violet-500 bg-violet-500/20"
+                                            : "border-white/10 bg-white/5 hover:border-white/20"
+                                    }`}
+                                >
+                                    <p className="text-white font-medium">Importar</p>
+                                    <p className="text-white/50 text-xs mt-1">Usar carteira existente</p>
+                                </button>
+                            </div>
+                        </div>
+
+                        {addMode === "import" && (
+                            <div className="space-y-3">
+                                <div>
+                                    <Label className="text-white/70">Endereço da Carteira</Label>
+                                    <Input
+                                        value={importAddress}
+                                        onChange={(e) => setImportAddress(e.target.value)}
+                                        placeholder={selectedNetwork === "SOLANA" ? "Ex: 7xKXt..." : "Ex: TJYs..."}
+                                        className="border-white/10 bg-white/5 text-white mt-1 font-mono"
+                                    />
+                                </div>
+                                <div>
+                                    <Label className="text-white/70">Nome (opcional)</Label>
+                                    <Input
+                                        value={importLabel}
+                                        onChange={(e) => setImportLabel(e.target.value)}
+                                        placeholder="Ex: Minha Carteira Binance"
+                                        className="border-white/10 bg-white/5 text-white mt-1"
+                                    />
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="flex gap-3 pt-2">
+                            <Button
+                                variant="ghost"
+                                onClick={() => setShowAddModal(false)}
+                                className="flex-1 bg-white/10 border border-white/20 text-white hover:bg-white/20"
+                            >
+                                Cancelar
+                            </Button>
+                            {addMode === "create" ? (
+                                <Button
+                                    onClick={handleCreateWallet}
+                                    disabled={creating}
+                                    className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
+                                >
+                                    {creating ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                            Criando...
+                                        </>
+                                    ) : (
+                                        "Criar Carteira"
+                                    )}
+                                </Button>
+                            ) : (
+                                <Button
+                                    onClick={handleImportWallet}
+                                    disabled={importing || !importAddress.trim()}
+                                    className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
+                                >
+                                    {importing ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                            Importando...
+                                        </>
+                                    ) : (
+                                        "Importar Carteira"
+                                    )}
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
 
             <Dialog open={!!walletKeys} onOpenChange={() => setWalletKeys(null)}>
                 <DialogContent className="bg-[#1a1025] border border-white/10">

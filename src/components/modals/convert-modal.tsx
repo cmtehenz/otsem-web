@@ -3,11 +3,12 @@
 import * as React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowRight, TrendingUp, CheckCircle2, Wallet, Plus, Check, Star } from "lucide-react";
+import { Loader2, ArrowRight, TrendingUp, CheckCircle2, Wallet, Check, Star } from "lucide-react";
 import { toast } from "sonner";
 import http from "@/lib/http";
 import { useUsdtRate } from "@/lib/useUsdtRate";
 import { useAuth } from "@/contexts/auth-context";
+import Link from "next/link";
 
 type ConvertModalProps = {
     open: boolean;
@@ -22,17 +23,11 @@ type WalletType = {
     network: string;
     externalAddress: string;
     balance: string;
-    isPrimary?: boolean;
+    isMain?: boolean;
+    label?: string;
 };
 
-type NetworkType = "SOLANA" | "TRON";
-
 const QUICK_AMOUNTS = [100, 500, 1000, 5000];
-
-const NETWORKS: { id: NetworkType; name: string; icon: string }[] = [
-    { id: "SOLANA", name: "Solana", icon: "◎" },
-    { id: "TRON", name: "Tron (TRC20)", icon: "◈" },
-];
 
 export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
     const { user } = useAuth();
@@ -43,9 +38,6 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
     const [wallets, setWallets] = React.useState<WalletType[]>([]);
     const [walletsLoading, setWalletsLoading] = React.useState(true);
     const [selectedWalletId, setSelectedWalletId] = React.useState<string | null>(null);
-    const [customWallet, setCustomWallet] = React.useState("");
-    const [customNetwork, setCustomNetwork] = React.useState<NetworkType>("SOLANA");
-    const [useCustomWallet, setUseCustomWallet] = React.useState(false);
 
     const customerSpread = user?.spreadValue ?? 0.95;
     const usdtRateWithSpread = usdtRate ? usdtRate * (1 + customerSpread / 100) : 0;
@@ -66,9 +58,9 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
             const res = await http.get("/wallet");
             const data = Array.isArray(res.data) ? res.data : res.data.wallets || [];
             setWallets(data);
-            const primaryWallet = data.find((w: WalletType) => w.isPrimary) || data[0];
-            if (primaryWallet) {
-                setSelectedWalletId(primaryWallet.id);
+            const mainWallet = data.find((w: WalletType) => w.isMain) || data[0];
+            if (mainWallet) {
+                setSelectedWalletId(mainWallet.id);
             }
         } catch (err) {
             console.error("Erro ao buscar carteiras:", err);
@@ -98,12 +90,8 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
     }
 
     function handleContinueToAmount() {
-        if (!useCustomWallet && !selectedWalletId && wallets.length === 0) {
-            toast.error("Selecione ou adicione uma carteira");
-            return;
-        }
-        if (useCustomWallet && !customWallet.trim()) {
-            toast.error("Digite o endereço da carteira");
+        if (!selectedWalletId) {
+            toast.error("Selecione uma carteira");
             return;
         }
         setStep("amount");
@@ -124,18 +112,10 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
     async function handleConvert() {
         setLoading(true);
         try {
-            const payload: { brlAmount: number; walletId?: string; externalAddress?: string; network?: string } = {
+            await http.post("/wallet/buy-usdt-with-brl", {
                 brlAmount: numAmount,
-            };
-            
-            if (useCustomWallet && customWallet.trim()) {
-                payload.externalAddress = customWallet.trim();
-                payload.network = customNetwork;
-            } else if (selectedWalletId) {
-                payload.walletId = selectedWalletId;
-            }
-
-            await http.post("/wallet/buy-usdt-with-brl", payload);
+                walletId: selectedWalletId,
+            });
             setStep("success");
             toast.success("Conversão realizada com sucesso!");
         } catch (err: any) {
@@ -151,9 +131,6 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
         setTimeout(() => {
             setStep("wallet");
             setAmount("");
-            setUseCustomWallet(false);
-            setCustomWallet("");
-            setCustomNetwork("SOLANA");
         }, 200);
     }
 
@@ -166,12 +143,6 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
     }
 
     const selectedWallet = wallets.find(w => w.id === selectedWalletId);
-    const displayWalletAddress = useCustomWallet 
-        ? customWallet 
-        : selectedWallet?.externalAddress || "";
-    const displayNetwork = useCustomWallet 
-        ? customNetwork 
-        : selectedWallet?.network || "SOLANA";
 
     return (
         <Dialog open={open} onOpenChange={handleClose}>
@@ -212,18 +183,16 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                                         <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
                                     </div>
                                 ) : wallets.length > 0 ? (
-                                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                                    <div className="space-y-2 max-h-48 overflow-y-auto">
                                         {wallets.map((wallet, index) => {
-                                            const isPrimary = wallet.isPrimary || index === 0;
+                                            const isMain = wallet.isMain || index === 0;
+                                            const networkColor = wallet.network === "TRON" ? "text-red-400 bg-red-500/20" : "text-green-400 bg-green-500/20";
                                             return (
                                                 <button
                                                     key={wallet.id}
-                                                    onClick={() => {
-                                                        setSelectedWalletId(wallet.id);
-                                                        setUseCustomWallet(false);
-                                                    }}
+                                                    onClick={() => setSelectedWalletId(wallet.id)}
                                                     className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${
-                                                        selectedWalletId === wallet.id && !useCustomWallet
+                                                        selectedWalletId === wallet.id
                                                             ? "border-violet-500 bg-violet-500/20"
                                                             : "border-white/10 bg-white/5 hover:border-white/20"
                                                     }`}
@@ -231,90 +200,62 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                                                     <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
                                                         <Wallet className="w-5 h-5 text-emerald-400" />
                                                     </div>
-                                                    <div className="flex-1 text-left">
-                                                        <div className="flex items-center gap-2">
-                                                            <p className="text-white font-medium text-sm">
-                                                                {wallet.network || "SOLANA"}
+                                                    <div className="flex-1 text-left min-w-0">
+                                                        <div className="flex items-center gap-2 flex-wrap">
+                                                            <p className="text-white font-medium text-sm truncate">
+                                                                {wallet.label || `Carteira ${index + 1}`}
                                                             </p>
-                                                            {isPrimary && (
-                                                                <span className="flex items-center gap-1 px-1.5 py-0.5 bg-amber-500/20 rounded text-amber-400 text-xs">
+                                                            {isMain && (
+                                                                <span className="flex items-center gap-1 px-1.5 py-0.5 bg-amber-500/20 rounded text-amber-400 text-xs shrink-0">
                                                                     <Star className="w-3 h-3" />
                                                                     Principal
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        <p className="text-white/50 text-xs truncate">
-                                                            {wallet.externalAddress?.slice(0, 12)}...{wallet.externalAddress?.slice(-8)}
-                                                        </p>
+                                                        <div className="flex items-center gap-2 mt-0.5">
+                                                            <span className={`px-1.5 py-0.5 text-xs rounded ${networkColor}`}>
+                                                                {wallet.network || "SOLANA"}
+                                                            </span>
+                                                            <p className="text-white/50 text-xs truncate">
+                                                                {wallet.externalAddress?.slice(0, 8)}...{wallet.externalAddress?.slice(-6)}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    {selectedWalletId === wallet.id && !useCustomWallet && (
-                                                        <Check className="w-5 h-5 text-violet-400" />
+                                                    {selectedWalletId === wallet.id && (
+                                                        <Check className="w-5 h-5 text-violet-400 shrink-0" />
                                                     )}
                                                 </button>
                                             );
                                         })}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-4 text-white/40 text-sm">
-                                        Nenhuma carteira cadastrada
+                                    <div className="text-center py-6 bg-white/5 border border-white/10 rounded-xl">
+                                        <Wallet className="w-8 h-8 text-white/20 mx-auto mb-2" />
+                                        <p className="text-white/40 text-sm mb-3">Nenhuma carteira cadastrada</p>
+                                        <Link href="/customer/wallet" onClick={handleClose}>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="border-violet-500/30 text-violet-400 hover:bg-violet-500/10"
+                                            >
+                                                Cadastrar Carteira
+                                            </Button>
+                                        </Link>
                                     </div>
                                 )}
                             </div>
 
-                            <div className="pt-2">
-                                <button
-                                    onClick={() => setUseCustomWallet(!useCustomWallet)}
-                                    className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${
-                                        useCustomWallet
-                                            ? "border-violet-500 bg-violet-500/20"
-                                            : "border-white/10 bg-white/5 hover:border-white/20"
-                                    }`}
-                                >
-                                    <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
-                                        <Plus className="w-5 h-5 text-violet-400" />
-                                    </div>
-                                    <div className="flex-1 text-left">
-                                        <p className="text-white font-medium text-sm">Usar outra carteira</p>
-                                        <p className="text-white/50 text-xs">Digite o endereço manualmente</p>
-                                    </div>
-                                    {useCustomWallet && <Check className="w-5 h-5 text-violet-400" />}
-                                </button>
-
-                                {useCustomWallet && (
-                                    <div className="mt-3 space-y-3">
-                                        <div>
-                                            <p className="text-white/50 text-xs mb-2">Selecione a rede</p>
-                                            <div className="grid grid-cols-2 gap-2">
-                                                {NETWORKS.map((network) => (
-                                                    <button
-                                                        key={network.id}
-                                                        onClick={() => setCustomNetwork(network.id)}
-                                                        className={`flex items-center justify-center gap-2 p-3 rounded-xl border transition ${
-                                                            customNetwork === network.id
-                                                                ? "border-violet-500 bg-violet-500/20"
-                                                                : "border-white/10 bg-white/5 hover:border-white/20"
-                                                        }`}
-                                                    >
-                                                        <span className="text-lg">{network.icon}</span>
-                                                        <span className="text-white text-sm font-medium">{network.name}</span>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                        <input
-                                            type="text"
-                                            value={customWallet}
-                                            onChange={(e) => setCustomWallet(e.target.value)}
-                                            placeholder={`Endereço USDT (${customNetwork === "SOLANA" ? "Solana" : "TRC20"})`}
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white rounded-xl focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none placeholder:text-white/30 text-sm"
-                                        />
-                                    </div>
-                                )}
-                            </div>
+                            {wallets.length > 0 && (
+                                <div className="text-center">
+                                    <Link href="/customer/wallet" onClick={handleClose} className="text-violet-400 hover:text-violet-300 text-sm">
+                                        Gerenciar carteiras →
+                                    </Link>
+                                </div>
+                            )}
 
                             <Button
                                 onClick={handleContinueToAmount}
-                                disabled={!selectedWalletId && !useCustomWallet}
+                                disabled={!selectedWalletId || wallets.length === 0}
                                 className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 Continuar
@@ -435,12 +376,12 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-white/50">Rede</span>
-                                        <span className="text-white">{displayNetwork}</span>
+                                        <span className="text-white">{selectedWallet?.network || "SOLANA"}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-white/50">Carteira</span>
                                         <span className="text-white text-xs truncate max-w-[180px]">
-                                            {displayWalletAddress.slice(0, 8)}...{displayWalletAddress.slice(-6)}
+                                            {selectedWallet?.externalAddress?.slice(0, 8)}...{selectedWallet?.externalAddress?.slice(-6)}
                                         </span>
                                     </div>
                                 </div>
@@ -482,7 +423,7 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                             </div>
 
                             <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-                                <p className="text-white/60 text-xs">Rede: {displayNetwork}</p>
+                                <p className="text-white/60 text-xs">Rede: {selectedWallet?.network || "SOLANA"}</p>
                                 <p className="text-white/50 text-xs mt-1">
                                     O USDT será enviado para sua carteira em alguns minutos
                                 </p>
