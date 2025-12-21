@@ -113,6 +113,11 @@ export default function Dashboard() {
     const [wallets, setWallets] = React.useState<WalletType[]>([]);
     const [usdtBalance, setUsdtBalance] = React.useState<number | null>(null);
     const [usdtBalanceLoading, setUsdtBalanceLoading] = React.useState(true);
+    const [refreshCounter, setRefreshCounter] = React.useState(0);
+
+    const refreshData = React.useCallback(() => {
+        setRefreshCounter((c) => c + 1);
+    }, []);
 
     const { rate: usdtRate, loading: usdtLoading, updatedAt } = useUsdtRate();
     const [timer, setTimer] = React.useState(15);
@@ -163,7 +168,7 @@ export default function Dashboard() {
         return () => {
             cancelled = true;
         };
-    }, [user?.id, refreshTrigger]);
+    }, [user?.id, refreshTrigger, refreshCounter]);
 
     React.useEffect(() => {
         async function fetchWallets() {
@@ -175,7 +180,7 @@ export default function Dashboard() {
             }
         }
         fetchWallets();
-    }, []);
+    }, [refreshCounter]);
 
     React.useEffect(() => {
         if (wallets.length > 0) {
@@ -215,6 +220,7 @@ export default function Dashboard() {
             <ConvertModal
                 open={showConvertModal}
                 onClose={() => setShowConvertModal(false)}
+                onSuccess={refreshData}
                 brlBalance={saldoBRL}
                 usdtBalance={saldoUSDT}
             />

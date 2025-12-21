@@ -13,6 +13,7 @@ import Link from "next/link";
 type ConvertModalProps = {
     open: boolean;
     onClose: () => void;
+    onSuccess?: () => void;
     brlBalance: number;
     usdtBalance: number;
 };
@@ -29,7 +30,7 @@ type WalletType = {
 
 const QUICK_AMOUNTS = [100, 500, 1000, 5000];
 
-export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
+export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertModalProps) {
     const { user } = useAuth();
     const { rate: usdtRate, loading: rateLoading } = useUsdtRate();
     const [step, setStep] = React.useState<"wallet" | "amount" | "confirm" | "success">("wallet");
@@ -118,6 +119,7 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
             });
             setStep("success");
             toast.success("Conversão realizada com sucesso!");
+            onSuccess?.();
         } catch (err: any) {
             const message = err?.response?.data?.message || "Erro ao converter";
             toast.error(message);
