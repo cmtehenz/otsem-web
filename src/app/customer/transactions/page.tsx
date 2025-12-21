@@ -45,6 +45,7 @@ type Transaction = {
 };
 
 const ITEMS_PER_PAGE = 10;
+const API_LIMIT = 15;
 
 function formatCurrency(value: number): string {
     return value.toLocaleString("pt-BR", {
@@ -84,7 +85,7 @@ export default function TransactionsPage() {
         setLoading(true);
         try {
             const res = await http.get<{ data: Transaction[]; total: number; page: number; limit: number } | Transaction[]>(
-                `/transactions?page=${page}&limit=${ITEMS_PER_PAGE}`
+                `/transactions?page=${page}&limit=${API_LIMIT}`
             );
             
             let txList: Transaction[] = [];
@@ -136,7 +137,7 @@ export default function TransactionsPage() {
         });
     }
 
-    const filteredTransactions = filterTransactions(transactions);
+    const filteredTransactions = filterTransactions(transactions).slice(0, ITEMS_PER_PAGE);
 
     function renderTransaction(tx: Transaction) {
         const amount = Number(tx.amount);
@@ -296,10 +297,10 @@ export default function TransactionsPage() {
                             {filteredTransactions.map(renderTransaction)}
                         </div>
                         
-                        {totalPages > 1 && (
+                        {(totalPages > 1 || total > ITEMS_PER_PAGE) && (
                             <div className="flex items-center justify-between p-4 border-t border-border">
                                 <p className="text-sm text-muted-foreground">
-                                    Página {page} de {totalPages} ({total} transações)
+                                    Página {page} de {totalPages} ({filteredTransactions.length} de {total})
                                 </p>
                                 <div className="flex items-center gap-2">
                                     <Button
