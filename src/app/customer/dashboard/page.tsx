@@ -298,7 +298,19 @@ export default function Dashboard() {
                 </div>
                 <div className="divide-y divide-border">
                     {transactions.length > 0 ? (
-                        transactions.map((tx) => {
+                        transactions
+                            .filter((tx) => {
+                                const descLower = (tx.description || "").toLowerCase();
+                                const isPixOutForConversion = tx.type === "PIX_OUT" && (
+                                    descLower.includes("usdt") ||
+                                    descLower.includes("conversão") ||
+                                    descLower.includes("conversao") ||
+                                    descLower.includes("buy") ||
+                                    descLower.includes("compra")
+                                );
+                                return !isPixOutForConversion;
+                            })
+                            .map((tx) => {
                             const amount = Number(tx.amount);
                             const isIncoming = tx.type === "PIX_IN";
                             const isPending = tx.status === "PENDING";
