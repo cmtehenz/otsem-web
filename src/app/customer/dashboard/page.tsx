@@ -42,6 +42,9 @@ type Transaction = {
     endToEnd: string | null;
     txid: string | null;
     externalId: string | null;
+    usdtAmount?: string | null;
+    rate?: string | null;
+    walletAddress?: string | null;
     externalData: {
         txid?: string;
         chave?: string;
@@ -52,6 +55,8 @@ type Transaction = {
             cpfCnpj?: string;
         };
         endToEndId?: string;
+        usdtAmount?: string;
+        rate?: string;
     } | null;
     createdAt: string;
     completedAt: string | null;
@@ -303,6 +308,8 @@ export default function Dashboard() {
                             const isUUID = (str: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
                             
                             let displayName = "";
+                            let isConversionTx = false;
+                            let usdtAmountValue: number | null = null;
                             
                             const descLower = (tx.description || "").toLowerCase();
                             const isConversionByDesc = descLower.includes("usdt") || 
@@ -312,12 +319,12 @@ export default function Dashboard() {
                                 descLower.includes("sell");
                             
                             if (isConversion || isConversionByDesc) {
-                                if (descLower.includes("buy") || descLower.includes("brl") && descLower.includes("usdt")) {
-                                    displayName = "Compra de USDT";
-                                } else if (descLower.includes("sell")) {
-                                    displayName = "Venda de USDT";
-                                } else {
-                                    displayName = "Conversão BRL/USDT";
+                                isConversionTx = true;
+                                displayName = "Compra de USDT";
+                                
+                                const usdtRaw = tx.usdtAmount || tx.externalData?.usdtAmount;
+                                if (usdtRaw) {
+                                    usdtAmountValue = parseFloat(usdtRaw);
                                 }
                             } else if (tx.description && !isUUID(tx.description)) {
                                 displayName = tx.description;
@@ -342,15 +349,19 @@ export default function Dashboard() {
 
                             const iconBgColor = isPending 
                                 ? "bg-amber-500/20" 
-                                : isIncoming 
-                                    ? "bg-green-500/20" 
-                                    : "bg-violet-500/20";
+                                : isConversionTx
+                                    ? "bg-emerald-500/20"
+                                    : isIncoming 
+                                        ? "bg-green-500/20" 
+                                        : "bg-violet-500/20";
                             
                             const iconColor = isPending 
                                 ? "text-amber-500 dark:text-amber-400" 
-                                : isIncoming 
-                                    ? "text-green-500 dark:text-green-400" 
-                                    : "text-violet-500 dark:text-violet-400";
+                                : isConversionTx
+                                    ? "text-emerald-500 dark:text-emerald-400"
+                                    : isIncoming 
+                                        ? "text-green-500 dark:text-green-400" 
+                                        : "text-violet-500 dark:text-violet-400";
                             
                             const amountColor = isPending 
                                 ? "text-amber-500 dark:text-amber-400" 
@@ -361,7 +372,9 @@ export default function Dashboard() {
                             return (
                                 <div key={tx.id} className="flex items-center gap-4 p-4 hover:bg-accent/50 transition">
                                     <div className={`p-2.5 rounded-full ${iconBgColor}`}>
-                                        {isIncoming ? (
+                                        {isConversionTx ? (
+                                            <ArrowRightLeft className={`w-4 h-4 ${iconColor}`} />
+                                        ) : isIncoming ? (
                                             <ArrowDownLeft className={`w-4 h-4 ${iconColor}`} />
                                         ) : (
                                             <ArrowUpRight className={`w-4 h-4 ${iconColor}`} />
@@ -375,9 +388,22 @@ export default function Dashboard() {
                                             {formatDate(tx.createdAt)}
                                         </p>
                                     </div>
-                                    <span className={`font-bold ${amountColor}`}>
-                                        {isIncoming ? "+" : "-"}{formatCurrency(amount)}
-                                    </span>
+                                    {isConversionTx ? (
+                                        <div className="text-right">
+                                            <span className="text-foreground font-bold text-sm">
+                                                -{formatCurrency(amount)}
+                                            </span>
+                                            {usdtAmountValue !== null && (
+                                                <p className="text-emerald-500 dark:text-emerald-400 text-xs font-medium">
+                                                    +{formatUSD(usdtAmountValue)}
+                                                </p>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <span className={`font-bold ${amountColor}`}>
+                                            {isIncoming ? "+" : "-"}{formatCurrency(amount)}
+                                        </span>
+                                    )}
                                 </div>
                             );
                         })
