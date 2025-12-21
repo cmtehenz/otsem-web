@@ -146,15 +146,15 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
 
     return (
         <Dialog open={open} onOpenChange={handleClose}>
-            <DialogContent className="bg-[#0a0118] border border-violet-500/20 max-w-sm shadow-2xl shadow-violet-500/10">
+            <DialogContent className="bg-card border border-violet-500/20 max-w-sm shadow-2xl">
                 <DialogHeader>
-                    <DialogTitle className="text-white text-xl text-center">
+                    <DialogTitle className="text-foreground text-xl text-center">
                         {step === "wallet" && "Comprar USDT"}
                         {step === "amount" && "Valor da Compra"}
                         {step === "confirm" && "Confirmar Compra"}
                         {step === "success" && "Compra Realizada!"}
                     </DialogTitle>
-                    <DialogDescription className="text-white/50 text-center text-sm">
+                    <DialogDescription className="text-muted-foreground text-center text-sm">
                         {step === "wallet" && "Escolha onde receber seu USDT"}
                         {step === "amount" && "Digite o valor em BRL"}
                         {step === "confirm" && "Revise os dados antes de confirmar"}
@@ -165,28 +165,30 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                 <div className="flex flex-col items-center space-y-5 py-4">
                     {step === "wallet" && (
                         <div className="w-full space-y-4">
-                            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                            <div className="bg-muted border border-border rounded-xl p-4">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <TrendingUp className="w-4 h-4 text-violet-400" />
-                                    <span className="text-white/60 text-sm">Cotação atual</span>
+                                    <TrendingUp className="w-4 h-4 text-violet-500 dark:text-violet-400" />
+                                    <span className="text-muted-foreground text-sm">Cotação atual</span>
                                 </div>
-                                <p className="text-white font-bold text-lg">
+                                <p className="text-foreground font-bold text-lg">
                                     {rateLoading ? "..." : `1 USDT = ${formatBRL(usdtRateWithSpread)}`}
                                 </p>
                             </div>
 
                             <div className="space-y-2">
-                                <p className="text-white/60 text-sm">Suas carteiras</p>
+                                <p className="text-muted-foreground text-sm">Suas carteiras</p>
                                 
                                 {walletsLoading ? (
                                     <div className="flex items-center justify-center py-6">
-                                        <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
+                                        <Loader2 className="w-6 h-6 text-violet-500 dark:text-violet-400 animate-spin" />
                                     </div>
                                 ) : wallets.length > 0 ? (
                                     <div className="space-y-2 max-h-48 overflow-y-auto">
                                         {wallets.map((wallet, index) => {
                                             const isMain = wallet.isMain || index === 0;
-                                            const networkColor = wallet.network === "TRON" ? "text-red-400 bg-red-500/20" : "text-green-400 bg-green-500/20";
+                                            const networkColor = wallet.network === "TRON" 
+                                                ? "text-red-600 dark:text-red-400 bg-red-500/20" 
+                                                : "text-green-600 dark:text-green-400 bg-green-500/20";
                                             return (
                                                 <button
                                                     key={wallet.id}
@@ -194,19 +196,19 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                                                     className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${
                                                         selectedWalletId === wallet.id
                                                             ? "border-violet-500 bg-violet-500/20"
-                                                            : "border-white/10 bg-white/5 hover:border-white/20"
+                                                            : "border-border bg-muted hover:border-violet-500/30"
                                                     }`}
                                                 >
                                                     <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                                                        <Wallet className="w-5 h-5 text-emerald-400" />
+                                                        <Wallet className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
                                                     </div>
                                                     <div className="flex-1 text-left min-w-0">
                                                         <div className="flex items-center gap-2 flex-wrap">
-                                                            <p className="text-white font-medium text-sm truncate">
+                                                            <p className="text-foreground font-medium text-sm truncate">
                                                                 {wallet.label || `Carteira ${index + 1}`}
                                                             </p>
                                                             {isMain && (
-                                                                <span className="flex items-center gap-1 px-1.5 py-0.5 bg-amber-500/20 rounded text-amber-400 text-xs shrink-0">
+                                                                <span className="flex items-center gap-1 px-1.5 py-0.5 bg-amber-500/20 rounded text-amber-600 dark:text-amber-400 text-xs shrink-0">
                                                                     <Star className="w-3 h-3" />
                                                                     Principal
                                                                 </span>
@@ -216,27 +218,27 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                                                             <span className={`px-1.5 py-0.5 text-xs rounded ${networkColor}`}>
                                                                 {wallet.network || "SOLANA"}
                                                             </span>
-                                                            <p className="text-white/50 text-xs truncate">
+                                                            <p className="text-muted-foreground text-xs truncate">
                                                                 {wallet.externalAddress?.slice(0, 8)}...{wallet.externalAddress?.slice(-6)}
                                                             </p>
                                                         </div>
                                                     </div>
                                                     {selectedWalletId === wallet.id && (
-                                                        <Check className="w-5 h-5 text-violet-400 shrink-0" />
+                                                        <Check className="w-5 h-5 text-violet-500 dark:text-violet-400 shrink-0" />
                                                     )}
                                                 </button>
                                             );
                                         })}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-6 bg-white/5 border border-white/10 rounded-xl">
-                                        <Wallet className="w-8 h-8 text-white/20 mx-auto mb-2" />
-                                        <p className="text-white/40 text-sm mb-3">Nenhuma carteira cadastrada</p>
+                                    <div className="text-center py-6 bg-muted border border-border rounded-xl">
+                                        <Wallet className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                                        <p className="text-muted-foreground text-sm mb-3">Nenhuma carteira cadastrada</p>
                                         <Link href="/customer/wallet" onClick={handleClose}>
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                className="border-violet-500/30 text-violet-400 hover:bg-violet-500/10"
+                                                className="border-violet-500/30 text-violet-600 dark:text-violet-400 hover:bg-violet-500/10"
                                             >
                                                 Cadastrar Carteira
                                             </Button>
@@ -247,7 +249,7 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
 
                             {wallets.length > 0 && (
                                 <div className="text-center">
-                                    <Link href="/customer/wallet" onClick={handleClose} className="text-violet-400 hover:text-violet-300 text-sm">
+                                    <Link href="/customer/wallet" onClick={handleClose} className="text-violet-600 dark:text-violet-400 hover:text-violet-500 text-sm">
                                         Gerenciar carteiras →
                                     </Link>
                                 </div>
@@ -267,23 +269,23 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                         <div className="w-full space-y-5">
                             <button
                                 onClick={handleBack}
-                                className="text-white/50 hover:text-white text-sm flex items-center gap-1"
+                                className="text-muted-foreground hover:text-foreground text-sm flex items-center gap-1"
                             >
                                 ← Voltar
                             </button>
 
                             <div className="flex items-center justify-center gap-3 py-2">
-                                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl">
+                                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xl">
                                     🇧🇷
                                 </div>
-                                <ArrowRight className="w-5 h-5 text-violet-400" />
-                                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl">
+                                <ArrowRight className="w-5 h-5 text-violet-500 dark:text-violet-400" />
+                                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xl">
                                     💵
                                 </div>
                             </div>
 
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-lg">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-lg">
                                     R$
                                 </span>
                                 <input
@@ -293,12 +295,12 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                     placeholder="0,00"
-                                    className="w-full pl-12 pr-16 text-center text-xl bg-white/5 border border-white/10 text-white h-14 rounded-xl focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none placeholder:text-white/30"
+                                    className="w-full pl-12 pr-16 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none placeholder:text-muted-foreground/50"
                                     autoFocus
                                 />
                                 <button
                                     onClick={handleMax}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 text-xs font-medium text-violet-400 hover:text-violet-300 bg-violet-500/10 rounded"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 text-xs font-medium text-violet-600 dark:text-violet-400 hover:text-violet-500 bg-violet-500/10 rounded"
                                 >
                                     MAX
                                 </button>
@@ -309,16 +311,16 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                                     <button
                                         key={value}
                                         onClick={() => handleQuickAmount(value)}
-                                        className="px-4 py-2 text-sm font-medium rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/50 transition"
+                                        className="px-4 py-2 text-sm font-medium rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-600 dark:text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/50 transition"
                                     >
                                         R$ {value}
                                     </button>
                                 ))}
                             </div>
 
-                            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                                <p className="text-white/50 text-sm">Você receberá aproximadamente:</p>
-                                <p className="text-2xl font-bold text-green-400 mt-1">
+                            <div className="bg-muted border border-border rounded-xl p-4">
+                                <p className="text-muted-foreground text-sm">Você receberá aproximadamente:</p>
+                                <p className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
                                     {formatUSDT(convertedAmount)}
                                 </p>
                             </div>
@@ -331,7 +333,7 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                                 Continuar
                             </Button>
 
-                            <p className="text-white/40 text-xs text-center">
+                            <p className="text-muted-foreground text-xs text-center">
                                 Saldo disponível: {formatBRL(brlBalance)}
                             </p>
                         </div>
@@ -341,27 +343,27 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                         <div className="w-full space-y-5">
                             <button
                                 onClick={handleBack}
-                                className="text-white/50 hover:text-white text-sm flex items-center gap-1"
+                                className="text-muted-foreground hover:text-foreground text-sm flex items-center gap-1"
                             >
                                 ← Voltar
                             </button>
 
-                            <div className="bg-white/5 border border-white/10 rounded-xl p-5 space-y-4">
+                            <div className="bg-muted border border-border rounded-xl p-5 space-y-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-xl">
                                             🇧🇷
                                         </div>
                                         <div>
-                                            <p className="text-white/50 text-xs">De</p>
-                                            <p className="text-white font-bold">{formatBRL(numAmount)}</p>
+                                            <p className="text-muted-foreground text-xs">De</p>
+                                            <p className="text-foreground font-bold">{formatBRL(numAmount)}</p>
                                         </div>
                                     </div>
-                                    <ArrowRight className="w-5 h-5 text-violet-400" />
+                                    <ArrowRight className="w-5 h-5 text-violet-500 dark:text-violet-400" />
                                     <div className="flex items-center gap-3">
                                         <div>
-                                            <p className="text-white/50 text-xs text-right">Para</p>
-                                            <p className="text-green-400 font-bold">{formatUSDT(convertedAmount)}</p>
+                                            <p className="text-muted-foreground text-xs text-right">Para</p>
+                                            <p className="text-green-600 dark:text-green-400 font-bold">{formatUSDT(convertedAmount)}</p>
                                         </div>
                                         <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-xl">
                                             💵
@@ -369,18 +371,18 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                                     </div>
                                 </div>
 
-                                <div className="border-t border-white/10 pt-4 space-y-2">
+                                <div className="border-t border-border pt-4 space-y-2">
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-white/50">Cotação</span>
-                                        <span className="text-white">1 USDT = {formatBRL(usdtRateWithSpread)}</span>
+                                        <span className="text-muted-foreground">Cotação</span>
+                                        <span className="text-foreground">1 USDT = {formatBRL(usdtRateWithSpread)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-white/50">Rede</span>
-                                        <span className="text-white">{selectedWallet?.network || "SOLANA"}</span>
+                                        <span className="text-muted-foreground">Rede</span>
+                                        <span className="text-foreground">{selectedWallet?.network || "SOLANA"}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-white/50">Carteira</span>
-                                        <span className="text-white text-xs truncate max-w-[180px]">
+                                        <span className="text-muted-foreground">Carteira</span>
+                                        <span className="text-foreground text-xs truncate max-w-[180px]">
                                             {selectedWallet?.externalAddress?.slice(0, 8)}...{selectedWallet?.externalAddress?.slice(-6)}
                                         </span>
                                     </div>
@@ -408,23 +410,23 @@ export function ConvertModal({ open, onClose, brlBalance }: ConvertModalProps) {
                         <div className="w-full space-y-5">
                             <div className="flex justify-center">
                                 <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center">
-                                    <CheckCircle2 className="w-10 h-10 text-green-400" />
+                                    <CheckCircle2 className="w-10 h-10 text-green-500 dark:text-green-400" />
                                 </div>
                             </div>
 
                             <div className="text-center">
-                                <p className="text-white/50 text-sm mb-1">Você comprou</p>
-                                <p className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                                <p className="text-muted-foreground text-sm mb-1">Você comprou</p>
+                                <p className="text-3xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
                                     {formatUSDT(convertedAmount)}
                                 </p>
-                                <p className="text-white/50 text-sm mt-2">
+                                <p className="text-muted-foreground text-sm mt-2">
                                     por {formatBRL(numAmount)}
                                 </p>
                             </div>
 
-                            <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-                                <p className="text-white/60 text-xs">Rede: {selectedWallet?.network || "SOLANA"}</p>
-                                <p className="text-white/50 text-xs mt-1">
+                            <div className="bg-muted border border-border rounded-xl p-4 text-center">
+                                <p className="text-muted-foreground text-xs">Rede: {selectedWallet?.network || "SOLANA"}</p>
+                                <p className="text-muted-foreground text-xs mt-1">
                                     O USDT será enviado para sua carteira em alguns minutos
                                 </p>
                             </div>

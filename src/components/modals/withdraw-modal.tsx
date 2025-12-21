@@ -172,15 +172,15 @@ export function WithdrawModal() {
 
     return (
         <Dialog open={open.withdraw} onOpenChange={handleClose}>
-            <DialogContent className="bg-[#0a0118] border border-violet-500/20 max-w-sm shadow-2xl shadow-violet-500/10">
+            <DialogContent className="bg-card border border-violet-500/20 max-w-sm shadow-2xl">
                 <DialogHeader>
-                    <DialogTitle className="text-white text-xl text-center flex items-center justify-center gap-2">
+                    <DialogTitle className="text-foreground text-xl text-center flex items-center justify-center gap-2">
                         {(step === "amount" || step === "confirm") && (
                             <Button
                                 onClick={handleBack}
                                 variant="ghost"
                                 size="icon"
-                                className="absolute left-4 top-4 text-white/60 hover:text-white hover:bg-white/10 h-8 w-8"
+                                className="absolute left-4 top-4 text-muted-foreground hover:text-foreground hover:bg-accent h-8 w-8"
                             >
                                 <ArrowLeft className="w-4 h-4" />
                             </Button>
@@ -192,7 +192,7 @@ export function WithdrawModal() {
                         {step === "confirm" && "Confirmar Transferência"}
                         {step === "success" && "PIX Enviado!"}
                     </DialogTitle>
-                    <DialogDescription className="text-white/50 text-center text-sm">
+                    <DialogDescription className="text-muted-foreground text-center text-sm">
                         {step === "loading" && "Buscando suas chaves PIX..."}
                         {step === "nokeys" && "Cadastre uma chave para transferir"}
                         {step === "select" && "Selecione a chave PIX de destino"}
@@ -205,21 +205,21 @@ export function WithdrawModal() {
                 <div className="flex flex-col items-center space-y-5 py-4">
                     {step === "loading" && (
                         <div className="flex flex-col items-center py-8">
-                            <Loader2 className="w-10 h-10 animate-spin text-violet-400" />
-                            <p className="text-white/50 text-sm mt-4">Carregando chaves PIX...</p>
+                            <Loader2 className="w-10 h-10 animate-spin text-violet-500 dark:text-violet-400" />
+                            <p className="text-muted-foreground text-sm mt-4">Carregando chaves PIX...</p>
                         </div>
                     )}
 
                     {step === "nokeys" && (
                         <div className="w-full space-y-5 text-center">
                             <div className="p-4 rounded-full bg-violet-500/20 inline-block">
-                                <KeyRound className="w-10 h-10 text-violet-400" />
+                                <KeyRound className="w-10 h-10 text-violet-500 dark:text-violet-400" />
                             </div>
                             <div>
-                                <p className="text-white font-medium mb-2">
+                                <p className="text-foreground font-medium mb-2">
                                     Você ainda não tem chaves PIX cadastradas
                                 </p>
-                                <p className="text-white/50 text-sm">
+                                <p className="text-muted-foreground text-sm">
                                     Para transferir, primeiro cadastre uma chave PIX vinculada ao seu CPF ou CNPJ.
                                 </p>
                             </div>
@@ -239,25 +239,25 @@ export function WithdrawModal() {
                                 <button
                                     key={key.id}
                                     onClick={() => handleSelectKey(key)}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-4 hover:border-violet-500/50 hover:bg-violet-500/10 transition text-left"
+                                    className="w-full bg-muted border border-border rounded-xl p-4 hover:border-violet-500/50 hover:bg-violet-500/10 transition text-left"
                                 >
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <div className="flex items-center gap-2 mb-1">
-                                                <span className="text-white font-medium">
+                                                <span className="text-foreground font-medium">
                                                     {KEY_TYPE_LABELS[key.keyType] || key.keyType}
                                                 </span>
                                                 {key.validated && (
-                                                    <span className="flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium rounded-full bg-green-500/20 text-green-400">
+                                                    <span className="flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium rounded-full bg-green-500/20 text-green-600 dark:text-green-400">
                                                         <CheckCircle2 className="w-3 h-3" />
                                                     </span>
                                                 )}
                                             </div>
-                                            <code className="text-white/50 text-sm font-mono">
+                                            <code className="text-muted-foreground text-sm font-mono">
                                                 {key.keyValue}
                                             </code>
                                         </div>
-                                        <div className="text-violet-400">
+                                        <div className="text-violet-500 dark:text-violet-400">
                                             <ArrowLeft className="w-5 h-5 rotate-180" />
                                         </div>
                                     </div>
@@ -266,7 +266,7 @@ export function WithdrawModal() {
                             
                             <button
                                 onClick={handleGoToPixPage}
-                                className="w-full border border-dashed border-white/20 rounded-xl p-4 hover:border-violet-500/50 hover:bg-violet-500/5 transition flex items-center justify-center gap-2 text-white/50 hover:text-violet-300"
+                                className="w-full border border-dashed border-border rounded-xl p-4 hover:border-violet-500/50 hover:bg-violet-500/5 transition flex items-center justify-center gap-2 text-muted-foreground hover:text-violet-600 dark:hover:text-violet-300"
                             >
                                 <Plus className="w-4 h-4" />
                                 <span className="text-sm">Cadastrar nova chave</span>
@@ -276,16 +276,16 @@ export function WithdrawModal() {
 
                     {step === "amount" && selectedKey && (
                         <div className="w-full space-y-5">
-                            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                            <div className="bg-muted border border-border rounded-xl p-4">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
-                                        <KeyRound className="w-5 h-5 text-violet-400" />
+                                        <KeyRound className="w-5 h-5 text-violet-500 dark:text-violet-400" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-white font-medium">
+                                        <p className="text-foreground font-medium">
                                             {KEY_TYPE_LABELS[selectedKey.keyType] || selectedKey.keyType}
                                         </p>
-                                        <code className="text-white/50 text-xs font-mono">
+                                        <code className="text-muted-foreground text-xs font-mono">
                                             {selectedKey.keyValue}
                                         </code>
                                     </div>
@@ -293,13 +293,13 @@ export function WithdrawModal() {
                             </div>
 
                             <div className="text-center py-4 bg-gradient-to-b from-violet-500/10 to-transparent rounded-2xl">
-                                <p className="text-5xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                                <p className="text-5xl font-bold bg-gradient-to-r from-violet-500 to-purple-500 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                             </div>
 
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-xl">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xl">
                                     R$
                                 </span>
                                 <input
@@ -308,7 +308,7 @@ export function WithdrawModal() {
                                     value={formatDisplayValue(cents)}
                                     onChange={handleInputChange}
                                     placeholder="0,00"
-                                    className="w-full pl-12 pr-4 text-center text-xl bg-white/5 border border-white/10 text-white h-14 rounded-xl focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none placeholder:text-white/30"
+                                    className="w-full pl-12 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none placeholder:text-muted-foreground/50"
                                     autoFocus
                                 />
                             </div>
@@ -318,7 +318,7 @@ export function WithdrawModal() {
                                     <button
                                         key={value}
                                         onClick={() => handleQuickAmount(value)}
-                                        className="px-4 py-2 text-sm font-medium rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/50 hover:text-violet-200 transition-colors"
+                                        className="px-4 py-2 text-sm font-medium rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-600 dark:text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/50 transition-colors"
                                     >
                                         R$ {value}
                                     </button>
@@ -333,7 +333,7 @@ export function WithdrawModal() {
                                 Continuar
                             </Button>
 
-                            <p className="text-white/40 text-xs text-center">
+                            <p className="text-muted-foreground text-xs text-center">
                                 Valor mínimo: R$ 1,00
                             </p>
                         </div>
@@ -341,16 +341,16 @@ export function WithdrawModal() {
 
                     {step === "confirm" && selectedKey && (
                         <div className="w-full space-y-5">
-                            <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-4">
+                            <div className="bg-muted border border-border rounded-xl p-4 space-y-4">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
-                                        <KeyRound className="w-5 h-5 text-violet-400" />
+                                        <KeyRound className="w-5 h-5 text-violet-500 dark:text-violet-400" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-white font-medium">
+                                        <p className="text-foreground font-medium">
                                             {KEY_TYPE_LABELS[selectedKey.keyType] || selectedKey.keyType}
                                         </p>
-                                        <code className="text-white/50 text-xs font-mono">
+                                        <code className="text-muted-foreground text-xs font-mono">
                                             {selectedKey.keyValue}
                                         </code>
                                     </div>
@@ -358,14 +358,14 @@ export function WithdrawModal() {
                             </div>
 
                             <div className="text-center py-6 bg-gradient-to-b from-violet-500/10 to-transparent rounded-2xl">
-                                <p className="text-white/50 text-sm mb-1">Valor a transferir</p>
-                                <p className="text-4xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                                <p className="text-muted-foreground text-sm mb-1">Valor a transferir</p>
+                                <p className="text-4xl font-bold bg-gradient-to-r from-violet-500 to-purple-500 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                             </div>
 
                             {error && (
-                                <div className="flex items-center gap-2 text-red-400 text-sm bg-red-500/10 rounded-lg px-3 py-2">
+                                <div className="flex items-center gap-2 text-red-500 text-sm bg-red-500/10 rounded-lg px-3 py-2">
                                     <AlertCircle className="w-4 h-4 shrink-0" />
                                     <span>{error}</span>
                                 </div>
@@ -395,27 +395,27 @@ export function WithdrawModal() {
                         <div className="w-full space-y-5">
                             <div className="flex justify-center">
                                 <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center">
-                                    <CheckCircle2 className="w-10 h-10 text-green-400" />
+                                    <CheckCircle2 className="w-10 h-10 text-green-500 dark:text-green-400" />
                                 </div>
                             </div>
 
                             <div className="text-center">
-                                <p className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                                <p className="text-3xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
-                                <p className="text-white/50 text-sm mt-1">
+                                <p className="text-muted-foreground text-sm mt-1">
                                     transferido com sucesso
                                 </p>
                             </div>
 
-                            <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
+                            <div className="bg-muted border border-border rounded-xl p-4 space-y-2">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-white/50">Status</span>
-                                    <span className="text-amber-400">Processando</span>
+                                    <span className="text-muted-foreground">Status</span>
+                                    <span className="text-amber-500">Processando</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-white/50">ID</span>
-                                    <span className="text-white/80 font-mono text-xs">{txResult.transactionId}</span>
+                                    <span className="text-muted-foreground">ID</span>
+                                    <span className="text-foreground/80 font-mono text-xs">{txResult.transactionId}</span>
                                 </div>
                             </div>
 

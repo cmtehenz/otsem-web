@@ -205,9 +205,9 @@ export default function Dashboard() {
             <div className="flex h-[80vh] flex-col items-center justify-center">
                 <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-purple-600 rounded-full blur-xl opacity-50 animate-pulse"></div>
-                    <Loader2 className="relative h-10 w-10 animate-spin text-violet-400" />
+                    <Loader2 className="relative h-10 w-10 animate-spin text-violet-500 dark:text-violet-400" />
                 </div>
-                <p className="text-sm text-white/60 mt-4">Carregando...</p>
+                <p className="text-sm text-muted-foreground mt-4">Carregando...</p>
             </div>
         );
     }
@@ -224,13 +224,13 @@ export default function Dashboard() {
             />
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-                    <p className="text-white/50 text-sm mt-1">Gerencie seu saldo e transações</p>
+                    <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+                    <p className="text-muted-foreground text-sm mt-1">Gerencie seu saldo e transações</p>
                 </div>
                 <Button
                     variant="ghost"
                     onClick={() => window.location.reload()}
-                    className="text-white/60 hover:text-white hover:bg-white/10"
+                    className="text-muted-foreground hover:text-foreground hover:bg-accent"
                 >
                     <RefreshCw className="w-4 h-4 mr-2" />
                     Atualizar
@@ -269,38 +269,38 @@ export default function Dashboard() {
                 </Button>
                 <Button
                     onClick={() => openModal("withdraw")}
-                    className="bg-[#1a1025] border border-white/10 hover:bg-[#2a2035] text-white font-semibold rounded-xl py-6 text-sm"
+                    className="bg-card border border-border hover:bg-accent text-foreground font-semibold rounded-xl py-6 text-sm"
                 >
                     <ArrowUpRight className="w-5 h-5 mr-1.5" />
                     Transferir
                 </Button>
                 <Button
                     onClick={() => setShowConvertModal(true)}
-                    className="bg-[#1a1025] border border-white/10 hover:bg-[#2a2035] text-white font-semibold rounded-xl py-6 text-sm"
+                    className="bg-card border border-border hover:bg-accent text-foreground font-semibold rounded-xl py-6 text-sm"
                 >
                     <ArrowRightLeft className="w-5 h-5 mr-1.5" />
                     Converter
                 </Button>
             </div>
 
-            <div className="bg-[#1a1025] border border-white/10 rounded-2xl p-4">
+            <div className="bg-card border border-border rounded-2xl p-4">
                 <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                        <TrendingUp className="w-4 h-4 text-violet-400" />
-                        <span className="text-white/60 text-sm">Cotação USDT</span>
+                        <TrendingUp className="w-4 h-4 text-violet-500 dark:text-violet-400" />
+                        <span className="text-muted-foreground text-sm">Cotação USDT</span>
                     </div>
-                    <span className="text-xs text-white/40">Atualiza em {timer}s</span>
+                    <span className="text-xs text-muted-foreground">Atualiza em {timer}s</span>
                 </div>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-2xl font-bold text-foreground">
                     {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 4)}
                 </p>
             </div>
 
-            <div className="bg-[#1a1025] border border-white/10 rounded-2xl overflow-hidden">
-                <div className="p-4 border-b border-white/5">
-                    <h2 className="text-white font-semibold">Últimas transações</h2>
+            <div className="bg-card border border-border rounded-2xl overflow-hidden">
+                <div className="p-4 border-b border-border">
+                    <h2 className="text-foreground font-semibold">Últimas transações</h2>
                 </div>
-                <div className="divide-y divide-white/5">
+                <div className="divide-y divide-border">
                     {transactions.length > 0 ? (
                         transactions.map((tx) => {
                             const amount = Number(tx.amount);
@@ -356,19 +356,19 @@ export default function Dashboard() {
                                     : "bg-violet-500/20";
                             
                             const iconColor = isPending 
-                                ? "text-amber-400" 
+                                ? "text-amber-500 dark:text-amber-400" 
                                 : isIncoming 
-                                    ? "text-green-400" 
-                                    : "text-violet-400";
+                                    ? "text-green-500 dark:text-green-400" 
+                                    : "text-violet-500 dark:text-violet-400";
                             
                             const amountColor = isPending 
-                                ? "text-amber-400" 
+                                ? "text-amber-500 dark:text-amber-400" 
                                 : isIncoming 
-                                    ? "text-green-400" 
-                                    : "text-white";
+                                    ? "text-green-500 dark:text-green-400" 
+                                    : "text-foreground";
 
                             return (
-                                <div key={tx.id} className="flex items-center gap-4 p-4 hover:bg-white/5 transition">
+                                <div key={tx.id} className="flex items-center gap-4 p-4 hover:bg-accent/50 transition">
                                     <div className={`p-2.5 rounded-full ${iconBgColor}`}>
                                         {isIncoming ? (
                                             <ArrowDownLeft className={`w-4 h-4 ${iconColor}`} />
@@ -377,10 +377,10 @@ export default function Dashboard() {
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-white font-medium truncate">
+                                        <p className="text-foreground font-medium truncate">
                                             {displayName}
                                         </p>
-                                        <p className="text-white/40 text-sm">
+                                        <p className="text-muted-foreground text-sm">
                                             {formatDate(tx.createdAt)}
                                         </p>
                                     </div>
@@ -392,10 +392,10 @@ export default function Dashboard() {
                         })
                     ) : (
                         <div className="text-center py-12">
-                            <div className="p-4 rounded-full bg-white/5 inline-block mb-3">
-                                <ArrowDownLeft className="w-6 h-6 text-white/20" />
+                            <div className="p-4 rounded-full bg-muted inline-block mb-3">
+                                <ArrowDownLeft className="w-6 h-6 text-muted-foreground" />
                             </div>
-                            <p className="text-white/40">Nenhuma transação encontrada</p>
+                            <p className="text-muted-foreground">Nenhuma transação encontrada</p>
                         </div>
                     )}
                 </div>

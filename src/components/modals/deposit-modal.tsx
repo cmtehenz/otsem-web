@@ -153,22 +153,22 @@ export function DepositModal() {
 
     return (
         <Dialog open={open.deposit} onOpenChange={handleClose}>
-            <DialogContent className="bg-[#0a0118] border border-violet-500/20 max-w-sm shadow-2xl shadow-violet-500/10">
+            <DialogContent className="bg-card border border-violet-500/20 max-w-sm shadow-2xl">
                 <DialogHeader>
-                    <DialogTitle className="text-white text-xl text-center flex items-center justify-center gap-2">
+                    <DialogTitle className="text-foreground text-xl text-center flex items-center justify-center gap-2">
                         {step === "qrcode" && (
                             <Button
                                 onClick={handleBack}
                                 variant="ghost"
                                 size="icon"
-                                className="absolute left-4 top-4 text-white/60 hover:text-white hover:bg-white/10 h-8 w-8"
+                                className="absolute left-4 top-4 text-muted-foreground hover:text-foreground hover:bg-accent h-8 w-8"
                             >
                                 <ArrowLeft className="w-4 h-4" />
                             </Button>
                         )}
                         {step === "amount" ? "Depositar via PIX" : "Pague com PIX"}
                     </DialogTitle>
-                    <DialogDescription className="text-white/50 text-center text-sm">
+                    <DialogDescription className="text-muted-foreground text-center text-sm">
                         {step === "amount" 
                             ? "Escolha ou digite o valor do depósito"
                             : "Escaneie o QR Code ou copie o código"
@@ -180,13 +180,13 @@ export function DepositModal() {
                     {step === "amount" ? (
                         <div className="w-full space-y-5">
                             <div className="text-center py-4 bg-gradient-to-b from-violet-500/10 to-transparent rounded-2xl">
-                                <p className="text-5xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                                <p className="text-5xl font-bold bg-gradient-to-r from-violet-500 to-purple-500 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                             </div>
 
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-xl">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xl">
                                     R$
                                 </span>
                                 <input
@@ -196,7 +196,7 @@ export function DepositModal() {
                                     value={inputValue}
                                     onChange={handleInputChange}
                                     placeholder="0,00"
-                                    className="w-full pl-12 pr-4 text-center text-xl bg-white/5 border border-white/10 text-white h-14 rounded-xl focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none placeholder:text-white/30"
+                                    className="w-full pl-12 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none placeholder:text-muted-foreground/50"
                                     autoFocus
                                 />
                             </div>
@@ -206,7 +206,7 @@ export function DepositModal() {
                                     <button
                                         key={value}
                                         onClick={() => handleQuickAmount(value)}
-                                        className="px-4 py-2 text-sm font-medium rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/50 hover:text-violet-200 transition-colors"
+                                        className="px-4 py-2 text-sm font-medium rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-600 dark:text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/50 transition-colors"
                                     >
                                         R$ {value}
                                     </button>
@@ -231,7 +231,7 @@ export function DepositModal() {
                                 )}
                             </Button>
 
-                            <p className="text-white/40 text-xs text-center">
+                            <p className="text-muted-foreground text-xs text-center">
                                 Valor mínimo: R$ 1,00
                             </p>
                         </div>
@@ -239,19 +239,19 @@ export function DepositModal() {
                         <div className="flex flex-col items-center py-12">
                             <div className="relative">
                                 <div className="absolute inset-0 bg-violet-500/20 rounded-full blur-xl animate-pulse"></div>
-                                <Loader2 className="h-12 w-12 animate-spin text-violet-400 relative" />
+                                <Loader2 className="h-12 w-12 animate-spin text-violet-500 dark:text-violet-400 relative" />
                             </div>
-                            <p className="text-white/60 text-sm mt-6">Gerando QR Code...</p>
+                            <p className="text-muted-foreground text-sm mt-6">Gerando QR Code...</p>
                         </div>
                     ) : error ? (
                         <div className="flex flex-col items-center py-8">
                             <div className="bg-red-500/10 rounded-full p-4 mb-4">
                                 <QrCode className="h-12 w-12 text-red-400/60" />
                             </div>
-                            <p className="text-white/60 text-sm text-center mb-4">{error}</p>
+                            <p className="text-muted-foreground text-sm text-center mb-4">{error}</p>
                             <button
                                 onClick={handleBack}
-                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-violet-500/30 bg-violet-500/10 text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/50 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-violet-500/30 bg-violet-500/10 text-violet-600 dark:text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/50 transition-colors"
                             >
                                 <ArrowLeft className="w-4 h-4" />
                                 Tentar novamente
@@ -260,8 +260,8 @@ export function DepositModal() {
                     ) : (
                         <>
                             <div className="text-center">
-                                <p className="text-white/50 text-sm">Valor do depósito</p>
-                                <p className="text-3xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                                <p className="text-muted-foreground text-sm">Valor do depósito</p>
+                                <p className="text-3xl font-bold bg-gradient-to-r from-violet-500 to-purple-500 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                             </div>
@@ -282,9 +282,9 @@ export function DepositModal() {
 
                             <div className="w-full space-y-3">
                                 {pixCopiaECola && (
-                                    <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-                                        <p className="text-white/40 text-xs mb-1">PIX Copia e Cola</p>
-                                        <p className="text-white/80 text-xs font-mono break-all line-clamp-2">
+                                    <div className="bg-muted border border-border rounded-xl p-3">
+                                        <p className="text-muted-foreground text-xs mb-1">PIX Copia e Cola</p>
+                                        <p className="text-foreground/80 text-xs font-mono break-all line-clamp-2">
                                             {pixCopiaECola}
                                         </p>
                                     </div>
@@ -308,7 +308,7 @@ export function DepositModal() {
                                     )}
                                 </Button>
 
-                                <div className="flex items-center justify-center gap-2 text-white/40 text-xs">
+                                <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs">
                                     <Clock className="w-3.5 h-3.5" />
                                     <span>Expira em 24 horas</span>
                                 </div>

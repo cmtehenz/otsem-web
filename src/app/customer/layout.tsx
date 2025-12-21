@@ -20,6 +20,7 @@ import {
 
 import { useAuth } from "@/contexts/auth-context";
 import { Protected } from "@/components/auth/Protected";
+import { ThemeToggle } from "@/components/theme-toggle";
 import http from "@/lib/http";
 
 import {
@@ -108,44 +109,44 @@ function isActive(pathname: string, href: string): boolean {
 function KycBadge({ status }: { status: string }) {
     const config: Record<string, { style: string; icon: typeof ShieldCheck; label: string }> = {
         approved: {
-            style: "bg-green-500/20 text-green-400 border border-green-500/30",
+            style: "bg-green-500/20 text-green-600 dark:text-green-400 border border-green-500/30",
             icon: ShieldCheck,
             label: "Verificado",
         },
         completed: {
-            style: "bg-green-500/20 text-green-400 border border-green-500/30",
+            style: "bg-green-500/20 text-green-600 dark:text-green-400 border border-green-500/30",
             icon: ShieldCheck,
             label: "Verificado",
         },
         in_review: {
-            style: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
+            style: "bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30",
             icon: ShieldQuestion,
             label: "Em Análise",
         },
         requested: {
-            style: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
+            style: "bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30",
             icon: ShieldQuestion,
             label: "Em Análise",
         },
         pending: {
-            style: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
+            style: "bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30",
             icon: ShieldQuestion,
             label: "Em Análise",
         },
         rejected: {
-            style: "bg-red-500/20 text-red-400 border border-red-500/30",
+            style: "bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/30",
             icon: ShieldAlert,
             label: "Rejeitado",
         },
         not_requested: {
-            style: "bg-amber-500/20 text-amber-400 border border-amber-500/30",
+            style: "bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30",
             icon: ShieldAlert,
             label: "Pendente",
         },
     };
 
     const defaultConfig = {
-        style: "bg-amber-500/20 text-amber-400 border border-amber-500/30",
+        style: "bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30",
         icon: ShieldAlert,
         label: "Pendente",
     };
@@ -168,9 +169,9 @@ function CustomerSidebar({ kycStatus }: { kycStatus: string }) {
     return (
         <Sidebar
             variant="sidebar"
-            className="border-none bg-[#0a0118] [&>div]:border-none [&>div]:shadow-none"
+            className="border-none bg-sidebar [&>div]:border-none [&>div]:shadow-none"
         >
-            <SidebarHeader className="px-4 py-4 border-b border-white/10 bg-[#0a0118]">
+            <SidebarHeader className="px-4 py-4 border-b border-sidebar-border bg-sidebar">
                 <Link
                     href="/customer/dashboard"
                     className="flex items-center gap-3"
@@ -183,13 +184,13 @@ function CustomerSidebar({ kycStatus }: { kycStatus: string }) {
                         className="rounded-lg"
                     />
                     <span className="text-lg font-bold">
-                        <span className="text-amber-400">Otsem</span>
-                        <span className="text-violet-400">Pay</span>
+                        <span className="text-amber-500 dark:text-amber-400">Otsem</span>
+                        <span className="text-violet-600 dark:text-violet-400">Pay</span>
                     </span>
                 </Link>
             </SidebarHeader>
 
-            <SidebarContent className="bg-[#0a0118]">
+            <SidebarContent className="bg-sidebar">
                 <SidebarGroup className="p-3">
                     <div className="px-2 py-2">
                         <KycBadge status={kycStatus} />
@@ -198,7 +199,7 @@ function CustomerSidebar({ kycStatus }: { kycStatus: string }) {
 
                 {menuGroups.map((group) => (
                     <SidebarGroup key={group.title}>
-                        <SidebarGroupLabel className="text-xs px-4 text-white/40 uppercase tracking-wider font-medium">
+                        <SidebarGroupLabel className="text-xs px-4 text-muted-foreground uppercase tracking-wider font-medium">
                             {group.title}
                         </SidebarGroupLabel>
                         <SidebarGroupContent>
@@ -215,11 +216,11 @@ function CustomerSidebar({ kycStatus }: { kycStatus: string }) {
                                                 className={
                                                     active
                                                         ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-500 hover:to-purple-500 rounded-xl mx-2"
-                                                        : "text-white/70 hover:bg-white/10 hover:text-white rounded-xl mx-2"
+                                                        : "text-foreground/70 hover:bg-accent hover:text-foreground rounded-xl mx-2"
                                                 }
                                             >
                                                 <Link href={item.href} className="flex items-center gap-3 px-3 py-2">
-                                                    <Icon className={active ? "h-4 w-4 text-white" : "h-4 w-4 text-violet-400"} />
+                                                    <Icon className={active ? "h-4 w-4 text-white" : "h-4 w-4 text-violet-600 dark:text-violet-400"} />
                                                     <span className="font-medium">{item.label}</span>
                                                 </Link>
                                             </SidebarMenuButton>
@@ -231,8 +232,8 @@ function CustomerSidebar({ kycStatus }: { kycStatus: string }) {
                     </SidebarGroup>
                 ))}
 
-                <div className="mt-auto p-4 border-t border-white/10">
-                    <p className="text-xs text-white/40 text-center">
+                <div className="mt-auto p-4 border-t border-sidebar-border">
+                    <p className="text-xs text-muted-foreground text-center">
                         © 2025 OtsemPay
                     </p>
                 </div>
@@ -259,16 +260,16 @@ function AutoBreadcrumb() {
                         <React.Fragment key={seg}>
                             <BreadcrumbItem>
                                 {isLast ? (
-                                    <BreadcrumbPage className="font-medium text-white">
+                                    <BreadcrumbPage className="font-medium text-foreground">
                                         {titleCase(seg)}
                                     </BreadcrumbPage>
                                 ) : (
-                                    <BreadcrumbLink href={href} className="text-white/60 hover:text-white">
+                                    <BreadcrumbLink href={href} className="text-muted-foreground hover:text-foreground">
                                         {titleCase(seg)}
                                     </BreadcrumbLink>
                                 )}
                             </BreadcrumbItem>
-                            {!isLast && <BreadcrumbSeparator className="text-white/30" />}
+                            {!isLast && <BreadcrumbSeparator className="text-muted-foreground/50" />}
                         </React.Fragment>
                     );
                 })}
@@ -286,7 +287,7 @@ function HeaderLogout() {
             size="icon"
             onClick={logout}
             title="Sair da conta"
-            className="text-white/70 hover:bg-red-500/20 hover:text-red-400"
+            className="text-muted-foreground hover:bg-red-500/20 hover:text-red-500"
         >
             <LogOut className="h-5 w-5" />
         </Button>
@@ -324,23 +325,24 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
             <DepositModal />
             <WithdrawModal />
             <SidebarProvider>
-                <div className="flex min-h-screen w-full bg-[#0a0118]">
+                <div className="flex min-h-screen w-full bg-background">
                     <CustomerSidebar kycStatus={kycStatus} />
 
                     <div className="flex flex-1 flex-col">
-                        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-white/5 bg-[#0a0118]/80 backdrop-blur-xl px-4">
-                            <SidebarTrigger className="-ml-1 text-white/70 hover:text-white hover:bg-white/10" />
-                            <Separator orientation="vertical" className="h-6 bg-white/10" />
+                        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-border/50 bg-background/80 backdrop-blur-xl px-4">
+                            <SidebarTrigger className="-ml-1 text-muted-foreground hover:text-foreground hover:bg-accent" />
+                            <Separator orientation="vertical" className="h-6 bg-border" />
                             <AutoBreadcrumb />
                             <div className="ml-auto flex items-center gap-2">
+                                <ThemeToggle />
                                 <HeaderLogout />
                             </div>
                         </header>
 
-                        <main className="flex-1 p-4 md:p-6 lg:p-8 bg-[#0a0118]">
+                        <main className="flex-1 p-4 md:p-6 lg:p-8 bg-background">
                             {loading ? (
                                 <div className="flex items-center justify-center h-full">
-                                    <div className="text-white/60">Carregando...</div>
+                                    <div className="text-muted-foreground">Carregando...</div>
                                 </div>
                             ) : (
                                 children

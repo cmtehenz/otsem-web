@@ -150,8 +150,8 @@ export default function CustomerPixPage() {
     if (loading) {
         return (
             <div className="flex h-[80vh] flex-col items-center justify-center">
-                <Loader2 className="h-10 w-10 animate-spin text-violet-400" />
-                <p className="text-sm text-white/60 mt-4">Carregando chaves Pix...</p>
+                <Loader2 className="h-10 w-10 animate-spin text-violet-500 dark:text-violet-400" />
+                <p className="text-sm text-muted-foreground mt-4">Carregando chaves Pix...</p>
             </div>
         );
     }
@@ -160,8 +160,8 @@ export default function CustomerPixPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-white">Chaves Pix</h1>
-                    <p className="text-white/50 text-sm mt-1">
+                    <h1 className="text-2xl font-bold text-foreground">Chaves Pix</h1>
+                    <p className="text-muted-foreground text-sm mt-1">
                         Gerencie suas chaves Pix para receber e enviar pagamentos
                     </p>
                 </div>
@@ -169,7 +169,7 @@ export default function CustomerPixPage() {
                     <Button
                         variant="ghost"
                         onClick={loadPixKeys}
-                        className="text-white/60 hover:text-white hover:bg-white/10"
+                        className="text-muted-foreground hover:text-foreground hover:bg-accent"
                     >
                         <RefreshCw className="w-4 h-4 mr-2" />
                         Atualizar
@@ -184,14 +184,14 @@ export default function CustomerPixPage() {
                 </div>
             </div>
 
-            <div className="bg-[#1a1025] border border-violet-500/20 rounded-xl p-4">
+            <div className="bg-card border border-violet-500/20 rounded-xl p-4">
                 <div className="flex items-start gap-3">
                     <div className="p-2 rounded-lg bg-violet-500/20">
-                        <ShieldCheck className="w-5 h-5 text-violet-400" />
+                        <ShieldCheck className="w-5 h-5 text-violet-500 dark:text-violet-400" />
                     </div>
                     <div>
-                        <p className="text-white font-medium text-sm">Validação de Chaves</p>
-                        <p className="text-white/50 text-xs mt-0.5">
+                        <p className="text-foreground font-medium text-sm">Validação de Chaves</p>
+                        <p className="text-muted-foreground text-xs mt-0.5">
                             Chaves CPF, CNPJ, E-mail e Telefone são validadas automaticamente se corresponderem aos seus dados.
                             Para chaves aleatórias, clique em "Validar" para confirmar via micro-transferência de R$ 0,01.
                         </p>
@@ -200,14 +200,14 @@ export default function CustomerPixPage() {
             </div>
 
             {pixKeys.length === 0 ? (
-                <div className="bg-[#1a1025] border border-white/10 rounded-2xl p-12 text-center">
+                <div className="bg-card border border-border rounded-2xl p-12 text-center">
                     <div className="p-4 rounded-full bg-violet-500/20 inline-block mb-4">
-                        <KeyRound className="w-8 h-8 text-violet-400" />
+                        <KeyRound className="w-8 h-8 text-violet-500 dark:text-violet-400" />
                     </div>
-                    <h2 className="text-xl font-semibold text-white mb-2">
+                    <h2 className="text-xl font-semibold text-foreground mb-2">
                         Nenhuma chave Pix encontrada
                     </h2>
-                    <p className="text-white/50 mb-6 max-w-md mx-auto">
+                    <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                         Cadastre sua primeira chave Pix para começar a receber pagamentos instantâneos.
                     </p>
                     <Button
@@ -223,7 +223,7 @@ export default function CustomerPixPage() {
                     {pixKeys.map((pix) => (
                         <div
                             key={pix.id}
-                            className="bg-[#1a1025] border border-white/10 rounded-2xl p-5 hover:border-violet-500/30 transition"
+                            className="bg-card border border-border rounded-2xl p-5 hover:border-violet-500/30 transition"
                         >
                             <div className="flex items-center justify-between gap-4">
                                 <div className="flex items-center gap-4">
@@ -232,36 +232,36 @@ export default function CustomerPixPage() {
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className="text-white font-semibold">
+                                            <span className="text-foreground font-semibold">
                                                 {getKeyTypeLabel(pix.keyType)}
                                             </span>
                                             {pix.validated ? (
-                                                <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
+                                                <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-green-500/20 text-green-600 dark:text-green-400 border border-green-500/30">
                                                     <CheckCircle2 className="w-3 h-3" />
                                                     Validada
                                                 </span>
                                             ) : pix.validationAttempted && pix.validationError ? (
-                                                <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-500/20 text-red-400 border border-red-500/30">
+                                                <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/30">
                                                     <XCircle className="w-3 h-3" />
                                                     Falhou
                                                 </span>
                                             ) : (
-                                                <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                                                <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
                                                     <Clock className="w-3 h-3" />
                                                     Pendente
                                                 </span>
                                             )}
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <code className="text-white/60 text-sm font-mono">
+                                            <code className="text-muted-foreground text-sm font-mono">
                                                 {pix.keyValue}
                                             </code>
                                             <button
                                                 onClick={() => onCopy(pix.keyValue)}
-                                                className="p-1 hover:bg-white/10 rounded transition"
+                                                className="p-1 hover:bg-accent rounded transition"
                                                 title="Copiar chave"
                                             >
-                                                <Copy className="w-3.5 h-3.5 text-white/40 hover:text-white" />
+                                                <Copy className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground" />
                                             </button>
                                         </div>
                                     </div>
@@ -269,16 +269,16 @@ export default function CustomerPixPage() {
 
                                 <div className="flex items-center gap-3">
                                     <div className="text-right">
-                                        <p className="text-white/40 text-sm">
+                                        <p className="text-muted-foreground text-sm">
                                             Criada em {formatDate(pix.createdAt)}
                                         </p>
                                         {pix.validated && pix.validatedAt && (
-                                            <p className="text-green-400/60 text-xs">
+                                            <p className="text-green-600/60 dark:text-green-400/60 text-xs">
                                                 Validada em {formatDate(pix.validatedAt)}
                                             </p>
                                         )}
                                         {pix.validationAttempted && pix.validationError && (
-                                            <p className="text-red-400/60 text-xs">
+                                            <p className="text-red-600/60 dark:text-red-400/60 text-xs">
                                                 {pix.validationError}
                                             </p>
                                         )}
@@ -287,7 +287,7 @@ export default function CustomerPixPage() {
                                         <button
                                             onClick={() => handleValidate(pix.id)}
                                             disabled={validating === pix.id}
-                                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-violet-500/20 text-violet-300 hover:bg-violet-500/30 border border-violet-500/30 transition flex items-center gap-1.5 disabled:opacity-50"
+                                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-violet-500/20 text-violet-600 dark:text-violet-300 hover:bg-violet-500/30 border border-violet-500/30 transition flex items-center gap-1.5 disabled:opacity-50"
                                             title="Validar chave (R$ 0,01)"
                                         >
                                             {validating === pix.id ? (
@@ -300,7 +300,7 @@ export default function CustomerPixPage() {
                                     )}
                                     <button
                                         onClick={() => openDeleteModal(pix)}
-                                        className="p-2 hover:bg-red-500/10 rounded-lg transition text-white/40 hover:text-red-400"
+                                        className="p-2 hover:bg-red-500/10 rounded-lg transition text-muted-foreground hover:text-red-500"
                                         title="Remover chave"
                                     >
                                         <Trash2 className="w-4 h-4" />
@@ -313,32 +313,32 @@ export default function CustomerPixPage() {
             )}
 
             <Dialog open={showModal} onOpenChange={setShowModal}>
-                <DialogContent className="bg-[#0a0118] border border-violet-500/20">
+                <DialogContent className="bg-card border border-violet-500/20">
                     <DialogHeader>
-                        <DialogTitle className="text-white text-xl">Nova Chave Pix</DialogTitle>
+                        <DialogTitle className="text-foreground text-xl">Nova Chave Pix</DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <label className="block text-sm font-medium mb-2 text-white/70">
+                            <label className="block text-sm font-medium mb-2 text-muted-foreground">
                                 Tipo de chave
                             </label>
                             <Select value={newType} onValueChange={setNewType}>
-                                <SelectTrigger className="w-full border-white/10 bg-white/5 text-white">
+                                <SelectTrigger className="w-full border-border bg-background text-foreground">
                                     <SelectValue placeholder="Selecione o tipo" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a1025] border-white/10">
-                                    <SelectItem value="CPF" className="text-white hover:bg-white/10">CPF</SelectItem>
-                                    <SelectItem value="CNPJ" className="text-white hover:bg-white/10">CNPJ</SelectItem>
-                                    <SelectItem value="EMAIL" className="text-white hover:bg-white/10">E-mail</SelectItem>
-                                    <SelectItem value="PHONE" className="text-white hover:bg-white/10">Telefone</SelectItem>
-                                    <SelectItem value="RANDOM" className="text-white hover:bg-white/10">Aleatória</SelectItem>
+                                <SelectContent className="bg-card border-border">
+                                    <SelectItem value="CPF" className="text-foreground hover:bg-accent">CPF</SelectItem>
+                                    <SelectItem value="CNPJ" className="text-foreground hover:bg-accent">CNPJ</SelectItem>
+                                    <SelectItem value="EMAIL" className="text-foreground hover:bg-accent">E-mail</SelectItem>
+                                    <SelectItem value="PHONE" className="text-foreground hover:bg-accent">Telefone</SelectItem>
+                                    <SelectItem value="RANDOM" className="text-foreground hover:bg-accent">Aleatória</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
                         {newType !== "RANDOM" && (
                             <div>
-                                <label className="block text-sm font-medium mb-2 text-white/70">
+                                <label className="block text-sm font-medium mb-2 text-muted-foreground">
                                     Valor da chave
                                 </label>
                                 <Input
@@ -352,9 +352,9 @@ export default function CustomerPixPage() {
                                         "+55 11 99999-9999"
                                     }
                                     required
-                                    className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
+                                    className="border-border bg-background text-foreground placeholder:text-muted-foreground/50"
                                 />
-                                <p className="text-white/40 text-xs mt-2">
+                                <p className="text-muted-foreground text-xs mt-2">
                                     {newType === "CPF" || newType === "CNPJ" || newType === "EMAIL" || newType === "PHONE" 
                                         ? "Se corresponder aos seus dados cadastrados, será validada automaticamente."
                                         : ""}
@@ -365,10 +365,10 @@ export default function CustomerPixPage() {
                         {newType === "RANDOM" && (
                             <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
                                 <div className="flex items-start gap-3">
-                                    <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                                    <AlertCircle className="w-5 h-5 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
                                     <div>
-                                        <p className="text-white/80 text-sm font-medium">Chave Aleatória</p>
-                                        <p className="text-white/50 text-xs mt-1">
+                                        <p className="text-foreground text-sm font-medium">Chave Aleatória</p>
+                                        <p className="text-muted-foreground text-xs mt-1">
                                             Uma chave será gerada automaticamente. Chaves aleatórias requerem validação manual.
                                         </p>
                                     </div>
@@ -381,7 +381,7 @@ export default function CustomerPixPage() {
                                 type="button"
                                 variant="ghost"
                                 onClick={() => setShowModal(false)}
-                                className="flex-1 bg-white/5 border border-white/10 text-white hover:bg-white/10"
+                                className="flex-1 bg-muted border border-border text-foreground hover:bg-accent"
                             >
                                 Cancelar
                             </Button>
@@ -405,18 +405,18 @@ export default function CustomerPixPage() {
             </Dialog>
 
             <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
-                <DialogContent className="bg-[#0a0118] border border-red-500/20 max-w-sm">
+                <DialogContent className="bg-card border border-red-500/20 max-w-sm">
                     <DialogHeader>
-                        <DialogTitle className="text-white text-xl">Remover Chave Pix</DialogTitle>
+                        <DialogTitle className="text-foreground text-xl">Remover Chave Pix</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4">
-                        <p className="text-white/70">
+                        <p className="text-muted-foreground">
                             Tem certeza que deseja remover esta chave Pix?
                         </p>
                         {keyToDelete && (
-                            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                                <p className="text-white font-medium">{getKeyTypeLabel(keyToDelete.keyType)}</p>
-                                <code className="text-white/50 text-sm">{keyToDelete.keyValue}</code>
+                            <div className="bg-muted border border-border rounded-xl p-4">
+                                <p className="text-foreground font-medium">{getKeyTypeLabel(keyToDelete.keyType)}</p>
+                                <code className="text-muted-foreground text-sm">{keyToDelete.keyValue}</code>
                             </div>
                         )}
                         <div className="flex gap-3 pt-2">
@@ -424,7 +424,7 @@ export default function CustomerPixPage() {
                                 type="button"
                                 variant="ghost"
                                 onClick={() => setShowDeleteModal(false)}
-                                className="flex-1 bg-white/5 border border-white/10 text-white hover:bg-white/10"
+                                className="flex-1 bg-muted border border-border text-foreground hover:bg-accent"
                             >
                                 Cancelar
                             </Button>
