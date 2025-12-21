@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import http from "@/lib/http";
-import { ArrowDownLeft, ArrowUpRight, ArrowRightLeft, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, ArrowRightLeft, Loader2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -297,31 +297,89 @@ export default function TransactionsPage() {
                             {filteredTransactions.map(renderTransaction)}
                         </div>
                         
-                        {(totalPages > 1 || total > ITEMS_PER_PAGE) && (
-                            <div className="flex items-center justify-between p-4 border-t border-border">
+                        {totalPages > 1 && (
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border">
                                 <p className="text-sm text-muted-foreground">
-                                    Página {page} de {totalPages} ({filteredTransactions.length} de {total})
+                                    Mostrando {filteredTransactions.length} de {total} transações
                                 </p>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1">
                                     <Button
                                         variant="outline"
-                                        size="sm"
-                                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                                        size="icon"
+                                        onClick={() => setPage(1)}
                                         disabled={page === 1}
-                                        className="border-border"
+                                        className="h-8 w-8 border-border"
                                     >
-                                        <ChevronLeft className="w-4 h-4" />
-                                        Anterior
+                                        <ChevronsLeft className="w-4 h-4" />
                                     </Button>
                                     <Button
                                         variant="outline"
-                                        size="sm"
+                                        size="icon"
+                                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                                        disabled={page === 1}
+                                        className="h-8 w-8 border-border"
+                                    >
+                                        <ChevronLeft className="w-4 h-4" />
+                                    </Button>
+                                    
+                                    {(() => {
+                                        const pages: (number | string)[] = [];
+                                        const showPages = 5;
+                                        let start = Math.max(1, page - Math.floor(showPages / 2));
+                                        let end = Math.min(totalPages, start + showPages - 1);
+                                        
+                                        if (end - start + 1 < showPages) {
+                                            start = Math.max(1, end - showPages + 1);
+                                        }
+                                        
+                                        if (start > 1) {
+                                            pages.push(1);
+                                            if (start > 2) pages.push("...");
+                                        }
+                                        
+                                        for (let i = start; i <= end; i++) {
+                                            pages.push(i);
+                                        }
+                                        
+                                        if (end < totalPages) {
+                                            if (end < totalPages - 1) pages.push("...");
+                                            pages.push(totalPages);
+                                        }
+                                        
+                                        return pages.map((p, idx) => 
+                                            p === "..." ? (
+                                                <span key={`dots-${idx}`} className="px-2 text-muted-foreground">...</span>
+                                            ) : (
+                                                <Button
+                                                    key={p}
+                                                    variant={page === p ? "default" : "outline"}
+                                                    size="icon"
+                                                    onClick={() => setPage(p as number)}
+                                                    className={`h-8 w-8 ${page === p ? "bg-violet-600 hover:bg-violet-500 text-white" : "border-border"}`}
+                                                >
+                                                    {p}
+                                                </Button>
+                                            )
+                                        );
+                                    })()}
+                                    
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
                                         onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                                         disabled={page === totalPages}
-                                        className="border-border"
+                                        className="h-8 w-8 border-border"
                                     >
-                                        Próxima
                                         <ChevronRight className="w-4 h-4" />
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        onClick={() => setPage(totalPages)}
+                                        disabled={page === totalPages}
+                                        className="h-8 w-8 border-border"
+                                    >
+                                        <ChevronsRight className="w-4 h-4" />
                                     </Button>
                                 </div>
                             </div>
