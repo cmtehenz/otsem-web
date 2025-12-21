@@ -92,7 +92,7 @@ export default function WalletPage() {
             if (res.status === 200 || res.status === 201) {
                 const data = res.data;
                 
-                const publicKey = data.publicKey || data.externalAddress;
+                const publicKey = data.publicKey || data.address || data.externalAddress || data.wallet?.externalAddress;
                 const secretKey = data.secretKey || data.privateKey;
                 const wallet = data.wallet || data;
                 
