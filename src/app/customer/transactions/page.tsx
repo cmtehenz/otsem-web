@@ -83,29 +83,19 @@ export default function TransactionsPage() {
     async function fetchTransactions() {
         setLoading(true);
         try {
-            const res = await http.get<{ data: Transaction[]; total: number; page: number; limit: number } | Transaction[]>(
-                `/transactions?page=${page}&limit=${ITEMS_PER_PAGE}`
-            );
+            const res = await http.get<{
+                data: Transaction[];
+                total: number;
+                page: number;
+                limit: number;
+                totalPages: number;
+                hasNext: boolean;
+                hasPrev: boolean;
+            }>(`/transactions?page=${page}&limit=${ITEMS_PER_PAGE}`);
             
-            let txList: Transaction[] = [];
-            let txTotal = 0;
-            
-            if (Array.isArray(res.data)) {
-                txList = res.data;
-                txTotal = res.data.length;
-            } else if (res.data && typeof res.data === 'object') {
-                if ('data' in res.data && Array.isArray(res.data.data)) {
-                    txList = res.data.data;
-                    txTotal = res.data.total || res.data.data.length;
-                } else if ('transactions' in (res.data as any)) {
-                    txList = (res.data as any).transactions;
-                    txTotal = (res.data as any).total || txList.length;
-                }
-            }
-            
-            setTransactions(txList);
-            setTotal(txTotal);
-            setTotalPages(Math.max(1, Math.ceil(txTotal / ITEMS_PER_PAGE)));
+            setTransactions(res.data.data || []);
+            setTotal(res.data.total || 0);
+            setTotalPages(res.data.totalPages || 1);
         } catch (err) {
             console.error("Erro ao carregar transações:", err);
             setTransactions([]);
