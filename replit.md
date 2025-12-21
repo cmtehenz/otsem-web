@@ -1,12 +1,25 @@
-# OTSEM Bank - Digital Banking Platform
+# OtsemPay - Digital Banking Platform
 
 ## Overview
 
-OTSEM Bank is a digital banking platform built with Next.js 14 that provides comprehensive financial services including PIX payments, BRL/USDT cryptocurrency conversion, card payments, and KYC management. The application serves two user roles: customers who access banking features and administrators who manage the platform.
+OtsemPay is a digital banking platform built with Next.js 14 that provides comprehensive financial services including PIX payments, BRL/USDT cryptocurrency conversion, card payments, and KYC management. The application serves two user roles: customers who access banking features and administrators who manage the platform.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+## Theme System
+
+The app uses **next-themes** for light/dark mode switching:
+- **Default theme**: Dark mode
+- **Toggle location**: Header (customer layout) - sun/moon icons
+- **Storage**: localStorage with `theme` key
+- **CSS variables**: Defined in `globals.css` with `:root` (light) and `.dark` (dark) selectors
+- **Color scheme**: 
+  - Light: `#f8f7fc` background, `#1a1025` text
+  - Dark: `#0a0118` background, `#f8f7fc` text
+- **Brand colors**: Violet/purple gradients maintained in both themes
+- **Components**: ThemeProvider (`src/components/theme-provider.tsx`), ThemeToggle (`src/components/theme-toggle.tsx`)
 
 ## System Architecture
 
