@@ -36,8 +36,10 @@ type Transaction = {
             cpfCnpj?: string;
         };
         endToEndId?: string;
-        usdtAmount?: string;
+        usdtAmount?: number;
         rate?: string;
+        walletAddress?: string;
+        network?: string;
     } | null;
     createdAt: string;
     completedAt: string | null;
@@ -150,11 +152,20 @@ export default function TransactionsPage() {
         
         if (isConversion || isConversionByDesc) {
             isConversionTx = true;
-            displayName = "Compra de USDT";
+            
+            const walletAddr = tx.externalData?.walletAddress;
+            const network = tx.externalData?.network;
+            
+            if (walletAddr && network) {
+                const truncated = `${walletAddr.slice(0, 8)}...${walletAddr.slice(-8)}`;
+                displayName = `Compra de USDT carteira ${truncated} ${network}`;
+            } else {
+                displayName = "Compra de USDT";
+            }
             
             const usdtRaw = tx.usdtAmount || tx.externalData?.usdtAmount;
             if (usdtRaw) {
-                usdtAmountValue = parseFloat(usdtRaw);
+                usdtAmountValue = typeof usdtRaw === 'number' ? usdtRaw : parseFloat(usdtRaw);
             }
         } else if (tx.description && !isUUID(tx.description)) {
             displayName = tx.description;
