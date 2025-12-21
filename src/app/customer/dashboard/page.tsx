@@ -148,7 +148,7 @@ export default function Dashboard() {
 
                 const [accountRes, transactionsRes] = await Promise.all([
                     http.get<AccountSummary>(`/accounts/${customerId}/summary`),
-                    http.get<Transaction[] | { data: Transaction[] }>("/transactions?limit=5")
+                    http.get<Transaction[] | { data: Transaction[] }>("/transactions?limit=10")
                 ]);
                 
                 if (!cancelled) {
@@ -335,6 +335,7 @@ export default function Dashboard() {
                                 
                                 return !hasMatchingConversion;
                             })
+                            .slice(0, 5)
                             .map((tx) => {
                             const amount = Number(tx.amount);
                             const isIncoming = tx.type === "PIX_IN";
