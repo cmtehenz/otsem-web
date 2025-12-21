@@ -299,16 +299,35 @@ export default function Dashboard() {
                 <div className="divide-y divide-border">
                     {transactions.length > 0 ? (
                         transactions
-                            .filter((tx) => {
+                            .filter((tx, _index, allTx) => {
+                                if (tx.type !== "PIX_OUT") return true;
+                                
                                 const descLower = (tx.description || "").toLowerCase();
-                                const isPixOutForConversion = tx.type === "PIX_OUT" && (
-                                    descLower.includes("usdt") ||
-                                    descLower.includes("conversão") ||
-                                    descLower.includes("conversao") ||
-                                    descLower.includes("buy") ||
-                                    descLower.includes("compra")
-                                );
-                                return !isPixOutForConversion;
+                                if (descLower.includes("usdt") || descLower.includes("conversão") || 
+                                    descLower.includes("conversao") || descLower.includes("buy") || 
+                                    descLower.includes("compra")) {
+                                    return false;
+                                }
+                                
+                                const txTime = new Date(tx.createdAt).getTime();
+                                const txAmount = Number(tx.amount);
+                                
+                                const hasMatchingConversion = allTx.some((other) => {
+                                    if (other.id === tx.id) return false;
+                                    const otherDesc = (other.description || "").toLowerCase();
+                                    const isConversionType = other.type === "CONVERSION" || 
+                                        otherDesc.includes("usdt") || otherDesc.includes("conversão") ||
+                                        otherDesc.includes("buy");
+                                    if (!isConversionType) return false;
+                                    
+                                    const otherTime = new Date(other.createdAt).getTime();
+                                    const otherAmount = Number(other.amount);
+                                    const timeDiff = Math.abs(txTime - otherTime);
+                                    
+                                    return Math.abs(txAmount - otherAmount) < 0.01 && timeDiff < 60000;
+                                });
+                                
+                                return !hasMatchingConversion;
                             })
                             .map((tx) => {
                             const amount = Number(tx.amount);
