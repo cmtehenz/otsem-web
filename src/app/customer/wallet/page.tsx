@@ -89,17 +89,21 @@ export default function WalletPage() {
             const endpoint = selectedNetwork === "SOLANA" ? "/wallet/create-solana" : "/wallet/create-tron";
             const res = await http.post(endpoint);
 
-            if (
-                (res.status === 200 || res.status === 201) &&
-                res.data?.publicKey &&
-                res.data?.secretKey &&
-                res.data?.wallet
-            ) {
-                const { publicKey, secretKey, wallet } = res.data;
-                setWalletKeys({ publicKey, secretKey });
-                toast.success("Carteira criada com sucesso!");
-                setWallets((prev) => [wallet, ...prev]);
-                setShowAddModal(false);
+            if (res.status === 200 || res.status === 201) {
+                const data = res.data;
+                
+                const publicKey = data.publicKey || data.externalAddress;
+                const secretKey = data.secretKey || data.privateKey;
+                const wallet = data.wallet || data;
+                
+                if (publicKey && secretKey) {
+                    setWalletKeys({ publicKey, secretKey });
+                    toast.success("Carteira criada com sucesso!");
+                    setShowAddModal(false);
+                    fetchWallets();
+                } else {
+                    toast.error(data?.message || "Erro ao criar carteira.");
+                }
             } else {
                 toast.error(res.data?.message || "Erro ao criar carteira.");
             }
