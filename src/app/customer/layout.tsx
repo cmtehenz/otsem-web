@@ -9,7 +9,6 @@ import {
     KeyRound,
     ShieldCheck,
     Send,
-    CreditCard,
     Settings,
     LifeBuoy,
     LogOut,
@@ -88,8 +87,7 @@ const menuGroups = [
     {
         title: "Pagamentos",
         items: [
-            { label: "Payouts", href: "/customer/payouts", icon: Send },
-            { label: "Cartões", href: "/customer/card", icon: CreditCard },
+            { label: "Transações", href: "/customer/transactions", icon: Send },
         ],
     },
     {
