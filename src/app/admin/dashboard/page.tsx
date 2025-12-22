@@ -38,9 +38,7 @@ export type DashboardData = {
             total: number;
         };
         usdt: {
-            solana: number;
-            tron: number;
-            total: number;
+            okx: number;
         };
         usdtRate: number;
     };

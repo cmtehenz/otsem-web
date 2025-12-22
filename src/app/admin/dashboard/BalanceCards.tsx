@@ -38,7 +38,7 @@ export default function BalanceCards({ balances }: Props) {
         );
     }
 
-    const totalBRLEquivalent = balances.brl.total + (balances.usdt.total * balances.usdtRate);
+    const totalBRLEquivalent = balances.brl.total + (balances.usdt.okx * balances.usdtRate);
 
     return (
         <div className="grid gap-4 md:grid-cols-3">
@@ -76,19 +76,12 @@ export default function BalanceCards({ balances }: Props) {
                 <CardContent className="p-6">
                     <div className="flex items-start justify-between">
                         <div>
-                            <p className="text-sm font-medium text-muted-foreground">Saldo USDT Total</p>
+                            <p className="text-sm font-medium text-muted-foreground">Saldo USDT (OKX)</p>
                             <p className="mt-2 text-3xl font-bold text-blue-600 dark:text-blue-400">
-                                {formatUSDT(balances.usdt.total)}
+                                {formatUSDT(balances.usdt.okx)}
                             </p>
-                            <div className="mt-3 grid grid-cols-2 gap-4 text-xs">
-                                <div>
-                                    <span className="text-muted-foreground">Solana</span>
-                                    <p className="font-medium">{formatUSDT(balances.usdt.solana)}</p>
-                                </div>
-                                <div>
-                                    <span className="text-muted-foreground">Tron</span>
-                                    <p className="font-medium">{formatUSDT(balances.usdt.tron)}</p>
-                                </div>
+                            <div className="mt-3 text-xs text-muted-foreground">
+                                ≈ {formatBRL(balances.usdt.okx * balances.usdtRate)}
                             </div>
                         </div>
                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10">
