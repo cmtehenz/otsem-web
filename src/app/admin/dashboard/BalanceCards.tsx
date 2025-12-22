@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Wallet, Building2, ArrowRightLeft } from "lucide-react";
+import { Wallet, Banknote, ArrowRightLeft } from "lucide-react";
 import type { DashboardData } from "./page";
 
 type Props = {
@@ -45,19 +45,28 @@ export default function BalanceCards({ balances }: Props) {
             <Card className="border-green-500/20 bg-gradient-to-br from-green-500/5 to-green-600/10">
                 <CardContent className="p-6">
                     <div className="flex items-start justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">Saldo BRL (Banco)</p>
+                        <div className="flex-1">
+                            <p className="text-sm font-medium text-muted-foreground">Saldo BRL Total</p>
                             <p className="mt-2 text-3xl font-bold text-green-600 dark:text-green-400">
-                                {formatBRL(balances.brl.available)}
+                                {formatBRL(balances.brl.total)}
                             </p>
-                            <div className="mt-3 flex gap-4 text-xs">
-                                <span className="text-muted-foreground">
-                                    Bloqueado: <span className="font-medium text-orange-600">{formatBRL(balances.brl.blocked)}</span>
-                                </span>
+                            <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
+                                <div>
+                                    <span className="text-muted-foreground">Inter</span>
+                                    <p className="font-medium">{formatBRL(balances.brl.inter)}</p>
+                                </div>
+                                <div>
+                                    <span className="text-muted-foreground">OKX</span>
+                                    <p className="font-medium">{formatBRL(balances.brl.okx)}</p>
+                                </div>
+                                <div>
+                                    <span className="text-muted-foreground">FD</span>
+                                    <p className="font-medium">{formatBRL(balances.brl.fd)}</p>
+                                </div>
                             </div>
                         </div>
                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/10">
-                            <Building2 className="h-6 w-6 text-green-600" />
+                            <Banknote className="h-6 w-6 text-green-600" />
                         </div>
                     </div>
                 </CardContent>
@@ -67,17 +76,19 @@ export default function BalanceCards({ balances }: Props) {
                 <CardContent className="p-6">
                     <div className="flex items-start justify-between">
                         <div>
-                            <p className="text-sm font-medium text-muted-foreground">Saldo USDT (Carteiras)</p>
+                            <p className="text-sm font-medium text-muted-foreground">Saldo USDT Total</p>
                             <p className="mt-2 text-3xl font-bold text-blue-600 dark:text-blue-400">
                                 {formatUSDT(balances.usdt.total)}
                             </p>
-                            <div className="mt-3 flex gap-4 text-xs">
-                                <span className="text-muted-foreground">
-                                    Solana: <span className="font-medium">{formatUSDT(balances.usdt.solana)}</span>
-                                </span>
-                                <span className="text-muted-foreground">
-                                    Tron: <span className="font-medium">{formatUSDT(balances.usdt.tron)}</span>
-                                </span>
+                            <div className="mt-3 grid grid-cols-2 gap-4 text-xs">
+                                <div>
+                                    <span className="text-muted-foreground">Solana</span>
+                                    <p className="font-medium">{formatUSDT(balances.usdt.solana)}</p>
+                                </div>
+                                <div>
+                                    <span className="text-muted-foreground">Tron</span>
+                                    <p className="font-medium">{formatUSDT(balances.usdt.tron)}</p>
+                                </div>
                             </div>
                         </div>
                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10">

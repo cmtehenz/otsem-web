@@ -32,8 +32,9 @@ export type DashboardData = {
     };
     balances: {
         brl: {
-            available: number;
-            blocked: number;
+            inter: number;
+            okx: number;
+            fd: number;
             total: number;
         };
         usdt: {
