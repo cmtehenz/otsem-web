@@ -1,201 +1,143 @@
 "use client";
 
 import * as React from "react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ArrowDownLeft, ArrowUpRight, Repeat, ExternalLink } from "lucide-react";
+import type { DashboardData } from "./page";
 
-type Transaction = {
-    id: string;
-    createdAt: string;
-    type?: "PIX" | "CARD" | "PAYOUT" | "CRYPTO" | string;
-    asset?: string;
-    amount: number;
-    status: "pending" | "processing" | "completed" | "failed";
-    description?: string;
-    // Possíveis campos alternativos do backend
-    transactionType?: string;
-    currency?: string;
-    direction?: "credit" | "debit";
+type Props = {
+    transactions: DashboardData["recentTransactions"];
 };
 
-type RecentTransactionsProps = {
-    transactions: Transaction[];
+function formatBRL(value: number): string {
+    return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+    }).format(value);
+}
+
+function formatDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
+
+    if (isToday) {
+        return date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    }
+    return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+}
+
+const typeConfig: Record<string, { label: string; icon: React.ElementType; color: string }> = {
+    PIX_IN: { label: "PIX Entrada", icon: ArrowDownLeft, color: "text-green-500 bg-green-500/10" },
+    PIX_OUT: { label: "PIX Saída", icon: ArrowUpRight, color: "text-red-500 bg-red-500/10" },
+    CONVERSION: { label: "Conversão", icon: Repeat, color: "text-blue-500 bg-blue-500/10" },
+    PAYOUT: { label: "Saque", icon: ArrowUpRight, color: "text-amber-500 bg-amber-500/10" },
 };
 
-function formatDate(iso: string) {
-    try {
-        const date = new Date(iso);
-        const today = new Date();
-        const isToday = date.toDateString() === today.toDateString();
+const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+    COMPLETED: { label: "Concluído", variant: "default" },
+    PENDING: { label: "Pendente", variant: "secondary" },
+    PROCESSING: { label: "Processando", variant: "outline" },
+    FAILED: { label: "Falhou", variant: "destructive" },
+};
 
-        if (isToday) {
-            return date.toLocaleTimeString("pt-BR", {
-                hour: "2-digit",
-                minute: "2-digit",
-            });
-        }
-
-        return date.toLocaleDateString("pt-BR", {
-            day: "2-digit",
-            month: "short",
-            hour: "2-digit",
-            minute: "2-digit",
-        });
-    } catch {
-        return iso;
+export default function RecentTransactions({ transactions }: Props) {
+    if (transactions.length === 0) {
+        return (
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <CardTitle>Transações Recentes</CardTitle>
+                    <Button variant="ghost" size="sm" asChild>
+                        <Link href="/admin/transactions">Ver todas</Link>
+                    </Button>
+                </CardHeader>
+                <CardContent>
+                    <div className="flex h-32 flex-col items-center justify-center text-center">
+                        <p className="text-sm text-muted-foreground">Nenhuma transação recente</p>
+                    </div>
+                </CardContent>
+            </Card>
+        );
     }
-}
-
-function formatAmount(amount: number, asset?: string) {
-    const currency = asset || "BRL";
-    try {
-        return new Intl.NumberFormat("pt-BR", {
-            style: "currency",
-            currency,
-            minimumFractionDigits: 2,
-        }).format(amount);
-    } catch {
-        return `${amount.toFixed(2)} ${asset || "BRL"}`;
-    }
-}
-
-function getTransactionType(tx: Transaction): string {
-    return tx.type || tx.transactionType || "PIX";
-}
-
-function getAsset(tx: Transaction): string {
-    return tx.asset || tx.currency || "BRL";
-}
-
-function mapStatus(status: string): { label: string; variant: "default" | "secondary" | "destructive" | "outline"; className?: string } {
-    switch (status?.toLowerCase()) {
-        case "completed":
-        case "success":
-            return { label: "Concluído", variant: "default", className: "bg-green-100 text-green-700 hover:bg-green-100" };
-        case "pending":
-            return { label: "Pendente", variant: "secondary" };
-        case "processing":
-            return { label: "Processando", variant: "outline", className: "border-blue-200 text-blue-700" };
-        case "failed":
-        case "error":
-            return { label: "Falhou", variant: "destructive" };
-        default:
-            return { label: status || "Desconhecido", variant: "secondary" };
-    }
-}
-
-function getTypeIcon(type: string) {
-    const t = type?.toUpperCase();
-    if (t === "PIX" || t === "PAYOUT") {
-        return <ArrowUpRight className="h-3 w-3" />;
-    }
-    return <ArrowDownLeft className="h-3 w-3" />;
-}
-
-function getTypeBadgeColor(type: string): string {
-    const t = type?.toUpperCase();
-    switch (t) {
-        case "PIX":
-            return "bg-blue-100 text-blue-700";
-        case "CARD":
-            return "bg-purple-100 text-purple-700";
-        case "PAYOUT":
-            return "bg-green-100 text-green-700";
-        case "CRYPTO":
-            return "bg-orange-100 text-orange-700";
-        default:
-            return "bg-gray-100 text-gray-700";
-    }
-}
-
-export default function RecentTransactions({ transactions }: RecentTransactionsProps) {
-    // Debug: log primeira transação para ver estrutura real
-    React.useEffect(() => {
-        if (transactions.length > 0) {
-            console.log("Estrutura da transação:", transactions[0]);
-        }
-    }, [transactions]);
 
     return (
-        <Card className="rounded-2xl border-[#000000]/10 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between border-b border-[#000000]/5 pb-4">
-                <CardTitle className="text-base font-semibold">Últimas Transações</CardTitle>
-                <Button variant="ghost" size="sm" asChild>
-                    <Link href="/admin/transactions" className="text-xs text-[#b852ff] hover:text-[#a942ee]">
-                        Ver todas →
+        <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-4">
+                <CardTitle>Transações Recentes</CardTitle>
+                <Button variant="ghost" size="sm" className="gap-1" asChild>
+                    <Link href="/admin/transactions">
+                        Ver todas
+                        <ExternalLink className="h-3 w-3" />
                     </Link>
                 </Button>
             </CardHeader>
-            <CardContent className="pt-4">
-                {transactions.length > 0 ? (
-                    <div className="overflow-x-auto">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="text-xs">Quando</TableHead>
-                                    <TableHead className="text-xs">Tipo</TableHead>
-                                    <TableHead className="text-xs">Moeda</TableHead>
-                                    <TableHead className="text-right text-xs">Valor</TableHead>
-                                    <TableHead className="text-xs">Status</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {transactions.map((tx) => {
-                                    const txType = getTransactionType(tx);
-                                    const asset = getAsset(tx);
-                                    const s = mapStatus(tx.status);
+            <CardContent>
+                <div className="overflow-x-auto">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-[140px]">Tipo</TableHead>
+                                <TableHead>Cliente</TableHead>
+                                <TableHead>Descrição</TableHead>
+                                <TableHead className="text-right">Valor</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead className="text-right">Data</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {transactions.map((tx) => {
+                                const typeInfo = typeConfig[tx.type] || typeConfig.PIX_IN;
+                                const statusInfo = statusConfig[tx.status] || statusConfig.PENDING;
+                                const Icon = typeInfo.icon;
 
-                                    return (
-                                        <TableRow key={tx.id} className="hover:bg-[#faffff]/50">
-                                            <TableCell className="text-xs text-muted-foreground">
+                                return (
+                                    <TableRow key={tx.id} className="hover:bg-muted/50">
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${typeInfo.color}`}>
+                                                    <Icon className="h-3.5 w-3.5" />
+                                                </div>
+                                                <span className="text-xs font-medium">{typeInfo.label}</span>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-sm font-medium">{tx.customerName || "—"}</span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-sm text-muted-foreground line-clamp-1 max-w-[200px]">
+                                                {tx.description || "—"}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <span className={`font-semibold tabular-nums ${
+                                                tx.type === "PIX_IN" ? "text-green-600" : 
+                                                tx.type === "PIX_OUT" || tx.type === "PAYOUT" ? "text-red-600" : 
+                                                "text-blue-600"
+                                            }`}>
+                                                {tx.type === "PIX_IN" ? "+" : tx.type === "PIX_OUT" || tx.type === "PAYOUT" ? "-" : ""}
+                                                {formatBRL(tx.amount)}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge variant={statusInfo.variant} className="text-[10px]">
+                                                {statusInfo.label}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <span className="text-xs text-muted-foreground">
                                                 {formatDate(tx.createdAt)}
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-1.5">
-                                                    {getTypeIcon(txType)}
-                                                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${getTypeBadgeColor(txType)}`}>
-                                                        {txType}
-                                                    </span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className="text-xs font-mono font-medium">{asset}</span>
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <div className="font-semibold tabular-nums">
-                                                    {formatAmount(tx.amount, asset)}
-                                                </div>
-                                                {tx.description && (
-                                                    <div className="mt-0.5 truncate text-[10px] text-muted-foreground max-w-[200px]">
-                                                        {tx.description}
-                                                    </div>
-                                                )}
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge
-                                                    variant={s.variant}
-                                                    className={`text-[10px] font-medium ${s.className || ""}`}
-                                                >
-                                                    {s.label}
-                                                </Badge>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
-                        </Table>
-                    </div>
-                ) : (
-                    <div className="flex flex-col items-center justify-center py-12">
-                        <p className="text-sm text-muted-foreground">
-                            Nenhuma transação recente
-                        </p>
-                    </div>
-                )}
+                                            </span>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
+                </div>
             </CardContent>
         </Card>
     );

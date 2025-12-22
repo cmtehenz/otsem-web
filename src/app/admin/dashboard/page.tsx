@@ -1,178 +1,146 @@
-// src/app/(admin)/dashboard/page.tsx
 "use client";
 
 import * as React from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, RefreshCw } from "lucide-react";
 import http from "@/lib/http";
 import { toast } from "sonner";
-import DashboardSummary from "./DashboardSummary";
-import AccountBalance from "./AccountBalance";
+import { Button } from "@/components/ui/button";
+
+import KPICards from "./KPICards";
+import BalanceCards from "./BalanceCards";
+import ChartsSection from "./ChartsSection";
 import RecentTransactions from "./RecentTransactions";
-import RecentUsers from "./RecentUsers";
+import AlertsSection from "./AlertsSection";
 import QuickActions from "./QuickActions";
 
-type BankingTransaction = {
-    dataEntrada: string;
-    tipoTransacao: string;
-    tipoOperacao: string;
-    valor: string;
-    titulo: string;
-    descricao: string;
-};
-
-type DashboardStats = {
-    customers: {
-        total: number;
+export type DashboardData = {
+    kpis: {
+        totalUsers: number;
+        usersToday: number;
+        usersThisWeek: number;
+        usersThisMonth: number;
+        kycPending: number;
+        kycApproved: number;
+        kycRejected: number;
+        totalTransactions: number;
+        transactionsToday: number;
+        volumeToday: number;
+        volumeThisWeek: number;
+        volumeThisMonth: number;
+        conversionsToday: number;
+        conversionsVolume: number;
     };
-    deposits: {
-        total: number;
-        pending: number;
-        confirmed: number;
-        totalValue: number;
-    };
-    payouts: {
-        total: number;
-        totalValue: number;
-    };
-    banking: {
-        saldo: {
-            bloqueadoCheque: number;
-            disponivel: number;
-            bloqueadoJudicialmente: number;
-            bloqueadoAdministrativo: number;
-            limite: number;
+    balances: {
+        brl: {
+            available: number;
+            blocked: number;
+            total: number;
         };
-        extrato: {
-            transacoes: BankingTransaction[];
+        usdt: {
+            solana: number;
+            tron: number;
+            total: number;
         };
-        timestamp: string;
+        usdtRate: number;
     };
+    charts: {
+        transactionsLast7Days: { date: string; count: number; volume: number }[];
+        usersLast30Days: { date: string; count: number }[];
+        transactionsByType: { type: string; count: number; volume: number }[];
+    };
+    recentTransactions: {
+        id: string;
+        type: string;
+        amount: number;
+        currency: string;
+        status: string;
+        description: string;
+        customerName: string;
+        createdAt: string;
+    }[];
+    alerts: {
+        id: string;
+        type: "kyc_pending" | "high_value" | "error" | "warning";
+        title: string;
+        description: string;
+        actionUrl?: string;
+        createdAt: string;
+    }[];
     timestamp: string;
-};
-
-type Summary = {
-    totalUsers: number;
-    activeToday: number;
-    volumeBRL: number;
-    pixKeys: number;
-    cardTxs: number;
-    chargebacks: number;
-};
-
-type Balance = {
-    accountHolderId: string;
-    availableBalance: number;
-    blockedBalance: number;
-    totalBalance: number;
-    currency: string;
-    updatedAt: string;
-};
-
-type User = {
-    id: string;
-    name?: string;
-    email: string;
-    createdAt: string;
-    accountStatus?: string;
 };
 
 export default function AdminDashboardPage(): React.JSX.Element {
     const [loading, setLoading] = React.useState(true);
-    const [summary, setSummary] = React.useState<Summary | null>(null);
-    const [balance, setBalance] = React.useState<Balance | null>(null);
-    const [recentTxs, setRecentTxs] = React.useState<any[]>([]);
-    const [recentUsers, setRecentUsers] = React.useState<User[]>([]);
+    const [refreshing, setRefreshing] = React.useState(false);
+    const [data, setData] = React.useState<DashboardData | null>(null);
+
+    const loadData = React.useCallback(async (showRefresh = false) => {
+        try {
+            if (showRefresh) setRefreshing(true);
+            else setLoading(true);
+
+            const response = await http.get<DashboardData>("/admin/dashboard/stats");
+            setData(response.data);
+        } catch (err: any) {
+            console.error(err);
+            toast.error("Falha ao carregar dashboard");
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
+        }
+    }, []);
 
     React.useEffect(() => {
-        let cancelled = false;
-
-        async function load() {
-            try {
-                setLoading(true);
-
-                // Buscar dados do dashboard
-                const statsRes = await http.get<DashboardStats>("/admin/dashboard/stats");
-                if (cancelled) return;
-
-                const stats = statsRes.data;
-
-                // Converter os dados para o formato esperado pelos componentes
-                const convertedSummary: Summary = {
-                    totalUsers: stats.customers.total,
-                    activeToday: stats.deposits.confirmed, // Usando depósitos confirmados como proxy
-                    volumeBRL: stats.deposits.totalValue + stats.payouts.totalValue,
-                    pixKeys: 0, // não disponível no novo endpoint
-                    cardTxs: stats.deposits.total + stats.payouts.total,
-                    chargebacks: 0, // não disponível no novo endpoint
-                };
-
-                const convertedBalance: Balance = {
-                    accountHolderId: "master", // placeholder
-                    availableBalance: stats.banking.saldo.disponivel,
-                    blockedBalance:
-                        stats.banking.saldo.bloqueadoCheque +
-                        stats.banking.saldo.bloqueadoJudicialmente +
-                        stats.banking.saldo.bloqueadoAdministrativo,
-                    totalBalance:
-                        stats.banking.saldo.disponivel +
-                        stats.banking.saldo.bloqueadoCheque +
-                        stats.banking.saldo.bloqueadoJudicialmente +
-                        stats.banking.saldo.bloqueadoAdministrativo,
-                    currency: "BRL",
-                    updatedAt: stats.banking.timestamp,
-                };
-
-                // Converter transações bancárias para o formato esperado
-                const convertedTransactions = stats.banking.extrato.transacoes.map((tx, index) => ({
-                    id: `tx-${index}`,
-                    type: tx.tipoOperacao === 'C' ? 'credit' : 'debit',
-                    amount: parseFloat(tx.valor),
-                    description: tx.descricao,
-                    title: tx.titulo,
-                    transactionType: tx.tipoTransacao,
-                    createdAt: tx.dataEntrada,
-                    status: 'completed',
-                }));
-
-                setSummary(convertedSummary);
-                setBalance(convertedBalance);
-                setRecentTxs(convertedTransactions);
-
-                // Como não temos latestUsers no novo formato, deixamos vazio
-                setRecentUsers([]);
-
-            } catch (err: any) {
-                if (!cancelled) {
-                    console.error(err);
-                    toast.error("Falha ao carregar dashboard");
-                }
-            } finally {
-                if (!cancelled) setLoading(false);
-            }
-        }
-
-        load();
-        return () => {
-            cancelled = true;
-        };
-    }, []);
+        loadData();
+    }, [loadData]);
 
     if (loading) {
         return (
             <div className="flex h-96 flex-col items-center justify-center">
-                <Loader2 className="mb-4 h-8 w-8 animate-spin text-[#b852ff]" />
+                <Loader2 className="mb-4 h-8 w-8 animate-spin text-red-500" />
                 <p className="text-sm text-muted-foreground">Carregando dashboard...</p>
             </div>
         );
     }
 
     return (
-        <div className="space-y-6 p-6">
-            <h1 className="text-2xl font-bold tracking-tight">Dashboard Admin</h1>
-            <AccountBalance balance={balance} />
-            <DashboardSummary summary={summary} />
-            <RecentTransactions transactions={recentTxs} />
-            <RecentUsers users={recentUsers} />
+        <div className="space-y-6">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+                    {data?.timestamp && (
+                        <p className="text-sm text-muted-foreground">
+                            Atualizado em {new Date(data.timestamp).toLocaleString("pt-BR")}
+                        </p>
+                    )}
+                </div>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => loadData(true)}
+                    disabled={refreshing}
+                    className="gap-2"
+                >
+                    <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+                    Atualizar
+                </Button>
+            </div>
+
+            <BalanceCards balances={data?.balances ?? null} />
+
+            <KPICards kpis={data?.kpis ?? null} />
+
+            <div className="grid gap-6 lg:grid-cols-3">
+                <div className="lg:col-span-2">
+                    <ChartsSection charts={data?.charts ?? null} />
+                </div>
+                <div>
+                    <AlertsSection alerts={data?.alerts ?? []} />
+                </div>
+            </div>
+
+            <RecentTransactions transactions={data?.recentTransactions ?? []} />
+
             <QuickActions />
         </div>
     );
