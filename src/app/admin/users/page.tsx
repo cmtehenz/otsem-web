@@ -15,6 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useDebounce } from "use-debounce";
+import { SendEmailModal } from "@/components/modals/send-email-modal";
 
 type User = {
     id: string;
@@ -99,6 +100,14 @@ export default function AdminUsersPage() {
     const [debouncedSearch] = useDebounce(search, 500);
     const [kycFilter, setKycFilter] = React.useState(searchParams?.get("kyc") || "all");
     const [statusFilter, setStatusFilter] = React.useState(searchParams?.get("status") || "all");
+
+    const [emailModalOpen, setEmailModalOpen] = React.useState(false);
+    const [selectedUserForEmail, setSelectedUserForEmail] = React.useState<User | null>(null);
+
+    const openEmailModal = (user: User) => {
+        setSelectedUserForEmail(user);
+        setEmailModalOpen(true);
+    };
 
     const loadUsers = React.useCallback(async (page = 1) => {
         try {
@@ -272,7 +281,7 @@ export default function AdminUsersPage() {
                                                                         Ver detalhes
                                                                     </Link>
                                                                 </DropdownMenuItem>
-                                                                <DropdownMenuItem>
+                                                                <DropdownMenuItem onClick={() => openEmailModal(user)}>
                                                                     <Mail className="mr-2 h-4 w-4" />
                                                                     Enviar email
                                                                 </DropdownMenuItem>
@@ -330,6 +339,16 @@ export default function AdminUsersPage() {
                     )}
                 </CardContent>
             </Card>
+
+            {selectedUserForEmail && (
+                <SendEmailModal
+                    open={emailModalOpen}
+                    onOpenChange={setEmailModalOpen}
+                    userId={selectedUserForEmail.id}
+                    userName={selectedUserForEmail.name}
+                    userEmail={selectedUserForEmail.email}
+                />
+            )}
         </div>
     );
 }
