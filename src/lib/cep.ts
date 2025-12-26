@@ -55,15 +55,11 @@ function isValidViaCepResponse(data: unknown): data is ViaCepResponse {
 export async function fetchCep(rawCep: string, signal?: AbortSignal): Promise<ViaCepResponse> {
     const cep = onlyDigits(rawCep);
 
-    console.log("[fetchCep] CEP original:", rawCep);
-    console.log("[fetchCep] CEP limpo:", cep);
-
     if (!isValidCep(cep)) {
         throw new Error("CEP inválido. Use 8 dígitos.");
     }
 
     const url = `https://viacep.com.br/ws/${cep}/json/`;
-    console.log("[fetchCep] URL:", url);
 
     try {
         const res = await fetch(url, {
@@ -73,14 +69,11 @@ export async function fetchCep(rawCep: string, signal?: AbortSignal): Promise<Vi
             }
         });
 
-        console.log("[fetchCep] Status:", res.status);
-
         if (!res.ok) {
             throw new Error(`Falha ao consultar CEP (HTTP ${res.status})`);
         }
 
         const data: unknown = await res.json();
-        console.log("[fetchCep] Resposta:", data);
 
         if (isViaCepError(data)) {
             throw new Error("CEP não encontrado");

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -64,7 +65,7 @@ export function WithdrawModal() {
             } else {
                 setStep("select");
             }
-        } catch (err) {
+        } catch {
             setPixKeys([]);
             setStep("nokeys");
         }
@@ -128,11 +129,12 @@ export function WithdrawModal() {
             setStep("success");
             triggerRefresh();
             toast.success("PIX enviado com sucesso!");
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error("Send PIX error:", err);
-            const message = err?.response?.data?.message || "Erro ao enviar PIX";
-            setError(message);
-            toast.error(message);
+            const message = isAxiosError(err) ? err.response?.data?.message : undefined;
+            const fallbackMessage = message || "Erro ao enviar PIX";
+            setError(fallbackMessage);
+            toast.error(fallbackMessage);
         } finally {
             setLoading(false);
         }

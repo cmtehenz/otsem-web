@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Loader2, Mail, Send } from "lucide-react";
+import { isAxiosError } from "axios";
 import { toast } from "sonner";
 
 import {
@@ -97,9 +98,11 @@ export function SendEmailModal({ open, onOpenChange, userId, userName, userEmail
             });
             toast.success("Email enviado com sucesso");
             onOpenChange(false);
-        } catch (err: any) {
-            const errorMsg = err?.response?.data?.message || "Falha ao enviar email";
-            toast.error(errorMsg);
+        } catch (err: unknown) {
+            const errorMsg = isAxiosError(err)
+                ? err.response?.data?.message
+                : "Falha ao enviar email";
+            toast.error(errorMsg || "Falha ao enviar email");
         } finally {
             setLoading(false);
         }
