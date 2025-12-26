@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import http from "@/lib/http";
 import { ArrowDownLeft, ArrowUpRight, ArrowRightLeft, Loader2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -78,11 +78,7 @@ export default function TransactionsPage() {
     const [totalPages, setTotalPages] = useState(1);
     const [total, setTotal] = useState(0);
 
-    useEffect(() => {
-        fetchTransactions();
-    }, [page]);
-
-    async function fetchTransactions() {
+    const fetchTransactions = useCallback(async () => {
         setLoading(true);
         try {
             const res = await http.get<{
@@ -104,7 +100,11 @@ export default function TransactionsPage() {
         } finally {
             setLoading(false);
         }
-    }
+    }, [page]);
+
+    useEffect(() => {
+        fetchTransactions();
+    }, [fetchTransactions]);
 
     function filterTransactions(txs: Transaction[]): Transaction[] {
         return txs.filter((tx, _index, allTx) => {
@@ -326,7 +326,7 @@ export default function TransactionsPage() {
                                         const pages: (number | string)[] = [];
                                         const showPages = 5;
                                         let start = Math.max(1, page - Math.floor(showPages / 2));
-                                        let end = Math.min(totalPages, start + showPages - 1);
+                                        const end = Math.min(totalPages, start + showPages - 1);
                                         
                                         if (end - start + 1 < showPages) {
                                             start = Math.max(1, end - showPages + 1);

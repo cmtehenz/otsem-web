@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { isAxiosError } from "axios";
 import { User, Lock, Bell, Palette, ChevronRight, Check, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,7 +23,7 @@ type CustomerData = {
 };
 
 export default function SettingsPage() {
-    const { user } = useAuth();
+    const { user: _user } = useAuth();
     const { theme, setTheme } = useTheme();
     const [loading, setLoading] = React.useState(true);
     const [saving, setSaving] = React.useState(false);
@@ -105,9 +106,10 @@ export default function SettingsPage() {
             setCurrentPassword("");
             setNewPassword("");
             setConfirmPassword("");
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error("Erro ao alterar senha:", err);
-            toast.error(err?.response?.data?.message || "Erro ao alterar senha");
+            const message = isAxiosError(err) ? err.response?.data?.message : undefined;
+            toast.error(message || "Erro ao alterar senha");
         } finally {
             setChangingPassword(false);
         }

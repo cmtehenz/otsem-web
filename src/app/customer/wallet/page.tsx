@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { isAxiosError } from "axios";
 import http from "@/lib/http";
 import { toast } from "sonner";
 import { Copy, Shield, Wallet, RefreshCw, Plus, ExternalLink, Loader2, Star, Trash2, MoreVertical, Check } from "lucide-react";
@@ -50,6 +51,12 @@ const NETWORKS: { id: NetworkType; name: string; icon: string; color: string }[]
     { id: "TRON", name: "Tron (TRC20)", icon: "◈", color: "text-red-600 dark:text-red-400 bg-red-500/20" },
 ];
 
+function getErrorMessage(err: unknown, fallback: string): string {
+    if (isAxiosError(err)) return err.response?.data?.message || fallback;
+    if (err instanceof Error) return err.message || fallback;
+    return fallback;
+}
+
 export default function WalletPage() {
     const [wallets, setWallets] = useState<WalletType[]>([]);
     const [loadingWallets, setLoadingWallets] = useState(true);
@@ -76,7 +83,7 @@ export default function WalletPage() {
         try {
             const res = await http.get<WalletType[]>("/wallet");
             setWallets(res.data);
-        } catch (err) {
+        } catch {
             setWallets([]);
         } finally {
             setLoadingWallets(false);
@@ -88,8 +95,8 @@ export default function WalletPage() {
             await http.post("/wallet/sync-all");
             await fetchWallets();
             toast.success("Saldos sincronizados!");
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message || "Erro ao sincronizar saldos");
+        } catch (err: unknown) {
+            toast.error(getErrorMessage(err, "Erro ao sincronizar saldos"));
         }
     }
 
@@ -98,8 +105,8 @@ export default function WalletPage() {
             await http.post(`/wallet/${walletId}/sync`);
             await fetchWallets();
             toast.success("Saldo atualizado!");
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message || "Erro ao sincronizar saldo");
+        } catch (err: unknown) {
+            toast.error(getErrorMessage(err, "Erro ao sincronizar saldo"));
         }
     }
 
@@ -114,7 +121,6 @@ export default function WalletPage() {
                 
                 const publicKey = data.publicKey || data.address || data.externalAddress || data.wallet?.externalAddress;
                 const secretKey = data.secretKey || data.privateKey;
-                const wallet = data.wallet || data;
                 
                 if (publicKey && secretKey) {
                     setWalletKeys({ publicKey, secretKey });
@@ -127,8 +133,8 @@ export default function WalletPage() {
             } else {
                 toast.error(res.data?.message || "Erro ao criar carteira.");
             }
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message || "Erro ao criar carteira.");
+        } catch (err: unknown) {
+            toast.error(getErrorMessage(err, "Erro ao criar carteira."));
         } finally {
             setCreating(false);
         }
@@ -156,8 +162,8 @@ export default function WalletPage() {
             } else {
                 toast.error(res.data?.message || "Erro ao adicionar carteira.");
             }
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message || "Erro ao adicionar carteira.");
+        } catch (err: unknown) {
+            toast.error(getErrorMessage(err, "Erro ao adicionar carteira."));
         } finally {
             setImporting(false);
         }
@@ -181,8 +187,8 @@ export default function WalletPage() {
             toast.success("Carteira renomeada!");
             setEditWallet(null);
             fetchWallets();
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message || "Erro ao renomear carteira.");
+        } catch (err: unknown) {
+            toast.error(getErrorMessage(err, "Erro ao renomear carteira."));
         }
     }
 
@@ -191,8 +197,8 @@ export default function WalletPage() {
             await http.patch(`/wallet/${wallet.id}/set-main`);
             toast.success("Carteira definida como principal!");
             fetchWallets();
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message || "Erro ao definir carteira principal.");
+        } catch (err: unknown) {
+            toast.error(getErrorMessage(err, "Erro ao definir carteira principal."));
         }
     }
 
@@ -204,8 +210,8 @@ export default function WalletPage() {
             toast.success("Carteira excluída!");
             setDeleteWallet(null);
             fetchWallets();
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message || "Erro ao excluir carteira.");
+        } catch (err: unknown) {
+            toast.error(getErrorMessage(err, "Erro ao excluir carteira."));
         } finally {
             setDeleting(false);
         }
