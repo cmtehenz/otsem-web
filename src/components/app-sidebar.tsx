@@ -13,6 +13,7 @@ import {
   Bug,
   Flag,
   GalleryVerticalEnd,
+  Wallet,
 } from "lucide-react";
 
 import {
@@ -53,12 +54,11 @@ const nav: Item[] = [
     ],
   },
   {
-    title: "Usuários & KYC",
+    title: "Usuários & Carteiras",
     url: "/admin",
     items: [
       { title: "Usuários", url: "/admin/users", icon: Users },
-      // { title: "Verificações (KYC)", url: "/admin/kyc", icon: ShieldCheck },
-      // { title: "Wallets", url: "/admin/wallets", icon: Wallet },
+      { title: "Carteiras USDT", url: "/admin/wallets", icon: Wallet },
     ],
   },
   {
