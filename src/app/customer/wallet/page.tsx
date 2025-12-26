@@ -66,7 +66,7 @@ export default function WalletPage() {
     const [editLabel, setEditLabel] = useState("");
     const [deleteWallet, setDeleteWallet] = useState<WalletType | null>(null);
     const [deleting, setDeleting] = useState(false);
-    
+
     const [showAddModal, setShowAddModal] = useState(false);
     const [addMode, setAddMode] = useState<"create" | "import">("create");
     const [selectedNetwork, setSelectedNetwork] = useState<NetworkType>("SOLANA");
@@ -118,10 +118,10 @@ export default function WalletPage() {
 
             if (res.status === 200 || res.status === 201) {
                 const data = res.data;
-                
+
                 const publicKey = data.publicKey || data.address || data.externalAddress || data.wallet?.externalAddress;
                 const secretKey = data.secretKey || data.privateKey;
-                
+
                 if (publicKey && secretKey) {
                     setWalletKeys({ publicKey, secretKey });
                     toast.success("Carteira criada com sucesso!");
@@ -304,19 +304,17 @@ export default function WalletPage() {
                         return (
                             <div
                                 key={wallet.id}
-                                className={`bg-card border rounded-2xl p-5 transition ${
-                                    wallet.isMain 
-                                        ? "border-violet-500/50 shadow-lg shadow-violet-500/10" 
+                                className={`bg-card border rounded-2xl p-5 transition ${wallet.isMain
+                                        ? "border-violet-500/50 shadow-lg shadow-violet-500/10"
                                         : "border-border hover:border-violet-500/30"
-                                }`}
+                                    }`}
                             >
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="flex items-center gap-4">
-                                        <div className={`p-3 rounded-xl ${
-                                            wallet.isMain 
-                                                ? "bg-gradient-to-br from-violet-500/30 to-purple-500/30" 
+                                        <div className={`p-3 rounded-xl ${wallet.isMain
+                                                ? "bg-gradient-to-br from-violet-500/30 to-purple-500/30"
                                                 : "bg-gradient-to-br from-violet-500/20 to-purple-500/20"
-                                        }`}>
+                                            }`}>
                                             <Wallet className="w-6 h-6 text-violet-500 dark:text-violet-400" />
                                         </div>
                                         <div>
@@ -433,7 +431,7 @@ export default function WalletPage() {
                 <div>
                     <p className="text-amber-600 dark:text-amber-400 font-medium text-sm">Importante</p>
                     <p className="text-muted-foreground text-sm mt-1">
-                        Envie <strong className="text-foreground">apenas USDT</strong> na rede correta (Solana SPL ou Tron TRC20). 
+                        Envie <strong className="text-foreground">apenas USDT</strong> na rede correta (Solana SPL ou Tron TRC20).
                         Envios em redes diferentes serão perdidos permanentemente.
                     </p>
                 </div>
@@ -455,11 +453,10 @@ export default function WalletPage() {
                                     <button
                                         key={network.id}
                                         onClick={() => setSelectedNetwork(network.id)}
-                                        className={`flex items-center justify-center gap-2 p-4 rounded-xl border transition ${
-                                            selectedNetwork === network.id
+                                        className={`flex items-center justify-center gap-2 p-4 rounded-xl border transition ${selectedNetwork === network.id
                                                 ? "border-violet-500 bg-violet-500/20"
                                                 : "border-border bg-muted hover:border-border"
-                                        }`}
+                                            }`}
                                     >
                                         <span className="text-xl">{network.icon}</span>
                                         <span className="text-foreground font-medium">{network.name}</span>
@@ -476,22 +473,20 @@ export default function WalletPage() {
                             <div className="grid grid-cols-2 gap-3">
                                 <button
                                     onClick={() => setAddMode("create")}
-                                    className={`p-4 rounded-xl border transition text-left ${
-                                        addMode === "create"
+                                    className={`p-4 rounded-xl border transition text-left ${addMode === "create"
                                             ? "border-violet-500 bg-violet-500/20"
                                             : "border-border bg-muted hover:border-border"
-                                    }`}
+                                        }`}
                                 >
                                     <p className="text-foreground font-medium">Criar Nova</p>
                                     <p className="text-muted-foreground text-xs mt-1">Gerar carteira automaticamente</p>
                                 </button>
                                 <button
                                     onClick={() => setAddMode("import")}
-                                    className={`p-4 rounded-xl border transition text-left ${
-                                        addMode === "import"
+                                    className={`p-4 rounded-xl border transition text-left ${addMode === "import"
                                             ? "border-violet-500 bg-violet-500/20"
                                             : "border-border bg-muted hover:border-border"
-                                    }`}
+                                        }`}
                                 >
                                     <p className="text-foreground font-medium">Importar</p>
                                     <p className="text-muted-foreground text-xs mt-1">Usar carteira existente</p>

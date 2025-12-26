@@ -28,17 +28,17 @@ export default function SettingsPage() {
     const [loading, setLoading] = React.useState(true);
     const [saving, setSaving] = React.useState(false);
     const [customer, setCustomer] = React.useState<CustomerData | null>(null);
-    
+
     const [name, setName] = React.useState("");
     const [phone, setPhone] = React.useState("");
-    
+
     const [currentPassword, setCurrentPassword] = React.useState("");
     const [newPassword, setNewPassword] = React.useState("");
     const [confirmPassword, setConfirmPassword] = React.useState("");
     const [showCurrentPassword, setShowCurrentPassword] = React.useState(false);
     const [showNewPassword, setShowNewPassword] = React.useState(false);
     const [changingPassword, setChangingPassword] = React.useState(false);
-    
+
     const [emailNotifications, setEmailNotifications] = React.useState(true);
     const [pushNotifications, setPushNotifications] = React.useState(true);
     const [transactionAlerts, setTransactionAlerts] = React.useState(true);
@@ -67,7 +67,7 @@ export default function SettingsPage() {
             toast.error("Nome é obrigatório");
             return;
         }
-        
+
         setSaving(true);
         try {
             await http.patch("/customers/me", { name, phone });
@@ -85,17 +85,17 @@ export default function SettingsPage() {
             toast.error("Preencha todos os campos");
             return;
         }
-        
+
         if (newPassword !== confirmPassword) {
             toast.error("As senhas não coincidem");
             return;
         }
-        
+
         if (newPassword.length < 6) {
             toast.error("A nova senha deve ter pelo menos 6 caracteres");
             return;
         }
-        
+
         setChangingPassword(true);
         try {
             await http.post("/auth/change-password", {
@@ -155,7 +155,7 @@ export default function SettingsPage() {
                 <TabsContent value="profile" className="space-y-6">
                     <div className="bg-card border border-border rounded-2xl p-6">
                         <h2 className="text-lg font-semibold text-foreground mb-4">Dados Pessoais</h2>
-                        
+
                         <div className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="name">Nome completo</Label>
@@ -167,7 +167,7 @@ export default function SettingsPage() {
                                     className="bg-background"
                                 />
                             </div>
-                            
+
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
                                 <Input
@@ -180,7 +180,7 @@ export default function SettingsPage() {
                                     O email não pode ser alterado
                                 </p>
                             </div>
-                            
+
                             <div className="space-y-2">
                                 <Label htmlFor="phone">Telefone</Label>
                                 <Input
@@ -191,7 +191,7 @@ export default function SettingsPage() {
                                     className="bg-background"
                                 />
                             </div>
-                            
+
                             {customer?.cpf && (
                                 <div className="space-y-2">
                                     <Label htmlFor="cpf">CPF</Label>
@@ -204,7 +204,7 @@ export default function SettingsPage() {
                                 </div>
                             )}
                         </div>
-                        
+
                         <div className="mt-6 flex justify-end">
                             <Button
                                 onClick={handleSaveProfile}
@@ -220,7 +220,7 @@ export default function SettingsPage() {
                 <TabsContent value="security" className="space-y-6">
                     <div className="bg-card border border-border rounded-2xl p-6">
                         <h2 className="text-lg font-semibold text-foreground mb-4">Alterar Senha</h2>
-                        
+
                         <div className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="currentPassword">Senha atual</Label>
@@ -242,7 +242,7 @@ export default function SettingsPage() {
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <div className="space-y-2">
                                 <Label htmlFor="newPassword">Nova senha</Label>
                                 <div className="relative">
@@ -263,7 +263,7 @@ export default function SettingsPage() {
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <div className="space-y-2">
                                 <Label htmlFor="confirmPassword">Confirmar nova senha</Label>
                                 <Input
@@ -276,7 +276,7 @@ export default function SettingsPage() {
                                 />
                             </div>
                         </div>
-                        
+
                         <div className="mt-6 flex justify-end">
                             <Button
                                 onClick={handleChangePassword}
@@ -287,7 +287,7 @@ export default function SettingsPage() {
                             </Button>
                         </div>
                     </div>
-                    
+
                     <div className="bg-card border border-border rounded-2xl p-6">
                         <div className="flex items-center justify-between">
                             <div>
@@ -307,7 +307,7 @@ export default function SettingsPage() {
                 <TabsContent value="notifications" className="space-y-6">
                     <div className="bg-card border border-border rounded-2xl p-6">
                         <h2 className="text-lg font-semibold text-foreground mb-4">Preferências de Notificações</h2>
-                        
+
                         <div className="space-y-6">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -319,7 +319,7 @@ export default function SettingsPage() {
                                     onCheckedChange={setEmailNotifications}
                                 />
                             </div>
-                            
+
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="font-medium text-foreground">Notificações Push</p>
@@ -330,7 +330,7 @@ export default function SettingsPage() {
                                     onCheckedChange={setPushNotifications}
                                 />
                             </div>
-                            
+
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="font-medium text-foreground">Alertas de Transações</p>
@@ -341,7 +341,7 @@ export default function SettingsPage() {
                                     onCheckedChange={setTransactionAlerts}
                                 />
                             </div>
-                            
+
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="font-medium text-foreground">Emails de Marketing</p>
@@ -353,7 +353,7 @@ export default function SettingsPage() {
                                 />
                             </div>
                         </div>
-                        
+
                         <div className="mt-6 flex justify-end">
                             <Button
                                 onClick={() => toast.success("Preferências salvas!")}
@@ -368,15 +368,14 @@ export default function SettingsPage() {
                 <TabsContent value="preferences" className="space-y-6">
                     <div className="bg-card border border-border rounded-2xl p-6">
                         <h2 className="text-lg font-semibold text-foreground mb-4">Aparência</h2>
-                        
+
                         <div className="grid grid-cols-2 gap-4">
                             <button
                                 onClick={() => setTheme("light")}
-                                className={`relative p-4 rounded-xl border-2 transition-all ${
-                                    theme === "light"
+                                className={`relative p-4 rounded-xl border-2 transition-all ${theme === "light"
                                         ? "border-violet-500 bg-violet-500/10"
                                         : "border-border hover:border-muted-foreground"
-                                }`}
+                                    }`}
                             >
                                 <div className="flex flex-col items-center gap-3">
                                     <div className="w-16 h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center">
@@ -390,14 +389,13 @@ export default function SettingsPage() {
                                     </div>
                                 )}
                             </button>
-                            
+
                             <button
                                 onClick={() => setTheme("dark")}
-                                className={`relative p-4 rounded-xl border-2 transition-all ${
-                                    theme === "dark"
+                                className={`relative p-4 rounded-xl border-2 transition-all ${theme === "dark"
                                         ? "border-violet-500 bg-violet-500/10"
                                         : "border-border hover:border-muted-foreground"
-                                }`}
+                                    }`}
                             >
                                 <div className="flex flex-col items-center gap-3">
                                     <div className="w-16 h-12 rounded-lg bg-gray-900 border border-gray-700 flex items-center justify-center">
@@ -413,7 +411,7 @@ export default function SettingsPage() {
                             </button>
                         </div>
                     </div>
-                    
+
                     <div className="bg-card border border-border rounded-2xl p-6">
                         <div className="flex items-center justify-between">
                             <div>

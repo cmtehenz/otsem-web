@@ -59,7 +59,7 @@ export function WithdrawModal() {
             const res = await http.get<PixKey[]>("/pix-keys");
             const keys = res.data || [];
             setPixKeys(keys);
-            
+
             if (keys.length === 0) {
                 setStep("nokeys");
             } else {
@@ -265,7 +265,7 @@ export function WithdrawModal() {
                                     </div>
                                 </button>
                             ))}
-                            
+
                             <button
                                 onClick={handleGoToPixPage}
                                 className="w-full border border-dashed border-border rounded-xl p-4 hover:border-violet-500/50 hover:bg-violet-500/5 transition flex items-center justify-center gap-2 text-muted-foreground hover:text-violet-600 dark:hover:text-violet-300"
