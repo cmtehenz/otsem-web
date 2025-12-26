@@ -113,7 +113,7 @@ function formatPhone(value: string): string {
 export default function AdminUserDetailPage() {
     const params = useParams();
     const router = useRouter();
-    const userId = params.id as string;
+    const userId = params?.id as string;
 
     const [loading, setLoading] = React.useState(true);
     const [user, setUser] = React.useState<UserDetail | null>(null);
