@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { isAxiosError } from "axios";
 import http from "@/lib/http";
 import { Button } from "@/components/ui/button";
 import { Loader2, KeyRound, Plus, Copy, RefreshCw, Trash2, CheckCircle2, Clock, AlertCircle, ShieldCheck, XCircle } from "lucide-react";
@@ -20,6 +21,12 @@ type PixKey = {
     validationError: string | null;
     createdAt: string;
 };
+
+function getErrorMessage(err: unknown, fallback: string): string {
+    if (isAxiosError(err)) return err.response?.data?.message || fallback;
+    if (err instanceof Error) return err.message || fallback;
+    return fallback;
+}
 
 function formatDate(dateStr: string) {
     const d = new Date(dateStr);
@@ -76,7 +83,7 @@ export default function CustomerPixPage() {
             setLoading(true);
             const res = await http.get<PixKey[]>("/pix-keys");
             setPixKeys(res.data || []);
-        } catch (err) {
+        } catch {
             setPixKeys([]);
         } finally {
             setLoading(false);
@@ -100,8 +107,8 @@ export default function CustomerPixPage() {
             setNewType("CPF");
             setNewValue("");
             loadPixKeys();
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message || "Erro ao cadastrar chave Pix");
+        } catch (err: unknown) {
+            toast.error(getErrorMessage(err, "Erro ao cadastrar chave Pix"));
         } finally {
             setSubmitting(false);
         }
@@ -116,8 +123,8 @@ export default function CustomerPixPage() {
             setShowDeleteModal(false);
             setKeyToDelete(null);
             loadPixKeys();
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message || "Erro ao remover chave Pix");
+        } catch (err: unknown) {
+            toast.error(getErrorMessage(err, "Erro ao remover chave Pix"));
         } finally {
             setDeleting(false);
         }
@@ -134,9 +141,8 @@ export default function CustomerPixPage() {
             await http.post(`/inter/pix/validar-chave/${pixKeyId}`);
             toast.success("Chave validada com sucesso!");
             loadPixKeys();
-        } catch (err: any) {
-            const message = err?.response?.data?.message || "Erro ao validar chave";
-            toast.error(message);
+        } catch (err: unknown) {
+            toast.error(getErrorMessage(err, "Erro ao validar chave"));
         } finally {
             setValidating(null);
         }
@@ -193,7 +199,7 @@ export default function CustomerPixPage() {
                         <p className="text-foreground font-medium text-sm">Validação de Chaves</p>
                         <p className="text-muted-foreground text-xs mt-0.5">
                             Chaves CPF, CNPJ, E-mail e Telefone são validadas automaticamente se corresponderem aos seus dados.
-                            Para chaves aleatórias, clique em "Validar" para confirmar via micro-transferência de R$ 0,01.
+                            Para chaves aleatórias, clique em &quot;Validar&quot; para confirmar via micro-transferência de R$ 0,01.
                         </p>
                     </div>
                 </div>

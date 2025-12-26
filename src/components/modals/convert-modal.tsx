@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { isAxiosError } from "axios";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowRight, TrendingUp, CheckCircle2, Wallet, Check, Star } from "lucide-react";
@@ -120,9 +121,9 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
             setStep("success");
             toast.success("Conversão realizada com sucesso!");
             onSuccess?.();
-        } catch (err: any) {
-            const message = err?.response?.data?.message || "Erro ao converter";
-            toast.error(message);
+        } catch (err: unknown) {
+            const message = isAxiosError(err) ? err.response?.data?.message : undefined;
+            toast.error(message || "Erro ao converter");
         } finally {
             setLoading(false);
         }
