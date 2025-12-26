@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Loader2, Wallet, RefreshCw, CheckCircle2, XCircle, Copy, ExternalLink, MoreHorizontal, Shield, ShieldOff } from "lucide-react";
+import { Loader2, Wallet, RefreshCw, CheckCircle2, XCircle, Copy, MoreHorizontal, Shield, ShieldOff } from "lucide-react";
 import { toast } from "sonner";
 
 import http from "@/lib/http";
@@ -103,7 +103,7 @@ export default function AdminWalletsPage() {
                     ? "Carteira marcada como whitelistada"
                     : "Whitelist removida da carteira"
             );
-        } catch (err) {
+        } catch {
             toast.error("Falha ao atualizar carteira");
         } finally {
             setUpdating(null);
@@ -121,7 +121,7 @@ export default function AdminWalletsPage() {
                 )
             );
             toast.success(wallet.isActive ? "Carteira desativada" : "Carteira ativada");
-        } catch (err) {
+        } catch {
             toast.error("Falha ao atualizar carteira");
         } finally {
             setUpdating(null);

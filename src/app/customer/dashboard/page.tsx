@@ -3,7 +3,6 @@
 import * as React from "react";
 import { Loader2, Wallet, ArrowDownLeft, ArrowRightLeft, ArrowUpRight, TrendingUp, RefreshCw } from "lucide-react";
 import http from "@/lib/http";
-import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useUsdtRate } from "@/lib/useUsdtRate";
@@ -165,9 +164,9 @@ export default function Dashboard() {
                     }
                 }
 
-            } catch (err: any) {
+            } catch (error: unknown) {
                 if (!cancelled) {
-                    console.error(err);
+                    console.error(error);
                 }
             } finally {
                 if (!cancelled) setLoading(false);
@@ -178,14 +177,14 @@ export default function Dashboard() {
         return () => {
             cancelled = true;
         };
-    }, [user?.id, refreshTrigger, refreshCounter]);
+    }, [user?.id, user?.customerId, refreshTrigger, refreshCounter]);
 
     React.useEffect(() => {
         async function fetchWallets() {
             try {
                 const res = await http.get<WalletType[]>("/wallet");
                 setWallets(res.data);
-            } catch (err) {
+            } catch {
                 setWallets([]);
             }
         }

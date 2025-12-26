@@ -27,7 +27,7 @@ interface CustomerResponse {
     createdAt: string;
 }
 
-type AccountStatus = "not_requested" | "requested" | "in_review" | "approved" | "rejected" | "pending" | "completed";
+type _AccountStatus = "not_requested" | "requested" | "in_review" | "approved" | "rejected" | "pending" | "completed";
 
 const statusConfig: Record<string, {
     icon: typeof ShieldCheck;
@@ -152,8 +152,9 @@ export default function CustomerKycPage(): React.JSX.Element {
             } else {
                 throw new Error("URL de verificação não recebida");
             }
-        } catch (err: any) {
-            console.error(err);
+        } catch (error: unknown) {
+            console.error(error);
+            const err = error as { response?: { data?: { message?: string } } };
             toast.error(err?.response?.data?.message || "Erro ao iniciar verificação");
         } finally {
             setStartingVerification(false);
@@ -168,7 +169,7 @@ export default function CustomerKycPage(): React.JSX.Element {
             const response = await http.get<{ data: CustomerResponse } | CustomerResponse>(
                 "/customers/me"
             );
-            const data = "data" in response.data ? (response.data as any).data : response.data;
+            const data = "data" in response.data ? (response.data as { data: CustomerResponse }).data : response.data;
             setAccountStatus(data.accountStatus);
             toast.success("Status atualizado!");
         } catch {
