@@ -353,15 +353,15 @@ export default function CustomerPixPage() {
                                     onChange={e => setNewValue(e.target.value)}
                                     placeholder={
                                         newType === "CPF" ? "000.000.000-00" :
-                                        newType === "CNPJ" ? "00.000.000/0000-00" :
-                                        newType === "EMAIL" ? "seu@email.com" :
-                                        "+55 11 99999-9999"
+                                            newType === "CNPJ" ? "00.000.000/0000-00" :
+                                                newType === "EMAIL" ? "seu@email.com" :
+                                                    "+55 11 99999-9999"
                                     }
                                     required
                                     className="border-border bg-background text-foreground placeholder:text-muted-foreground/50"
                                 />
                                 <p className="text-muted-foreground text-xs mt-2">
-                                    {newType === "CPF" || newType === "CNPJ" || newType === "EMAIL" || newType === "PHONE" 
+                                    {newType === "CPF" || newType === "CNPJ" || newType === "EMAIL" || newType === "PHONE"
                                         ? "Se corresponder aos seus dados cadastrados, será validada automaticamente."
                                         : ""}
                                 </p>

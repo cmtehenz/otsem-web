@@ -180,7 +180,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
 
                             <div className="space-y-2">
                                 <p className="text-muted-foreground text-sm">Suas carteiras</p>
-                                
+
                                 {walletsLoading ? (
                                     <div className="flex items-center justify-center py-6">
                                         <Loader2 className="w-6 h-6 text-violet-500 dark:text-violet-400 animate-spin" />
@@ -189,18 +189,17 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                     <div className="space-y-2 max-h-48 overflow-y-auto">
                                         {wallets.map((wallet, index) => {
                                             const isMain = wallet.isMain || index === 0;
-                                            const networkColor = wallet.network === "TRON" 
-                                                ? "text-red-600 dark:text-red-400 bg-red-500/20" 
+                                            const networkColor = wallet.network === "TRON"
+                                                ? "text-red-600 dark:text-red-400 bg-red-500/20"
                                                 : "text-green-600 dark:text-green-400 bg-green-500/20";
                                             return (
                                                 <button
                                                     key={wallet.id}
                                                     onClick={() => setSelectedWalletId(wallet.id)}
-                                                    className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${
-                                                        selectedWalletId === wallet.id
+                                                    className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${selectedWalletId === wallet.id
                                                             ? "border-violet-500 bg-violet-500/20"
                                                             : "border-border bg-muted hover:border-violet-500/30"
-                                                    }`}
+                                                        }`}
                                                 >
                                                     <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
                                                         <Wallet className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
