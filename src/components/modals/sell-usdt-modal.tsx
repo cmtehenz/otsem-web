@@ -180,7 +180,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
             createTransferInstruction 
         } = await import("@solana/spl-token");
 
-        const connection = new Connection("https://solana.drpc.org", "confirmed");
+        const connection = new Connection("https://solana-mainnet.g.alchemy.com/v2/VorawLbwMvjW5ukY0rnl9", "confirmed");
         
         let secretKey: Uint8Array;
         const trimmedPk = pk.trim();
