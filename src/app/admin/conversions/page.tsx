@@ -196,15 +196,11 @@ export default function ConversionsPage() {
             if (statusFilter) params.status = statusFilter;
 
             const query = new URLSearchParams(params).toString();
-            console.log("Request params:", params);
-            console.log("Request URL:", `/admin/conversions?${query}`);
             
             const [conversionsRes, statsRes] = await Promise.all([
                 http.get<{ data: Conversion[] }>(`/admin/conversions?${query}`),
                 http.get<{ data: ConversionStats }>(`/admin/conversions/stats?${query}`),
             ]);
-
-            console.log("Conversions API response:", conversionsRes.data);
 
             // Handle both { data: [...] } and direct array response
             const conversionsData = Array.isArray(conversionsRes.data) 
@@ -456,30 +452,30 @@ export default function ConversionsPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell className="text-right font-medium">
-                                                {formatCurrency(conv.brlPaid)}
+                                                {formatCurrency(conv.brlPaid ?? 0)}
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                {formatUSDT(conv.usdtCredited)}
+                                                {formatUSDT(conv.usdtCredited ?? 0)}
                                             </TableCell>
                                             <TableCell className="text-right text-muted-foreground">
-                                                {conv.spreadApplied.toFixed(1)}%
+                                                {(conv.spreadApplied ?? 0).toFixed(1)}%
                                             </TableCell>
                                             <TableCell className="text-right text-orange-600">
-                                                {formatCurrency(conv.totalOkxFeesBrl)}
+                                                {formatCurrency(conv.totalOkxFeesBrl ?? 0)}
                                             </TableCell>
-                                            <TableCell className={`text-right font-medium ${conv.netProfitBrl >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                                {formatCurrency(conv.netProfitBrl)}
+                                            <TableCell className={`text-right font-medium ${(conv.netProfitBrl ?? 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                {formatCurrency(conv.netProfitBrl ?? 0)}
                                             </TableCell>
                                             <TableCell>
                                                 <Badge variant="outline" className={conv.network === 'SOLANA' ? 'border-purple-500 text-purple-600' : 'border-blue-500 text-blue-600'}>
-                                                    {conv.network}
+                                                    {conv.network || '-'}
                                                 </Badge>
                                             </TableCell>
                                             <TableCell>
                                                 {conv.affiliate ? (
                                                     <div className="text-violet-600">
                                                         <span className="font-medium">{conv.affiliate.code}</span>
-                                                        <p className="text-xs">{formatCurrency(conv.affiliateCommissionBrl)}</p>
+                                                        <p className="text-xs">{formatCurrency(conv.affiliateCommissionBrl ?? 0)}</p>
                                                     </div>
                                                 ) : (
                                                     <span className="text-muted-foreground">-</span>
