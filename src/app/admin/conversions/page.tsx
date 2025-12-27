@@ -158,11 +158,15 @@ function getDefaultDates() {
     const today = new Date();
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(today.getDate() - 30);
+    
+    // Add one day to end date to include today's conversions
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
 
     const format = (d: Date) => d.toISOString().slice(0, 10);
     return {
         inicio: format(thirtyDaysAgo),
-        fim: format(today),
+        fim: format(tomorrow),
     };
 }
 
