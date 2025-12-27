@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Copy, Users, DollarSign, Clock, Check, Share2, TrendingUp } from "lucide-react";
+import { Copy, Users, DollarSign, Clock, Check, Share2, TrendingUp, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -58,33 +58,55 @@ function formatDate(dateString: string): string {
 
 export default function AffiliatesPage() {
     const [loading, setLoading] = React.useState(true);
+    const [activating, setActivating] = React.useState(false);
     const [stats, setStats] = React.useState<AffiliateStats | null>(null);
     const [referrals, setReferrals] = React.useState<Referral[]>([]);
     const [commissions, setCommissions] = React.useState<Commission[]>([]);
     const [copied, setCopied] = React.useState(false);
     const [activeTab, setActiveTab] = React.useState<"referrals" | "commissions">("referrals");
 
+    const loadAffiliateData = React.useCallback(async () => {
+        try {
+            const [statsRes, referralsRes, commissionsRes] = await Promise.all([
+                http.get<{ data: AffiliateStats }>("/customers/me/affiliate"),
+                http.get<{ data: Referral[] }>("/customers/me/affiliate/referrals"),
+                http.get<{ data: Commission[] }>("/customers/me/affiliate/commissions"),
+            ]);
+
+            setStats(statsRes.data.data);
+            setReferrals(referralsRes.data.data || []);
+            setCommissions(commissionsRes.data.data || []);
+            return true;
+        } catch {
+            return false;
+        }
+    }, []);
+
+    const activateAffiliate = React.useCallback(async () => {
+        setActivating(true);
+        try {
+            await http.post("/customers/me/affiliate/activate");
+            await loadAffiliateData();
+            toast.success("Programa de indicações ativado!");
+        } catch (err) {
+            console.error("Erro ao ativar afiliado:", err);
+            toast.error("Erro ao ativar programa de indicações");
+        } finally {
+            setActivating(false);
+        }
+    }, [loadAffiliateData]);
+
     React.useEffect(() => {
         async function loadData() {
-            try {
-                const [statsRes, referralsRes, commissionsRes] = await Promise.all([
-                    http.get<{ data: AffiliateStats }>("/customers/me/affiliate"),
-                    http.get<{ data: Referral[] }>("/customers/me/affiliate/referrals"),
-                    http.get<{ data: Commission[] }>("/customers/me/affiliate/commissions"),
-                ]);
-
-                setStats(statsRes.data.data);
-                setReferrals(referralsRes.data.data || []);
-                setCommissions(commissionsRes.data.data || []);
-            } catch (err) {
-                console.error("Erro ao carregar dados de afiliado:", err);
-            } finally {
-                setLoading(false);
+            const success = await loadAffiliateData();
+            if (!success) {
+                await activateAffiliate();
             }
+            setLoading(false);
         }
 
         loadData();
-    }, []);
+    }, [loadAffiliateData, activateAffiliate]);
 
     const referralLink = stats?.referralCode
         ? `${typeof window !== "undefined" ? window.location.origin : ""}/register?ref=${stats.referralCode}`
@@ -118,20 +140,36 @@ export default function AffiliatesPage() {
         return (
             <div className="space-y-6">
                 <div>
-                    <h1 className="text-2xl font-bold">Programa de Afiliados</h1>
+                    <h1 className="text-2xl font-bold">Programa de Indicações</h1>
                     <p className="text-muted-foreground mt-1">Indique amigos e ganhe comissões</p>
                 </div>
 
                 <Card>
                     <CardContent className="flex flex-col items-center justify-center py-12">
-                        <Users className="h-16 w-16 text-muted-foreground/50 mb-4" />
-                        <h3 className="text-lg font-semibold mb-2">Você ainda não é um afiliado</h3>
-                        <p className="text-muted-foreground text-center max-w-md mb-4">
-                            Entre em contato conosco para se tornar um afiliado e começar a ganhar comissões indicando novos clientes.
-                        </p>
-                        <Button className="bg-gradient-to-r from-violet-600 to-purple-600">
-                            Solicitar participação
-                        </Button>
+                        {activating ? (
+                            <>
+                                <Loader2 className="h-16 w-16 text-violet-600 mb-4 animate-spin" />
+                                <h3 className="text-lg font-semibold mb-2">Ativando seu programa de indicações...</h3>
+                                <p className="text-muted-foreground text-center max-w-md">
+                                    Aguarde enquanto criamos seu código de indicação.
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <Users className="h-16 w-16 text-muted-foreground/50 mb-4" />
+                                <h3 className="text-lg font-semibold mb-2">Erro ao carregar indicações</h3>
+                                <p className="text-muted-foreground text-center max-w-md mb-4">
+                                    Não foi possível ativar seu programa de indicações. Tente novamente.
+                                </p>
+                                <Button 
+                                    className="bg-gradient-to-r from-violet-600 to-purple-600"
+                                    onClick={activateAffiliate}
+                                    disabled={activating}
+                                >
+                                    Tentar novamente
+                                </Button>
+                            </>
+                        )}
                     </CardContent>
                 </Card>
             </div>
