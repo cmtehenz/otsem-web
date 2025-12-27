@@ -25,12 +25,20 @@ OtsemPay is a digital banking platform built with Next.js 14 that provides compr
   - Registration form includes optional affiliate code field with real-time validation
 
 - **USDT SELL Flow (Dec 27, 2025)**: Complete USDT → BRL conversion:
-  - Customer modal (`SellUsdtModal`) with flow: amount → confirm quote → deposit address with QR → waiting
-  - Network selection (SOLANA/TRON) with visual badges
+  - Customer modal (`SellUsdtModal`) with correct flow:
+    1. Choose network (Solana/Tron) → shows OKX deposit address with QR
+    2. Enter USDT amount → fetches quote
+    3. Confirm sale → registers pending conversion
+    4. Success screen with address reminder to send USDT
   - Admin page `/admin/sell-deposits` to manage pending sell deposits
   - Process button for confirmed deposits triggers PIX payout
-  - Sidebar menu updated: "Compras USDT" and "Vendas USDT" under Operações
-  - Backend endpoints: `/wallet/deposit-address`, `/wallet/quote-sell-usdt`, `/wallet/sell-usdt-to-pix`, `/wallet/process-sell/:id`, `/wallet/pending-sell-deposits`
+  - Sidebar menu: "Compras USDT" and "Vendas USDT" under Operações
+  - Backend endpoints:
+    - `GET /wallet/deposit-address?network=SOLANA` - OKX deposit address
+    - `GET /wallet/quote-sell-usdt?usdtAmount=X&network=Y` - Quote
+    - `POST /wallet/sell-usdt-to-pix` - Start sale
+    - `POST /wallet/process-sell/:id` - Process (admin)
+    - `GET /wallet/pending-sell-deposits` - List pending (admin)
 
 ## User Preferences
 
