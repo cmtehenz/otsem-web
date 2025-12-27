@@ -372,7 +372,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                                     {wallet.label || "Carteira"}
                                                 </p>
                                                 <p className="text-muted-foreground text-xs font-mono mt-1">
-                                                    {wallet.address.slice(0, 10)}...{wallet.address.slice(-8)}
+                                                    {wallet.address ? `${wallet.address.slice(0, 10)}...${wallet.address.slice(-8)}` : "Endereço indisponível"}
                                                 </p>
                                             </button>
                                         ))}
@@ -404,7 +404,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 <div className="flex items-center justify-between">
                                     <span className="text-muted-foreground text-sm">Carteira:</span>
                                     <span className="text-foreground text-xs font-mono">
-                                        {selectedWallet?.address.slice(0, 8)}...{selectedWallet?.address.slice(-6)}
+                                        {selectedWallet?.address ? `${selectedWallet.address.slice(0, 8)}...${selectedWallet.address.slice(-6)}` : "-"}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between mt-1">
@@ -538,13 +538,13 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">De</span>
                                         <span className="text-foreground text-xs font-mono">
-                                            {txData.fromAddress.slice(0, 6)}...{txData.fromAddress.slice(-4)}
+                                            {txData.fromAddress ? `${txData.fromAddress.slice(0, 6)}...${txData.fromAddress.slice(-4)}` : "-"}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Para (OKX)</span>
                                         <span className="text-foreground text-xs font-mono">
-                                            {txData.toAddress.slice(0, 6)}...{txData.toAddress.slice(-4)}
+                                            {txData.toAddress ? `${txData.toAddress.slice(0, 6)}...${txData.toAddress.slice(-4)}` : "-"}
                                         </span>
                                     </div>
                                 </div>
