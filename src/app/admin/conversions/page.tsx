@@ -95,8 +95,19 @@ function formatCurrency(value: number): string {
     }).format(value);
 }
 
+function formatCurrencyCents(value: number): string {
+    return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+    }).format(value / 100);
+}
+
 function formatUSDT(value: number): string {
     return `$ ${value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function formatUSDTCents(value: number): string {
+    return `$ ${(value / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function formatDate(dateStr: string): string {
@@ -283,10 +294,10 @@ export default function ConversionsPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-blue-600">
-                            {formatCurrency(stats?.volumeBrl ?? 0)}
+                            {formatCurrencyCents(stats?.volumeBrl ?? 0)}
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            {formatUSDT(stats?.volumeUsdt ?? 0)} em USDT
+                            {formatUSDTCents(stats?.volumeUsdt ?? 0)} em USDT
                         </p>
                     </CardContent>
                 </Card>
@@ -298,10 +309,10 @@ export default function ConversionsPage() {
                     </CardHeader>
                     <CardContent>
                         <div className={`text-2xl font-bold ${(stats?.netProfit ?? 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                            {formatCurrency(stats?.netProfit ?? 0)}
+                            {formatCurrencyCents(stats?.netProfit ?? 0)}
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            Bruto: {formatCurrency(stats?.grossProfit ?? 0)} | Taxas OKX: {formatCurrency(stats?.totalOkxFees ?? 0)}
+                            Bruto: {formatCurrencyCents(stats?.grossProfit ?? 0)} | Taxas OKX: {formatCurrencyCents(stats?.totalOkxFees ?? 0)}
                         </p>
                     </CardContent>
                 </Card>
@@ -313,10 +324,10 @@ export default function ConversionsPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-violet-600">
-                            {formatCurrency(stats?.totalCommissions ?? 0)}
+                            {formatCurrencyCents(stats?.totalCommissions ?? 0)}
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            Taxa média: {((stats?.avgRate ?? 0) / 100).toFixed(4)}
+                            Taxa média: {(stats?.avgRate ?? 0).toFixed(4)}
                         </p>
                     </CardContent>
                 </Card>
