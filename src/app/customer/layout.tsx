@@ -15,6 +15,7 @@ import {
     ShieldQuestion,
     ShieldAlert,
     Wallet,
+    Users,
 } from "lucide-react";
 
 import { useAuth } from "@/contexts/auth-context";
@@ -88,6 +89,12 @@ const menuGroups = [
         title: "Pagamentos",
         items: [
             { label: "Transações", href: "/customer/transactions", icon: Send },
+        ],
+    },
+    {
+        title: "Afiliados",
+        items: [
+            { label: "Minhas Indicações", href: "/customer/affiliates", icon: Users },
         ],
     },
     {
