@@ -209,9 +209,17 @@ export default function AdminUserDetailPage() {
                 spreadPercent: spreadNum,
             });
             console.log("Spread update response:", response.data);
+            
+            // Atualiza o estado local com o novo spread
+            if (user) {
+                setUser({
+                    ...user,
+                    spreadPercent: response.data?.spreadPercent ?? spreadNum,
+                });
+            }
+            
             toast.success(`Spread atualizado para ${spreadNum}%`);
             setSpreadModalOpen(false);
-            loadUser();
         } catch (err: any) {
             console.error("Spread update error:", err.response?.data || err.message);
             const errorMsg = err.response?.data?.message || "Falha ao atualizar spread";
