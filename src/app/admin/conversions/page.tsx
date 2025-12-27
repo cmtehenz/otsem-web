@@ -197,8 +197,19 @@ export default function ConversionsPage() {
                 http.get<{ data: ConversionStats }>(`/admin/conversions/stats?${query}`),
             ]);
 
-            setConversions(conversionsRes.data.data || []);
-            setStats(statsRes.data.data || null);
+            console.log("Conversions API response:", conversionsRes.data);
+            console.log("Stats API response:", statsRes.data);
+
+            // Handle both { data: [...] } and direct array response
+            const conversionsData = Array.isArray(conversionsRes.data) 
+                ? conversionsRes.data 
+                : (conversionsRes.data.data || []);
+            const statsData = conversionsRes.data && typeof conversionsRes.data === 'object' && !Array.isArray(conversionsRes.data)
+                ? (statsRes.data.data || statsRes.data)
+                : null;
+
+            setConversions(conversionsData);
+            setStats(statsData as ConversionStats | null);
         } catch (err) {
             console.error("Erro ao carregar conversões:", err);
             setConversions([]);
