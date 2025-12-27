@@ -4,6 +4,18 @@
 
 OtsemPay is a digital banking platform built with Next.js 14 that provides comprehensive financial services including PIX payments, BRL/USDT cryptocurrency conversion, card payments, and KYC management. The application serves two user roles: customers who access banking features and administrators who manage the platform.
 
+## Recent Changes (Dec 2025)
+
+- **Landing Page Redesign**: Complete Revolut-inspired landing page with:
+  - Fixed header with navigation
+  - Hero section with phone mockup
+  - Stats/badges section (ratings, transactions, speed)
+  - Feature sections with PIX/Crypto tabbed interface
+  - Savings section with mockup
+  - Security section with 3-card grid
+  - Pricing section (Free vs Pro plans)
+  - CTA section and professional footer with social links
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
