@@ -6,15 +6,16 @@ OtsemPay is a digital banking platform built with Next.js 14 that provides compr
 
 ## Recent Changes (Dec 2025)
 
-- **Landing Page Redesign**: Complete Revolut-inspired landing page with:
-  - Fixed header with navigation
-  - Hero section with phone mockup
-  - Stats/badges section (ratings, transactions, speed)
-  - Feature sections with PIX/Crypto tabbed interface
-  - Savings section with mockup
-  - Security section with 3-card grid
-  - Pricing section (Free vs Pro plans)
-  - CTA section and professional footer with social links
+- **Landing Page Light Theme**: Complete conversion to light theme with:
+  - Background changed from dark (#0a0118) to light (#faf9fe)
+  - All text colors converted to slate palette (slate-900, slate-600, slate-500)
+  - Section backgrounds use white and slate-50 for contrast
+  - Header with white/transparent transition on scroll
+  - Feature cards with light gradients (violet-50, green-50, amber-50)
+  - Phone mockups kept in dark mode for visual contrast
+  - Footer with slate-50 background
+  - Brand colors maintained: amber-500 (Otsem), violet-600 (Pay)
+  - Uses logo-light.png for light theme compatibility
 
 - **Affiliate System Frontend**: Complete admin affiliate management:
   - Admin listing page at `/admin/affiliates` with stats cards (total, active, clients, commissions)
