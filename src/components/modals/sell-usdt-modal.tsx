@@ -4,7 +4,7 @@ import * as React from "react";
 import { isAxiosError } from "axios";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowRight, TrendingDown, Wallet, Key, AlertTriangle, Check } from "lucide-react";
+import { Loader2, ArrowRight, TrendingDown, Wallet, Key, AlertTriangle, Check, Shield } from "lucide-react";
 import { toast } from "sonner";
 import http from "@/lib/http";
 import { useUsdtRate } from "@/lib/useUsdtRate";
@@ -24,36 +24,41 @@ type WalletItem = {
     label?: string;
 };
 
-type QuoteResponse = {
-    usdtAmount: number;
-    brlAmount: number;
-    exchangeRate: number;
-    spreadPercent: number;
+type TxDataResponse = {
     network: Network;
+    fromAddress: string;
+    toAddress: string;
+    usdtAmount: number;
+    usdtAmountRaw: number;
+    contractAddress: string;
+    quote: {
+        brlToReceive: number;
+        exchangeRate: number;
+        spreadPercent: number;
+    };
 };
 
-type SellResponse = {
+type SubmitResponse = {
     conversionId: string;
-    usdtAmount: number;
-    brlAmount: number;
     status: string;
-    txHash?: string;
+    message: string;
 };
 
 const QUICK_AMOUNTS = [10, 50, 100, 500];
 
 export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) {
     const { rate: usdtRate, loading: rateLoading } = useUsdtRate();
-    const [step, setStep] = React.useState<"wallet" | "amount" | "confirm" | "success">("wallet");
+    const [step, setStep] = React.useState<"wallet" | "amount" | "sign" | "success">("wallet");
     const [amount, setAmount] = React.useState("");
     const [network, setNetwork] = React.useState<Network>("SOLANA");
     const [loading, setLoading] = React.useState(false);
     const [wallets, setWallets] = React.useState<WalletItem[]>([]);
     const [selectedWallet, setSelectedWallet] = React.useState<WalletItem | null>(null);
     const [privateKey, setPrivateKey] = React.useState("");
-    const [quote, setQuote] = React.useState<QuoteResponse | null>(null);
-    const [sellData, setSellData] = React.useState<SellResponse | null>(null);
+    const [txData, setTxData] = React.useState<TxDataResponse | null>(null);
+    const [txHash, setTxHash] = React.useState<string | null>(null);
     const [walletsLoading, setWalletsLoading] = React.useState(false);
+    const [signingStatus, setSigningStatus] = React.useState<string>("");
 
     const numAmount = parseFloat(amount) || 0;
     const minAmount = 5;
@@ -107,52 +112,149 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
         setStep("amount");
     }
 
-    async function handleContinueToConfirm() {
+    async function handleContinueToSign() {
         if (numAmount < minAmount) {
             toast.error(`Valor mínimo: ${formatUSDT(minAmount)}`);
             return;
         }
-        if (!privateKey.trim()) {
-            toast.error("Informe a chave privada da carteira");
-            return;
-        }
         setLoading(true);
         try {
-            const res = await http.get<QuoteResponse>("/wallet/quote-sell-usdt", {
-                params: { usdtAmount: numAmount, network }
+            const res = await http.get<TxDataResponse>("/wallet/sell-tx-data", {
+                params: { 
+                    walletId: selectedWallet?.id,
+                    usdtAmount: numAmount, 
+                    network 
+                }
             });
-            setQuote(res.data);
-            setStep("confirm");
+            setTxData(res.data);
+            setStep("sign");
         } catch (err) {
-            console.error("Erro ao buscar cotação:", err);
-            toast.error("Erro ao buscar cotação");
+            console.error("Erro ao buscar dados da transação:", err);
+            toast.error("Erro ao preparar transação");
         } finally {
             setLoading(false);
         }
     }
 
-    async function handleConfirmSell() {
-        if (!selectedWallet || !privateKey.trim()) {
+    async function signAndSubmitTron(pk: string, data: TxDataResponse): Promise<string> {
+        setSigningStatus("Inicializando TronWeb...");
+        const TronWebModule = await import("tronweb");
+        const TronWeb = TronWebModule.TronWeb || TronWebModule.default;
+        
+        const cleanPk = pk.startsWith("0x") ? pk.slice(2) : pk;
+        const tronWeb = new TronWeb({
+            fullHost: "https://api.trongrid.io",
+            privateKey: cleanPk,
+        });
+
+        setSigningStatus("Construindo transação TRC20...");
+        const contract = await tronWeb.contract().at(data.contractAddress);
+        
+        setSigningStatus("Assinando e enviando...");
+        const tx = await contract.methods
+            .transfer(data.toAddress, data.usdtAmountRaw)
+            .send();
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const result = tx as any;
+        return typeof result === "string" ? result : result.txid || result.transaction?.txID || "";
+    }
+
+    async function signAndSubmitSolana(pk: string, data: TxDataResponse): Promise<string> {
+        setSigningStatus("Inicializando Solana...");
+        const { 
+            Connection, 
+            Keypair, 
+            PublicKey, 
+            Transaction 
+        } = await import("@solana/web3.js");
+        const { 
+            getAssociatedTokenAddress, 
+            createTransferInstruction 
+        } = await import("@solana/spl-token");
+
+        const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
+        
+        let secretKey: Uint8Array;
+        if (pk.includes(",") || pk.startsWith("[")) {
+            secretKey = new Uint8Array(JSON.parse(pk));
+        } else {
+            const bs58 = (await import("bs58")).default;
+            secretKey = bs58.decode(pk);
+        }
+        const keypair = Keypair.fromSecretKey(secretKey);
+
+        setSigningStatus("Buscando contas de token...");
+        const USDT_MINT = new PublicKey(data.contractAddress);
+        const fromPubkey = new PublicKey(data.fromAddress);
+        const toPubkey = new PublicKey(data.toAddress);
+
+        const fromAta = await getAssociatedTokenAddress(USDT_MINT, fromPubkey);
+        const toAta = await getAssociatedTokenAddress(USDT_MINT, toPubkey);
+
+        setSigningStatus("Construindo transação SPL...");
+        const transaction = new Transaction().add(
+            createTransferInstruction(
+                fromAta,
+                toAta,
+                fromPubkey,
+                BigInt(data.usdtAmountRaw)
+            )
+        );
+
+        const { blockhash } = await connection.getLatestBlockhash();
+        transaction.recentBlockhash = blockhash;
+        transaction.feePayer = keypair.publicKey;
+
+        setSigningStatus("Assinando e enviando...");
+        transaction.sign(keypair);
+        const signature = await connection.sendRawTransaction(transaction.serialize());
+        
+        setSigningStatus("Confirmando transação...");
+        await connection.confirmTransaction(signature);
+
+        return signature;
+    }
+
+    async function handleSignAndSubmit() {
+        if (!txData || !privateKey.trim() || !selectedWallet) {
             toast.error("Dados incompletos");
             return;
         }
+
         setLoading(true);
         try {
-            const res = await http.post<SellResponse>("/wallet/sell-usdt-to-brl", {
+            let hash: string;
+            
+            if (network === "TRON") {
+                hash = await signAndSubmitTron(privateKey.trim(), txData);
+            } else {
+                hash = await signAndSubmitSolana(privateKey.trim(), txData);
+            }
+
+            setSigningStatus("Registrando venda...");
+            const res = await http.post<SubmitResponse>("/wallet/submit-signed-sell", {
                 walletId: selectedWallet.id,
                 usdtAmount: numAmount,
-                privateKey: privateKey.trim(),
                 network,
+                txHash: hash,
             });
-            setSellData(res.data);
+
+            setTxHash(hash);
             setStep("success");
-            toast.success("Venda realizada com sucesso!");
+            toast.success("Venda registrada com sucesso!");
             onSuccess?.();
         } catch (err: unknown) {
-            const message = isAxiosError(err) ? err.response?.data?.message : undefined;
-            toast.error(message || "Erro ao processar venda");
+            console.error("Erro na transação:", err);
+            const message = isAxiosError(err) 
+                ? err.response?.data?.message 
+                : err instanceof Error 
+                    ? err.message 
+                    : "Erro ao processar transação";
+            toast.error(message);
         } finally {
             setLoading(false);
+            setSigningStatus("");
         }
     }
 
@@ -161,19 +263,21 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
         setTimeout(() => {
             setStep("wallet");
             setAmount("");
-            setQuote(null);
+            setTxData(null);
             setSelectedWallet(null);
-            setSellData(null);
+            setTxHash(null);
             setPrivateKey("");
             setNetwork("SOLANA");
+            setSigningStatus("");
         }, 200);
     }
 
     function handleBack() {
         if (step === "amount") {
             setStep("wallet");
-        } else if (step === "confirm") {
+        } else if (step === "sign") {
             setStep("amount");
+            setPrivateKey("");
         }
     }
 
@@ -185,14 +289,14 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                 <DialogHeader>
                     <DialogTitle className="text-foreground text-xl text-center">
                         {step === "wallet" && "Vender USDT"}
-                        {step === "amount" && "Valor e Chave Privada"}
-                        {step === "confirm" && "Confirmar Venda"}
+                        {step === "amount" && "Valor da Venda"}
+                        {step === "sign" && "Assinar Transação"}
                         {step === "success" && "Venda Concluída!"}
                     </DialogTitle>
                     <DialogDescription className="text-muted-foreground text-center text-sm">
                         {step === "wallet" && "Escolha a rede e a carteira de origem"}
-                        {step === "amount" && "Informe o valor e a chave privada"}
-                        {step === "confirm" && "Revise os dados antes de confirmar"}
+                        {step === "amount" && "Informe quanto USDT deseja vender"}
+                        {step === "sign" && "Revise e assine a transação"}
                         {step === "success" && "Sua venda foi processada com sucesso"}
                     </DialogDescription>
                 </DialogHeader>
@@ -356,35 +460,15 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 </p>
                             </div>
 
-                            <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <Key className="w-4 h-4 text-amber-500" />
-                                    <p className="text-muted-foreground text-sm">Chave Privada:</p>
-                                </div>
-                                <input
-                                    type="password"
-                                    value={privateKey}
-                                    onChange={(e) => setPrivateKey(e.target.value)}
-                                    placeholder="Cole sua chave privada aqui..."
-                                    className="w-full px-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 focus:outline-none placeholder:text-muted-foreground/50"
-                                />
-                                <div className="flex items-start gap-2 p-2 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-                                    <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-                                    <p className="text-amber-600 dark:text-amber-400 text-xs">
-                                        Sua chave privada é usada apenas para assinar a transação e não é armazenada.
-                                    </p>
-                                </div>
-                            </div>
-
                             <Button
-                                onClick={handleContinueToConfirm}
-                                disabled={numAmount < minAmount || !privateKey.trim() || loading}
+                                onClick={handleContinueToSign}
+                                disabled={numAmount < minAmount || loading}
                                 className="w-full bg-linear-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <>
                                         <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                        Buscando cotação...
+                                        Preparando...
                                     </>
                                 ) : (
                                     "Continuar"
@@ -397,7 +481,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                         </div>
                     )}
 
-                    {step === "confirm" && (
+                    {step === "sign" && txData && (
                         <div className="w-full space-y-5">
                             <button
                                 onClick={handleBack}
@@ -405,6 +489,13 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                             >
                                 ← Voltar
                             </button>
+
+                            <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-3 flex items-center gap-2">
+                                <Shield className="w-5 h-5 text-green-500 flex-shrink-0" />
+                                <p className="text-green-600 dark:text-green-400 text-xs">
+                                    Sua chave privada é processada localmente e nunca é enviada ao servidor
+                                </p>
+                            </div>
 
                             <div className="bg-muted border border-border rounded-xl p-5 space-y-4">
                                 <div className="flex items-center justify-between">
@@ -414,7 +505,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                         </div>
                                         <div>
                                             <p className="text-muted-foreground text-xs">Você envia</p>
-                                            <p className="text-foreground font-bold">{formatUSDT(numAmount)}</p>
+                                            <p className="text-foreground font-bold">{formatUSDT(txData.usdtAmount)}</p>
                                         </div>
                                     </div>
                                     <ArrowRight className="w-5 h-5 text-orange-500" />
@@ -422,7 +513,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                         <div>
                                             <p className="text-muted-foreground text-xs text-right">Você recebe</p>
                                             <p className="text-green-600 dark:text-green-400 font-bold">
-                                                {formatBRL(quote?.brlAmount || estimatedBrl)}
+                                                {formatBRL(txData.quote.brlToReceive)}
                                             </p>
                                         </div>
                                         <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-xl">
@@ -435,7 +526,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Cotação</span>
                                         <span className="text-foreground">
-                                            1 USDT = {formatBRL(quote?.exchangeRate || usdtRate || 0)}
+                                            1 USDT = {formatBRL(txData.quote.exchangeRate)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
@@ -445,36 +536,57 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Spread</span>
-                                        <span className="text-foreground">{quote?.spreadPercent || 1}%</span>
+                                        <span className="text-muted-foreground">De</span>
+                                        <span className="text-foreground text-xs font-mono">
+                                            {txData.fromAddress.slice(0, 6)}...{txData.fromAddress.slice(-4)}
+                                        </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Carteira origem</span>
+                                        <span className="text-muted-foreground">Para (OKX)</span>
                                         <span className="text-foreground text-xs font-mono">
-                                            {selectedWallet?.address.slice(0, 6)}...{selectedWallet?.address.slice(-4)}
+                                            {txData.toAddress.slice(0, 6)}...{txData.toAddress.slice(-4)}
                                         </span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
-                                <p className="text-amber-600 dark:text-amber-400 text-sm text-center">
-                                    Ao confirmar, <strong>{formatUSDT(numAmount)}</strong> serão transferidos da sua carteira para a OKX
-                                </p>
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <Key className="w-4 h-4 text-amber-500" />
+                                    <p className="text-muted-foreground text-sm">Chave Privada:</p>
+                                </div>
+                                <input
+                                    type="password"
+                                    value={privateKey}
+                                    onChange={(e) => setPrivateKey(e.target.value)}
+                                    placeholder="Cole sua chave privada aqui..."
+                                    className="w-full px-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    disabled={loading}
+                                />
                             </div>
 
+                            {signingStatus && (
+                                <div className="bg-muted border border-border rounded-xl p-3 flex items-center gap-3">
+                                    <Loader2 className="w-4 h-4 text-orange-500 animate-spin flex-shrink-0" />
+                                    <p className="text-muted-foreground text-sm">{signingStatus}</p>
+                                </div>
+                            )}
+
                             <Button
-                                onClick={handleConfirmSell}
-                                disabled={loading}
+                                onClick={handleSignAndSubmit}
+                                disabled={!privateKey.trim() || loading}
                                 className="w-full bg-linear-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <>
                                         <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                        Processando transação...
+                                        {signingStatus || "Processando..."}
                                     </>
                                 ) : (
-                                    "Confirmar Venda"
+                                    <>
+                                        <Key className="w-4 h-4 mr-2" />
+                                        Assinar e Enviar
+                                    </>
                                 )}
                             </Button>
                         </div>
@@ -500,26 +612,28 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                             <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">Valor vendido</span>
-                                    <span className="text-foreground font-medium">{formatUSDT(sellData?.usdtAmount || numAmount)}</span>
+                                    <span className="text-foreground font-medium">{formatUSDT(numAmount)}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">Valor em BRL</span>
                                     <span className="text-green-600 dark:text-green-400 font-medium">
-                                        {formatBRL(sellData?.brlAmount || quote?.brlAmount || 0)}
+                                        {formatBRL(txData?.quote.brlToReceive || 0)}
                                     </span>
                                 </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Status</span>
-                                    <span className="text-amber-600 dark:text-amber-400 font-medium">
-                                        {sellData?.status === "completed" ? "Concluído" : "Processando PIX"}
-                                    </span>
-                                </div>
-                                {sellData?.txHash && (
+                                {txHash && (
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">TX Hash</span>
-                                        <span className="text-foreground text-xs font-mono">
-                                            {sellData.txHash.slice(0, 10)}...{sellData.txHash.slice(-6)}
-                                        </span>
+                                        <a 
+                                            href={network === "TRON" 
+                                                ? `https://tronscan.org/#/transaction/${txHash}`
+                                                : `https://solscan.io/tx/${txHash}`
+                                            }
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-violet-600 dark:text-violet-400 text-xs font-mono hover:underline"
+                                        >
+                                            {txHash.slice(0, 10)}...{txHash.slice(-6)}
+                                        </a>
                                     </div>
                                 )}
                             </div>

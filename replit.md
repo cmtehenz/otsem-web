@@ -24,20 +24,21 @@ OtsemPay is a digital banking platform built with Next.js 14 that provides compr
   - Activate/deactivate affiliates, pay commissions functionality
   - Registration form includes optional affiliate code field with real-time validation
 
-- **USDT SELL Flow (Dec 27, 2025)**: Complete USDT → BRL conversion:
-  - Customer modal (`SellUsdtModal`) with correct flow:
-    1. Choose network (Solana/Tron) → shows OKX deposit address with QR
-    2. Enter USDT amount → fetches quote
-    3. Confirm sale → registers pending conversion
-    4. Success screen with address reminder to send USDT
+- **USDT SELL Flow (Dec 27, 2025)**: Complete USDT → BRL conversion with client-side signing:
+  - Customer modal (`SellUsdtModal`) with secure flow:
+    1. Choose network (Solana/Tron) and select wallet from list
+    2. Enter USDT amount
+    3. Paste private key (never sent to server)
+    4. Frontend builds, signs, and submits transaction directly to blockchain
+    5. Submit txHash to backend for registration
+  - Uses TronWeb for TRON, @solana/web3.js + @solana/spl-token for Solana
+  - Private key stays in browser, only txHash is sent to backend
   - Admin page `/admin/sell-deposits` to manage pending sell deposits
-  - Process button for confirmed deposits triggers PIX payout
   - Sidebar menu: "Compras USDT" and "Vendas USDT" under Operações
   - Backend endpoints:
-    - `GET /wallet/deposit-address?network=SOLANA` - OKX deposit address
-    - `GET /wallet/quote-sell-usdt?usdtAmount=X&network=Y` - Quote
-    - `POST /wallet/sell-usdt-to-brl` - Start sale
-    - `POST /wallet/process-sell/:id` - Process (admin)
+    - `GET /wallet/my-wallets` - List customer wallets
+    - `GET /wallet/sell-tx-data?walletId=X&usdtAmount=Y&network=Z` - Transaction data
+    - `POST /wallet/submit-signed-sell` - Submit txHash { walletId, usdtAmount, network, txHash }
     - `GET /wallet/pending-sell-deposits` - List pending (admin)
 
 ## User Preferences
