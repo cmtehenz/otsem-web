@@ -133,7 +133,8 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
             setStep("sign");
         } catch (err) {
             console.error("Erro ao buscar dados da transação:", err);
-            toast.error("Erro ao preparar transação");
+            toast.error("Erro ao preparar transação. Tente novamente.");
+            setStep("amount");
         } finally {
             setLoading(false);
         }
@@ -230,6 +231,12 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
     async function handleSignAndSubmit() {
         if (!txData || !privateKey.trim() || !selectedWallet) {
             toast.error("Dados incompletos");
+            return;
+        }
+        
+        if (!txData.contractAddress || !txData.fromAddress || !txData.toAddress) {
+            toast.error("Dados da transação inválidos. Volte e tente novamente.");
+            setStep("amount");
             return;
         }
 
