@@ -1,0 +1,55 @@
+ Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+ [Vercel Web Analytics] Debug mode is enabled by default in development. No requests will be sent to the server.
+ [Vercel Web Analytics] Running queued event pageview Object
+ [Vercel Web Analytics] [pageview] https://0a982c3a-3382-4b9c-bea3-d0188fd5863f-00-2xden0cue9y8d.riker.replit.dev/customer/dashboard Object
+ [Fast Refresh] rebuilding
+ [Fast Refresh] done in 2832ms
+ [Vercel Web Analytics] [pageview] https://0a982c3a-3382-4b9c-bea3-d0188fd5863f-00-2xden0cue9y8d.riker.replit.dev/customer/wallet Object
+ [Fast Refresh] rebuilding
+ [Fast Refresh] rebuilding
+report-hmr-latency.js:14 [Fast Refresh] done in 315ms
+report-hmr-latency.js:14 [Fast Refresh] done in 1244ms
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+report-hmr-latency.js:14 [Fast Refresh] done in 347ms
+report-hmr-latency.js:14 [Fast Refresh] done in 1176ms
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+report-hmr-latency.js:14 [Fast Refresh] done in 327ms
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+report-hmr-latency.js:14 [Fast Refresh] done in 317ms
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+report-hmr-latency.js:14 [Fast Refresh] done in 577ms
+report-hmr-latency.js:14 [Fast Refresh] done in 1481ms
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+report-hmr-latency.js:14 [Fast Refresh] done in 404ms
+report-hmr-latency.js:14 [Fast Refresh] done in 1158ms
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+report-hmr-latency.js:14 [Fast Refresh] done in 595ms
+report-hmr-latency.js:14 [Fast Refresh] done in 1282ms
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+report-hmr-latency.js:14 [Fast Refresh] done in 365ms
+report-hmr-latency.js:14 [Fast Refresh] done in 1214ms
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+report-hmr-latency.js:14 [Fast Refresh] done in 830ms
+report-hmr-latency.js:14 [Fast Refresh] done in 3992ms
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+report-hmr-latency.js:14 [Fast Refresh] done in 679ms
+report-hmr-latency.js:14 [Fast Refresh] done in 1580ms
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+hot-reloader-app.js:197 [Fast Refresh] rebuilding
+report-hmr-latency.js:14 [Fast Refresh] done in 760ms
+report-hmr-latency.js:14 [Fast Refresh] done in 1771ms
+ [Vercel Web Analytics] [pageview] https://0a982c3a-3382-4b9c-bea3-d0188fd5863f-00-2xden0cue9y8d.riker.replit.dev/customer/dashboard Object
+api.mainnet-beta.solana.com/:1  Failed to load resource: the server responded with a status of 403 ()
+intercept-console-error.js:57 Erro na transação: Error: failed to get recent blockhash: Error: 403 :  {"jsonrpc":"2.0","error":{"code": 403, "message":"Access forbidden"}, "id": "96198fad-5e4a-412f-837b-ba1d76317877" } 
+
+    at Connection.getLatestBlockhash (index.browser.esm.js:6559:13)
+    at async signAndSubmitSolana (sell-usdt-modal.tsx:220:31)
+    at async handleSignAndSubmit (sell-usdt-modal.tsx:254:24)
+error @ intercept-console-error.js:57
