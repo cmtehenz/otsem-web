@@ -15,6 +15,7 @@ import {
   GalleryVerticalEnd,
   Wallet,
   UserPlus,
+  ArrowRightLeft,
 } from "lucide-react";
 
 import {
@@ -49,9 +50,7 @@ const nav: Item[] = [
     url: "/admin",
     items: [
       { title: "Transações", url: "/admin/recebidos", icon: Banknote },
-      // { title: "Chaves Pix", url: "/admin/pix/keys", icon: KeyRound },
-      // { title: "Pagamentos Cartão", url: "/admin/cards", icon: CreditCard },
-      // { title: "Payouts", url: "/admin/payouts", icon: Send },
+      { title: "Conversões", url: "/admin/conversions", icon: ArrowRightLeft },
     ],
   },
   {
