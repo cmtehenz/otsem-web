@@ -205,14 +205,17 @@ export default function AdminUserDetailPage() {
 
         try {
             setSavingSpread(true);
-            await http.patch(`/admin/users/${userId}/spread`, {
+            const response = await http.patch(`/admin/users/${userId}/spread`, {
                 spreadPercent: spreadNum,
             });
+            console.log("Spread update response:", response.data);
             toast.success(`Spread atualizado para ${spreadNum}%`);
             setSpreadModalOpen(false);
             loadUser();
-        } catch (err) {
-            toast.error("Falha ao atualizar spread");
+        } catch (err: any) {
+            console.error("Spread update error:", err.response?.data || err.message);
+            const errorMsg = err.response?.data?.message || "Falha ao atualizar spread";
+            toast.error(errorMsg);
         } finally {
             setSavingSpread(false);
         }
