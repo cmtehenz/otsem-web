@@ -3,7 +3,16 @@
 import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, ArrowLeft, Mail, Phone, MapPin, Calendar, Clock, Shield, Wallet, ArrowUpDown, BadgeCheck, UserX, UserCheck, Edit, RefreshCw } from "lucide-react";
+import { Loader2, ArrowLeft, Mail, Phone, MapPin, Calendar, Clock, Shield, Wallet, ArrowUpDown, BadgeCheck, UserX, UserCheck, Edit, RefreshCw, Percent, Save } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 
 import http from "@/lib/http";
@@ -25,6 +34,7 @@ type UserDetail = {
     kycStatus: "PENDING" | "APPROVED" | "REJECTED" | "NOT_STARTED";
     accountStatus: "ACTIVE" | "BLOCKED" | "SUSPENDED";
     balanceBRL: number;
+    spreadPercent?: number;
     address: {
         street: string;
         number: string;
@@ -120,6 +130,9 @@ export default function AdminUserDetailPage() {
     const [transactions, setTransactions] = React.useState<Transaction[]>([]);
     const [loadingTxs, setLoadingTxs] = React.useState(false);
     const [actionLoading, setActionLoading] = React.useState(false);
+    const [spreadModalOpen, setSpreadModalOpen] = React.useState(false);
+    const [spreadValue, setSpreadValue] = React.useState("");
+    const [savingSpread, setSavingSpread] = React.useState(false);
 
     const loadUser = React.useCallback(async () => {
         try {
@@ -175,6 +188,33 @@ export default function AdminUserDetailPage() {
             toast.error("Falha ao desbloquear usuário");
         } finally {
             setActionLoading(false);
+        }
+    };
+
+    const openSpreadModal = () => {
+        setSpreadValue(user?.spreadPercent?.toString() ?? "0.95");
+        setSpreadModalOpen(true);
+    };
+
+    const handleSaveSpread = async () => {
+        const spreadNum = parseFloat(spreadValue);
+        if (isNaN(spreadNum) || spreadNum < 0 || spreadNum > 100) {
+            toast.error("Spread deve ser um valor entre 0 e 100");
+            return;
+        }
+
+        try {
+            setSavingSpread(true);
+            await http.patch(`/admin/users/${userId}/spread`, {
+                spreadPercent: spreadNum,
+            });
+            toast.success(`Spread atualizado para ${spreadNum}%`);
+            setSpreadModalOpen(false);
+            loadUser();
+        } catch (err) {
+            toast.error("Falha ao atualizar spread");
+        } finally {
+            setSavingSpread(false);
         }
     };
 
@@ -407,6 +447,26 @@ export default function AdminUserDetailPage() {
                     </Card>
 
                     <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="flex items-center gap-2 text-base font-semibold">
+                                <Percent className="h-5 w-5" />
+                                Spread
+                            </CardTitle>
+                            <Button variant="ghost" size="icon" onClick={openSpreadModal}>
+                                <Edit className="h-4 w-4" />
+                            </Button>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-3xl font-bold text-violet-600">
+                                {user.spreadPercent?.toFixed(2) ?? "0.95"}%
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                Taxa aplicada nas conversões BRL → USDT
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Shield className="h-5 w-5" />
@@ -446,6 +506,50 @@ export default function AdminUserDetailPage() {
                     </Card>
                 </div>
             </div>
+
+            <Dialog open={spreadModalOpen} onOpenChange={setSpreadModalOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Ajustar Spread do Cliente</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="spread">Spread (%)</Label>
+                            <div className="flex items-center gap-2">
+                                <Input
+                                    id="spread"
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    max="100"
+                                    value={spreadValue}
+                                    onChange={(e) => setSpreadValue(e.target.value)}
+                                    placeholder="Ex: 0.95"
+                                />
+                                <span className="text-muted-foreground">%</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                O spread é a taxa cobrada sobre o valor da conversão BRL → USDT.
+                                <br />
+                                Exemplos: 0.95% (padrão), 1%, 2.5%, 5%
+                            </p>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setSpreadModalOpen(false)}>
+                            Cancelar
+                        </Button>
+                        <Button onClick={handleSaveSpread} disabled={savingSpread}>
+                            {savingSpread ? (
+                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            ) : (
+                                <Save className="h-4 w-4 mr-2" />
+                            )}
+                            Salvar
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
