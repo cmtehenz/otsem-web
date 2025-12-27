@@ -192,13 +192,15 @@ export default function ConversionsPage() {
             if (statusFilter) params.status = statusFilter;
 
             const query = new URLSearchParams(params).toString();
+            console.log("Request params:", params);
+            console.log("Request URL:", `/admin/conversions?${query}`);
+            
             const [conversionsRes, statsRes] = await Promise.all([
                 http.get<{ data: Conversion[] }>(`/admin/conversions?${query}`),
                 http.get<{ data: ConversionStats }>(`/admin/conversions/stats?${query}`),
             ]);
 
             console.log("Conversions API response:", conversionsRes.data);
-            console.log("Stats API response:", statsRes.data);
 
             // Handle both { data: [...] } and direct array response
             const conversionsData = Array.isArray(conversionsRes.data) 
