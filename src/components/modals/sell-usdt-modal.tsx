@@ -4,20 +4,28 @@ import * as React from "react";
 import { isAxiosError } from "axios";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowRight, TrendingDown, CheckCircle2, Copy, Check, QrCode } from "lucide-react";
+import { Loader2, ArrowRight, TrendingDown, CheckCircle2, Copy, Check, QrCode, Wallet, Star } from "lucide-react";
 import { toast } from "sonner";
 import http from "@/lib/http";
 import { useUsdtRate } from "@/lib/useUsdtRate";
 import { QRCodeSVG } from "qrcode.react";
+import Link from "next/link";
 
 type SellUsdtModalProps = {
     open: boolean;
     onClose: () => void;
     onSuccess?: () => void;
-    pixKey?: string;
 };
 
 type Network = "SOLANA" | "TRON";
+
+type PixKeyType = {
+    id: string;
+    pixKey: string;
+    pixKeyType: string;
+    isMain?: boolean;
+    label?: string;
+};
 
 type QuoteResponse = {
     usdtAmount: number;
@@ -25,12 +33,6 @@ type QuoteResponse = {
     exchangeRate: number;
     spreadPercent: number;
     network: Network;
-};
-
-type DepositAddressResponse = {
-    address: string;
-    network: Network;
-    memo?: string;
 };
 
 type SellResponse = {
@@ -44,20 +46,46 @@ type SellResponse = {
 
 const QUICK_AMOUNTS = [10, 50, 100, 500];
 
-export function SellUsdtModal({ open, onClose, onSuccess, pixKey }: SellUsdtModalProps) {
+export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) {
     const { rate: usdtRate, loading: rateLoading } = useUsdtRate();
-    const [step, setStep] = React.useState<"amount" | "confirm" | "deposit" | "waiting">("amount");
+    const [step, setStep] = React.useState<"pix" | "amount" | "confirm" | "deposit" | "waiting">("pix");
     const [amount, setAmount] = React.useState("");
     const [network, setNetwork] = React.useState<Network>("SOLANA");
     const [loading, setLoading] = React.useState(false);
     const [quote, setQuote] = React.useState<QuoteResponse | null>(null);
-    const [depositAddress, setDepositAddress] = React.useState<DepositAddressResponse | null>(null);
     const [sellData, setSellData] = React.useState<SellResponse | null>(null);
     const [copied, setCopied] = React.useState(false);
+    
+    const [pixKeys, setPixKeys] = React.useState<PixKeyType[]>([]);
+    const [pixKeysLoading, setPixKeysLoading] = React.useState(true);
+    const [selectedPixKeyId, setSelectedPixKeyId] = React.useState<string | null>(null);
 
     const numAmount = parseFloat(amount) || 0;
     const minAmount = 5;
     const estimatedBrl = usdtRate ? numAmount * usdtRate * 0.99 : 0;
+
+    React.useEffect(() => {
+        if (open) {
+            fetchPixKeys();
+        }
+    }, [open]);
+
+    async function fetchPixKeys() {
+        setPixKeysLoading(true);
+        try {
+            const res = await http.get("/customers/me/pix-keys");
+            const data = Array.isArray(res.data) ? res.data : res.data.data || [];
+            setPixKeys(data);
+            const mainKey = data.find((k: PixKeyType) => k.isMain) || data[0];
+            if (mainKey) {
+                setSelectedPixKeyId(mainKey.id);
+            }
+        } catch (err) {
+            console.error("Erro ao buscar chaves PIX:", err);
+        } finally {
+            setPixKeysLoading(false);
+        }
+    }
 
     function formatBRL(value: number): string {
         return value.toLocaleString("pt-BR", {
@@ -71,8 +99,32 @@ export function SellUsdtModal({ open, onClose, onSuccess, pixKey }: SellUsdtModa
         return `$ ${value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
 
+    function formatPixKeyType(type: string): string {
+        const types: Record<string, string> = {
+            CPF: "CPF",
+            CNPJ: "CNPJ",
+            EMAIL: "E-mail",
+            PHONE: "Telefone",
+            EVP: "Chave Aleatória",
+        };
+        return types[type] || type;
+    }
+
+    function truncatePixKey(key: string): string {
+        if (key.length <= 20) return key;
+        return `${key.slice(0, 10)}...${key.slice(-8)}`;
+    }
+
     function handleQuickAmount(value: number) {
         setAmount(value.toString());
+    }
+
+    function handleContinueToAmount() {
+        if (!selectedPixKeyId) {
+            toast.error("Selecione uma chave PIX para receber");
+            return;
+        }
+        setStep("amount");
     }
 
     async function handleContinueToConfirm() {
@@ -96,16 +148,18 @@ export function SellUsdtModal({ open, onClose, onSuccess, pixKey }: SellUsdtModa
     }
 
     async function handleConfirmSell() {
+        if (!selectedPixKeyId) {
+            toast.error("Selecione uma chave PIX");
+            return;
+        }
         setLoading(true);
         try {
             const res = await http.post<SellResponse>("/wallet/sell-usdt-to-pix", {
                 usdtAmount: numAmount,
                 network,
+                pixKeyId: selectedPixKeyId,
             });
             setSellData(res.data);
-            if (res.data.depositAddress) {
-                setDepositAddress({ address: res.data.depositAddress, network });
-            }
             setStep("deposit");
             toast.success("Venda iniciada! Envie o USDT para o endereço");
         } catch (err: unknown) {
@@ -117,7 +171,7 @@ export function SellUsdtModal({ open, onClose, onSuccess, pixKey }: SellUsdtModa
     }
 
     function handleCopyAddress() {
-        const address = depositAddress?.address || sellData?.depositAddress;
+        const address = sellData?.depositAddress;
         if (address) {
             navigator.clipboard.writeText(address);
             setCopied(true);
@@ -129,16 +183,18 @@ export function SellUsdtModal({ open, onClose, onSuccess, pixKey }: SellUsdtModa
     function handleClose() {
         onClose();
         setTimeout(() => {
-            setStep("amount");
+            setStep("pix");
             setAmount("");
             setQuote(null);
-            setDepositAddress(null);
             setSellData(null);
+            setSelectedPixKeyId(pixKeys.find(k => k.isMain)?.id || pixKeys[0]?.id || null);
         }, 200);
     }
 
     function handleBack() {
-        if (step === "confirm") {
+        if (step === "amount") {
+            setStep("pix");
+        } else if (step === "confirm") {
             setStep("amount");
         }
     }
@@ -149,20 +205,23 @@ export function SellUsdtModal({ open, onClose, onSuccess, pixKey }: SellUsdtModa
         onSuccess?.();
     }
 
-    const displayAddress = depositAddress?.address || sellData?.depositAddress || "";
+    const selectedPixKey = pixKeys.find(k => k.id === selectedPixKeyId);
+    const displayAddress = sellData?.depositAddress || "";
 
     return (
         <Dialog open={open} onOpenChange={handleClose}>
             <DialogContent className="bg-card border border-orange-500/20 max-w-sm shadow-2xl">
                 <DialogHeader>
                     <DialogTitle className="text-foreground text-xl text-center">
-                        {step === "amount" && "Vender USDT"}
+                        {step === "pix" && "Vender USDT"}
+                        {step === "amount" && "Valor da Venda"}
                         {step === "confirm" && "Confirmar Venda"}
                         {step === "deposit" && "Envie seu USDT"}
                         {step === "waiting" && "Aguardando Depósito"}
                     </DialogTitle>
                     <DialogDescription className="text-muted-foreground text-center text-sm">
-                        {step === "amount" && "Converta USDT para BRL via PIX"}
+                        {step === "pix" && "Escolha onde receber seu BRL via PIX"}
+                        {step === "amount" && "Digite o valor em USDT para vender"}
                         {step === "confirm" && "Revise os dados antes de confirmar"}
                         {step === "deposit" && "Envie o USDT para receber BRL via PIX"}
                         {step === "waiting" && "Assim que confirmarmos, você receberá o PIX"}
@@ -170,7 +229,7 @@ export function SellUsdtModal({ open, onClose, onSuccess, pixKey }: SellUsdtModa
                 </DialogHeader>
 
                 <div className="flex flex-col items-center space-y-5 py-4">
-                    {step === "amount" && (
+                    {step === "pix" && (
                         <div className="w-full space-y-5">
                             <div className="bg-muted border border-border rounded-xl p-4">
                                 <div className="flex items-center gap-2 mb-2">
@@ -180,6 +239,103 @@ export function SellUsdtModal({ open, onClose, onSuccess, pixKey }: SellUsdtModa
                                 <p className="text-foreground font-bold text-lg">
                                     {rateLoading ? "..." : `1 USDT = ${formatBRL(usdtRate || 0)}`}
                                 </p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <p className="text-muted-foreground text-sm">Receber PIX em:</p>
+
+                                {pixKeysLoading ? (
+                                    <div className="flex items-center justify-center py-6">
+                                        <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
+                                    </div>
+                                ) : pixKeys.length > 0 ? (
+                                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                                        {pixKeys.map((key, index) => {
+                                            const isMain = key.isMain || index === 0;
+                                            const isSelected = key.id === selectedPixKeyId;
+                                            return (
+                                                <button
+                                                    key={key.id}
+                                                    onClick={() => setSelectedPixKeyId(key.id)}
+                                                    className={`w-full p-3 rounded-xl border transition text-left ${
+                                                        isSelected
+                                                            ? "border-orange-500 bg-orange-500/10"
+                                                            : "border-border bg-muted hover:border-orange-500/30"
+                                                    }`}
+                                                >
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                                                                isSelected ? "bg-orange-500/20" : "bg-muted-foreground/10"
+                                                            }`}>
+                                                                <Wallet className={`w-4 h-4 ${isSelected ? "text-orange-500" : "text-muted-foreground"}`} />
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-foreground font-medium text-sm">
+                                                                    {key.label || formatPixKeyType(key.pixKeyType)}
+                                                                </p>
+                                                                <p className="text-muted-foreground text-xs">
+                                                                    {truncatePixKey(key.pixKey)}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            {isMain && (
+                                                                <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                                                            )}
+                                                            {isSelected && (
+                                                                <CheckCircle2 className="w-5 h-5 text-orange-500" />
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                ) : (
+                                    <div className="bg-muted border border-border rounded-xl p-4 text-center">
+                                        <p className="text-muted-foreground text-sm mb-2">
+                                            Você ainda não tem chaves PIX cadastradas
+                                        </p>
+                                        <Link
+                                            href="/customer/pix"
+                                            className="text-orange-500 hover:text-orange-400 text-sm font-medium"
+                                            onClick={handleClose}
+                                        >
+                                            Cadastrar chave PIX →
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
+
+                            <Button
+                                onClick={handleContinueToAmount}
+                                disabled={!selectedPixKeyId || pixKeys.length === 0}
+                                className="w-full bg-linear-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                            >
+                                Continuar
+                                <ArrowRight className="w-4 h-4 ml-2" />
+                            </Button>
+                        </div>
+                    )}
+
+                    {step === "amount" && (
+                        <div className="w-full space-y-5">
+                            <button
+                                onClick={handleBack}
+                                className="text-muted-foreground hover:text-foreground text-sm flex items-center gap-1"
+                            >
+                                ← Voltar
+                            </button>
+
+                            <div className="bg-muted border border-border rounded-xl p-3">
+                                <div className="flex items-center gap-2">
+                                    <Wallet className="w-4 h-4 text-orange-500" />
+                                    <span className="text-muted-foreground text-sm">PIX para:</span>
+                                    <span className="text-foreground text-sm font-medium">
+                                        {truncatePixKey(selectedPixKey?.pixKey || "")}
+                                    </span>
+                                </div>
                             </div>
 
                             <div className="space-y-2">
@@ -251,9 +407,6 @@ export function SellUsdtModal({ open, onClose, onSuccess, pixKey }: SellUsdtModa
                                 <p className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
                                     {formatBRL(estimatedBrl)}
                                 </p>
-                                <p className="text-muted-foreground text-xs mt-1">
-                                    Via PIX {pixKey ? `(${pixKey})` : ""}
-                                </p>
                             </div>
 
                             <Button
@@ -312,6 +465,12 @@ export function SellUsdtModal({ open, onClose, onSuccess, pixKey }: SellUsdtModa
                                 </div>
 
                                 <div className="border-t border-border pt-4 space-y-2">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">PIX para</span>
+                                        <span className="text-foreground">
+                                            {truncatePixKey(selectedPixKey?.pixKey || "")}
+                                        </span>
+                                    </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Cotação</span>
                                         <span className="text-foreground">
@@ -401,7 +560,8 @@ export function SellUsdtModal({ open, onClose, onSuccess, pixKey }: SellUsdtModa
 
                             <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
                                 <p className="text-green-600 dark:text-green-400 text-sm text-center">
-                                    Você receberá <strong>{formatBRL(quote?.brlAmount || estimatedBrl)}</strong> via PIX após a confirmação
+                                    Você receberá <strong>{formatBRL(quote?.brlAmount || estimatedBrl)}</strong> via PIX em{" "}
+                                    <strong>{truncatePixKey(selectedPixKey?.pixKey || "")}</strong>
                                 </p>
                             </div>
 
