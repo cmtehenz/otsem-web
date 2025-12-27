@@ -179,11 +179,19 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
         const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
         
         let secretKey: Uint8Array;
-        if (pk.includes(",") || pk.startsWith("[")) {
-            secretKey = new Uint8Array(JSON.parse(pk));
+        const trimmedPk = pk.trim();
+        
+        if (trimmedPk.includes(",") || trimmedPk.startsWith("[")) {
+            secretKey = new Uint8Array(JSON.parse(trimmedPk));
+        } else if (/^[0-9a-fA-F]+$/.test(trimmedPk) && trimmedPk.length >= 64) {
+            const bytes = [];
+            for (let i = 0; i < trimmedPk.length; i += 2) {
+                bytes.push(parseInt(trimmedPk.substring(i, i + 2), 16));
+            }
+            secretKey = new Uint8Array(bytes);
         } else {
             const bs58 = (await import("bs58")).default;
-            secretKey = bs58.decode(pk);
+            secretKey = bs58.decode(trimmedPk);
         }
         const keypair = Keypair.fromSecretKey(secretKey);
 
