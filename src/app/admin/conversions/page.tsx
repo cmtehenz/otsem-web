@@ -34,15 +34,19 @@ import {
 type Conversion = {
     id: string;
     createdAt: string;
-    status: "PENDING" | "COMPLETED" | "FAILED";
+    status: "PENDING" | "PIX_SENT" | "USDT_BOUGHT" | "USDT_WITHDRAWN" | "COMPLETED" | "FAILED";
     customer: {
         id: string;
         name: string;
         email: string;
     };
     brlPaid: number;
+    brlCharged: number;
+    brlExchanged: number;
     usdtCredited: number;
+    usdtPurchased: number;
     spreadApplied: number;
+    spreadRate: number;
     exchangeRateBrlUsdt: number;
     okxWithdrawFeeBrl: number;
     okxTradingFeeBrl: number;
@@ -51,23 +55,27 @@ type Conversion = {
     affiliateCommissionBrl: number;
     netProfitBrl: number;
     network: "SOLANA" | "TRON";
+    walletAddress?: string;
+    pixEndToEnd?: string;
+    sourceOfBRL?: string;
     affiliate?: {
         id: string;
         code: string;
         name: string;
     } | null;
     okxOrderId?: string;
+    okxWithdrawId?: string;
 };
 
 type ConversionStats = {
     totalCount: number;
     volumeBrl: number;
     volumeUsdt: number;
-    grossProfitBrl: number;
-    netProfitBrl: number;
-    totalOkxFeesBrl: number;
-    avgRate: number;
+    grossProfit: number;
+    totalOkxFees: number;
     totalCommissions: number;
+    netProfit: number;
+    avgRate: number;
 };
 
 type Customer = {
@@ -114,6 +122,12 @@ function getStatusColor(status: string) {
             return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
         case "PENDING":
             return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
+        case "PIX_SENT":
+            return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
+        case "USDT_BOUGHT":
+            return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400";
+        case "USDT_WITHDRAWN":
+            return "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400";
         case "FAILED":
             return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
         default:
@@ -127,6 +141,12 @@ function getStatusLabel(status: string) {
             return "Concluída";
         case "PENDING":
             return "Pendente";
+        case "PIX_SENT":
+            return "PIX Enviado";
+        case "USDT_BOUGHT":
+            return "USDT Comprado";
+        case "USDT_WITHDRAWN":
+            return "USDT Sacado";
         case "FAILED":
             return "Falhou";
         default:
@@ -265,11 +285,11 @@ export default function ConversionsPage() {
                         <TrendingUp className="h-4 w-4 text-green-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className={`text-2xl font-bold ${(stats?.netProfitBrl ?? 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                            {formatCurrency(stats?.netProfitBrl ?? 0)}
+                        <div className={`text-2xl font-bold ${(stats?.netProfit ?? 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {formatCurrency(stats?.netProfit ?? 0)}
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            Bruto: {formatCurrency(stats?.grossProfitBrl ?? 0)} | Taxas OKX: {formatCurrency(stats?.totalOkxFeesBrl ?? 0)}
+                            Bruto: {formatCurrency(stats?.grossProfit ?? 0)} | Taxas OKX: {formatCurrency(stats?.totalOkxFees ?? 0)}
                         </p>
                     </CardContent>
                 </Card>
@@ -349,13 +369,16 @@ export default function ConversionsPage() {
                         <div className="flex flex-col gap-1.5">
                             <label className="text-sm text-muted-foreground">Status</label>
                             <Select value={statusFilter || "all"} onValueChange={(v) => setStatusFilter(v === "all" ? "" : v)}>
-                                <SelectTrigger className="w-36">
+                                <SelectTrigger className="w-44">
                                     <SelectValue placeholder="Todos" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">Todos</SelectItem>
-                                    <SelectItem value="COMPLETED">Concluída</SelectItem>
                                     <SelectItem value="PENDING">Pendente</SelectItem>
+                                    <SelectItem value="PIX_SENT">PIX Enviado</SelectItem>
+                                    <SelectItem value="USDT_BOUGHT">USDT Comprado</SelectItem>
+                                    <SelectItem value="USDT_WITHDRAWN">USDT Sacado</SelectItem>
+                                    <SelectItem value="COMPLETED">Concluída</SelectItem>
                                     <SelectItem value="FAILED">Falhou</SelectItem>
                                 </SelectContent>
                             </Select>
@@ -504,18 +527,26 @@ export default function ConversionsPage() {
 
                             <div className="border-t pt-4">
                                 <h4 className="font-semibold mb-3">Valores da Conversão</h4>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                     <div className="space-y-1">
                                         <p className="text-sm text-muted-foreground">BRL Pago</p>
                                         <p className="text-xl font-bold">{formatCurrency(selectedConversion.brlPaid)}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-sm text-muted-foreground">USDT Creditado</p>
-                                        <p className="text-xl font-bold">{formatUSDT(selectedConversion.usdtCredited)}</p>
+                                        <p className="text-sm text-muted-foreground">BRL Convertido</p>
+                                        <p className="text-lg font-medium">{formatCurrency(selectedConversion.brlExchanged)}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-sm text-muted-foreground">Taxa de Câmbio</p>
-                                        <p className="text-xl font-bold">R$ {(selectedConversion.exchangeRateBrlUsdt / 100).toFixed(2)}</p>
+                                        <p className="text-lg font-medium">R$ {(selectedConversion.exchangeRateBrlUsdt / 100).toFixed(2)}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-sm text-muted-foreground">USDT Comprado</p>
+                                        <p className="text-lg font-medium">{formatUSDT(selectedConversion.usdtPurchased)}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-sm text-muted-foreground">USDT Creditado</p>
+                                        <p className="text-xl font-bold text-green-600">{formatUSDT(selectedConversion.usdtCredited)}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-sm text-muted-foreground">Rede</p>
@@ -588,17 +619,49 @@ export default function ConversionsPage() {
                                 </div>
                             )}
 
-                            {selectedConversion.okxOrderId && (
-                                <div className="border-t pt-4">
-                                    <h4 className="font-semibold mb-3">Referências</h4>
-                                    <div className="space-y-1">
-                                        <p className="text-sm text-muted-foreground">Order ID OKX</p>
-                                        <code className="text-sm bg-muted px-2 py-1 rounded">
-                                            {selectedConversion.okxOrderId}
-                                        </code>
-                                    </div>
+                            <div className="border-t pt-4">
+                                <h4 className="font-semibold mb-3">Referências</h4>
+                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                    {selectedConversion.pixEndToEnd && (
+                                        <div className="space-y-1">
+                                            <p className="text-muted-foreground">PIX End-to-End</p>
+                                            <code className="text-xs bg-muted px-2 py-1 rounded block truncate">
+                                                {selectedConversion.pixEndToEnd}
+                                            </code>
+                                        </div>
+                                    )}
+                                    {selectedConversion.okxOrderId && (
+                                        <div className="space-y-1">
+                                            <p className="text-muted-foreground">OKX Order ID</p>
+                                            <code className="text-xs bg-muted px-2 py-1 rounded">
+                                                {selectedConversion.okxOrderId}
+                                            </code>
+                                        </div>
+                                    )}
+                                    {selectedConversion.okxWithdrawId && (
+                                        <div className="space-y-1">
+                                            <p className="text-muted-foreground">OKX Withdraw ID</p>
+                                            <code className="text-xs bg-muted px-2 py-1 rounded">
+                                                {selectedConversion.okxWithdrawId}
+                                            </code>
+                                        </div>
+                                    )}
+                                    {selectedConversion.walletAddress && (
+                                        <div className="space-y-1 col-span-2">
+                                            <p className="text-muted-foreground">Wallet Address</p>
+                                            <code className="text-xs bg-muted px-2 py-1 rounded block truncate">
+                                                {selectedConversion.walletAddress}
+                                            </code>
+                                        </div>
+                                    )}
+                                    {selectedConversion.sourceOfBRL && (
+                                        <div className="space-y-1">
+                                            <p className="text-muted-foreground">Fonte BRL</p>
+                                            <Badge variant="outline">{selectedConversion.sourceOfBRL}</Badge>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
+                            </div>
                         </div>
                     )}
                 </DialogContent>
