@@ -16,6 +16,13 @@ OtsemPay is a digital banking platform built with Next.js 14 that provides compr
   - Pricing section (Free vs Pro plans)
   - CTA section and professional footer with social links
 
+- **Affiliate System Frontend**: Complete admin affiliate management:
+  - Admin listing page at `/admin/affiliates` with stats cards (total, active, clients, commissions)
+  - Create affiliate modal with code, name, email, spread rate
+  - Detail page at `/admin/affiliates/[id]` with client list and commissions tabs
+  - Activate/deactivate affiliates, pay commissions functionality
+  - Registration form includes optional affiliate code field with real-time validation
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.

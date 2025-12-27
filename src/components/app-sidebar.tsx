@@ -14,6 +14,7 @@ import {
   Flag,
   GalleryVerticalEnd,
   Wallet,
+  UserPlus,
 } from "lucide-react";
 
 import {
@@ -59,6 +60,7 @@ const nav: Item[] = [
     items: [
       { title: "Usuários", url: "/admin/users", icon: Users },
       { title: "Carteiras USDT", url: "/admin/wallets", icon: Wallet },
+      { title: "Afiliados", url: "/admin/affiliates", icon: UserPlus },
     ],
   },
   {

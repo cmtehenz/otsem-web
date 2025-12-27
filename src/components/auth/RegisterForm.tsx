@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Eye, EyeOff, Mail, User, Lock, Sparkles, CheckCircle2, Shield, Zap, Globe2, UserPlus } from "lucide-react";
+import { Eye, EyeOff, Mail, User, Lock, Sparkles, CheckCircle2, Shield, Zap, Globe2, UserPlus, Gift, Loader2 } from "lucide-react";
 import http from "@/lib/http";
 import { toast } from "sonner";
 
@@ -22,6 +22,7 @@ const schema = z
         email: z.string().email("E-mail inválido").transform((v) => v.trim().toLowerCase()),
         password: z.string().min(8, "Mínimo 8 caracteres"),
         confirm: z.string().min(8, "Confirme sua senha"),
+        affiliateCode: z.string().optional().transform((v) => v?.trim().toUpperCase() || undefined),
         accept: z.literal(true, { message: "Aceite os termos para continuar" }),
     })
     .refine((v) => v.password === v.confirm, {
@@ -87,8 +88,40 @@ function RegisterPageInner(): React.JSX.Element {
 
     const form = useForm<FormValues>({
         resolver,
-        defaultValues: { name: "", email: "", password: "", confirm: "", accept: true },
+        defaultValues: { name: "", email: "", password: "", confirm: "", affiliateCode: "", accept: true },
     });
+
+    const [showAffiliateField, setShowAffiliateField] = React.useState(false);
+    const [validatingCode, setValidatingCode] = React.useState(false);
+    const [codeValid, setCodeValid] = React.useState<boolean | null>(null);
+    const affiliateCode = form.watch("affiliateCode") || "";
+
+    const validateAffiliateCode = React.useCallback(async (code: string) => {
+        if (!code || code.length < 3) {
+            setCodeValid(null);
+            return;
+        }
+        try {
+            setValidatingCode(true);
+            await http.get(`/affiliates/validate/${code.toUpperCase()}`);
+            setCodeValid(true);
+        } catch {
+            setCodeValid(false);
+        } finally {
+            setValidatingCode(false);
+        }
+    }, []);
+
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            if (affiliateCode) {
+                validateAffiliateCode(affiliateCode);
+            } else {
+                setCodeValid(null);
+            }
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [affiliateCode, validateAffiliateCode]);
 
     const pw = form.watch("password") || "";
     const score = passwordScore(pw);
@@ -100,7 +133,12 @@ function RegisterPageInner(): React.JSX.Element {
 
             const res = await http.post<{ access_token: string; role?: string }>(
                 "/auth/register",
-                { name: v.name, email: v.email, password: v.password },
+                { 
+                    name: v.name, 
+                    email: v.email, 
+                    password: v.password,
+                    ...(v.affiliateCode && codeValid ? { affiliateCode: v.affiliateCode } : {})
+                },
                 {}
             );
 
@@ -361,6 +399,47 @@ function RegisterPageInner(): React.JSX.Element {
                                     </label>
                                     {form.formState.errors.accept && (
                                         <p className="text-xs text-red-400">{form.formState.errors.accept.message}</p>
+                                    )}
+
+                                    {!showAffiliateField ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowAffiliateField(true)}
+                                            className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-white/20 p-3 text-sm text-white/60 transition hover:border-violet-500/50 hover:text-violet-400"
+                                        >
+                                            <Gift className="h-4 w-4" />
+                                            Tenho um código de indicação
+                                        </button>
+                                    ) : (
+                                        <div className="grid gap-2 rounded-xl border border-violet-500/30 bg-violet-500/5 p-3">
+                                            <Label htmlFor="affiliateCode" className="flex items-center gap-2 text-sm font-semibold text-white">
+                                                <Gift className="h-4 w-4 text-violet-400" />
+                                                Código de indicação
+                                            </Label>
+                                            <div className="relative">
+                                                <Input
+                                                    id="affiliateCode"
+                                                    className="h-11 rounded-xl border-white/10 bg-white/5 pr-10 text-white uppercase placeholder:text-white/40 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                                                    placeholder="Ex: PARCEIRO123"
+                                                    {...form.register("affiliateCode")}
+                                                />
+                                                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                                    {validatingCode ? (
+                                                        <Loader2 className="h-4 w-4 animate-spin text-white/40" />
+                                                    ) : codeValid === true ? (
+                                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                                    ) : codeValid === false ? (
+                                                        <span className="text-xs text-red-400">Inválido</span>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                            {codeValid === true && (
+                                                <p className="text-xs text-green-400">Código válido! Você será vinculado a um parceiro.</p>
+                                            )}
+                                            {codeValid === false && (
+                                                <p className="text-xs text-red-400">Código não encontrado. Verifique e tente novamente.</p>
+                                            )}
+                                        </div>
                                     )}
 
                                     <Button
