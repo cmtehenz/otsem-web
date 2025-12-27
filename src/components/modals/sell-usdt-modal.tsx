@@ -223,11 +223,11 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
 
         setSigningStatus("Assinando e enviando...");
         transaction.sign(keypair);
-        const signature = await connection.sendRawTransaction(transaction.serialize());
+        const signature = await connection.sendRawTransaction(transaction.serialize(), {
+            skipPreflight: false,
+            preflightCommitment: "confirmed",
+        });
         
-        setSigningStatus("Confirmando transação...");
-        await connection.confirmTransaction(signature);
-
         return signature;
     }
 
