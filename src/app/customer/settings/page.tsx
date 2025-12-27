@@ -209,7 +209,7 @@ export default function SettingsPage() {
                             <Button
                                 onClick={handleSaveProfile}
                                 disabled={saving}
-                                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500"
+                                className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500"
                             >
                                 {saving ? "Salvando..." : "Salvar alterações"}
                             </Button>
@@ -281,7 +281,7 @@ export default function SettingsPage() {
                             <Button
                                 onClick={handleChangePassword}
                                 disabled={changingPassword}
-                                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500"
+                                className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500"
                             >
                                 {changingPassword ? "Alterando..." : "Alterar senha"}
                             </Button>
@@ -357,7 +357,7 @@ export default function SettingsPage() {
                         <div className="mt-6 flex justify-end">
                             <Button
                                 onClick={() => toast.success("Preferências salvas!")}
-                                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500"
+                                className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500"
                             >
                                 Salvar preferências
                             </Button>
@@ -373,8 +373,8 @@ export default function SettingsPage() {
                             <button
                                 onClick={() => setTheme("light")}
                                 className={`relative p-4 rounded-xl border-2 transition-all ${theme === "light"
-                                        ? "border-violet-500 bg-violet-500/10"
-                                        : "border-border hover:border-muted-foreground"
+                                    ? "border-violet-500 bg-violet-500/10"
+                                    : "border-border hover:border-muted-foreground"
                                     }`}
                             >
                                 <div className="flex flex-col items-center gap-3">
@@ -393,8 +393,8 @@ export default function SettingsPage() {
                             <button
                                 onClick={() => setTheme("dark")}
                                 className={`relative p-4 rounded-xl border-2 transition-all ${theme === "dark"
-                                        ? "border-violet-500 bg-violet-500/10"
-                                        : "border-border hover:border-muted-foreground"
+                                    ? "border-violet-500 bg-violet-500/10"
+                                    : "border-border hover:border-muted-foreground"
                                     }`}
                             >
                                 <div className="flex flex-col items-center gap-3">

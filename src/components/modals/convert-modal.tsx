@@ -197,8 +197,8 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                                     key={wallet.id}
                                                     onClick={() => setSelectedWalletId(wallet.id)}
                                                     className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${selectedWalletId === wallet.id
-                                                            ? "border-violet-500 bg-violet-500/20"
-                                                            : "border-border bg-muted hover:border-violet-500/30"
+                                                        ? "border-violet-500 bg-violet-500/20"
+                                                        : "border-border bg-muted hover:border-violet-500/30"
                                                         }`}
                                                 >
                                                     <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
@@ -260,7 +260,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                             <Button
                                 onClick={handleContinueToAmount}
                                 disabled={!selectedWalletId || wallets.length === 0}
-                                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 Continuar
                             </Button>
@@ -330,7 +330,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                             <Button
                                 onClick={handleContinueToConfirm}
                                 disabled={numAmount < minAmount}
-                                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 Continuar
                             </Button>
@@ -394,7 +394,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                             <Button
                                 onClick={handleConvert}
                                 disabled={loading}
-                                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <>
@@ -418,7 +418,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
 
                             <div className="text-center">
                                 <p className="text-muted-foreground text-sm mb-1">Você comprou</p>
-                                <p className="text-3xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
+                                <p className="text-3xl font-bold bg-linear-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
                                     {formatUSDT(convertedAmount)}
                                 </p>
                                 <p className="text-muted-foreground text-sm mt-2">
@@ -435,7 +435,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
 
                             <Button
                                 onClick={handleClose}
-                                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6"
+                                className="w-full bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6"
                             >
                                 Fechar
                             </Button>

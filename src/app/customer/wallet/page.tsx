@@ -270,7 +270,7 @@ export default function WalletPage() {
                     </Button>
                     <Button
                         onClick={openAddModal}
-                        className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
+                        className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
                     >
                         <Plus className="w-4 h-4 mr-2" />
                         Nova Carteira
@@ -291,7 +291,7 @@ export default function WalletPage() {
                     </p>
                     <Button
                         onClick={openAddModal}
-                        className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold px-8"
+                        className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold px-8"
                     >
                         <Plus className="w-4 h-4 mr-2" />
                         Adicionar Carteira
@@ -305,15 +305,15 @@ export default function WalletPage() {
                             <div
                                 key={wallet.id}
                                 className={`bg-card border rounded-2xl p-5 transition ${wallet.isMain
-                                        ? "border-violet-500/50 shadow-lg shadow-violet-500/10"
-                                        : "border-border hover:border-violet-500/30"
+                                    ? "border-violet-500/50 shadow-lg shadow-violet-500/10"
+                                    : "border-border hover:border-violet-500/30"
                                     }`}
                             >
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="flex items-center gap-4">
                                         <div className={`p-3 rounded-xl ${wallet.isMain
-                                                ? "bg-gradient-to-br from-violet-500/30 to-purple-500/30"
-                                                : "bg-gradient-to-br from-violet-500/20 to-purple-500/20"
+                                            ? "bg-linear-to-br from-violet-500/30 to-purple-500/30"
+                                            : "bg-linear-to-br from-violet-500/20 to-purple-500/20"
                                             }`}>
                                             <Wallet className="w-6 h-6 text-violet-500 dark:text-violet-400" />
                                         </div>
@@ -454,8 +454,8 @@ export default function WalletPage() {
                                         key={network.id}
                                         onClick={() => setSelectedNetwork(network.id)}
                                         className={`flex items-center justify-center gap-2 p-4 rounded-xl border transition ${selectedNetwork === network.id
-                                                ? "border-violet-500 bg-violet-500/20"
-                                                : "border-border bg-muted hover:border-border"
+                                            ? "border-violet-500 bg-violet-500/20"
+                                            : "border-border bg-muted hover:border-border"
                                             }`}
                                     >
                                         <span className="text-xl">{network.icon}</span>
@@ -474,8 +474,8 @@ export default function WalletPage() {
                                 <button
                                     onClick={() => setAddMode("create")}
                                     className={`p-4 rounded-xl border transition text-left ${addMode === "create"
-                                            ? "border-violet-500 bg-violet-500/20"
-                                            : "border-border bg-muted hover:border-border"
+                                        ? "border-violet-500 bg-violet-500/20"
+                                        : "border-border bg-muted hover:border-border"
                                         }`}
                                 >
                                     <p className="text-foreground font-medium">Criar Nova</p>
@@ -484,8 +484,8 @@ export default function WalletPage() {
                                 <button
                                     onClick={() => setAddMode("import")}
                                     className={`p-4 rounded-xl border transition text-left ${addMode === "import"
-                                            ? "border-violet-500 bg-violet-500/20"
-                                            : "border-border bg-muted hover:border-border"
+                                        ? "border-violet-500 bg-violet-500/20"
+                                        : "border-border bg-muted hover:border-border"
                                         }`}
                                 >
                                     <p className="text-foreground font-medium">Importar</p>
@@ -529,7 +529,7 @@ export default function WalletPage() {
                                 <Button
                                     onClick={handleCreateWallet}
                                     disabled={creating}
-                                    className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
+                                    className="flex-1 bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
                                 >
                                     {creating ? (
                                         <>
@@ -544,7 +544,7 @@ export default function WalletPage() {
                                 <Button
                                     onClick={handleImportWallet}
                                     disabled={importing || !importAddress.trim()}
-                                    className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
+                                    className="flex-1 bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
                                 >
                                     {importing ? (
                                         <>
@@ -614,7 +614,7 @@ export default function WalletPage() {
 
                         <Button
                             onClick={() => setWalletKeys(null)}
-                            className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold mt-2"
+                            className="w-full bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold mt-2"
                         >
                             Já salvei minha chave privada
                         </Button>
@@ -657,7 +657,7 @@ export default function WalletPage() {
                             </Button>
                             <Button
                                 onClick={handleSaveLabel}
-                                className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
+                                className="flex-1 bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
                             >
                                 Salvar
                             </Button>

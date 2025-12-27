@@ -227,7 +227,7 @@ export function WithdrawModal() {
                             </div>
                             <Button
                                 onClick={handleGoToPixPage}
-                                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 shadow-lg shadow-violet-500/25"
+                                className="w-full bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 shadow-lg shadow-violet-500/25"
                             >
                                 <Plus className="w-5 h-5 mr-2" />
                                 Cadastrar Chave PIX
@@ -294,8 +294,8 @@ export function WithdrawModal() {
                                 </div>
                             </div>
 
-                            <div className="text-center py-4 bg-gradient-to-b from-violet-500/10 to-transparent rounded-2xl">
-                                <p className="text-5xl font-bold bg-gradient-to-r from-violet-500 to-purple-500 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
+                            <div className="text-center py-4 bg-linear-to-b from-violet-500/10 to-transparent rounded-2xl">
+                                <p className="text-5xl font-bold bg-linear-to-r from-violet-500 to-purple-500 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                             </div>
@@ -330,7 +330,7 @@ export function WithdrawModal() {
                             <Button
                                 onClick={handleContinueToConfirm}
                                 disabled={cents < 100}
-                                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-violet-500/25"
+                                className="w-full bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-violet-500/25"
                             >
                                 Continuar
                             </Button>
@@ -359,9 +359,9 @@ export function WithdrawModal() {
                                 </div>
                             </div>
 
-                            <div className="text-center py-6 bg-gradient-to-b from-violet-500/10 to-transparent rounded-2xl">
+                            <div className="text-center py-6 bg-linear-to-b from-violet-500/10 to-transparent rounded-2xl">
                                 <p className="text-muted-foreground text-sm mb-1">Valor a transferir</p>
-                                <p className="text-4xl font-bold bg-gradient-to-r from-violet-500 to-purple-500 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
+                                <p className="text-4xl font-bold bg-linear-to-r from-violet-500 to-purple-500 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                             </div>
@@ -376,7 +376,7 @@ export function WithdrawModal() {
                             <Button
                                 onClick={handleSendPix}
                                 disabled={loading}
-                                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-green-500/25"
+                                className="w-full bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-green-500/25"
                             >
                                 {loading ? (
                                     <>
@@ -402,7 +402,7 @@ export function WithdrawModal() {
                             </div>
 
                             <div className="text-center">
-                                <p className="text-3xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">
+                                <p className="text-3xl font-bold bg-linear-to-r from-green-500 to-emerald-500 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                                 <p className="text-muted-foreground text-sm mt-1">
@@ -423,7 +423,7 @@ export function WithdrawModal() {
 
                             <Button
                                 onClick={handleClose}
-                                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 shadow-lg shadow-violet-500/25"
+                                className="w-full bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 shadow-lg shadow-violet-500/25"
                             >
                                 Fechar
                             </Button>

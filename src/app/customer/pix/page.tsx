@@ -182,7 +182,7 @@ export default function CustomerPixPage() {
                     </Button>
                     <Button
                         onClick={() => setShowModal(true)}
-                        className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
+                        className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
                     >
                         <Plus className="w-4 h-4 mr-2" />
                         Nova Chave Pix
@@ -218,7 +218,7 @@ export default function CustomerPixPage() {
                     </p>
                     <Button
                         onClick={() => setShowModal(true)}
-                        className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold px-8"
+                        className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold px-8"
                     >
                         <Plus className="w-4 h-4 mr-2" />
                         Cadastrar Chave Pix
@@ -233,7 +233,7 @@ export default function CustomerPixPage() {
                         >
                             <div className="flex items-center justify-between gap-4">
                                 <div className="flex items-center gap-4">
-                                    <div className="p-3 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20 text-2xl">
+                                    <div className="p-3 rounded-xl bg-linear-to-br from-violet-500/20 to-purple-500/20 text-2xl">
                                         {getKeyTypeIcon(pix.keyType)}
                                     </div>
                                     <div>
@@ -394,7 +394,7 @@ export default function CustomerPixPage() {
                             <Button
                                 type="submit"
                                 disabled={submitting || (newType !== "RANDOM" && !newValue)}
-                                className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold disabled:opacity-50"
+                                className="flex-1 bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold disabled:opacity-50"
                             >
                                 {submitting ? (
                                     <>
