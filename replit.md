@@ -36,7 +36,7 @@ OtsemPay is a digital banking platform built with Next.js 14 that provides compr
   - Backend endpoints:
     - `GET /wallet/deposit-address?network=SOLANA` - OKX deposit address
     - `GET /wallet/quote-sell-usdt?usdtAmount=X&network=Y` - Quote
-    - `POST /wallet/sell-usdt-to-pix` - Start sale
+    - `POST /wallet/sell-usdt-to-brl` - Start sale
     - `POST /wallet/process-sell/:id` - Process (admin)
     - `GET /wallet/pending-sell-deposits` - List pending (admin)
 

@@ -126,7 +126,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
     async function handleConfirmSell() {
         setLoading(true);
         try {
-            const res = await http.post<SellResponse>("/wallet/sell-usdt-to-pix", {
+            const res = await http.post<SellResponse>("/wallet/sell-usdt-to-brl", {
                 usdtAmount: numAmount,
                 network,
             });
