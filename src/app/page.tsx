@@ -48,11 +48,10 @@ export default function HomePage() {
       >
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-2">
-            <div className="relative h-9 w-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">O</span>
-            </div>
+            <img src="/images/logo.png" alt="OtsemPay" className="h-10 w-10 object-contain" />
             <span className="text-xl font-bold tracking-tight">
-              OtsemPay
+              <span className="text-amber-400">Otsem</span>
+              <span className="text-violet-400">Pay</span>
             </span>
           </Link>
 
@@ -765,10 +764,11 @@ export default function HomePage() {
           <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2 mb-4">
-                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">O</span>
-                </div>
-                <span className="text-xl font-bold">OtsemPay</span>
+                <img src="/images/logo.png" alt="OtsemPay" className="h-10 w-10 object-contain" />
+                <span className="text-xl font-bold">
+                  <span className="text-amber-400">Otsem</span>
+                  <span className="text-violet-400">Pay</span>
+                </span>
               </div>
               <p className="text-sm text-white/50 max-w-sm">
                 A forma mais inteligente de mover dinheiro entre moedas. 
