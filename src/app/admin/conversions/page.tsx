@@ -42,29 +42,30 @@ type Conversion = {
     };
     brlPaid: number;
     usdtCredited: number;
-    exchangeRateUsed: number;
-    spreadPercent: number;
-    pixFee: number;
-    okxFee: number;
-    internalFee: number;
-    totalFeesBrl: number;
-    profitBrl: number;
+    spreadApplied: number;
+    exchangeRateBrlUsdt: number;
+    okxWithdrawFeeBrl: number;
+    okxTradingFeeBrl: number;
+    totalOkxFeesBrl: number;
+    grossProfitBrl: number;
+    affiliateCommissionBrl: number;
+    netProfitBrl: number;
+    network: "SOLANA" | "TRON";
     affiliate?: {
         id: string;
         code: string;
         name: string;
     } | null;
-    affiliateCommissionBrl: number;
     okxOrderId?: string;
-    sourceOfBRL: "INTER" | "OKX" | "FD_BANK";
 };
 
 type ConversionStats = {
     totalCount: number;
     volumeBrl: number;
     volumeUsdt: number;
-    grossProfit: number;
-    netProfit: number;
+    grossProfitBrl: number;
+    netProfitBrl: number;
+    totalOkxFeesBrl: number;
     avgRate: number;
     totalCommissions: number;
 };
@@ -264,11 +265,11 @@ export default function ConversionsPage() {
                         <TrendingUp className="h-4 w-4 text-green-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-green-600">
-                            {formatCurrency(stats?.netProfit ?? 0)}
+                        <div className={`text-2xl font-bold ${(stats?.netProfitBrl ?? 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {formatCurrency(stats?.netProfitBrl ?? 0)}
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            Bruto: {formatCurrency(stats?.grossProfit ?? 0)}
+                            Bruto: {formatCurrency(stats?.grossProfitBrl ?? 0)} | Taxas OKX: {formatCurrency(stats?.totalOkxFeesBrl ?? 0)}
                         </p>
                     </CardContent>
                 </Card>
@@ -393,10 +394,11 @@ export default function ConversionsPage() {
                                         <TableHead>Cliente</TableHead>
                                         <TableHead className="text-right">BRL Pago</TableHead>
                                         <TableHead className="text-right">USDT</TableHead>
-                                        <TableHead className="text-right">Taxa</TableHead>
-                                        <TableHead className="text-right">Lucro</TableHead>
+                                        <TableHead className="text-right">Spread</TableHead>
+                                        <TableHead className="text-right">Taxas OKX</TableHead>
+                                        <TableHead className="text-right">Lucro Líquido</TableHead>
+                                        <TableHead>Rede</TableHead>
                                         <TableHead>Afiliado</TableHead>
-                                        <TableHead className="text-right">Comissão</TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead></TableHead>
                                     </TableRow>
@@ -420,25 +422,25 @@ export default function ConversionsPage() {
                                                 {formatUSDT(conv.usdtCredited)}
                                             </TableCell>
                                             <TableCell className="text-right text-muted-foreground">
-                                                {(conv.exchangeRateUsed / 100).toFixed(4)}
+                                                {conv.spreadApplied.toFixed(1)}%
                                             </TableCell>
-                                            <TableCell className="text-right font-medium text-green-600">
-                                                {formatCurrency(conv.profitBrl)}
+                                            <TableCell className="text-right text-orange-600">
+                                                {formatCurrency(conv.totalOkxFeesBrl)}
+                                            </TableCell>
+                                            <TableCell className={`text-right font-medium ${conv.netProfitBrl >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                {formatCurrency(conv.netProfitBrl)}
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant="outline" className={conv.network === 'SOLANA' ? 'border-purple-500 text-purple-600' : 'border-blue-500 text-blue-600'}>
+                                                    {conv.network}
+                                                </Badge>
                                             </TableCell>
                                             <TableCell>
                                                 {conv.affiliate ? (
-                                                    <span className="text-violet-600 font-medium">
-                                                        {conv.affiliate.code}
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-muted-foreground">-</span>
-                                                )}
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                {conv.affiliateCommissionBrl > 0 ? (
-                                                    <span className="text-violet-600">
-                                                        {formatCurrency(conv.affiliateCommissionBrl)}
-                                                    </span>
+                                                    <div className="text-violet-600">
+                                                        <span className="font-medium">{conv.affiliate.code}</span>
+                                                        <p className="text-xs">{formatCurrency(conv.affiliateCommissionBrl)}</p>
+                                                    </div>
                                                 ) : (
                                                     <span className="text-muted-foreground">-</span>
                                                 )}
@@ -502,7 +504,7 @@ export default function ConversionsPage() {
 
                             <div className="border-t pt-4">
                                 <h4 className="font-semibold mb-3">Valores da Conversão</h4>
-                                <div className="grid grid-cols-3 gap-4">
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     <div className="space-y-1">
                                         <p className="text-sm text-muted-foreground">BRL Pago</p>
                                         <p className="text-xl font-bold">{formatCurrency(selectedConversion.brlPaid)}</p>
@@ -513,45 +515,51 @@ export default function ConversionsPage() {
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-sm text-muted-foreground">Taxa de Câmbio</p>
-                                        <p className="text-xl font-bold">{(selectedConversion.exchangeRateUsed / 100).toFixed(4)}</p>
+                                        <p className="text-xl font-bold">R$ {(selectedConversion.exchangeRateBrlUsdt / 100).toFixed(2)}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-sm text-muted-foreground">Rede</p>
+                                        <Badge variant="outline" className={selectedConversion.network === 'SOLANA' ? 'border-purple-500 text-purple-600' : 'border-blue-500 text-blue-600'}>
+                                            {selectedConversion.network}
+                                        </Badge>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="border-t pt-4">
-                                <h4 className="font-semibold mb-3">Taxas e Lucro</h4>
+                                <h4 className="font-semibold mb-3">Taxas OKX</h4>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-3">
                                         <div className="flex justify-between">
-                                            <span className="text-muted-foreground">Taxa PIX:</span>
-                                            <span>{formatCurrency(selectedConversion.pixFee)}</span>
+                                            <span className="text-muted-foreground">Taxa Saque ({selectedConversion.network}):</span>
+                                            <span className="text-orange-600">{formatCurrency(selectedConversion.okxWithdrawFeeBrl)}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-muted-foreground">Taxa OKX:</span>
-                                            <span>{formatCurrency(selectedConversion.okxFee)}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-muted-foreground">Taxa Interna:</span>
-                                            <span>{formatCurrency(selectedConversion.internalFee)}</span>
+                                            <span className="text-muted-foreground">Taxa Trading (0.1%):</span>
+                                            <span className="text-orange-600">{formatCurrency(selectedConversion.okxTradingFeeBrl)}</span>
                                         </div>
                                         <div className="flex justify-between border-t pt-2">
-                                            <span className="font-medium">Total Taxas:</span>
-                                            <span className="font-medium">{formatCurrency(selectedConversion.totalFeesBrl)}</span>
+                                            <span className="font-medium">Total Taxas OKX:</span>
+                                            <span className="font-medium text-orange-600">{formatCurrency(selectedConversion.totalOkxFeesBrl)}</span>
                                         </div>
                                     </div>
                                     <div className="space-y-3">
                                         <div className="flex justify-between">
-                                            <span className="text-muted-foreground">Spread:</span>
-                                            <span>{selectedConversion.spreadPercent.toFixed(2)}%</span>
+                                            <span className="text-muted-foreground">Spread Aplicado:</span>
+                                            <span className="font-medium">{selectedConversion.spreadApplied.toFixed(1)}%</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-muted-foreground">Fonte BRL:</span>
-                                            <span>{selectedConversion.sourceOfBRL}</span>
+                                            <span className="text-muted-foreground">Lucro Bruto:</span>
+                                            <span className="text-green-600">{formatCurrency(selectedConversion.grossProfitBrl)}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-muted-foreground">Comissão Afiliado:</span>
+                                            <span className="text-violet-600">{formatCurrency(selectedConversion.affiliateCommissionBrl)}</span>
                                         </div>
                                         <div className="flex justify-between border-t pt-2">
-                                            <span className="font-semibold text-green-600">Lucro:</span>
-                                            <span className="font-bold text-green-600 text-lg">
-                                                {formatCurrency(selectedConversion.profitBrl)}
+                                            <span className="font-semibold">Lucro Líquido:</span>
+                                            <span className={`font-bold text-lg ${selectedConversion.netProfitBrl >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                {formatCurrency(selectedConversion.netProfitBrl)}
                                             </span>
                                         </div>
                                     </div>
