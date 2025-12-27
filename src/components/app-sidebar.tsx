@@ -50,7 +50,8 @@ const nav: Item[] = [
     url: "/admin",
     items: [
       { title: "Transações", url: "/admin/recebidos", icon: Banknote },
-      { title: "Conversões", url: "/admin/conversions", icon: ArrowRightLeft },
+      { title: "Compras USDT", url: "/admin/conversions", icon: ArrowRightLeft },
+      { title: "Vendas USDT", url: "/admin/sell-deposits", icon: ArrowRightLeft },
     ],
   },
   {

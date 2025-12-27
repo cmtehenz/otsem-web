@@ -50,6 +50,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DepositModal } from "@/components/modals/deposit-modal";
 import { WithdrawModal } from "@/components/modals/withdraw-modal";
+import { SellUsdtModal } from "@/components/modals/sell-usdt-modal";
+import { useUiModals } from "@/stores/ui-modals";
 
 type CustomerAddress = {
     zipCode: string;
@@ -301,6 +303,7 @@ function HeaderLogout() {
 
 export default function CustomerLayout({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
+    const { open, closeModal, triggerRefresh } = useUiModals();
     const [kycStatus, setKycStatus] = React.useState<string>("not_requested");
     const [loading, setLoading] = React.useState(true);
 
@@ -329,6 +332,11 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
         <Protected>
             <DepositModal />
             <WithdrawModal />
+            <SellUsdtModal 
+                open={open.sellUsdt} 
+                onClose={() => closeModal("sellUsdt")} 
+                onSuccess={triggerRefresh}
+            />
             <SidebarProvider>
                 <div className="flex min-h-screen w-full bg-background">
                     <CustomerSidebar kycStatus={kycStatus} />

@@ -270,7 +270,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <Button
                     onClick={() => openModal("deposit")}
                     className="bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl py-6 text-sm"
@@ -287,10 +287,17 @@ export default function Dashboard() {
                 </Button>
                 <Button
                     onClick={() => setShowConvertModal(true)}
-                    className="bg-card border border-border hover:bg-accent text-foreground font-semibold rounded-xl py-6 text-sm"
+                    className="bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-xl py-6 text-sm"
                 >
                     <ArrowRightLeft className="w-5 h-5 mr-1.5" />
-                    Converter
+                    Comprar USDT
+                </Button>
+                <Button
+                    onClick={() => openModal("sellUsdt")}
+                    className="bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-xl py-6 text-sm"
+                >
+                    <ArrowRightLeft className="w-5 h-5 mr-1.5" />
+                    Vender USDT
                 </Button>
             </div>
 
