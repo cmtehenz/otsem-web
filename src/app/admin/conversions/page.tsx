@@ -315,12 +315,12 @@ export default function ConversionsPage() {
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <label className="text-sm text-muted-foreground">Cliente</label>
-                            <Select value={customerFilter} onValueChange={setCustomerFilter}>
+                            <Select value={customerFilter || "all"} onValueChange={(v) => setCustomerFilter(v === "all" ? "" : v)}>
                                 <SelectTrigger className="w-48">
                                     <SelectValue placeholder="Todos" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">Todos</SelectItem>
+                                    <SelectItem value="all">Todos</SelectItem>
                                     {customers.map((c) => (
                                         <SelectItem key={c.id} value={c.id}>
                                             {c.name}
@@ -331,12 +331,12 @@ export default function ConversionsPage() {
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <label className="text-sm text-muted-foreground">Afiliado</label>
-                            <Select value={affiliateFilter} onValueChange={setAffiliateFilter}>
+                            <Select value={affiliateFilter || "all"} onValueChange={(v) => setAffiliateFilter(v === "all" ? "" : v)}>
                                 <SelectTrigger className="w-48">
                                     <SelectValue placeholder="Todos" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">Todos</SelectItem>
+                                    <SelectItem value="all">Todos</SelectItem>
                                     {affiliates.map((a) => (
                                         <SelectItem key={a.id} value={a.id}>
                                             {a.name} ({a.code})
@@ -347,12 +347,12 @@ export default function ConversionsPage() {
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <label className="text-sm text-muted-foreground">Status</label>
-                            <Select value={statusFilter} onValueChange={setStatusFilter}>
+                            <Select value={statusFilter || "all"} onValueChange={(v) => setStatusFilter(v === "all" ? "" : v)}>
                                 <SelectTrigger className="w-36">
                                     <SelectValue placeholder="Todos" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">Todos</SelectItem>
+                                    <SelectItem value="all">Todos</SelectItem>
                                     <SelectItem value="COMPLETED">Concluída</SelectItem>
                                     <SelectItem value="PENDING">Pendente</SelectItem>
                                     <SelectItem value="FAILED">Falhou</SelectItem>
