@@ -33,7 +33,10 @@ type TxDataResponse = {
     toAddress: string;
     usdtAmount: number;
     usdtAmountRaw: number;
-    contractAddress: string;
+    contractAddress?: string;
+    tokenMint?: string;
+    tokenProgram?: string;
+    decimals: number;
     quote: {
         brlToReceive: number;
         exchangeRate: number;
@@ -152,7 +155,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
         });
 
         setSigningStatus("Construindo transação TRC20...");
-        const contract = await tronWeb.contract().at(data.contractAddress);
+        const contract = await tronWeb.contract().at(data.contractAddress!);
         
         setSigningStatus("Assinando e enviando...");
         const tx = await contract.methods
@@ -197,7 +200,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
         const keypair = Keypair.fromSecretKey(secretKey);
 
         setSigningStatus("Buscando contas de token...");
-        const USDT_MINT = new PublicKey(data.contractAddress);
+        const USDT_MINT = new PublicKey(data.tokenMint!);
         const fromPubkey = new PublicKey(data.fromAddress);
         const toPubkey = new PublicKey(data.toAddress);
 
@@ -234,7 +237,8 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
             return;
         }
         
-        if (!txData.contractAddress || !txData.fromAddress || !txData.toAddress) {
+        const tokenAddress = txData.network === "TRON" ? txData.contractAddress : txData.tokenMint;
+        if (!tokenAddress || !txData.fromAddress || !txData.toAddress) {
             toast.error("Dados da transação inválidos. Volte e tente novamente.");
             setStep("amount");
             return;
