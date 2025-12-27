@@ -19,9 +19,12 @@ type Network = "SOLANA" | "TRON";
 
 type WalletItem = {
     id: string;
-    address: string;
+    externalAddress: string;
     network: Network;
-    label?: string;
+    label?: string | null;
+    balance?: string;
+    isActive?: boolean;
+    okxWhitelisted?: boolean;
 };
 
 type TxDataResponse = {
@@ -73,7 +76,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
     async function fetchWallets() {
         setWalletsLoading(true);
         try {
-            const res = await http.get<WalletItem[]>("/wallet/my-wallets");
+            const res = await http.get<WalletItem[]>("/wallet/usdt");
             setWallets(res.data);
         } catch (err) {
             console.error("Erro ao buscar carteiras:", err);
@@ -368,11 +371,16 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                                         : "border-border bg-muted hover:border-orange-500/30"
                                                 }`}
                                             >
-                                                <p className="text-foreground font-medium text-sm">
-                                                    {wallet.label || "Carteira"}
-                                                </p>
+                                                <div className="flex items-center justify-between">
+                                                    <p className="text-foreground font-medium text-sm">
+                                                        {wallet.label || "Carteira"}
+                                                    </p>
+                                                    <p className="text-green-600 dark:text-green-400 text-sm font-medium">
+                                                        {parseFloat(wallet.balance || "0").toFixed(2)} USDT
+                                                    </p>
+                                                </div>
                                                 <p className="text-muted-foreground text-xs font-mono mt-1">
-                                                    {wallet.address ? `${wallet.address.slice(0, 10)}...${wallet.address.slice(-8)}` : "Endereço indisponível"}
+                                                    {wallet.externalAddress ? `${wallet.externalAddress.slice(0, 10)}...${wallet.externalAddress.slice(-8)}` : "Endereço indisponível"}
                                                 </p>
                                             </button>
                                         ))}
@@ -404,7 +412,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 <div className="flex items-center justify-between">
                                     <span className="text-muted-foreground text-sm">Carteira:</span>
                                     <span className="text-foreground text-xs font-mono">
-                                        {selectedWallet?.address ? `${selectedWallet.address.slice(0, 8)}...${selectedWallet.address.slice(-6)}` : "-"}
+                                        {selectedWallet?.externalAddress ? `${selectedWallet.externalAddress.slice(0, 8)}...${selectedWallet.externalAddress.slice(-6)}` : "-"}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between mt-1">

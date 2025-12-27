@@ -36,7 +36,7 @@ OtsemPay is a digital banking platform built with Next.js 14 that provides compr
   - Admin page `/admin/sell-deposits` to manage pending sell deposits
   - Sidebar menu: "Compras USDT" and "Vendas USDT" under Operações
   - Backend endpoints:
-    - `GET /wallet/my-wallets` - List customer wallets
+    - `GET /wallet/usdt` - List customer USDT wallets
     - `GET /wallet/sell-tx-data?walletId=X&usdtAmount=Y&network=Z` - Transaction data
     - `POST /wallet/submit-signed-sell` - Submit txHash { walletId, usdtAmount, network, txHash }
     - `GET /wallet/pending-sell-deposits` - List pending (admin)
