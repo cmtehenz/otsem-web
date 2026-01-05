@@ -109,21 +109,33 @@ export default function TransactionsPage() {
     }, [fetchTransactions]);
 
     function filterTransactions(txs: Transaction[]): Transaction[] {
-        const seenConversionKeys = new Set<string>();
+        const seenConversions: Array<{ time: number; amount: number; usdtAmt: number; subType: string; txHash?: string }> = [];
         
         return txs.filter((tx, _index, allTx) => {
             if (tx.type === "CONVERSION") {
                 const txHash = tx.externalData?.txHash;
                 const txTime = new Date(tx.createdAt).getTime();
                 const txAmount = Number(tx.amount);
-                const usdtAmt = tx.externalData?.usdtAmount || tx.usdtAmount;
+                const usdtRaw = tx.externalData?.usdtAmount || tx.usdtAmount;
+                const usdtAmt = typeof usdtRaw === 'number' ? usdtRaw : parseFloat(String(usdtRaw)) || 0;
+                const subType = tx.subType || (tx.description?.toLowerCase().includes('venda') ? 'SELL' : 'BUY');
                 
-                const key = txHash || `${tx.subType || 'CONV'}-${txAmount.toFixed(2)}-${usdtAmt}-${Math.floor(txTime / 120000)}`;
-                
-                if (seenConversionKeys.has(key)) {
-                    return false;
+                if (txHash) {
+                    const hasDupe = seenConversions.some(s => s.txHash === txHash);
+                    if (hasDupe) return false;
+                    seenConversions.push({ time: txTime, amount: txAmount, usdtAmt, subType, txHash });
+                    return true;
                 }
-                seenConversionKeys.add(key);
+                
+                const hasDupe = seenConversions.some(s => {
+                    const timeDiff = Math.abs(s.time - txTime);
+                    const amountDiff = Math.abs(s.amount - txAmount);
+                    const usdtDiff = Math.abs(s.usdtAmt - usdtAmt);
+                    return s.subType === subType && timeDiff < 300000 && amountDiff < 1 && usdtDiff < 0.5;
+                });
+                
+                if (hasDupe) return false;
+                seenConversions.push({ time: txTime, amount: txAmount, usdtAmt, subType });
                 return true;
             }
             
@@ -140,7 +152,7 @@ export default function TransactionsPage() {
                 const otherAmount = Number(other.amount);
                 const timeDiff = Math.abs(txTime - otherTime);
                 
-                return Math.abs(txAmount - otherAmount) < 0.01 && timeDiff < 120000;
+                return Math.abs(txAmount - otherAmount) < 1 && timeDiff < 300000;
             });
             
             return !hasMatchingConversion;
