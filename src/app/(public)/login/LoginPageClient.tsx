@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Zap, Globe2, Shield, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, ArrowLeft, Zap, Globe2, Shield, CheckCircle2, Sparkles } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -91,24 +91,18 @@ function LoginPageInner(): React.JSX.Element {
                 />
             </div>
 
-            <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4 sm:pt-6">
-                <div className="mx-auto flex items-center justify-between px-8 py-5 max-w-7xl liquid-glass rounded-3xl">
-                    <Link href="/" className="flex items-center gap-3">
-                        <img src="/images/logo-light.png" alt="OtsemPay" className="h-9 w-9 object-contain" />
-                        <span className="text-[1.65rem] font-black tracking-tighter">
-                            <span className="text-primary">Otsem</span>
-                            <span className="text-foreground">Pay</span>
-                        </span>
-                    </Link>
-                    
-                    <Link href="/register">
-                        <button className="btn-premium py-3 px-8 rounded-2xl text-sm shadow-2xl shadow-primary/40">
-                            <Sparkles className="w-4 h-4 text-yellow-300" />
-                            Criar conta
-                        </button>
-                    </Link>
-                </div>
-            </header>
+            <div className="fixed top-6 left-6 z-50">
+                <Link href="/">
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl liquid-glass text-foreground/70 hover:text-foreground font-bold text-sm transition-colors"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        Voltar
+                    </motion.button>
+                </Link>
+            </div>
 
             <div className="flex min-h-screen w-full items-center justify-center px-4 py-24 lg:px-8 xl:px-16">
                 <div className="flex w-full max-w-6xl items-center gap-16">

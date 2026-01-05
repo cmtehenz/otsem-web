@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Eye, EyeOff, Mail, User, Lock, Sparkles, CheckCircle2, Shield, Zap, Globe2, UserPlus, Gift, Loader2, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Mail, User, Lock, CheckCircle2, Shield, Zap, Globe2, UserPlus, Gift, Loader2, ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
 import http from "@/lib/http";
 import { toast } from "sonner";
 
@@ -184,23 +184,18 @@ function RegisterPageInner(): React.JSX.Element {
                 />
             </div>
 
-            <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4 sm:pt-6">
-                <div className="mx-auto flex items-center justify-between px-8 py-5 max-w-7xl liquid-glass rounded-3xl">
-                    <Link href="/" className="flex items-center gap-3">
-                        <img src="/images/logo-light.png" alt="OtsemPay" className="h-9 w-9 object-contain" />
-                        <span className="text-[1.65rem] font-black tracking-tighter">
-                            <span className="text-primary">Otsem</span>
-                            <span className="text-foreground">Pay</span>
-                        </span>
-                    </Link>
-                    
-                    <Link href="/login">
-                        <button className="btn-premium-outline py-3 px-8 rounded-2xl text-sm font-black">
-                            Entrar
-                        </button>
-                    </Link>
-                </div>
-            </header>
+            <div className="fixed top-6 left-6 z-50">
+                <Link href="/">
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl liquid-glass text-foreground/70 hover:text-foreground font-bold text-sm transition-colors"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        Voltar
+                    </motion.button>
+                </Link>
+            </div>
 
             <div className="flex min-h-screen w-full items-center justify-center px-4 py-24 lg:px-8 xl:px-16">
                 <div className="flex w-full max-w-6xl items-center gap-16">
