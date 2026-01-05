@@ -29,6 +29,7 @@ type Transaction = {
     id: string;
     accountId: string;
     type: "PIX_IN" | "PIX_OUT" | "CONVERSION" | "TRANSFER";
+    subType?: "BUY" | "SELL" | null;
     status: "PENDING" | "COMPLETED" | "FAILED";
     amount: string;
     balanceBefore: string;
@@ -364,7 +365,8 @@ export default function Dashboard() {
                                 descLower.includes("buy") ||
                                 descLower.includes("sell");
                             
-                            const isSellConversion = descLower.includes("venda") || descLower.includes("sell");
+                            const isSellConversion = tx.subType === "SELL" || 
+                                (!tx.subType && (descLower.includes("venda") || descLower.includes("sell")));
                             
                             if (isConversion || isConversionByDesc) {
                                 isConversionTx = true;
