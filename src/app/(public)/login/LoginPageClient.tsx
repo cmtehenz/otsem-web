@@ -1,4 +1,3 @@
-// src/app/(public)/login/LoginPageClient.tsx
 'use client';
 
 import * as React from 'react';
@@ -9,7 +8,8 @@ import { useForm, type SubmitHandler, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Eye, EyeOff, Mail, Lock, Sparkles, Shield, CheckCircle2, ArrowRight, Zap, Globe2, Rocket } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Zap, Globe2, Shield, Sparkles, CheckCircle2 } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,8 +20,8 @@ import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/contexts/auth-context';
 
 const loginSchema = z.object({
-    email: z.string().min(1, 'Informe seu e-mail').email('E-mail inválido').transform((v) => v.trim().toLowerCase()),
-    password: z.string().min(8, 'Mínimo de 8 caracteres'),
+    email: z.string().min(1, 'Informe seu e-mail').email('E-mail invalido').transform((v) => v.trim().toLowerCase()),
+    password: z.string().min(8, 'Minimo de 8 caracteres'),
     remember: z.boolean().default(true),
 });
 type LoginForm = z.infer<typeof loginSchema>;
@@ -39,8 +39,8 @@ function safeNext(nextParam: string | null | undefined, fallback = '/customer/da
 export default function LoginPageClient(): React.JSX.Element {
     return (
         <Suspense fallback={
-            <div className="grid min-h-screen place-items-center bg-[#0a0118] text-sm text-white/50">
-                Carregando…
+            <div className="grid min-h-screen place-items-center bg-white text-sm text-foreground/50">
+                Carregando...
             </div>
         }>
             <LoginPageInner />
@@ -77,27 +77,35 @@ function LoginPageInner(): React.JSX.Element {
     };
 
     return (
-        <div className="relative min-h-screen w-full overflow-hidden bg-[#0a0118]">
+        <div className="relative min-h-screen w-full overflow-hidden bg-white">
             <div className="pointer-events-none absolute inset-0 -z-10">
-                <div className="absolute -top-1/2 left-1/2 h-[1000px] w-[1000px] -translate-x-1/2 rounded-full bg-gradient-to-b from-violet-600/30 via-purple-600/20 to-transparent blur-3xl" />
-                <div className="absolute top-1/4 -left-1/4 h-[600px] w-[600px] rounded-full bg-gradient-to-r from-violet-600/20 to-transparent blur-3xl" />
-                <div className="absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-gradient-to-t from-purple-600/20 to-transparent blur-3xl" />
+                <motion.div
+                    animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.15, 1] }}
+                    transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-primary/5 blur-[120px] rounded-full"
+                />
+                <motion.div
+                    animate={{ x: [0, -30, 0], y: [0, 50, 0], scale: [1, 1.1, 1] }}
+                    transition={{ duration: 30, repeat: Infinity, ease: "easeInOut", delay: 5 }}
+                    className="absolute bottom-[10%] right-[-5%] w-[40vw] h-[40vw] bg-accent/5 blur-[100px] rounded-full"
+                />
             </div>
 
-            <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0118]/80 backdrop-blur-xl">
-                <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
+            <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4 sm:pt-6">
+                <div className="mx-auto flex items-center justify-between px-8 py-5 max-w-7xl liquid-glass rounded-3xl">
                     <Link href="/" className="flex items-center gap-3">
-                        <img src="/images/logo.png" alt="OtsemPay" className="h-10 w-10 object-contain" />
-                        <span className="text-xl font-bold tracking-tight">
-                            <span className="text-amber-400">Otsem</span>
-                            <span className="text-violet-400">Pay</span>
+                        <img src="/images/logo-light.png" alt="OtsemPay" className="h-9 w-9 object-contain" />
+                        <span className="text-[1.65rem] font-black tracking-tighter">
+                            <span className="text-primary">Otsem</span>
+                            <span className="text-foreground">Pay</span>
                         </span>
                     </Link>
                     
                     <Link href="/register">
-                        <Button className="rounded-full bg-white px-6 text-sm font-semibold text-[#0a0118] hover:bg-white/90">
+                        <button className="btn-premium py-3 px-8 rounded-2xl text-sm shadow-2xl shadow-primary/40">
+                            <Sparkles className="w-4 h-4 text-yellow-300" />
                             Criar conta
-                        </Button>
+                        </button>
                     </Link>
                 </div>
             </header>
@@ -106,35 +114,35 @@ function LoginPageInner(): React.JSX.Element {
                 <div className="flex w-full max-w-6xl items-center gap-16">
                     <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:gap-8">
                         <div>
-                            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-1.5 text-sm font-medium text-violet-200">
-                                <Sparkles className="h-4 w-4 text-violet-400" />
+                            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/5 border border-primary/10 px-4 py-1.5 text-sm font-black text-primary">
+                                <Sparkles className="h-4 w-4" />
                                 Bem-vindo de volta
                             </div>
-                            <h1 className="text-4xl font-bold text-white xl:text-5xl">
+                            <h1 className="text-4xl font-black text-foreground xl:text-5xl tracking-tightest">
                                 Acesse sua conta
                                 <br />
-                                <span className="bg-gradient-to-r from-amber-400 to-violet-400 bg-clip-text text-transparent">
+                                <span className="text-primary">
                                     OtsemPay
                                 </span>
                             </h1>
-                            <p className="mt-4 text-lg text-white/60">
-                                Gerencie suas operações OTC e converta BRL ↔ USDT com as melhores taxas do mercado.
+                            <p className="mt-4 text-lg text-muted-foreground font-medium">
+                                Gerencie suas operacoes OTC e converta BRL ↔ USDT com as melhores taxas do mercado.
                             </p>
                         </div>
 
                         <div className="space-y-4">
                             <FeatureItem
                                 icon={<Zap className="h-5 w-5 text-yellow-500" />}
-                                title="Liquidação rápida"
-                                desc="Operações finalizadas em 10-30 min"
+                                title="Liquidacao rapida"
+                                desc="Operacoes finalizadas em 10-30 min"
                             />
                             <FeatureItem
-                                icon={<Shield className="h-5 w-5 text-violet-400" />}
-                                title="Segurança total"
+                                icon={<Shield className="h-5 w-5 text-primary" />}
+                                title="Seguranca total"
                                 desc="Criptografia end-to-end"
                             />
                             <FeatureItem
-                                icon={<Globe2 className="h-5 w-5 text-green-500" />}
+                                icon={<Globe2 className="h-5 w-5 text-emerald-500" />}
                                 title="Sem fronteiras"
                                 desc="Opere de qualquer lugar do mundo"
                             />
@@ -142,15 +150,15 @@ function LoginPageInner(): React.JSX.Element {
                     </div>
 
                     <div className="w-full lg:flex-1 lg:max-w-md">
-                        <Card className="overflow-hidden rounded-3xl border-white/10 bg-white/5 backdrop-blur-xl">
-                            <CardHeader className="space-y-3 border-b border-white/5 pb-6">
-                                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600">
-                                    <Rocket className="h-7 w-7 text-white" />
+                        <Card className="overflow-hidden rounded-[2.5rem] border-white/40 rich-glass">
+                            <CardHeader className="space-y-3 border-b border-black/[0.03] pb-6">
+                                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary shadow-xl shadow-primary/20">
+                                    <Lock className="h-7 w-7 text-white" />
                                 </div>
-                                <CardTitle className="text-center text-2xl font-bold text-white">
+                                <CardTitle className="text-center text-2xl font-black text-foreground">
                                     Entrar
                                 </CardTitle>
-                                <p className="text-center text-sm text-white/60">
+                                <p className="text-center text-sm text-muted-foreground font-medium">
                                     Acesse sua conta para continuar
                                 </p>
                             </CardHeader>
@@ -158,90 +166,92 @@ function LoginPageInner(): React.JSX.Element {
                             <CardContent className="p-6 sm:p-8">
                                 <form onSubmit={handleSubmit(onSubmit)} className="grid gap-5" noValidate>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="email" className="text-sm font-semibold text-white">
+                                        <Label htmlFor="email" className="text-sm font-black text-foreground">
                                             E-mail
                                         </Label>
                                         <div className="relative">
-                                            <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                                            <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <Input
                                                 id="email"
                                                 type="email"
                                                 autoComplete="email"
                                                 inputMode="email"
                                                 placeholder="voce@exemplo.com"
-                                                className="h-11 rounded-xl border-white/10 bg-white/5 pl-10 text-white placeholder:text-white/40 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 text-foreground placeholder:text-muted-foreground transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                 aria-invalid={!!errors.email || undefined}
                                                 {...register('email')}
                                             />
                                         </div>
                                         {errors.email && (
-                                            <p className="text-xs text-red-400">{errors.email.message}</p>
+                                            <p className="text-xs text-red-500 font-medium">{errors.email.message}</p>
                                         )}
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="password" className="text-sm font-semibold text-white">
+                                        <Label htmlFor="password" className="text-sm font-black text-foreground">
                                             Senha
                                         </Label>
                                         <div className="relative">
-                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <Input
                                                 id="password"
                                                 type={showPw ? 'text' : 'password'}
                                                 autoComplete="current-password"
                                                 placeholder="••••••••"
-                                                className="h-11 rounded-xl border-white/10 bg-white/5 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 pr-10 text-foreground placeholder:text-muted-foreground transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                 aria-invalid={!!errors.password || undefined}
                                                 {...register('password')}
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPw((v) => !v)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white/70"
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition hover:text-foreground"
                                                 aria-label={showPw ? 'Ocultar senha' : 'Mostrar senha'}
                                             >
                                                 {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                             </button>
                                         </div>
                                         {errors.password && (
-                                            <p className="text-xs text-red-400">{errors.password.message}</p>
+                                            <p className="text-xs text-red-500 font-medium">{errors.password.message}</p>
                                         )}
                                     </div>
 
                                     <div className="flex items-center justify-between text-sm">
-                                        <label className="inline-flex items-center gap-2 text-white/60">
+                                        <label className="inline-flex items-center gap-2 text-muted-foreground font-medium">
                                             <input
                                                 type="checkbox"
-                                                className="h-4 w-4 rounded border-white/20 bg-white/5 text-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                                                className="h-4 w-4 rounded border-black/10 bg-white/60 text-primary focus:ring-2 focus:ring-primary/20"
                                                 {...register('remember')}
                                             />
                                             Lembrar de mim
                                         </label>
                                         <Link
                                             href="/forgot"
-                                            className="font-medium text-violet-400 transition hover:text-violet-300 hover:underline"
+                                            className="font-bold text-primary transition hover:text-primary/80"
                                         >
                                             Esqueci a senha
                                         </Link>
                                     </div>
 
-                                    <Button
+                                    <motion.button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="h-11 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 font-semibold text-white shadow-lg shadow-violet-500/25 transition hover:shadow-xl hover:shadow-violet-500/30 disabled:opacity-50"
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        className="btn-premium h-12 rounded-2xl font-black text-base disabled:opacity-50"
                                         aria-busy={isSubmitting}
                                     >
                                         {isSubmitting ? 'Entrando...' : 'Entrar'}
                                         {!isSubmitting && <ArrowRight className="ml-2 h-4 w-4" />}
-                                    </Button>
+                                    </motion.button>
 
-                                    <Separator className="my-2 bg-white/10" />
+                                    <Separator className="my-2 bg-black/[0.03]" />
 
-                                    <p className="text-center text-sm text-white/60">
-                                        Ainda não tem conta?{' '}
+                                    <p className="text-center text-sm text-muted-foreground font-medium">
+                                        Ainda nao tem conta?{' '}
                                         <Link
                                             href="/register"
-                                            className="font-semibold text-violet-400 transition hover:text-violet-300 hover:underline"
+                                            className="font-bold text-primary transition hover:text-primary/80"
                                         >
                                             Criar conta
                                         </Link>
@@ -250,13 +260,13 @@ function LoginPageInner(): React.JSX.Element {
                             </CardContent>
                         </Card>
 
-                        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-white/50">
+                        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground font-medium">
                             <div className="flex items-center gap-1.5">
-                                <Shield className="h-3.5 w-3.5 text-green-500" />
-                                Conexão segura
+                                <Shield className="h-3.5 w-3.5 text-emerald-500" />
+                                Conexao segura
                             </div>
                             <div className="flex items-center gap-1.5">
-                                <CheckCircle2 className="h-3.5 w-3.5 text-violet-400" />
+                                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
                                 SSL/TLS
                             </div>
                         </div>
@@ -270,12 +280,12 @@ function LoginPageInner(): React.JSX.Element {
 function FeatureItem({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
     return (
         <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/60 border border-black/[0.05] shadow-sm">
                 {icon}
             </div>
             <div>
-                <h3 className="text-sm font-semibold text-white">{title}</h3>
-                <p className="text-sm text-white/60">{desc}</p>
+                <h3 className="text-sm font-black text-foreground">{title}</h3>
+                <p className="text-sm text-muted-foreground font-medium">{desc}</p>
             </div>
         </div>
     );

@@ -7,26 +7,26 @@ import { z } from "zod";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Eye, EyeOff, Mail, User, Lock, Sparkles, CheckCircle2, Shield, Zap, Globe2, UserPlus, Gift, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Mail, User, Lock, Sparkles, CheckCircle2, Shield, Zap, Globe2, UserPlus, Gift, Loader2, ArrowRight } from "lucide-react";
 import http from "@/lib/http";
 import { toast } from "sonner";
 
 const schema = z
     .object({
         name: z.string().min(3, "Informe seu nome").transform((v) => v.trim()),
-        email: z.string().email("E-mail inválido").transform((v) => v.trim().toLowerCase()),
-        password: z.string().min(8, "Mínimo 8 caracteres"),
+        email: z.string().email("E-mail invalido").transform((v) => v.trim().toLowerCase()),
+        password: z.string().min(8, "Minimo 8 caracteres"),
         confirm: z.string().min(8, "Confirme sua senha"),
         affiliateCode: z.string().optional().transform((v) => v?.trim().toUpperCase() || undefined),
         accept: z.literal(true, { message: "Aceite os termos para continuar" }),
     })
     .refine((v) => v.password === v.confirm, {
-        message: "As senhas não conferem",
+        message: "As senhas nao conferem",
         path: ["confirm"],
     });
 
@@ -70,8 +70,8 @@ function getHttpMessage(e: unknown, fallback = "Falha no cadastro"): string {
 export default function RegisterForm(): React.JSX.Element {
     return (
         <Suspense fallback={
-            <div className="grid min-h-screen place-items-center bg-[#0a0118] text-sm text-white/50">
-                Carregando…
+            <div className="grid min-h-screen place-items-center bg-white text-sm text-foreground/50">
+                Carregando...
             </div>
         }>
             <RegisterPageInner />
@@ -157,10 +157,10 @@ function RegisterPageInner(): React.JSX.Element {
             const status = getHttpStatus(e);
 
             if (status === 409) {
-                form.setError("email", { message: "Este e-mail já está em uso" });
-                toast.error("Este e-mail já está em uso.");
+                form.setError("email", { message: "Este e-mail ja esta em uso" });
+                toast.error("Este e-mail ja esta em uso.");
             } else if (status === 400) {
-                toast.error("Dados inválidos. Verifique as informações.");
+                toast.error("Dados invalidos. Verifique as informacoes.");
             } else {
                 toast.error(getHttpMessage(e, "Falha no cadastro"));
             }
@@ -170,27 +170,34 @@ function RegisterPageInner(): React.JSX.Element {
     }
 
     return (
-        <div className="relative min-h-screen w-full overflow-hidden bg-[#0a0118]">
+        <div className="relative min-h-screen w-full overflow-hidden bg-white">
             <div className="pointer-events-none absolute inset-0 -z-10">
-                <div className="absolute -top-1/2 left-1/2 h-[1000px] w-[1000px] -translate-x-1/2 rounded-full bg-gradient-to-b from-violet-600/30 via-purple-600/20 to-transparent blur-3xl" />
-                <div className="absolute top-1/4 -left-1/4 h-[600px] w-[600px] rounded-full bg-gradient-to-r from-violet-600/20 to-transparent blur-3xl" />
-                <div className="absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-gradient-to-t from-purple-600/20 to-transparent blur-3xl" />
+                <motion.div
+                    animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.15, 1] }}
+                    transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-primary/5 blur-[120px] rounded-full"
+                />
+                <motion.div
+                    animate={{ x: [0, -30, 0], y: [0, 50, 0], scale: [1, 1.1, 1] }}
+                    transition={{ duration: 30, repeat: Infinity, ease: "easeInOut", delay: 5 }}
+                    className="absolute bottom-[10%] right-[-5%] w-[40vw] h-[40vw] bg-accent/5 blur-[100px] rounded-full"
+                />
             </div>
 
-            <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0118]/80 backdrop-blur-xl">
-                <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
+            <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4 sm:pt-6">
+                <div className="mx-auto flex items-center justify-between px-8 py-5 max-w-7xl liquid-glass rounded-3xl">
                     <Link href="/" className="flex items-center gap-3">
-                        <img src="/images/logo.png" alt="OtsemPay" className="h-10 w-10 object-contain" />
-                        <span className="text-xl font-bold tracking-tight">
-                            <span className="text-amber-400">Otsem</span>
-                            <span className="text-violet-400">Pay</span>
+                        <img src="/images/logo-light.png" alt="OtsemPay" className="h-9 w-9 object-contain" />
+                        <span className="text-[1.65rem] font-black tracking-tighter">
+                            <span className="text-primary">Otsem</span>
+                            <span className="text-foreground">Pay</span>
                         </span>
                     </Link>
                     
                     <Link href="/login">
-                        <Button variant="ghost" className="rounded-full border border-white/10 px-6 text-sm font-medium text-white hover:bg-white/5">
+                        <button className="btn-premium-outline py-3 px-8 rounded-2xl text-sm font-black">
                             Entrar
-                        </Button>
+                        </button>
                     </Link>
                 </div>
             </header>
@@ -199,26 +206,26 @@ function RegisterPageInner(): React.JSX.Element {
                 <div className="flex w-full max-w-6xl items-center gap-16">
                     <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:gap-8">
                         <div>
-                            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-1.5 text-sm font-medium text-violet-200">
-                                <Sparkles className="h-4 w-4 text-violet-400" />
-                                Comece grátis
+                            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/5 border border-primary/10 px-4 py-1.5 text-sm font-black text-primary">
+                                <Sparkles className="h-4 w-4" />
+                                Comece gratis
                             </div>
-                            <h1 className="text-4xl font-bold text-white xl:text-5xl">
+                            <h1 className="text-4xl font-black text-foreground xl:text-5xl tracking-tightest">
                                 Crie sua conta
                                 <br />
-                                <span className="bg-gradient-to-r from-amber-400 to-violet-400 bg-clip-text text-transparent">
+                                <span className="text-primary">
                                     em segundos
                                 </span>
                             </h1>
-                            <p className="mt-4 text-lg text-white/60">
-                                Acesso completo à plataforma de operações OTC e câmbio BRL ↔ USDT com as melhores taxas.
+                            <p className="mt-4 text-lg text-muted-foreground font-medium">
+                                Acesso completo a plataforma de operacoes OTC e cambio BRL ↔ USDT com as melhores taxas.
                             </p>
                         </div>
 
                         <div className="space-y-4">
                             <FeatureItem
-                                icon={<CheckCircle2 className="h-5 w-5 text-green-500" />}
-                                title="Verificação rápida"
+                                icon={<CheckCircle2 className="h-5 w-5 text-emerald-500" />}
+                                title="Verificacao rapida"
                                 desc="KYC simplificado em minutos"
                             />
                             <FeatureItem
@@ -227,7 +234,7 @@ function RegisterPageInner(): React.JSX.Element {
                                 desc="A partir de 3% de spread"
                             />
                             <FeatureItem
-                                icon={<Globe2 className="h-5 w-5 text-violet-400" />}
+                                icon={<Globe2 className="h-5 w-5 text-primary" />}
                                 title="Sem fronteiras"
                                 desc="Opere de qualquer lugar"
                             />
@@ -235,75 +242,75 @@ function RegisterPageInner(): React.JSX.Element {
                     </div>
 
                     <div className="w-full lg:flex-1 lg:max-w-md">
-                        <Card className="overflow-hidden rounded-3xl border-white/10 bg-white/5 backdrop-blur-xl">
-                            <CardHeader className="space-y-3 border-b border-white/5 pb-6">
-                                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600">
+                        <Card className="overflow-hidden rounded-[2.5rem] border-white/40 rich-glass">
+                            <CardHeader className="space-y-3 border-b border-black/[0.03] pb-6">
+                                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary shadow-xl shadow-primary/20">
                                     <UserPlus className="h-7 w-7 text-white" />
                                 </div>
-                                <CardTitle className="text-center text-2xl font-bold text-white">
+                                <CardTitle className="text-center text-2xl font-black text-foreground">
                                     Criar conta
                                 </CardTitle>
-                                <p className="text-center text-sm text-white/60">
-                                    Preencha os dados abaixo para começar
+                                <p className="text-center text-sm text-muted-foreground font-medium">
+                                    Preencha os dados abaixo para comecar
                                 </p>
                             </CardHeader>
 
                             <CardContent className="p-6 sm:p-8">
                                 <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4" noValidate>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="name" className="text-sm font-semibold text-white">
+                                        <Label htmlFor="name" className="text-sm font-black text-foreground">
                                             Nome completo
                                         </Label>
                                         <div className="relative">
-                                            <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                                            <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <Input
                                                 id="name"
-                                                className="h-11 rounded-xl border-white/10 bg-white/5 pl-10 text-white placeholder:text-white/40 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 text-foreground placeholder:text-muted-foreground transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                 placeholder="Seu nome"
                                                 {...form.register("name")}
                                             />
                                         </div>
                                         {form.formState.errors.name && (
-                                            <p className="text-xs text-red-400">{form.formState.errors.name.message}</p>
+                                            <p className="text-xs text-red-500 font-medium">{form.formState.errors.name.message}</p>
                                         )}
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="email" className="text-sm font-semibold text-white">
+                                        <Label htmlFor="email" className="text-sm font-black text-foreground">
                                             E-mail
                                         </Label>
                                         <div className="relative">
-                                            <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                                            <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <Input
                                                 id="email"
                                                 type="email"
-                                                className="h-11 rounded-xl border-white/10 bg-white/5 pl-10 text-white placeholder:text-white/40 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 text-foreground placeholder:text-muted-foreground transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                 placeholder="voce@exemplo.com"
                                                 {...form.register("email")}
                                             />
                                         </div>
                                         {form.formState.errors.email && (
-                                            <p className="text-xs text-red-400">{form.formState.errors.email.message}</p>
+                                            <p className="text-xs text-red-500 font-medium">{form.formState.errors.email.message}</p>
                                         )}
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="password" className="text-sm font-semibold text-white">
+                                        <Label htmlFor="password" className="text-sm font-black text-foreground">
                                             Senha
                                         </Label>
                                         <div className="relative">
-                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <Input
                                                 id="password"
                                                 type={showPw ? "text" : "password"}
-                                                className="h-11 rounded-xl border-white/10 bg-white/5 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
-                                                placeholder="Mínimo 8 caracteres"
+                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 pr-10 text-foreground placeholder:text-muted-foreground transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                placeholder="Minimo 8 caracteres"
                                                 {...form.register("password")}
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPw((v) => !v)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white/70"
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition hover:text-foreground"
                                                 aria-label={showPw ? "Ocultar senha" : "Mostrar senha"}
                                             >
                                                 {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -321,16 +328,16 @@ function RegisterPageInner(): React.JSX.Element {
                                                                     ? "bg-red-500"
                                                                     : score === 2
                                                                         ? "bg-yellow-500"
-                                                                        : "bg-green-500"
-                                                                : "bg-white/10"
+                                                                        : "bg-emerald-500"
+                                                                : "bg-black/[0.05]"
                                                                 }`}
                                                         />
                                                     ))}
                                                 </div>
-                                                <p className="mt-1.5 text-xs text-white/50">
-                                                    Força:{" "}
+                                                <p className="mt-1.5 text-xs text-muted-foreground">
+                                                    Forca:{" "}
                                                     <span
-                                                        className={`font-medium ${score <= 1 ? "text-red-400" : score === 2 ? "text-yellow-400" : "text-green-400"}`}
+                                                        className={`font-bold ${score <= 1 ? "text-red-500" : score === 2 ? "text-yellow-500" : "text-emerald-500"}`}
                                                     >
                                                         {scoreText}
                                                     </span>
@@ -339,47 +346,47 @@ function RegisterPageInner(): React.JSX.Element {
                                         )}
 
                                         {form.formState.errors.password && (
-                                            <p className="text-xs text-red-400">{form.formState.errors.password.message}</p>
+                                            <p className="text-xs text-red-500 font-medium">{form.formState.errors.password.message}</p>
                                         )}
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="confirm" className="text-sm font-semibold text-white">
+                                        <Label htmlFor="confirm" className="text-sm font-black text-foreground">
                                             Confirmar senha
                                         </Label>
                                         <div className="relative">
-                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <Input
                                                 id="confirm"
                                                 type={showConfirm ? "text" : "password"}
-                                                className="h-11 rounded-xl border-white/10 bg-white/5 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 pr-10 text-foreground placeholder:text-muted-foreground transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                 placeholder="Repita a senha"
                                                 {...form.register("confirm")}
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowConfirm((v) => !v)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white/70"
-                                                aria-label={showConfirm ? "Ocultar confirmação" : "Mostrar confirmação"}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition hover:text-foreground"
+                                                aria-label={showConfirm ? "Ocultar confirmacao" : "Mostrar confirmacao"}
                                             >
                                                 {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                             </button>
                                         </div>
                                         {form.formState.errors.confirm && (
-                                            <p className="text-xs text-red-400">{form.formState.errors.confirm.message}</p>
+                                            <p className="text-xs text-red-500 font-medium">{form.formState.errors.confirm.message}</p>
                                         )}
                                     </div>
 
-                                    <label className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-3 text-sm transition hover:bg-white/10">
+                                    <label className="flex items-start gap-3 rounded-2xl border border-black/[0.05] bg-white/60 p-3 text-sm transition hover:bg-white/80">
                                         <input
                                             type="checkbox"
-                                            className="mt-0.5 h-4 w-4 rounded border-white/20 bg-white/5 text-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                                            className="mt-0.5 h-4 w-4 rounded border-black/10 bg-white/60 text-primary focus:ring-2 focus:ring-primary/20"
                                             {...form.register("accept")}
                                         />
-                                        <span className="text-white/60">
+                                        <span className="text-muted-foreground font-medium">
                                             Aceito os{" "}
                                             <a
-                                                className="font-medium text-violet-400 underline-offset-2 hover:underline"
+                                                className="font-bold text-primary hover:underline"
                                                 href="/termos"
                                                 target="_blank"
                                                 rel="noreferrer"
@@ -388,76 +395,73 @@ function RegisterPageInner(): React.JSX.Element {
                                             </a>{" "}
                                             e a{" "}
                                             <a
-                                                className="font-medium text-violet-400 underline-offset-2 hover:underline"
+                                                className="font-bold text-primary hover:underline"
                                                 href="/privacidade"
                                                 target="_blank"
                                                 rel="noreferrer"
                                             >
-                                                política de privacidade
+                                                politica de privacidade
                                             </a>
                                         </span>
                                     </label>
                                     {form.formState.errors.accept && (
-                                        <p className="text-xs text-red-400">{form.formState.errors.accept.message}</p>
+                                        <p className="text-xs text-red-500 font-medium">{form.formState.errors.accept.message}</p>
                                     )}
 
                                     {!showAffiliateField ? (
                                         <button
                                             type="button"
                                             onClick={() => setShowAffiliateField(true)}
-                                            className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-white/20 p-3 text-sm text-white/60 transition hover:border-violet-500/50 hover:text-violet-400"
+                                            className="flex items-center justify-center gap-2 rounded-2xl border border-dashed border-black/10 p-3 text-sm text-muted-foreground transition hover:border-primary/50 hover:text-primary font-medium"
                                         >
                                             <Gift className="h-4 w-4" />
-                                            Tenho um código de indicação
+                                            Tenho um codigo de indicacao
                                         </button>
                                     ) : (
-                                        <div className="grid gap-2 rounded-xl border border-violet-500/30 bg-violet-500/5 p-3">
-                                            <Label htmlFor="affiliateCode" className="flex items-center gap-2 text-sm font-semibold text-white">
-                                                <Gift className="h-4 w-4 text-violet-400" />
-                                                Código de indicação
+                                        <div className="grid gap-2 rounded-2xl border border-primary/30 bg-primary/5 p-3">
+                                            <Label htmlFor="affiliateCode" className="flex items-center gap-2 text-sm font-black text-foreground">
+                                                <Gift className="h-4 w-4 text-primary" />
+                                                Codigo de indicacao
                                             </Label>
                                             <div className="relative">
                                                 <Input
                                                     id="affiliateCode"
-                                                    className="h-11 rounded-xl border-white/10 bg-white/5 pr-10 text-white uppercase placeholder:text-white/40 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                                                    className="h-12 rounded-2xl border-black/[0.05] bg-white/80 pr-10 text-foreground uppercase placeholder:text-muted-foreground transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                     placeholder="Ex: PARCEIRO123"
                                                     {...form.register("affiliateCode")}
                                                 />
                                                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
                                                     {validatingCode ? (
-                                                        <Loader2 className="h-4 w-4 animate-spin text-white/40" />
+                                                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                                                     ) : codeValid === true ? (
-                                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                                                     ) : codeValid === false ? (
-                                                        <span className="text-xs text-red-400">Inválido</span>
+                                                        <span className="text-xs text-red-500 font-medium">Invalido</span>
                                                     ) : null}
                                                 </div>
                                             </div>
-                                            {codeValid === true && (
-                                                <p className="text-xs text-green-400">Código válido! Você será vinculado a um parceiro.</p>
-                                            )}
-                                            {codeValid === false && (
-                                                <p className="text-xs text-red-400">Código não encontrado. Verifique e tente novamente.</p>
-                                            )}
                                         </div>
                                     )}
 
-                                    <Button
+                                    <motion.button
                                         type="submit"
                                         disabled={loading}
-                                        className="h-11 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 font-semibold text-white shadow-lg shadow-violet-500/25 transition hover:shadow-xl hover:shadow-violet-500/30 disabled:opacity-50"
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        className="btn-premium h-12 rounded-2xl font-black text-base disabled:opacity-50"
                                         aria-busy={loading}
                                     >
-                                        {loading ? "Criando conta..." : "Criar conta"}
-                                    </Button>
+                                        {loading ? 'Criando conta...' : 'Criar conta'}
+                                        {!loading && <ArrowRight className="ml-2 h-4 w-4" />}
+                                    </motion.button>
 
-                                    <Separator className="my-2 bg-white/10" />
+                                    <Separator className="my-2 bg-black/[0.03]" />
 
-                                    <p className="text-center text-sm text-white/60">
-                                        Já tem conta?{" "}
+                                    <p className="text-center text-sm text-muted-foreground font-medium">
+                                        Ja tem uma conta?{" "}
                                         <Link
                                             href="/login"
-                                            className="font-semibold text-violet-400 transition hover:text-violet-300 hover:underline"
+                                            className="font-bold text-primary transition hover:text-primary/80"
                                         >
                                             Entrar
                                         </Link>
@@ -466,14 +470,14 @@ function RegisterPageInner(): React.JSX.Element {
                             </CardContent>
                         </Card>
 
-                        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-white/50">
+                        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground font-medium">
                             <div className="flex items-center gap-1.5">
-                                <Shield className="h-3.5 w-3.5 text-green-500" />
-                                Dados criptografados
+                                <Shield className="h-3.5 w-3.5 text-emerald-500" />
+                                Conexao segura
                             </div>
                             <div className="flex items-center gap-1.5">
-                                <CheckCircle2 className="h-3.5 w-3.5 text-violet-400" />
-                                LGPD compliant
+                                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                                SSL/TLS
                             </div>
                         </div>
                     </div>
@@ -486,12 +490,12 @@ function RegisterPageInner(): React.JSX.Element {
 function FeatureItem({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
     return (
         <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/60 border border-black/[0.05] shadow-sm">
                 {icon}
             </div>
             <div>
-                <h3 className="text-sm font-semibold text-white">{title}</h3>
-                <p className="text-sm text-white/60">{desc}</p>
+                <h3 className="text-sm font-black text-foreground">{title}</h3>
+                <p className="text-sm text-muted-foreground font-medium">{desc}</p>
             </div>
         </div>
     );
