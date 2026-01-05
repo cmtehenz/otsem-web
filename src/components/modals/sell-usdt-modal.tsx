@@ -125,7 +125,8 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
         }
         setLoading(true);
         try {
-            const res = await http.get<TxDataResponse>("/wallet/sell-tx-data", {
+            // Usa endpoint gasless que envia SOL/TRX automaticamente para taxas de gas
+            const res = await http.get<TxDataResponse>("/wallet/gasless-sell-tx-data", {
                 params: { 
                     walletId: selectedWallet?.id,
                     usdtAmount: numAmount, 
@@ -136,7 +137,11 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
             setStep("sign");
         } catch (err) {
             console.error("Erro ao buscar dados da transação:", err);
-            toast.error("Erro ao preparar transação. Tente novamente.");
+            if (isAxiosError(err) && err.response?.data?.message) {
+                toast.error(err.response.data.message);
+            } else {
+                toast.error("Erro ao preparar transação. Tente novamente.");
+            }
             setStep("amount");
         } finally {
             setLoading(false);
