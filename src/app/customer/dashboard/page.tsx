@@ -60,6 +60,7 @@ type Transaction = {
         rate?: string;
         walletAddress?: string;
         network?: string;
+        txHash?: string;
     } | null;
     createdAt: string;
     completedAt: string | null;
@@ -324,8 +325,25 @@ export default function Dashboard() {
                 </div>
                 <div className="divide-y divide-border">
                     {transactions.length > 0 ? (
-                        transactions
-                            .filter((tx, _index, allTx) => {
+                        (() => {
+                            const seenConversionKeys = new Set<string>();
+                            
+                            return transactions.filter((tx, _index, allTx) => {
+                                if (tx.type === "CONVERSION") {
+                                    const txHash = tx.externalData?.txHash;
+                                    const txTime = new Date(tx.createdAt).getTime();
+                                    const txAmount = Number(tx.amount);
+                                    const usdtAmt = tx.externalData?.usdtAmount || tx.usdtAmount;
+                                    
+                                    const key = txHash || `${tx.subType || 'CONV'}-${txAmount.toFixed(2)}-${usdtAmt}-${Math.floor(txTime / 120000)}`;
+                                    
+                                    if (seenConversionKeys.has(key)) {
+                                        return false;
+                                    }
+                                    seenConversionKeys.add(key);
+                                    return true;
+                                }
+                                
                                 if (tx.type !== "PIX_OUT" && tx.type !== "PIX_IN") return true;
                                 
                                 const txTime = new Date(tx.createdAt).getTime();
@@ -343,7 +361,8 @@ export default function Dashboard() {
                                 });
                                 
                                 return !hasMatchingConversion;
-                            })
+                            });
+                        })()
                             .slice(0, 5)
                             .map((tx) => {
                             const amount = Number(tx.amount);
