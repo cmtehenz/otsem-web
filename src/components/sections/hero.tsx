@@ -84,7 +84,7 @@ const HeroSection = () => {
           className="w-full lg:w-[55%] text-left relative z-20"
         >
           <motion.div variants={itemVariants} className="mb-10">
-            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-primary/10 backdrop-blur-3xl border border-primary/30 shadow-xl shadow-black/5 text-primary font-black text-[10px] uppercase tracking-[0.4em]">
+            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-violet-100 border border-primary/30 shadow-xl shadow-black/5 text-primary font-black text-[10px] uppercase tracking-[0.4em]">
               <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(124,58,237,0.5)]" />
               <span className="whitespace-nowrap">WEB3 BORDERLESS BANKING</span>
             </div>
@@ -223,7 +223,8 @@ const HeroSection = () => {
           <motion.div
             animate={{ y: [0, -15, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-10 -right-6 z-30 bg-white/80 backdrop-blur-xl border border-slate-200 p-6 rounded-[2rem] shadow-2xl group hover:scale-105 transition-transform duration-500"
+            className="absolute -top-10 -right-6 z-30 bg-white border border-slate-200 p-6 rounded-[2rem] shadow-2xl group hover:scale-105 transition-transform duration-500"
+            style={{ WebkitBackdropFilter: "blur(24px)", backdropFilter: "blur(24px)" }}
           >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-yellow-400/20 flex items-center justify-center text-yellow-600 border border-yellow-400/30">
@@ -239,7 +240,8 @@ const HeroSection = () => {
           <motion.div
             animate={{ y: [0, 15, 0] }}
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            className="absolute -bottom-8 -left-12 z-30 bg-white/80 backdrop-blur-xl border border-slate-200 p-6 rounded-[2rem] shadow-2xl group hover:scale-105 transition-transform duration-500"
+            className="absolute -bottom-8 -left-12 z-30 bg-white border border-slate-200 p-6 rounded-[2rem] shadow-2xl group hover:scale-105 transition-transform duration-500"
+            style={{ WebkitBackdropFilter: "blur(24px)", backdropFilter: "blur(24px)" }}
           >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center text-primary border border-primary/30">
