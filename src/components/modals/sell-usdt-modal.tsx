@@ -54,11 +54,35 @@ type SubmitResponse = {
     message: string;
 };
 
+type ConversionStatus = "PENDING" | "USDT_RECEIVED" | "USDT_SOLD" | "COMPLETED" | "FAILED";
+
+type ConversionDetail = {
+    id: string;
+    status: ConversionStatus;
+    statusLabel: string;
+    usdtAmount: number;
+    brlAmount: number;
+    network: string;
+    txHash?: string;
+    createdAt: string;
+    completedAt?: string;
+};
+
+const STATUS_LABELS: Record<ConversionStatus, string> = {
+    PENDING: "Aguardando confirmação do depósito",
+    USDT_RECEIVED: "USDT recebido, vendendo...",
+    USDT_SOLD: "USDT vendido, creditando saldo...",
+    COMPLETED: "Concluído!",
+    FAILED: "Falha na transação"
+};
+
+const STATUS_ORDER: ConversionStatus[] = ["PENDING", "USDT_RECEIVED", "USDT_SOLD", "COMPLETED"];
+
 const QUICK_AMOUNTS = [10, 50, 100, 500];
 
 export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) {
     const { rate: usdtRate, loading: rateLoading } = useUsdtRate();
-    const [step, setStep] = React.useState<"wallet" | "amount" | "sign" | "success">("wallet");
+    const [step, setStep] = React.useState<"wallet" | "amount" | "sign" | "processing" | "success">("wallet");
     const [amount, setAmount] = React.useState("");
     const [network, setNetwork] = React.useState<Network>("SOLANA");
     const [loading, setLoading] = React.useState(false);
@@ -69,6 +93,10 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
     const [txHash, setTxHash] = React.useState<string | null>(null);
     const [walletsLoading, setWalletsLoading] = React.useState(false);
     const [signingStatus, setSigningStatus] = React.useState<string>("");
+    const [conversionId, setConversionId] = React.useState<string | null>(null);
+    const [conversionStatus, setConversionStatus] = React.useState<ConversionStatus>("PENDING");
+    const [conversionDetail, setConversionDetail] = React.useState<ConversionDetail | null>(null);
+    const pollingRef = React.useRef<NodeJS.Timeout | null>(null);
 
     const numAmount = parseFloat(amount) || 0;
     const minAmount = 5;
@@ -79,6 +107,50 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
             fetchWallets();
         }
     }, [open]);
+
+    React.useEffect(() => {
+        return () => {
+            if (pollingRef.current) {
+                clearInterval(pollingRef.current);
+            }
+        };
+    }, []);
+
+    async function pollConversionStatus(id: string) {
+        try {
+            const res = await http.get<ConversionDetail>(`/wallet/conversion/${id}`);
+            const detail = res.data;
+            setConversionDetail(detail);
+            setConversionStatus(detail.status);
+            
+            if (detail.status === "COMPLETED") {
+                if (pollingRef.current) {
+                    clearInterval(pollingRef.current);
+                    pollingRef.current = null;
+                }
+                setTimeout(() => {
+                    setStep("success");
+                    onSuccess?.();
+                }, 1500);
+            } else if (detail.status === "FAILED") {
+                if (pollingRef.current) {
+                    clearInterval(pollingRef.current);
+                    pollingRef.current = null;
+                }
+                toast.error("Falha no processamento da venda");
+            }
+        } catch (err) {
+            console.error("Erro ao verificar status:", err);
+        }
+    }
+
+    function startPolling(id: string) {
+        if (pollingRef.current) {
+            clearInterval(pollingRef.current);
+        }
+        pollConversionStatus(id);
+        pollingRef.current = setInterval(() => pollConversionStatus(id), 8000);
+    }
 
     async function fetchWallets() {
         setWalletsLoading(true);
@@ -290,9 +362,11 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
             });
 
             setTxHash(hash);
-            setStep("success");
-            toast.success("Venda registrada com sucesso!");
-            onSuccess?.();
+            setConversionId(res.data.conversionId);
+            setConversionStatus("PENDING");
+            setStep("processing");
+            toast.success("Transação enviada! Acompanhe o progresso.");
+            startPolling(res.data.conversionId);
         } catch (err: unknown) {
             console.error("Erro na transação:", err);
             const message = isAxiosError(err) 
@@ -308,6 +382,10 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
     }
 
     function handleClose() {
+        if (pollingRef.current) {
+            clearInterval(pollingRef.current);
+            pollingRef.current = null;
+        }
         onClose();
         setTimeout(() => {
             setStep("wallet");
@@ -318,6 +396,9 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
             setPrivateKey("");
             setNetwork("SOLANA");
             setSigningStatus("");
+            setConversionId(null);
+            setConversionStatus("PENDING");
+            setConversionDetail(null);
         }, 200);
     }
 
@@ -340,12 +421,14 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                         {step === "wallet" && "Vender USDT"}
                         {step === "amount" && "Valor da Venda"}
                         {step === "sign" && "Assinar Transação"}
+                        {step === "processing" && "Processando Venda"}
                         {step === "success" && "Venda Concluída!"}
                     </DialogTitle>
                     <DialogDescription className="text-muted-foreground text-center text-sm">
                         {step === "wallet" && "Escolha a rede e a carteira de origem"}
                         {step === "amount" && "Informe quanto USDT deseja vender"}
                         {step === "sign" && "Revise e assine a transação"}
+                        {step === "processing" && "Acompanhe o progresso da sua venda"}
                         {step === "success" && "Sua venda foi processada com sucesso"}
                     </DialogDescription>
                 </DialogHeader>
@@ -646,6 +729,110 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                         </div>
                     )}
 
+                    {step === "processing" && (
+                        <div className="w-full space-y-5">
+                            <div className="flex justify-center">
+                                <div className="relative">
+                                    <div className="w-20 h-20 rounded-full border-4 border-orange-500/20 flex items-center justify-center">
+                                        <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
+                                    </div>
+                                    {conversionStatus === "COMPLETED" && (
+                                        <div className="absolute inset-0 flex items-center justify-center bg-card rounded-full">
+                                            <Check className="w-10 h-10 text-green-500" />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="text-center">
+                                <p className="text-foreground font-bold text-lg">
+                                    {STATUS_LABELS[conversionStatus] || "Processando..."}
+                                </p>
+                                <p className="text-muted-foreground text-sm mt-2">
+                                    Aguarde enquanto processamos sua venda
+                                </p>
+                            </div>
+
+                            <div className="bg-muted border border-border rounded-xl p-4 space-y-4">
+                                {STATUS_ORDER.map((status, idx) => {
+                                    const currentIdx = STATUS_ORDER.indexOf(conversionStatus);
+                                    const isCompleted = idx < currentIdx || conversionStatus === "COMPLETED";
+                                    const isCurrent = status === conversionStatus && conversionStatus !== "COMPLETED";
+                                    
+                                    return (
+                                        <div key={status} className="flex items-center gap-3">
+                                            <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                                isCompleted 
+                                                    ? "bg-green-500" 
+                                                    : isCurrent 
+                                                        ? "bg-orange-500 animate-pulse" 
+                                                        : "bg-muted-foreground/20"
+                                            }`}>
+                                                {isCompleted ? (
+                                                    <Check className="w-4 h-4 text-white" />
+                                                ) : isCurrent ? (
+                                                    <Loader2 className="w-3 h-3 text-white animate-spin" />
+                                                ) : (
+                                                    <span className="text-xs text-muted-foreground">{idx + 1}</span>
+                                                )}
+                                            </div>
+                                            <span className={`text-sm ${
+                                                isCompleted || isCurrent 
+                                                    ? "text-foreground font-medium" 
+                                                    : "text-muted-foreground"
+                                            }`}>
+                                                {STATUS_LABELS[status]}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            <div className="bg-muted border border-border rounded-xl p-4 space-y-2">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">Valor vendido</span>
+                                    <span className="text-foreground font-medium">{formatUSDT(numAmount)}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">Valor em BRL</span>
+                                    <span className="text-green-600 dark:text-green-400 font-medium">
+                                        {formatBRL(conversionDetail?.brlAmount || txData?.quote.brlToReceive || 0)}
+                                    </span>
+                                </div>
+                                {txHash && (
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">TX Hash</span>
+                                        <a 
+                                            href={network === "TRON" 
+                                                ? `https://tronscan.org/#/transaction/${txHash}`
+                                                : `https://solscan.io/tx/${txHash}`
+                                            }
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-violet-600 dark:text-violet-400 text-xs font-mono hover:underline"
+                                        >
+                                            {txHash.slice(0, 10)}...{txHash.slice(-6)}
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
+                                <p className="text-amber-600 dark:text-amber-400 text-sm text-center">
+                                    Este processo leva aproximadamente 3-4 minutos. Você pode fechar esta janela.
+                                </p>
+                            </div>
+
+                            <Button
+                                onClick={handleClose}
+                                variant="outline"
+                                className="w-full border-border text-foreground rounded-xl py-6"
+                            >
+                                Fechar e Acompanhar Depois
+                            </Button>
+                        </div>
+                    )}
+
                     {step === "success" && (
                         <div className="w-full space-y-5">
                             <div className="flex justify-center">
@@ -671,7 +858,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">Valor em BRL</span>
                                     <span className="text-green-600 dark:text-green-400 font-medium">
-                                        {formatBRL(txData?.quote.brlToReceive || 0)}
+                                        {formatBRL(conversionDetail?.brlAmount || txData?.quote.brlToReceive || 0)}
                                     </span>
                                 </div>
                                 {txHash && (
@@ -694,7 +881,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
 
                             <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
                                 <p className="text-green-600 dark:text-green-400 text-sm text-center">
-                                    O valor em BRL será creditado no seu saldo OTSEM em breve
+                                    Valor creditado no seu saldo OTSEM!
                                 </p>
                             </div>
 
