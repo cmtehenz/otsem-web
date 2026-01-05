@@ -95,7 +95,7 @@ const HeroSection = () => {
             className="font-black tracking-tightest text-foreground leading-[0.9] mb-12 relative"
           >
             <div className="relative mb-1 overflow-visible">
-              <span className="text-5xl sm:text-6xl md:text-7xl lg:text-[6.5rem] xl:text-[7.5rem] text-foreground block drop-shadow-xl bg-clip-text text-transparent bg-gradient-to-br from-foreground via-foreground to-foreground/80">
+              <span className="text-5xl sm:text-6xl md:text-7xl lg:text-[6.5rem] xl:text-[7.5rem] text-slate-800 block drop-shadow-xl">
                 Sua ponte
               </span>
             </div>
@@ -143,7 +143,7 @@ const HeroSection = () => {
 
             <div className="relative overflow-visible">
               <span className="text-[10vw] sm:text-[9vw] lg:text-[7rem] xl:text-[8rem] text-primary leading-none drop-shadow-[0_0_20px_rgba(124,58,237,0.2)]">
-                liquida <span className="text-foreground">global.</span>
+                liquida <span className="text-slate-800">global.</span>
               </span>
             </div>
           </motion.h1>
