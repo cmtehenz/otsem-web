@@ -39,7 +39,7 @@ function safeNext(nextParam: string | null | undefined, fallback = '/customer/da
 export default function LoginPageClient(): React.JSX.Element {
     return (
         <Suspense fallback={
-            <div className="grid min-h-screen place-items-center bg-white text-sm text-foreground/50">
+            <div className="grid min-h-screen place-items-center bg-white text-sm text-slate-900/50">
                 Carregando...
             </div>
         }>
@@ -96,7 +96,7 @@ function LoginPageInner(): React.JSX.Element {
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl liquid-glass text-foreground/70 hover:text-foreground font-bold text-sm transition-colors"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl liquid-glass text-slate-900/70 hover:text-slate-900 font-bold text-sm transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4" />
                         Voltar
@@ -112,14 +112,14 @@ function LoginPageInner(): React.JSX.Element {
                                 <Sparkles className="h-4 w-4" />
                                 Bem-vindo de volta
                             </div>
-                            <h1 className="text-4xl font-black text-foreground xl:text-5xl tracking-tightest">
+                            <h1 className="text-4xl font-black text-slate-900 xl:text-5xl tracking-tightest">
                                 Acesse sua conta
                                 <br />
                                 <span className="text-primary">
                                     OtsemPay
                                 </span>
                             </h1>
-                            <p className="mt-4 text-lg text-muted-foreground font-medium">
+                            <p className="mt-4 text-lg text-slate-500 font-medium">
                                 Gerencie suas operacoes OTC e converta BRL ↔ USDT com as melhores taxas do mercado.
                             </p>
                         </div>
@@ -149,10 +149,10 @@ function LoginPageInner(): React.JSX.Element {
                                 <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary shadow-xl shadow-primary/20">
                                     <Lock className="h-7 w-7 text-white" />
                                 </div>
-                                <CardTitle className="text-center text-2xl font-black text-foreground">
+                                <CardTitle className="text-center text-2xl font-black text-slate-900">
                                     Entrar
                                 </CardTitle>
-                                <p className="text-center text-sm text-muted-foreground font-medium">
+                                <p className="text-center text-sm text-slate-500 font-medium">
                                     Acesse sua conta para continuar
                                 </p>
                             </CardHeader>
@@ -160,18 +160,18 @@ function LoginPageInner(): React.JSX.Element {
                             <CardContent className="p-6 sm:p-8">
                                 <form onSubmit={handleSubmit(onSubmit)} className="grid gap-5" noValidate>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="email" className="text-sm font-black text-foreground">
+                                        <Label htmlFor="email" className="text-sm font-black text-slate-900">
                                             E-mail
                                         </Label>
                                         <div className="relative">
-                                            <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                            <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                                             <Input
                                                 id="email"
                                                 type="email"
                                                 autoComplete="email"
                                                 inputMode="email"
                                                 placeholder="voce@exemplo.com"
-                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 text-foreground placeholder:text-muted-foreground transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                 aria-invalid={!!errors.email || undefined}
                                                 {...register('email')}
                                             />
@@ -182,24 +182,24 @@ function LoginPageInner(): React.JSX.Element {
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="password" className="text-sm font-black text-foreground">
+                                        <Label htmlFor="password" className="text-sm font-black text-slate-900">
                                             Senha
                                         </Label>
                                         <div className="relative">
-                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                                             <Input
                                                 id="password"
                                                 type={showPw ? 'text' : 'password'}
                                                 autoComplete="current-password"
                                                 placeholder="••••••••"
-                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 pr-10 text-foreground placeholder:text-muted-foreground transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 pr-10 text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                 aria-invalid={!!errors.password || undefined}
                                                 {...register('password')}
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPw((v) => !v)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition hover:text-foreground"
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-900"
                                                 aria-label={showPw ? 'Ocultar senha' : 'Mostrar senha'}
                                             >
                                                 {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -211,7 +211,7 @@ function LoginPageInner(): React.JSX.Element {
                                     </div>
 
                                     <div className="flex items-center justify-between text-sm">
-                                        <label className="inline-flex items-center gap-2 text-muted-foreground font-medium">
+                                        <label className="inline-flex items-center gap-2 text-slate-500 font-medium">
                                             <input
                                                 type="checkbox"
                                                 className="h-4 w-4 rounded border-black/10 bg-white/60 text-primary focus:ring-2 focus:ring-primary/20"
@@ -241,7 +241,7 @@ function LoginPageInner(): React.JSX.Element {
 
                                     <Separator className="my-2 bg-black/[0.03]" />
 
-                                    <p className="text-center text-sm text-muted-foreground font-medium">
+                                    <p className="text-center text-sm text-slate-500 font-medium">
                                         Ainda nao tem conta?{' '}
                                         <Link
                                             href="/register"
@@ -254,7 +254,7 @@ function LoginPageInner(): React.JSX.Element {
                             </CardContent>
                         </Card>
 
-                        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground font-medium">
+                        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500 font-medium">
                             <div className="flex items-center gap-1.5">
                                 <Shield className="h-3.5 w-3.5 text-emerald-500" />
                                 Conexao segura
@@ -278,8 +278,8 @@ function FeatureItem({ icon, title, desc }: { icon: React.ReactNode; title: stri
                 {icon}
             </div>
             <div>
-                <h3 className="text-sm font-black text-foreground">{title}</h3>
-                <p className="text-sm text-muted-foreground font-medium">{desc}</p>
+                <h3 className="text-sm font-black text-slate-900">{title}</h3>
+                <p className="text-sm text-slate-500 font-medium">{desc}</p>
             </div>
         </div>
     );
