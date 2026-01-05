@@ -150,17 +150,28 @@ export default function TransactionsPage() {
             descLower.includes("buy") ||
             descLower.includes("sell");
         
+        const isSellConversion = descLower.includes("venda") || descLower.includes("sell");
+        
         if (isConversion || isConversionByDesc) {
             isConversionTx = true;
             
             const walletAddr = tx.externalData?.walletAddress;
             const network = tx.externalData?.network;
             
-            if (walletAddr && network) {
-                const truncated = `${walletAddr.slice(0, 8)}...${walletAddr.slice(-8)}`;
-                displayName = `Compra de USDT carteira ${truncated} ${network}`;
+            if (isSellConversion) {
+                if (walletAddr && network) {
+                    const truncated = `${walletAddr.slice(0, 8)}...${walletAddr.slice(-8)}`;
+                    displayName = `Venda de USDT carteira ${truncated} ${network}`;
+                } else {
+                    displayName = "Venda de USDT";
+                }
             } else {
-                displayName = "Compra de USDT";
+                if (walletAddr && network) {
+                    const truncated = `${walletAddr.slice(0, 8)}...${walletAddr.slice(-8)}`;
+                    displayName = `Compra de USDT carteira ${truncated} ${network}`;
+                } else {
+                    displayName = "Compra de USDT";
+                }
             }
             
             const usdtRaw = tx.usdtAmount || tx.externalData?.usdtAmount;
@@ -191,7 +202,7 @@ export default function TransactionsPage() {
         const iconBgColor = isPending 
             ? "bg-amber-500/20" 
             : isConversionTx
-                ? "bg-blue-500/20"
+                ? isSellConversion ? "bg-orange-500/20" : "bg-blue-500/20"
                 : isIncoming 
                     ? "bg-green-500/20" 
                     : "bg-red-500/20";
@@ -199,7 +210,7 @@ export default function TransactionsPage() {
         const iconColor = isPending 
             ? "text-amber-500 dark:text-amber-400" 
             : isConversionTx
-                ? "text-blue-500 dark:text-blue-400"
+                ? isSellConversion ? "text-orange-500 dark:text-orange-400" : "text-blue-500 dark:text-blue-400"
                 : isIncoming 
                     ? "text-green-500 dark:text-green-400" 
                     : "text-red-500 dark:text-red-400";
@@ -207,7 +218,7 @@ export default function TransactionsPage() {
         const amountColor = isPending 
             ? "text-amber-500 dark:text-amber-400" 
             : isConversionTx
-                ? "text-blue-500 dark:text-blue-400"
+                ? isSellConversion ? "text-orange-500 dark:text-orange-400" : "text-blue-500 dark:text-blue-400"
                 : isIncoming 
                     ? "text-green-500 dark:text-green-400" 
                     : "text-red-500 dark:text-red-400";
@@ -242,13 +253,28 @@ export default function TransactionsPage() {
                 </div>
                 {isConversionTx ? (
                     <div className="text-right">
-                        <span className="text-foreground font-bold text-sm">
-                            -{formatCurrency(amount)}
-                        </span>
-                        {usdtAmountValue !== null && (
-                            <p className="text-emerald-500 dark:text-emerald-400 text-xs font-medium">
-                                +{formatUSD(usdtAmountValue)}
-                            </p>
+                        {isSellConversion ? (
+                            <>
+                                <span className="text-green-500 dark:text-green-400 font-bold text-sm">
+                                    +{formatCurrency(amount)}
+                                </span>
+                                {usdtAmountValue !== null && (
+                                    <p className="text-red-500 dark:text-red-400 text-xs font-medium">
+                                        -{formatUSD(usdtAmountValue)}
+                                    </p>
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                <span className="text-foreground font-bold text-sm">
+                                    -{formatCurrency(amount)}
+                                </span>
+                                {usdtAmountValue !== null && (
+                                    <p className="text-emerald-500 dark:text-emerald-400 text-xs font-medium">
+                                        +{formatUSD(usdtAmountValue)}
+                                    </p>
+                                )}
+                            </>
                         )}
                     </div>
                 ) : (
