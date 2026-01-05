@@ -37,6 +37,10 @@ type TxDataResponse = {
     tokenMint?: string;
     tokenProgram?: string;
     decimals: number;
+    fromAta?: string;
+    toAta?: string;
+    toAtaExists?: boolean;
+    associatedTokenProgram?: string;
     quote: {
         brlToReceive: number;
         exchangeRate: number;
@@ -181,8 +185,10 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
             Transaction 
         } = await import("@solana/web3.js");
         const { 
-            getAssociatedTokenAddress, 
-            createTransferInstruction 
+            createTransferInstruction,
+            createAssociatedTokenAccountInstruction,
+            ASSOCIATED_TOKEN_PROGRAM_ID,
+            TOKEN_PROGRAM_ID
         } = await import("@solana/spl-token");
 
         const connection = new Connection("https://solana-mainnet.g.alchemy.com/v2/VorawLbwMvjW5ukY0rnl9", "confirmed");
@@ -204,16 +210,32 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
         }
         const keypair = Keypair.fromSecretKey(secretKey);
 
-        setSigningStatus("Buscando contas de token...");
+        setSigningStatus("Preparando contas de token...");
         const USDT_MINT = new PublicKey(data.tokenMint!);
         const fromPubkey = new PublicKey(data.fromAddress);
         const toPubkey = new PublicKey(data.toAddress);
 
-        const fromAta = await getAssociatedTokenAddress(USDT_MINT, fromPubkey);
-        const toAta = await getAssociatedTokenAddress(USDT_MINT, toPubkey);
+        const fromAta = new PublicKey(data.fromAta!);
+        const toAta = new PublicKey(data.toAta!);
 
         setSigningStatus("Construindo transação SPL...");
-        const transaction = new Transaction().add(
+        const transaction = new Transaction();
+
+        if (data.toAtaExists === false) {
+            setSigningStatus("Criando conta de token destino...");
+            transaction.add(
+                createAssociatedTokenAccountInstruction(
+                    keypair.publicKey,
+                    toAta,
+                    toPubkey,
+                    USDT_MINT,
+                    TOKEN_PROGRAM_ID,
+                    ASSOCIATED_TOKEN_PROGRAM_ID
+                )
+            );
+        }
+
+        transaction.add(
             createTransferInstruction(
                 fromAta,
                 toAta,
