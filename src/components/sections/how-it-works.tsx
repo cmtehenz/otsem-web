@@ -40,7 +40,7 @@ const HowItWorks = () => {
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             Fluxo Inteligente
           </div>
-          <h2 className="text-4xl md:text-6xl font-black tracking-tightest text-foreground leading-[0.9]">
+          <h2 className="text-4xl md:text-6xl font-black tracking-tightest text-slate-900 leading-[0.9]">
             Como funciona <br />
             <span className="text-primary/30 text-3xl md:text-5xl lg:text-6xl">o ecossistema.</span>
           </h2>
@@ -74,7 +74,7 @@ const HowItWorks = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-black tracking-tight text-foreground mb-4 transition-colors group-hover:text-primary">
+                  <h3 className="text-xl font-black tracking-tight text-slate-900 mb-4 transition-colors group-hover:text-violet-600">
                     {step.title}
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed font-medium">

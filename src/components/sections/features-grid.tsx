@@ -74,7 +74,7 @@ const FeaturesGrid = () => {
               <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-primary/5 border border-primary/10 text-primary font-black text-[10px] uppercase tracking-[0.3em] mb-8">
                 Recursos Premium
               </div>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tightest text-foreground leading-[1.1]">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tightest text-slate-900 leading-[1.1]">
                 Ecossistema <br />
                 <span className="text-primary/40">completo.</span>
               </h2>
@@ -107,7 +107,7 @@ const FeaturesGrid = () => {
                   <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 border border-primary/10 transition-all duration-500 group-hover:scale-110">
                     <feature.icon className="h-6 w-6 text-primary" strokeWidth={1.5} />
                   </div>
-                  <h3 className="font-black text-foreground text-[15px] tracking-tight">{feature.title}</h3>
+                  <h3 className="font-black text-slate-900 text-[15px] tracking-tight">{feature.title}</h3>
                   <p className="mt-2 text-[12px] text-muted-foreground font-semibold leading-snug">{feature.description}</p>
                 </motion.div>
               ))}
@@ -133,7 +133,7 @@ const FeaturesGrid = () => {
               <div className="mb-10 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 border border-primary/10 transition-all duration-500 group-hover:scale-110 group-hover:shadow-lg">
                 <feature.icon className="h-8 w-8 text-primary" strokeWidth={1.5} />
               </div>
-              <h3 className="text-2xl font-black text-foreground mb-4 tracking-tight">{feature.title}</h3>
+              <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">{feature.title}</h3>
               <p className="text-[15px] text-muted-foreground leading-relaxed font-semibold opacity-80 group-hover:opacity-100 transition-opacity">
                 {feature.description}
               </p>

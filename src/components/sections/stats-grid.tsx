@@ -94,7 +94,7 @@ const StatsGrid = () => {
                   </div>
 
                   <div>
-                    <div className="text-4xl lg:text-6xl font-black tracking-tightest text-foreground mb-4 flex items-baseline gap-2">
+                    <div className="text-4xl lg:text-6xl font-black tracking-tightest text-slate-900 mb-4 flex items-baseline gap-2">
                       {stat.value}
                       {stat.value.includes('%') && <span className="text-yellow-500 text-2xl">↑</span>}
                     </div>

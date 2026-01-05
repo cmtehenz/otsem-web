@@ -35,7 +35,7 @@ const ComparisonSection = () => {
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             Comparativo Eficiente
           </div>
-          <h2 className="text-4xl md:text-6xl font-black tracking-tightest text-foreground leading-[0.9]">
+          <h2 className="text-4xl md:text-6xl font-black tracking-tightest text-slate-900 leading-[0.9]">
             Por que migrar para <br />
             <span className="text-primary/30 text-3xl md:text-5xl lg:text-6xl">o ecossistema OTC?</span>
           </h2>
@@ -54,7 +54,7 @@ const ComparisonSection = () => {
                 <Building2 className="h-7 w-7 text-red-600" strokeWidth={1.5} />
               </div>
               <div>
-                <h3 className="text-xl font-black tracking-tight text-foreground">Bancos</h3>
+                <h3 className="text-xl font-black tracking-tight text-slate-900">Bancos</h3>
                 <p className="text-[10px] font-black text-red-600/60 uppercase tracking-widest">Modelo Tradicional</p>
               </div>
             </div>
@@ -62,7 +62,7 @@ const ComparisonSection = () => {
             <ul className="space-y-4">
               {traditionalItems.map((item, index) => (
                 <li key={index} className="flex items-center justify-between py-3.5 border-b border-black/[0.03] last:border-0 group/item">
-                  <span className="text-sm font-bold text-muted-foreground transition-colors group-hover/item:text-foreground">{item.label}</span>
+                  <span className="text-sm font-bold text-slate-500 transition-colors group-hover/item:text-slate-900">{item.label}</span>
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-black text-red-600">{item.value}</span>
                     <X className="h-4 w-4 text-red-600/40" strokeWidth={3} />
@@ -95,7 +95,7 @@ const ComparisonSection = () => {
                 <Zap className="h-7 w-7 text-emerald-600" strokeWidth={1.5} />
               </div>
               <div>
-                <h3 className="text-xl font-black tracking-tight text-foreground">Otsem Pay</h3>
+                <h3 className="text-xl font-black tracking-tight text-slate-900">Otsem Pay</h3>
                 <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Futuro Liquido</p>
               </div>
             </div>
@@ -103,7 +103,7 @@ const ComparisonSection = () => {
             <ul className="space-y-4">
               {otcItems.map((item, index) => (
                 <li key={index} className="flex items-center justify-between py-3.5 border-b border-emerald-500/10 last:border-0 group/item">
-                  <span className="text-sm font-bold text-muted-foreground transition-colors group-hover/item:text-foreground">{item.label}</span>
+                  <span className="text-sm font-bold text-slate-500 transition-colors group-hover/item:text-slate-900">{item.label}</span>
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-black text-emerald-600">{item.value}</span>
                     <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />

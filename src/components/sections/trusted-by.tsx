@@ -32,7 +32,7 @@ const TrustedBy = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            className="text-3xl md:text-4xl font-black text-foreground"
+            className="text-3xl md:text-4xl font-black text-slate-900"
           >
             Confiado por os gigantes do mercado
           </motion.h2>

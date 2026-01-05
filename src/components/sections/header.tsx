@@ -67,8 +67,8 @@ const Header = () => {
                 whileHover={{ rotate: 8, scale: 1.1 }}
               />
               <span className="text-[1.65rem] font-black tracking-tighter flex items-center">
-                <span className="text-primary">Otsem</span>
-                <span className="text-foreground">Pay</span>
+                <span className="text-violet-600">Otsem</span>
+                <span className="text-slate-900">Pay</span>
               </span>
             </Link>
           </motion.div>
@@ -79,7 +79,7 @@ const Header = () => {
                 key={link.href}
                 href={link.href}
                 onClick={handleNavClick}
-                className="relative px-5 py-2.5 text-sm font-black text-foreground/60 transition-all hover:text-primary rounded-2xl hover:bg-primary/5"
+                className="relative px-5 py-2.5 text-sm font-black text-slate-600 transition-all hover:text-violet-600 rounded-2xl hover:bg-violet-50"
                 whileHover={{ scale: 1.05, y: -1 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -93,7 +93,7 @@ const Header = () => {
               <Link
                 href="/login"
                 onClick={handleNavClick}
-                className="text-sm font-black text-foreground/60 hover:text-primary transition-colors px-2"
+                className="text-sm font-black text-slate-600 hover:text-violet-600 transition-colors px-2"
               >
                 Entrar
               </Link>
@@ -126,7 +126,7 @@ const Header = () => {
                   exit={{ rotate: 90, opacity: 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <X className="w-5 h-5 text-foreground" />
+                  <X className="w-5 h-5 text-slate-800" />
                 </motion.div>
               ) : (
                 <motion.div
@@ -136,7 +136,7 @@ const Header = () => {
                   exit={{ rotate: -90, opacity: 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <Menu className="w-5 h-5 text-foreground" />
+                  <Menu className="w-5 h-5 text-slate-800" />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -175,14 +175,14 @@ const Header = () => {
                         haptic.selection();
                         setMobileMenuOpen(false);
                       }}
-                      className="flex items-center justify-between px-5 py-4 text-base font-bold text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
+                      className="flex items-center justify-between px-5 py-4 text-base font-bold text-slate-700 hover:text-violet-600 hover:bg-violet-50 rounded-2xl transition-all"
                     >
                       {link.label}
-                      <ChevronRight className="w-5 h-5 text-foreground/20" />
+                      <ChevronRight className="w-5 h-5 text-slate-400" />
                     </motion.a>
                   ))}
 
-                  <div className="h-px bg-foreground/[0.05] my-2 mx-4" />
+                  <div className="h-px bg-slate-200 my-2 mx-4" />
 
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -195,10 +195,10 @@ const Header = () => {
                         haptic.selection();
                         setMobileMenuOpen(false);
                       }}
-                      className="flex items-center justify-between px-5 py-4 text-base font-bold text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
+                      className="flex items-center justify-between px-5 py-4 text-base font-bold text-slate-700 hover:text-violet-600 hover:bg-violet-50 rounded-2xl transition-all"
                     >
                       Entrar
-                      <ChevronRight className="w-5 h-5 text-foreground/20" />
+                      <ChevronRight className="w-5 h-5 text-slate-400" />
                     </Link>
                   </motion.div>
                 </nav>
