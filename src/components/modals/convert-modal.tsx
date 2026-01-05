@@ -35,7 +35,7 @@ type BuyResponse = {
     message?: string;
 };
 
-type ConversionStatus = "PENDING" | "BRL_DEBITED" | "USDT_PURCHASED" | "USDT_SENT" | "COMPLETED" | "FAILED";
+type ConversionStatus = "PENDING" | "PIX_SENT" | "USDT_BOUGHT" | "USDT_WITHDRAWN" | "COMPLETED" | "FAILED";
 
 type ConversionDetail = {
     id: string;
@@ -51,14 +51,14 @@ type ConversionDetail = {
 
 const STATUS_LABELS: Record<ConversionStatus, string> = {
     PENDING: "Iniciando compra...",
-    BRL_DEBITED: "Saldo debitado, comprando USDT...",
-    USDT_PURCHASED: "USDT comprado, enviando para carteira...",
-    USDT_SENT: "USDT enviado, aguardando confirmação...",
-    COMPLETED: "Concluído!",
+    PIX_SENT: "Enviando BRL para exchange...",
+    USDT_BOUGHT: "USDT comprado, preparando envio...",
+    USDT_WITHDRAWN: "Enviando USDT para sua carteira...",
+    COMPLETED: "Concluído - USDT enviado!",
     FAILED: "Falha na transação"
 };
 
-const STATUS_ORDER: ConversionStatus[] = ["PENDING", "BRL_DEBITED", "USDT_PURCHASED", "USDT_SENT", "COMPLETED"];
+const STATUS_ORDER: ConversionStatus[] = ["PENDING", "PIX_SENT", "USDT_BOUGHT", "USDT_WITHDRAWN", "COMPLETED"];
 
 const QUICK_AMOUNTS = [100, 500, 1000, 5000];
 
@@ -130,13 +130,11 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
     function mapBackendStatus(status: string): ConversionStatus {
         const statusMap: Record<string, ConversionStatus> = {
             "PENDING": "PENDING",
-            "BRL_DEBITED": "BRL_DEBITED",
-            "USDT_PURCHASED": "USDT_PURCHASED",
-            "USDT_SENT": "USDT_SENT",
+            "PIX_SENT": "PIX_SENT",
+            "USDT_BOUGHT": "USDT_BOUGHT",
+            "USDT_WITHDRAWN": "USDT_WITHDRAWN",
             "COMPLETED": "COMPLETED",
             "FAILED": "FAILED",
-            "USDT_RECEIVED": "BRL_DEBITED",
-            "USDT_SOLD": "USDT_PURCHASED",
         };
         return statusMap[status] || "PENDING";
     }
