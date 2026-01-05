@@ -29,17 +29,52 @@ type WalletType = {
     label?: string;
 };
 
+type BuyResponse = {
+    conversionId?: string;
+    status?: string;
+    message?: string;
+};
+
+type ConversionStatus = "PENDING" | "BRL_DEBITED" | "USDT_PURCHASED" | "USDT_SENT" | "COMPLETED" | "FAILED";
+
+type ConversionDetail = {
+    id: string;
+    status: ConversionStatus;
+    statusLabel: string;
+    usdtAmount: number;
+    brlAmount: number;
+    network: string;
+    txHash?: string;
+    createdAt: string;
+    completedAt?: string;
+};
+
+const STATUS_LABELS: Record<ConversionStatus, string> = {
+    PENDING: "Iniciando compra...",
+    BRL_DEBITED: "Saldo debitado, comprando USDT...",
+    USDT_PURCHASED: "USDT comprado, enviando para carteira...",
+    USDT_SENT: "USDT enviado, aguardando confirmação...",
+    COMPLETED: "Concluído!",
+    FAILED: "Falha na transação"
+};
+
+const STATUS_ORDER: ConversionStatus[] = ["PENDING", "BRL_DEBITED", "USDT_PURCHASED", "USDT_SENT", "COMPLETED"];
+
 const QUICK_AMOUNTS = [100, 500, 1000, 5000];
 
 export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertModalProps) {
     const { user } = useAuth();
     const { rate: usdtRate, loading: rateLoading } = useUsdtRate();
-    const [step, setStep] = React.useState<"wallet" | "amount" | "confirm" | "success">("wallet");
+    const [step, setStep] = React.useState<"wallet" | "amount" | "confirm" | "processing" | "success">("wallet");
     const [amount, setAmount] = React.useState("");
     const [loading, setLoading] = React.useState(false);
     const [wallets, setWallets] = React.useState<WalletType[]>([]);
     const [walletsLoading, setWalletsLoading] = React.useState(true);
     const [selectedWalletId, setSelectedWalletId] = React.useState<string | null>(null);
+    const [conversionId, setConversionId] = React.useState<string | null>(null);
+    const [conversionStatus, setConversionStatus] = React.useState<ConversionStatus>("PENDING");
+    const [conversionDetail, setConversionDetail] = React.useState<ConversionDetail | null>(null);
+    const pollingRef = React.useRef<NodeJS.Timeout | null>(null);
 
     const customerSpread = user?.spreadValue ?? 0.95;
     const usdtRateWithSpread = usdtRate ? usdtRate * (1 + customerSpread / 100) : 0;
@@ -53,6 +88,66 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
             fetchWallets();
         }
     }, [open]);
+
+    React.useEffect(() => {
+        return () => {
+            if (pollingRef.current) {
+                clearInterval(pollingRef.current);
+            }
+        };
+    }, []);
+
+    async function pollConversionStatus(id: string) {
+        try {
+            const res = await http.get<ConversionDetail>(`/wallet/conversion/${id}`);
+            const detail = res.data;
+            setConversionDetail(detail);
+            
+            const mappedStatus = mapBackendStatus(detail.status);
+            setConversionStatus(mappedStatus);
+            
+            if (mappedStatus === "COMPLETED") {
+                if (pollingRef.current) {
+                    clearInterval(pollingRef.current);
+                    pollingRef.current = null;
+                }
+                setTimeout(() => {
+                    setStep("success");
+                    onSuccess?.();
+                }, 1500);
+            } else if (mappedStatus === "FAILED") {
+                if (pollingRef.current) {
+                    clearInterval(pollingRef.current);
+                    pollingRef.current = null;
+                }
+                toast.error("Falha no processamento da compra");
+            }
+        } catch (err) {
+            console.error("Erro ao verificar status:", err);
+        }
+    }
+
+    function mapBackendStatus(status: string): ConversionStatus {
+        const statusMap: Record<string, ConversionStatus> = {
+            "PENDING": "PENDING",
+            "BRL_DEBITED": "BRL_DEBITED",
+            "USDT_PURCHASED": "USDT_PURCHASED",
+            "USDT_SENT": "USDT_SENT",
+            "COMPLETED": "COMPLETED",
+            "FAILED": "FAILED",
+            "USDT_RECEIVED": "BRL_DEBITED",
+            "USDT_SOLD": "USDT_PURCHASED",
+        };
+        return statusMap[status] || "PENDING";
+    }
+
+    function startPolling(id: string) {
+        if (pollingRef.current) {
+            clearInterval(pollingRef.current);
+        }
+        pollConversionStatus(id);
+        pollingRef.current = setInterval(() => pollConversionStatus(id), 8000);
+    }
 
     async function fetchWallets() {
         setWalletsLoading(true);
@@ -114,13 +209,22 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
     async function handleConvert() {
         setLoading(true);
         try {
-            await http.post("/wallet/buy-usdt-with-brl", {
+            const res = await http.post<BuyResponse>("/wallet/buy-usdt-with-brl", {
                 brlAmount: numAmount,
                 walletId: selectedWalletId,
             });
-            setStep("success");
-            toast.success("Conversão realizada com sucesso!");
-            onSuccess?.();
+            
+            if (res.data.conversionId) {
+                setConversionId(res.data.conversionId);
+                setConversionStatus("PENDING");
+                setStep("processing");
+                toast.success("Compra iniciada! Acompanhe o progresso.");
+                startPolling(res.data.conversionId);
+            } else {
+                setStep("success");
+                toast.success("Conversão realizada com sucesso!");
+                onSuccess?.();
+            }
         } catch (err: unknown) {
             const message = isAxiosError(err) ? err.response?.data?.message : undefined;
             toast.error(message || "Erro ao converter");
@@ -130,10 +234,17 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
     }
 
     function handleClose() {
+        if (pollingRef.current) {
+            clearInterval(pollingRef.current);
+            pollingRef.current = null;
+        }
         onClose();
         setTimeout(() => {
             setStep("wallet");
             setAmount("");
+            setConversionId(null);
+            setConversionStatus("PENDING");
+            setConversionDetail(null);
         }, 200);
     }
 
@@ -155,12 +266,14 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                         {step === "wallet" && "Comprar USDT"}
                         {step === "amount" && "Valor da Compra"}
                         {step === "confirm" && "Confirmar Compra"}
+                        {step === "processing" && "Processando Compra"}
                         {step === "success" && "Compra Realizada!"}
                     </DialogTitle>
                     <DialogDescription className="text-muted-foreground text-center text-sm">
                         {step === "wallet" && "Escolha onde receber seu USDT"}
                         {step === "amount" && "Digite o valor em BRL"}
                         {step === "confirm" && "Revise os dados antes de confirmar"}
+                        {step === "processing" && "Acompanhe o progresso da sua compra"}
                         {step === "success" && "Sua compra foi processada"}
                     </DialogDescription>
                 </DialogHeader>
@@ -408,6 +521,100 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                         </div>
                     )}
 
+                    {step === "processing" && (
+                        <div className="w-full space-y-5">
+                            <div className="flex justify-center">
+                                <div className="relative">
+                                    <div className="w-20 h-20 rounded-full border-4 border-violet-500/20 flex items-center justify-center">
+                                        <Loader2 className="w-10 h-10 text-violet-500 animate-spin" />
+                                    </div>
+                                    {conversionStatus === "COMPLETED" && (
+                                        <div className="absolute inset-0 flex items-center justify-center bg-card rounded-full">
+                                            <Check className="w-10 h-10 text-green-500" />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="text-center">
+                                <p className="text-foreground font-bold text-lg">
+                                    {STATUS_LABELS[conversionStatus] || "Processando..."}
+                                </p>
+                                <p className="text-muted-foreground text-sm mt-2">
+                                    Aguarde enquanto processamos sua compra
+                                </p>
+                            </div>
+
+                            <div className="bg-muted border border-border rounded-xl p-4 space-y-4">
+                                {STATUS_ORDER.map((status, idx) => {
+                                    const currentIdx = STATUS_ORDER.indexOf(conversionStatus);
+                                    const isCompleted = idx < currentIdx || conversionStatus === "COMPLETED";
+                                    const isCurrent = status === conversionStatus && conversionStatus !== "COMPLETED";
+                                    
+                                    return (
+                                        <div key={status} className="flex items-center gap-3">
+                                            <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                                isCompleted 
+                                                    ? "bg-green-500" 
+                                                    : isCurrent 
+                                                        ? "bg-violet-500 animate-pulse" 
+                                                        : "bg-muted-foreground/20"
+                                            }`}>
+                                                {isCompleted ? (
+                                                    <Check className="w-4 h-4 text-white" />
+                                                ) : isCurrent ? (
+                                                    <Loader2 className="w-3 h-3 text-white animate-spin" />
+                                                ) : (
+                                                    <span className="text-xs text-muted-foreground">{idx + 1}</span>
+                                                )}
+                                            </div>
+                                            <span className={`text-sm ${
+                                                isCompleted || isCurrent 
+                                                    ? "text-foreground font-medium" 
+                                                    : "text-muted-foreground"
+                                            }`}>
+                                                {STATUS_LABELS[status]}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            <div className="bg-muted border border-border rounded-xl p-4 space-y-2">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">Valor investido</span>
+                                    <span className="text-foreground font-medium">{formatBRL(numAmount)}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">USDT a receber</span>
+                                    <span className="text-green-600 dark:text-green-400 font-medium">
+                                        {formatUSDT(conversionDetail?.usdtAmount || convertedAmount)}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">Carteira</span>
+                                    <span className="text-foreground text-xs truncate max-w-[180px]">
+                                        {selectedWallet?.externalAddress?.slice(0, 8)}...{selectedWallet?.externalAddress?.slice(-6)}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="bg-violet-500/10 border border-violet-500/30 rounded-xl p-4">
+                                <p className="text-violet-600 dark:text-violet-400 text-sm text-center">
+                                    Este processo leva aproximadamente 2-5 minutos. Você pode fechar esta janela.
+                                </p>
+                            </div>
+
+                            <Button
+                                onClick={handleClose}
+                                variant="outline"
+                                className="w-full border-border text-foreground rounded-xl py-6"
+                            >
+                                Fechar e Acompanhar Depois
+                            </Button>
+                        </div>
+                    )}
+
                     {step === "success" && (
                         <div className="w-full space-y-5">
                             <div className="flex justify-center">
@@ -419,7 +626,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                             <div className="text-center">
                                 <p className="text-muted-foreground text-sm mb-1">Você comprou</p>
                                 <p className="text-3xl font-bold bg-linear-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
-                                    {formatUSDT(convertedAmount)}
+                                    {formatUSDT(conversionDetail?.usdtAmount || convertedAmount)}
                                 </p>
                                 <p className="text-muted-foreground text-sm mt-2">
                                     por {formatBRL(numAmount)}
@@ -428,8 +635,8 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
 
                             <div className="bg-muted border border-border rounded-xl p-4 text-center">
                                 <p className="text-muted-foreground text-xs">Rede: {selectedWallet?.network || "SOLANA"}</p>
-                                <p className="text-muted-foreground text-xs mt-1">
-                                    O USDT será enviado para sua carteira em alguns minutos
+                                <p className="text-green-600 dark:text-green-400 text-sm mt-1 font-medium">
+                                    USDT enviado para sua carteira!
                                 </p>
                             </div>
 
