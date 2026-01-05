@@ -326,7 +326,7 @@ export default function Dashboard() {
                     {transactions.length > 0 ? (
                         transactions
                             .filter((tx, _index, allTx) => {
-                                if (tx.type !== "PIX_OUT") return true;
+                                if (tx.type !== "PIX_OUT" && tx.type !== "PIX_IN") return true;
                                 
                                 const txTime = new Date(tx.createdAt).getTime();
                                 const txAmount = Number(tx.amount);
