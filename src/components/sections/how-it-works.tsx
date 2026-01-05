@@ -42,7 +42,7 @@ const HowItWorks = () => {
           </div>
           <h2 className="text-4xl md:text-6xl font-black tracking-tightest text-slate-900 leading-[0.9]">
             Como funciona <br />
-            <span className="text-primary/30 text-3xl md:text-5xl lg:text-6xl">o ecossistema.</span>
+            <span className="text-violet-400 text-3xl md:text-5xl lg:text-6xl">o ecossistema.</span>
           </h2>
         </motion.div>
 
@@ -62,7 +62,7 @@ const HowItWorks = () => {
               className="group relative rich-glass rounded-[2.5rem] p-8 sm:p-10 border border-white/40 shadow-xl shadow-black/5"
             >
               <span
-                className="absolute right-8 top-8 text-4xl font-black text-primary/10 select-none pointer-events-none group-hover:text-primary/20 transition-colors duration-500"
+                className="absolute right-8 top-8 text-4xl font-black text-violet-300 select-none pointer-events-none group-hover:text-violet-400 transition-colors duration-500"
                 aria-hidden="true"
               >
                 {step.id}
