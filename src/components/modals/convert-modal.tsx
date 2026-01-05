@@ -206,18 +206,33 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
 
     async function handleConvert() {
         setLoading(true);
+        setStep("processing");
+        setConversionStatus("PENDING");
+        
         try {
             const res = await http.post<BuyResponse>("/wallet/buy-usdt-with-brl", {
                 brlAmount: numAmount,
                 walletId: selectedWalletId,
             });
             
-            if (res.data.conversionId) {
-                setConversionId(res.data.conversionId);
-                setConversionStatus("PENDING");
-                setStep("processing");
-                toast.success("Compra iniciada! Acompanhe o progresso.");
-                startPolling(res.data.conversionId);
+            const { conversionId: id, status } = res.data;
+            
+            if (id) {
+                setConversionId(id);
+                const mappedStatus = mapBackendStatus(status || "PENDING");
+                setConversionStatus(mappedStatus);
+                
+                if (mappedStatus === "COMPLETED") {
+                    setStep("success");
+                    toast.success("Compra realizada com sucesso!");
+                    onSuccess?.();
+                } else if (mappedStatus === "FAILED") {
+                    toast.error("Falha na compra");
+                    setStep("confirm");
+                } else {
+                    toast.success("Compra iniciada! Acompanhe o progresso.");
+                    startPolling(id);
+                }
             } else {
                 setStep("success");
                 toast.success("Conversão realizada com sucesso!");
@@ -226,6 +241,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
         } catch (err: unknown) {
             const message = isAxiosError(err) ? err.response?.data?.message : undefined;
             toast.error(message || "Erro ao converter");
+            setStep("confirm");
         } finally {
             setLoading(false);
         }
