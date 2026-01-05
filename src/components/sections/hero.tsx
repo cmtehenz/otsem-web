@@ -84,7 +84,7 @@ const HeroSection = () => {
           className="w-full lg:w-[55%] text-left relative z-20"
         >
           <motion.div variants={itemVariants} className="mb-10">
-            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/40 backdrop-blur-3xl border border-white/60 shadow-xl shadow-black/5 text-primary font-black text-[10px] uppercase tracking-[0.4em]">
+            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-primary/10 backdrop-blur-3xl border border-primary/30 shadow-xl shadow-black/5 text-primary font-black text-[10px] uppercase tracking-[0.4em]">
               <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(124,58,237,0.5)]" />
               <span className="whitespace-nowrap">WEB3 BORDERLESS BANKING</span>
             </div>
@@ -150,9 +150,9 @@ const HeroSection = () => {
 
           <motion.p
             variants={itemVariants}
-            className="max-w-xl text-lg md:text-xl text-muted-foreground font-medium leading-relaxed mb-12"
+            className="max-w-xl text-lg md:text-xl text-slate-600 font-medium leading-relaxed mb-12"
           >
-            Converta BRL em USDT instantaneamente com <span className="text-foreground font-black">seguranca institucional</span> e as menores taxas do mercado global.
+            Converta BRL em USDT instantaneamente com <span className="text-slate-900 font-black">seguranca institucional</span> e as menores taxas do mercado global.
           </motion.p>
 
           <motion.div
@@ -209,8 +209,8 @@ const HeroSection = () => {
                 +10k
               </div>
             </div>
-            <div className="text-sm font-bold text-muted-foreground leading-snug">
-              <span className="text-foreground font-black text-lg">10.000+</span> lideres globais <br />
+            <div className="text-sm font-bold text-slate-600 leading-snug">
+              <span className="text-slate-900 font-black text-lg">10.000+</span> lideres globais <br />
               confiam na <span className="text-primary font-black">OtsemPay</span>
             </div>
           </motion.div>
@@ -223,15 +223,15 @@ const HeroSection = () => {
           <motion.div
             animate={{ y: [0, -15, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-10 -right-6 z-30 rich-glass p-6 rounded-[2rem] shadow-2xl group hover:scale-105 transition-transform duration-500"
+            className="absolute -top-10 -right-6 z-30 bg-white/80 backdrop-blur-xl border border-slate-200 p-6 rounded-[2rem] shadow-2xl group hover:scale-105 transition-transform duration-500"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-yellow-400/10 flex items-center justify-center text-yellow-600 border border-yellow-400/20">
+              <div className="w-12 h-12 rounded-xl bg-yellow-400/20 flex items-center justify-center text-yellow-600 border border-yellow-400/30">
                 <Zap className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Liquidez</p>
-                <p className="text-xl font-black text-foreground tracking-tight">Instantanea</p>
+                <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Liquidez</p>
+                <p className="text-xl font-black text-slate-800 tracking-tight">Instantanea</p>
               </div>
             </div>
           </motion.div>
@@ -239,15 +239,15 @@ const HeroSection = () => {
           <motion.div
             animate={{ y: [0, 15, 0] }}
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            className="absolute -bottom-8 -left-12 z-30 rich-glass p-6 rounded-[2rem] shadow-2xl group hover:scale-105 transition-transform duration-500"
+            className="absolute -bottom-8 -left-12 z-30 bg-white/80 backdrop-blur-xl border border-slate-200 p-6 rounded-[2rem] shadow-2xl group hover:scale-105 transition-transform duration-500"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+              <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center text-primary border border-primary/30">
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Seguranca</p>
-                <p className="text-xl font-black text-foreground tracking-tight">Institucional</p>
+                <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Seguranca</p>
+                <p className="text-xl font-black text-slate-800 tracking-tight">Institucional</p>
               </div>
             </div>
           </motion.div>
@@ -263,8 +263,8 @@ const HeroSection = () => {
                 <div className="p-7 pt-14 space-y-8">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Patrimonio Total</p>
-                      <p className="text-4xl font-black tracking-tightest text-foreground mt-2">R$ 152.480</p>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Patrimonio Total</p>
+                      <p className="text-4xl font-black tracking-tightest text-slate-800 mt-2">R$ 152.480</p>
                     </div>
                     <div className="w-14 h-14 rounded-2xl bg-primary shadow-lg shadow-primary/20 flex items-center justify-center text-white">
                       <Wallet className="w-7 h-7" />
@@ -272,58 +272,58 @@ const HeroSection = () => {
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-white/90 border border-black/[0.03] p-5 rounded-[2rem] shadow-sm">
-                      <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.1em]">BRL Cash</p>
-                      <p className="text-xl font-black text-foreground mt-1">48.2K</p>
+                    <div className="bg-white/90 border border-slate-200 p-5 rounded-[2rem] shadow-sm">
+                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.1em]">BRL Cash</p>
+                      <p className="text-xl font-black text-slate-800 mt-1">48.2K</p>
                     </div>
-                    <div className="bg-white/90 border border-black/[0.03] p-5 rounded-[2rem] shadow-sm">
-                      <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.1em]">USDT Balance</p>
+                    <div className="bg-white/90 border border-slate-200 p-5 rounded-[2rem] shadow-sm">
+                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.1em]">USDT Balance</p>
                       <p className="text-xl font-black text-primary mt-1">18.4K</p>
                     </div>
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between px-1">
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Atividade</p>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Atividade</p>
                     </div>
 
-                    <div className="p-4 rounded-[2rem] bg-white border border-black/[0.02] flex items-center justify-between shadow-sm">
+                    <div className="p-4 rounded-[2rem] bg-white border border-slate-100 flex items-center justify-between shadow-sm">
                       <div className="flex items-center gap-4">
-                        <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-                          <ArrowDownLeft className="w-5 h-5 text-emerald-500" />
+                        <div className="w-11 h-11 rounded-xl bg-emerald-500/15 flex items-center justify-center border border-emerald-500/30">
+                          <ArrowDownLeft className="w-5 h-5 text-emerald-600" />
                         </div>
                         <div>
-                          <p className="text-sm font-black text-foreground">PIX Recebido</p>
-                          <p className="text-[10px] text-muted-foreground font-bold">Hoje, 14:32</p>
+                          <p className="text-sm font-black text-slate-800">PIX Recebido</p>
+                          <p className="text-[10px] text-slate-500 font-bold">Hoje, 14:32</p>
                         </div>
                       </div>
-                      <p className="text-sm font-black text-emerald-500">+R$ 12.000</p>
+                      <p className="text-sm font-black text-emerald-600">+R$ 12.000</p>
                     </div>
 
-                    <div className="p-4 rounded-[2rem] bg-white border border-black/[0.02] flex items-center justify-between shadow-sm">
+                    <div className="p-4 rounded-[2rem] bg-white border border-slate-100 flex items-center justify-between shadow-sm">
                       <div className="flex items-center gap-4">
-                        <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                        <div className="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30">
                           <RefreshCw className="w-5 h-5 text-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-black text-foreground">Swap BRL → USDT</p>
-                          <p className="text-[10px] text-muted-foreground font-bold">Hoje, 15:45</p>
+                          <p className="text-sm font-black text-slate-800">Swap BRL → USDT</p>
+                          <p className="text-[10px] text-slate-500 font-bold">Hoje, 15:45</p>
                         </div>
                       </div>
                       <p className="text-sm font-black text-primary">-$ 2.450</p>
                     </div>
 
-                    <div className="p-4 rounded-[2rem] bg-white border border-black/[0.02] flex items-center justify-between shadow-sm">
+                    <div className="p-4 rounded-[2rem] bg-white border border-slate-100 flex items-center justify-between shadow-sm">
                       <div className="flex items-center gap-4">
-                        <div className="w-11 h-11 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
-                          <ArrowUpRight className="w-5 h-5 text-blue-500" />
+                        <div className="w-11 h-11 rounded-xl bg-blue-500/15 flex items-center justify-center border border-blue-500/30">
+                          <ArrowUpRight className="w-5 h-5 text-blue-600" />
                         </div>
                         <div>
-                          <p className="text-sm font-black text-foreground">Saque USDT</p>
-                          <p className="text-[10px] text-muted-foreground font-bold">Ontem, 09:12</p>
+                          <p className="text-sm font-black text-slate-800">Saque USDT</p>
+                          <p className="text-[10px] text-slate-500 font-bold">Ontem, 09:12</p>
                         </div>
                       </div>
-                      <p className="text-sm font-black text-blue-500">-$ 500</p>
+                      <p className="text-sm font-black text-blue-600">-$ 500</p>
                     </div>
                   </div>
                 </div>
