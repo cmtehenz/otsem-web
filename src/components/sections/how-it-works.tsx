@@ -10,13 +10,13 @@ const HowItWorks = () => {
       id: "01",
       icon: UserPlus,
       title: "Crie sua conta",
-      description: "Cadastro rapido com verificacao KYC em minutos. So precisamos de alguns dados basicos.",
+      description: "Cadastro rápido com verificação KYC em minutos. Só precisamos de alguns dados básicos.",
     },
     {
       id: "02",
       icon: Landmark,
       title: "Deposite via PIX",
-      description: "Transfira BRL para sua carteira usando PIX. O saldo e creditado instantaneamente.",
+      description: "Transfira BRL para sua carteira usando PIX. O saldo é creditado instantaneamente.",
     },
     {
       id: "03",

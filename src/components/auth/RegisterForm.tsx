@@ -19,14 +19,14 @@ import { toast } from "sonner";
 const schema = z
     .object({
         name: z.string().min(3, "Informe seu nome").transform((v) => v.trim()),
-        email: z.string().email("E-mail invalido").transform((v) => v.trim().toLowerCase()),
-        password: z.string().min(8, "Minimo 8 caracteres"),
+        email: z.string().email("E-mail inválido").transform((v) => v.trim().toLowerCase()),
+        password: z.string().min(8, "Mínimo 8 caracteres"),
         confirm: z.string().min(8, "Confirme sua senha"),
         affiliateCode: z.string().optional().transform((v) => v?.trim().toUpperCase() || undefined),
         accept: z.literal(true, { message: "Aceite os termos para continuar" }),
     })
     .refine((v) => v.password === v.confirm, {
-        message: "As senhas nao conferem",
+        message: "As senhas não conferem",
         path: ["confirm"],
     });
 
@@ -157,10 +157,10 @@ function RegisterPageInner(): React.JSX.Element {
             const status = getHttpStatus(e);
 
             if (status === 409) {
-                form.setError("email", { message: "Este e-mail ja esta em uso" });
-                toast.error("Este e-mail ja esta em uso.");
+                form.setError("email", { message: "Este e-mail já está em uso" });
+                toast.error("Este e-mail já está em uso.");
             } else if (status === 400) {
-                toast.error("Dados invalidos. Verifique as informacoes.");
+                toast.error("Dados inválidos. Verifique as informações.");
             } else {
                 toast.error(getHttpMessage(e, "Falha no cadastro"));
             }
@@ -362,7 +362,7 @@ function RegisterPageInner(): React.JSX.Element {
                                                 type="button"
                                                 onClick={() => setShowConfirm((v) => !v)}
                                                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-900"
-                                                aria-label={showConfirm ? "Ocultar confirmacao" : "Mostrar confirmacao"}
+                                                aria-label={showConfirm ? "Ocultar confirmação" : "Mostrar confirmação"}
                                             >
                                                 {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                             </button>
@@ -395,7 +395,7 @@ function RegisterPageInner(): React.JSX.Element {
                                                 target="_blank"
                                                 rel="noreferrer"
                                             >
-                                                politica de privacidade
+                                                política de privacidade
                                             </a>
                                         </span>
                                     </label>

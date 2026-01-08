@@ -20,8 +20,8 @@ import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/contexts/auth-context';
 
 const loginSchema = z.object({
-    email: z.string().min(1, 'Informe seu e-mail').email('E-mail invalido').transform((v) => v.trim().toLowerCase()),
-    password: z.string().min(8, 'Minimo de 8 caracteres'),
+    email: z.string().min(1, 'Informe seu e-mail').email('E-mail inválido').transform((v) => v.trim().toLowerCase()),
+    password: z.string().min(8, 'Mínimo de 8 caracteres'),
     remember: z.boolean().default(true),
 });
 type LoginForm = z.infer<typeof loginSchema>;
@@ -242,7 +242,7 @@ function LoginPageInner(): React.JSX.Element {
                                     <Separator className="my-2 bg-black/[0.03]" />
 
                                     <p className="text-center text-sm text-slate-500 font-medium">
-                                        Ainda nao tem conta?{' '}
+                                        Ainda não tem conta?{' '}
                                         <Link
                                             href="/register"
                                             className="font-bold text-primary transition hover:text-primary/80"
@@ -257,7 +257,7 @@ function LoginPageInner(): React.JSX.Element {
                         <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500 font-medium">
                             <div className="flex items-center gap-1.5">
                                 <Shield className="h-3.5 w-3.5 text-emerald-500" />
-                                Conexao segura
+                                Conexão segura
                             </div>
                             <div className="flex items-center gap-1.5">
                                 <CheckCircle2 className="h-3.5 w-3.5 text-primary" />

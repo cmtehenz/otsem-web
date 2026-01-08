@@ -23,11 +23,11 @@ const FeaturesGrid = () => {
     {
       icon: Scan,
       title: "PIX integrado",
-      description: "Depositos e saques rapidos"
+      description: "Depósitos e saques rápidos"
     },
     {
       icon: ShieldCheck,
-      title: "Seguranca total",
+      title: "Segurança total",
       description: "Criptografia de ponta"
     },
     {
@@ -41,22 +41,22 @@ const FeaturesGrid = () => {
     {
       icon: FileCheck2,
       title: "Flexibilidade Contratual",
-      description: "Contratos ajustados entre as partes. Condicoes de valores, prazos e volumes personalizados.",
+      description: "Contratos ajustados entre as partes. Condições de valores, prazos e volumes personalizados.",
     },
     {
       icon: Zap,
       title: "Maior Agilidade",
-      description: "Negociacoes rapidas e adaptadas a urgencia. Liquidacao em 10 a 30 minutos.",
+      description: "Negociações rápidas e adaptadas à urgência. Liquidação em 10 a 30 minutos.",
     },
     {
       icon: KeyRound,
       title: "Confidencialidade",
-      description: "Transacoes nao sao publicas como nas bolsas. Vantagem estrategica para alto volume.",
+      description: "Transações não são públicas como nas bolsas. Vantagem estratégica para alto volume.",
     },
     {
       icon: ShieldAlert,
-      title: "Seguranca e Compliance",
-      description: "Operamos dentro de todas as regulamentacoes. KYC rigoroso e monitoramento 24/7.",
+      title: "Segurança e Compliance",
+      description: "Operamos dentro de todas as regulamentações. KYC rigoroso e monitoramento 24/7.",
     },
   ];
 
@@ -79,7 +79,7 @@ const FeaturesGrid = () => {
                 <span className="text-primary/40">completo.</span>
               </h2>
               <p className="mt-8 text-lg text-muted-foreground leading-relaxed font-semibold max-w-md">
-                Ferramentas de elite para gerenciar suas conversoes com total privacidade e velocidade.
+                Ferramentas de elite para gerenciar suas conversões com total privacidade e velocidade.
               </p>
             </motion.div>
 

@@ -152,7 +152,7 @@ const HeroSection = () => {
             variants={itemVariants}
             className="max-w-xl text-lg md:text-xl text-slate-700 font-medium leading-relaxed mb-12"
           >
-            Converta BRL em USDT instantaneamente com <span className="text-slate-900 font-black">seguranca institucional</span> e as menores taxas do mercado global.
+            Converta BRL em USDT instantaneamente com <span className="text-slate-900 font-black">segurança institucional</span> e as menores taxas do mercado global.
           </motion.p>
 
           <motion.div

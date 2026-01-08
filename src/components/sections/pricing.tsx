@@ -13,32 +13,32 @@ const Pricing = () => {
 
   const plans = [
     {
-      name: "Operacao OTC",
+      name: "Operação OTC",
       description: "Spread que diminui com volumetria",
       priceLabel: "A partir de",
       price: "3%",
-      priceSuffix: "por transacao",
+      priceSuffix: "por transação",
       features: [
-        "Liquidacao em 10-30 min",
+        "Liquidação em 10-30 min",
         "0% IOF (isento)",
         "Contratos personalizados",
         "Suporte dedicado"
       ],
-      cta: "Comecar agora",
+      cta: "Começar agora",
       icon: Sparkles,
       popular: false,
     },
     {
       name: "Alta Volumetria",
-      description: "Para operacoes acima de R$ 500k",
+      description: "Para operações acima de R$ 500k",
       priceLabel: "Taxa sob",
       price: "consulta",
-      priceSuffix: "por transacao",
+      priceSuffix: "por transação",
       features: [
-        "Spreads negociaveis",
+        "Spreads negociáveis",
         "Atendimento VIP",
         "Mesa OTC dedicada",
-        "Condicoes especiais"
+        "Condições especiais"
       ],
       cta: "Falar com especialista",
       icon: Headphones,
@@ -57,11 +57,11 @@ const Pricing = () => {
           className="mb-12 sm:mb-16 text-center"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary font-bold text-[11px] uppercase tracking-wider mb-6">
-            Precos Claros
+            Preços Claros
           </div>
           <h2 className="text-3xl sm:text-5xl font-black tracking-tightest text-slate-900">Taxas transparentes</h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-slate-600 font-medium leading-relaxed">
-            Sem taxas escondidas. Voce sabe exatamente quanto vai pagar em cada operacao.
+            Sem taxas escondidas. Você sabe exatamente quanto vai pagar em cada operação.
           </p>
         </motion.div>
 
