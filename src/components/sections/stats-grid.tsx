@@ -11,7 +11,7 @@ const stats = [
     label: "Mercado OTC global em 2024",
     color: "bg-primary/5",
     iconColor: "text-primary",
-    span: "col-span-1 md:col-span-2 lg:col-span-2"
+    span: "col-span-1 md:col-span-2 lg:col-span-2",
   },
   {
     icon: Globe2,
@@ -19,7 +19,7 @@ const stats = [
     label: "Volume LATAM do mercado global",
     color: "bg-yellow-400/5",
     iconColor: "text-yellow-600",
-    span: "col-span-1 md:col-span-2 lg:col-span-2"
+    span: "col-span-1 md:col-span-2 lg:col-span-2",
   },
   {
     icon: Timer,
@@ -27,7 +27,7 @@ const stats = [
     label: "Tempo de liquidacao ultra-rapida",
     color: "bg-primary/5",
     iconColor: "text-primary",
-    span: "col-span-1 md:col-span-2 lg:col-span-1"
+    span: "col-span-1 md:col-span-2 lg:col-span-1",
   },
   {
     icon: BadgeCheck,
@@ -35,8 +35,8 @@ const stats = [
     label: "Sem imposto sobre operacoes",
     color: "bg-emerald-500/5",
     iconColor: "text-emerald-600",
-    span: "col-span-1 md:col-span-2 lg:col-span-3"
-  }
+    span: "col-span-1 md:col-span-2 lg:col-span-3",
+  },
 ];
 
 const StatsGrid = () => {
@@ -64,11 +64,16 @@ const StatsGrid = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.1 }}
+            transition={{
+              type: "spring",
+              stiffness: 100,
+              damping: 20,
+              delay: 0.1,
+            }}
             className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tightest max-w-5xl leading-[0.9]"
           >
             Poder financeiro <br />
-            <span className="text-primary/30">sem fronteiras.</span>
+            <span className="text-primary/80">sem fronteiras.</span>
           </motion.h2>
         </div>
 
@@ -83,20 +88,27 @@ const StatsGrid = () => {
                 type: "spring",
                 stiffness: 120,
                 damping: 25,
-                delay: index * 0.05
+                delay: index * 0.05,
               }}
               className={`${stat.span} relative group`}
             >
               <div className="rich-glass p-8 lg:p-10 rounded-[2.5rem] h-full flex flex-col justify-between transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-2 group-hover:bg-white/60">
                 <div className="space-y-8">
-                  <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${stat.color} border border-white/60 shadow-xl shadow-black/5 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6`}>
-                    <stat.icon className={`h-7 w-7 ${stat.iconColor}`} strokeWidth={1.5} />
+                  <div
+                    className={`flex h-14 w-14 items-center justify-center rounded-2xl ${stat.color} border border-white/60 shadow-xl shadow-black/5 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6`}
+                  >
+                    <stat.icon
+                      className={`h-7 w-7 ${stat.iconColor}`}
+                      strokeWidth={1.5}
+                    />
                   </div>
 
                   <div>
                     <div className="text-4xl lg:text-6xl font-black tracking-tightest text-slate-900 mb-4 flex items-baseline gap-2">
                       {stat.value}
-                      {stat.value.includes('%') && <span className="text-yellow-500 text-2xl">↑</span>}
+                      {stat.value.includes("%") && (
+                        <span className="text-yellow-500 text-2xl">↑</span>
+                      )}
                     </div>
 
                     <div className="text-[10px] lg:text-xs text-muted-foreground font-black uppercase tracking-[0.3em] leading-relaxed max-w-[200px]">
@@ -105,7 +117,9 @@ const StatsGrid = () => {
                   </div>
                 </div>
 
-                <div className={`absolute top-0 right-0 w-32 h-32 ${stat.iconColor} opacity-0 group-hover:opacity-[0.05] blur-[60px] -z-10 rounded-full transition-opacity duration-700`} />
+                <div
+                  className={`absolute top-0 right-0 w-32 h-32 ${stat.iconColor} opacity-0 group-hover:opacity-[0.05] blur-[60px] -z-10 rounded-full transition-opacity duration-700`}
+                />
               </div>
             </motion.div>
           ))}

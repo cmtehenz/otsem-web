@@ -6,18 +6,18 @@ import { Building2, Zap, X, Check, Crown } from "lucide-react";
 
 const ComparisonSection = () => {
   const traditionalItems = [
-    { label: "Spread bancario", value: "6% a 12%" },
+    { label: "Spread bancário", value: "6% a 12%" },
     { label: "IOF", value: "0,38%" },
     { label: "Tarifa bancaria", value: "0,1% a 2%" },
     { label: "Swift internacional", value: "R$ 100 a R$ 450" },
-    { label: "Tempo de liquidacao", value: "2 a 5 dias uteis" },
+    { label: "Tempo de liquidação", value: "2 a 5 dias uteis" },
   ];
 
   const otcItems = [
     { label: "Spread OTC", value: "A partir de 3%" },
     { label: "IOF", value: "0% (isento)" },
     { label: "Tarifa OTC", value: "Incluso no spread" },
-    { label: "Transferencia", value: "Sem custo adicional" },
+    { label: "Transferência", value: "Sem custo adicional" },
     { label: "Tempo de liquidação", value: "10 a 30 minutos" },
   ];
 
@@ -37,7 +37,9 @@ const ComparisonSection = () => {
           </div>
           <h2 className="text-4xl md:text-6xl font-black tracking-tightest text-slate-900 leading-[0.9]">
             Por que migrar para <br />
-            <span className="text-primary/30 text-3xl md:text-5xl lg:text-6xl">o ecossistema OTC?</span>
+            <span className="text-primary/90 text-3xl md:text-5xl lg:text-6xl">
+              o ecossistema OTC?
+            </span>
           </h2>
         </motion.div>
 
@@ -46,7 +48,12 @@ const ComparisonSection = () => {
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ type: "spring", stiffness: 100, damping: 25, delay: 0.1 }}
+            transition={{
+              type: "spring",
+              stiffness: 100,
+              damping: 25,
+              delay: 0.1,
+            }}
             className="rich-glass rounded-[2.5rem] p-8 sm:p-10 border-red-500/10 group transition-all duration-500"
           >
             <div className="mb-10 flex items-center gap-5">
@@ -54,17 +61,28 @@ const ComparisonSection = () => {
                 <Building2 className="h-7 w-7 text-red-600" strokeWidth={1.5} />
               </div>
               <div>
-                <h3 className="text-xl font-black tracking-tight text-slate-900">Bancos</h3>
-                <p className="text-[10px] font-black text-red-600/60 uppercase tracking-widest">Modelo Tradicional</p>
+                <h3 className="text-xl font-black tracking-tight text-slate-900">
+                  Bancos
+                </h3>
+                <p className="text-[10px] font-black text-red-600/60 uppercase tracking-widest">
+                  Modelo Tradicional
+                </p>
               </div>
             </div>
 
             <ul className="space-y-4">
               {traditionalItems.map((item, index) => (
-                <li key={index} className="flex items-center justify-between py-3.5 border-b border-black/[0.03] last:border-0 group/item">
-                  <span className="text-sm font-bold text-slate-500 transition-colors group-hover/item:text-slate-900">{item.label}</span>
+                <li
+                  key={index}
+                  className="flex items-center justify-between py-3.5 border-b border-black/[0.03] last:border-0 group/item"
+                >
+                  <span className="text-sm font-bold text-slate-500 transition-colors group-hover/item:text-slate-900">
+                    {item.label}
+                  </span>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-black text-red-600">{item.value}</span>
+                    <span className="text-sm font-black text-red-600">
+                      {item.value}
+                    </span>
                     <X className="h-4 w-4 text-red-600/40" strokeWidth={3} />
                   </div>
                 </li>
@@ -76,13 +94,22 @@ const ComparisonSection = () => {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ type: "spring", stiffness: 100, damping: 25, delay: 0.2 }}
+            transition={{
+              type: "spring",
+              stiffness: 100,
+              damping: 25,
+              delay: 0.2,
+            }}
             className="relative rich-glass rounded-[2.5rem] p-8 sm:p-10 border-emerald-500/20 bg-emerald-500/[0.02] shadow-2xl shadow-emerald-500/5 group"
           >
             <div className="absolute -top-3 right-8">
               <motion.span
                 animate={{ y: [0, -4, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
                 className="inline-flex items-center gap-2 px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-white bg-emerald-500 rounded-full shadow-lg shadow-emerald-500/20"
               >
                 <Crown className="h-3.5 w-3.5" strokeWidth={2.5} />
@@ -95,18 +122,32 @@ const ComparisonSection = () => {
                 <Zap className="h-7 w-7 text-emerald-600" strokeWidth={1.5} />
               </div>
               <div>
-                <h3 className="text-xl font-black tracking-tight text-slate-900">Otsem Pay</h3>
-                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Futuro Liquido</p>
+                <h3 className="text-xl font-black tracking-tight text-slate-900">
+                  Otsem Pay
+                </h3>
+                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">
+                  Futuro Liquido
+                </p>
               </div>
             </div>
 
             <ul className="space-y-4">
               {otcItems.map((item, index) => (
-                <li key={index} className="flex items-center justify-between py-3.5 border-b border-emerald-500/10 last:border-0 group/item">
-                  <span className="text-sm font-bold text-slate-500 transition-colors group-hover/item:text-slate-900">{item.label}</span>
+                <li
+                  key={index}
+                  className="flex items-center justify-between py-3.5 border-b border-emerald-500/10 last:border-0 group/item"
+                >
+                  <span className="text-sm font-bold text-slate-500 transition-colors group-hover/item:text-slate-900">
+                    {item.label}
+                  </span>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-black text-emerald-600">{item.value}</span>
-                    <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
+                    <span className="text-sm font-black text-emerald-600">
+                      {item.value}
+                    </span>
+                    <Check
+                      className="h-4 w-4 text-emerald-600"
+                      strokeWidth={3}
+                    />
                   </div>
                 </li>
               ))}

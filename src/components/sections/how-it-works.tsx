@@ -10,19 +10,22 @@ const HowItWorks = () => {
       id: "01",
       icon: UserPlus,
       title: "Crie sua conta",
-      description: "Cadastro rápido com verificação KYC em minutos. Só precisamos de alguns dados básicos.",
+      description:
+        "Cadastro rápido com verificação KYC em minutos. Só precisamos de alguns dados básicos.",
     },
     {
       id: "02",
       icon: Landmark,
       title: "Deposite via PIX",
-      description: "Transfira BRL para sua carteira usando PIX. O saldo é creditado instantaneamente.",
+      description:
+        "Transfira BRL para sua carteira usando PIX. O saldo é creditado instantaneamente.",
     },
     {
       id: "03",
       icon: ArrowLeftRight,
       title: "Converta para USDT",
-      description: "Com um clique, converta seu saldo para USDT com a melhor taxa do mercado.",
+      description:
+        "Com um clique, converta seu saldo para USDT com a melhor taxa do mercado.",
     },
   ];
 
@@ -42,7 +45,9 @@ const HowItWorks = () => {
           </div>
           <h2 className="text-4xl md:text-6xl font-black tracking-tightest text-slate-900 leading-[0.9]">
             Como funciona <br />
-            <span className="text-violet-400 text-3xl md:text-5xl lg:text-6xl">o ecossistema.</span>
+            <span className="text-violet-500 text-3xl md:text-5xl lg:text-6xl">
+              o ecossistema.
+            </span>
           </h2>
         </motion.div>
 
@@ -57,12 +62,12 @@ const HowItWorks = () => {
                 type: "spring",
                 stiffness: 120,
                 damping: 25,
-                delay: index * 0.1
+                delay: index * 0.1,
               }}
               className="group relative rich-glass rounded-[2.5rem] p-8 sm:p-10 border border-white/40 shadow-xl shadow-black/5"
             >
               <span
-                className="absolute right-8 top-8 text-4xl font-black text-violet-300 select-none pointer-events-none group-hover:text-violet-400 transition-colors duration-500"
+                className="absolute right-8 top-8 text-4xl font-black text-violet-500 select-none pointer-events-none group-hover:text-violet-700 transition-colors duration-500"
                 aria-hidden="true"
               >
                 {step.id}
@@ -70,7 +75,10 @@ const HowItWorks = () => {
 
               <div className="relative z-10 space-y-8">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white border border-primary/10 shadow-sm transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
-                  <step.icon className="h-7 w-7 text-primary" strokeWidth={1.5} />
+                  <step.icon
+                    className="h-7 w-7 text-primary"
+                    strokeWidth={1.5}
+                  />
                 </div>
 
                 <div>
