@@ -22,14 +22,15 @@ const LEVEL_LABELS: Record<string, { label: string; color: string; bgColor: stri
   LEVEL_3: { label: "Nível 3", color: "text-emerald-600", bgColor: "bg-emerald-100" },
 };
 
-function formatCurrency(value: number): string {
-  if (value >= 1000000) {
-    return `R$ ${(value / 1000000).toFixed(1)}M`;
+function formatCurrency(value: number | undefined | null): string {
+  const num = value ?? 0;
+  if (num >= 1000000) {
+    return `R$ ${(num / 1000000).toFixed(1)}M`;
   }
-  if (value >= 1000) {
-    return `R$ ${(value / 1000).toFixed(0)}k`;
+  if (num >= 1000) {
+    return `R$ ${(num / 1000).toFixed(0)}k`;
   }
-  return value.toLocaleString("pt-BR", {
+  return num.toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
     minimumFractionDigits: 0,
@@ -37,8 +38,9 @@ function formatCurrency(value: number): string {
   });
 }
 
-function formatFullCurrency(value: number): string {
-  return value.toLocaleString("pt-BR", {
+function formatFullCurrency(value: number | undefined | null): string {
+  const num = value ?? 0;
+  return num.toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
     minimumFractionDigits: 2,
@@ -83,12 +85,16 @@ export function LimitsCard({ compact = false, showUpgradeLink = true }: LimitsCa
     return null;
   }
 
+  const usedThisMonth = limits.usedThisMonth ?? 0;
+  const monthlyLimit = limits.monthlyLimit ?? 0;
+  const remainingLimit = limits.remainingLimit ?? 0;
+
   const isUnlimited = limits.kycLevel === "LEVEL_3";
-  const usagePercent = isUnlimited ? 0 : Math.min((limits.usedThisMonth / limits.monthlyLimit) * 100, 100);
+  const usagePercent = isUnlimited || monthlyLimit === 0 ? 0 : Math.min((usedThisMonth / monthlyLimit) * 100, 100);
   const isNearLimit = usagePercent >= 80;
   const levelInfo = LEVEL_LABELS[limits.kycLevel] || LEVEL_LABELS.LEVEL_1;
 
-  const resetDate = new Date(limits.resetDate);
+  const resetDate = new Date(limits.resetDate || Date.now());
   const daysUntilReset = Math.ceil((resetDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 
   if (compact) {
@@ -114,10 +120,10 @@ export function LimitsCard({ compact = false, showUpgradeLink = true }: LimitsCa
           <>
             <div className="flex items-baseline gap-1 mb-2">
               <span className="text-lg font-black text-foreground">
-                {formatCurrency(limits.usedThisMonth)}
+                {formatCurrency(usedThisMonth)}
               </span>
               <span className="text-sm text-muted-foreground">
-                / {formatCurrency(limits.monthlyLimit)}
+                / {formatCurrency(monthlyLimit)}
               </span>
             </div>
             <div className="h-2 bg-black/5 rounded-full overflow-hidden">
@@ -179,13 +185,13 @@ export function LimitsCard({ compact = false, showUpgradeLink = true }: LimitsCa
               <div>
                 <p className="text-sm text-muted-foreground">Utilizado</p>
                 <p className="text-2xl font-black text-foreground">
-                  {formatFullCurrency(limits.usedThisMonth)}
+                  {formatFullCurrency(usedThisMonth)}
                 </p>
               </div>
               <div className="text-right">
                 <p className="text-sm text-muted-foreground">Limite</p>
                 <p className="text-lg font-bold text-muted-foreground">
-                  {formatFullCurrency(limits.monthlyLimit)}
+                  {formatFullCurrency(monthlyLimit)}
                 </p>
               </div>
             </div>
@@ -203,7 +209,7 @@ export function LimitsCard({ compact = false, showUpgradeLink = true }: LimitsCa
 
             <div className="flex justify-between mt-2 text-xs text-muted-foreground">
               <span>{usagePercent.toFixed(0)}% utilizado</span>
-              <span>Disponível: {formatFullCurrency(limits.remainingLimit)}</span>
+              <span>Disponível: {formatFullCurrency(remainingLimit)}</span>
             </div>
           </div>
 
