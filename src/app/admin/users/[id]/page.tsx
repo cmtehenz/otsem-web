@@ -32,6 +32,8 @@ type UserDetail = {
     phone: string;
     role: "CUSTOMER" | "ADMIN";
     kycStatus: "PENDING" | "APPROVED" | "REJECTED" | "NOT_STARTED";
+    kycLevel?: "LEVEL_1" | "LEVEL_2" | "LEVEL_3";
+    customerType?: "PF" | "PJ";
     accountStatus: "ACTIVE" | "BLOCKED" | "SUSPENDED";
     balanceBRL: number;
     spreadPercent?: number;
@@ -54,6 +56,36 @@ type UserDetail = {
         rejectReason: string | null;
         documentType: string | null;
     } | null;
+};
+
+type UserLimits = {
+    kycLevel: "LEVEL_1" | "LEVEL_2" | "LEVEL_3";
+    customerType: "PF" | "PJ";
+    monthlyLimit: number;
+    usedThisMonth: number;
+    remainingLimit: number;
+    resetDate: string;
+};
+
+const KYC_LEVEL_CONFIG: Record<string, { label: string; color: string; bgColor: string; limits: { PF: string; PJ: string } }> = {
+    LEVEL_1: { 
+        label: "Nível 1", 
+        color: "text-amber-600", 
+        bgColor: "bg-amber-100 dark:bg-amber-900/30",
+        limits: { PF: "R$ 30.000/mês", PJ: "R$ 50.000/mês" }
+    },
+    LEVEL_2: { 
+        label: "Nível 2", 
+        color: "text-blue-600", 
+        bgColor: "bg-blue-100 dark:bg-blue-900/30",
+        limits: { PF: "R$ 100.000/mês", PJ: "R$ 200.000/mês" }
+    },
+    LEVEL_3: { 
+        label: "Nível 3", 
+        color: "text-emerald-600", 
+        bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
+        limits: { PF: "Ilimitado", PJ: "Ilimitado" }
+    },
 };
 
 type Transaction = {
@@ -133,6 +165,11 @@ export default function AdminUserDetailPage() {
     const [spreadModalOpen, setSpreadModalOpen] = React.useState(false);
     const [spreadValue, setSpreadValue] = React.useState("");
     const [savingSpread, setSavingSpread] = React.useState(false);
+    const [kycLevelModalOpen, setKycLevelModalOpen] = React.useState(false);
+    const [selectedKycLevel, setSelectedKycLevel] = React.useState<"LEVEL_1" | "LEVEL_2" | "LEVEL_3">("LEVEL_1");
+    const [savingKycLevel, setSavingKycLevel] = React.useState(false);
+    const [userLimits, setUserLimits] = React.useState<UserLimits | null>(null);
+    const [loadingLimits, setLoadingLimits] = React.useState(false);
 
     const loadUser = React.useCallback(async () => {
         try {
@@ -226,6 +263,55 @@ export default function AdminUserDetailPage() {
             toast.error(errorMsg);
         } finally {
             setSavingSpread(false);
+        }
+    };
+
+    const loadUserLimits = React.useCallback(async () => {
+        try {
+            setLoadingLimits(true);
+            const response = await http.get<UserLimits>(`/admin/users/${userId}/limits`);
+            setUserLimits(response.data);
+        } catch (err) {
+            console.error("Failed to load user limits:", err);
+        } finally {
+            setLoadingLimits(false);
+        }
+    }, [userId]);
+
+    React.useEffect(() => {
+        if (user) {
+            loadUserLimits();
+        }
+    }, [user, loadUserLimits]);
+
+    const openKycLevelModal = () => {
+        setSelectedKycLevel(user?.kycLevel || "LEVEL_1");
+        setKycLevelModalOpen(true);
+    };
+
+    const handleSaveKycLevel = async () => {
+        try {
+            setSavingKycLevel(true);
+            await http.patch(`/admin/users/${userId}/kyc-level`, {
+                kycLevel: selectedKycLevel,
+            });
+            
+            if (user) {
+                setUser({
+                    ...user,
+                    kycLevel: selectedKycLevel,
+                });
+            }
+            
+            loadUserLimits();
+            toast.success(`Nível KYC atualizado para ${KYC_LEVEL_CONFIG[selectedKycLevel]?.label || selectedKycLevel}`);
+            setKycLevelModalOpen(false);
+        } catch (err: any) {
+            console.error("KYC level update error:", err.response?.data || err.message);
+            const errorMsg = err.response?.data?.message || "Falha ao atualizar nível KYC";
+            toast.error(errorMsg);
+        } finally {
+            setSavingKycLevel(false);
         }
     };
 
@@ -394,6 +480,81 @@ export default function AdminUserDetailPage() {
 
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
+                            <CardTitle className="flex items-center gap-2">
+                                <Shield className="h-5 w-5" />
+                                Nível KYC e Limites
+                            </CardTitle>
+                            <Button variant="outline" size="sm" onClick={openKycLevelModal}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Alterar Nível
+                            </Button>
+                        </CardHeader>
+                        <CardContent>
+                            {loadingLimits ? (
+                                <div className="flex h-24 items-center justify-center">
+                                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-muted-foreground">Nível atual</span>
+                                        <span className={`px-3 py-1 rounded-full text-sm font-bold ${KYC_LEVEL_CONFIG[user.kycLevel || "LEVEL_1"]?.bgColor} ${KYC_LEVEL_CONFIG[user.kycLevel || "LEVEL_1"]?.color}`}>
+                                            {KYC_LEVEL_CONFIG[user.kycLevel || "LEVEL_1"]?.label || "Nível 1"}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-muted-foreground">Tipo</span>
+                                        <span className="font-medium">{user.customerType === "PJ" ? "Pessoa Jurídica" : "Pessoa Física"}</span>
+                                    </div>
+                                    <Separator />
+                                    {userLimits && (
+                                        <>
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-muted-foreground">Limite mensal</span>
+                                                <span className="font-bold">
+                                                    {userLimits.kycLevel === "LEVEL_3" 
+                                                        ? "Ilimitado" 
+                                                        : formatBRL(userLimits.monthlyLimit)}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-muted-foreground">Utilizado este mês</span>
+                                                <span className="font-medium">{formatBRL(userLimits.usedThisMonth)}</span>
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-muted-foreground">Disponível</span>
+                                                <span className="font-medium text-green-600">
+                                                    {userLimits.kycLevel === "LEVEL_3" 
+                                                        ? "Ilimitado" 
+                                                        : formatBRL(userLimits.remainingLimit)}
+                                                </span>
+                                            </div>
+                                            {userLimits.kycLevel !== "LEVEL_3" && (
+                                                <div className="mt-2">
+                                                    <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                                        <div 
+                                                            className={`h-full rounded-full transition-all ${
+                                                                (userLimits.usedThisMonth / userLimits.monthlyLimit) >= 0.8 
+                                                                    ? "bg-amber-500" 
+                                                                    : "bg-primary"
+                                                            }`}
+                                                            style={{ width: `${Math.min((userLimits.usedThisMonth / userLimits.monthlyLimit) * 100, 100)}%` }}
+                                                        />
+                                                    </div>
+                                                    <p className="text-xs text-muted-foreground mt-1">
+                                                        {((userLimits.usedThisMonth / userLimits.monthlyLimit) * 100).toFixed(1)}% utilizado
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle>Transações Recentes</CardTitle>
                             <Button variant="ghost" size="sm" asChild>
                                 <Link href={`/admin/transactions?userId=${userId}`}>Ver todas</Link>
@@ -552,6 +713,60 @@ export default function AdminUserDetailPage() {
                         </Button>
                         <Button onClick={handleSaveSpread} disabled={savingSpread}>
                             {savingSpread ? (
+                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            ) : (
+                                <Save className="h-4 w-4 mr-2" />
+                            )}
+                            Salvar
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={kycLevelModalOpen} onOpenChange={setKycLevelModalOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Alterar Nível KYC</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <p className="text-sm text-muted-foreground">
+                            Selecione o novo nível KYC para este cliente. O limite mensal será ajustado automaticamente.
+                        </p>
+                        <div className="space-y-3">
+                            {(["LEVEL_1", "LEVEL_2", "LEVEL_3"] as const).map((level) => {
+                                const config = KYC_LEVEL_CONFIG[level];
+                                const customerType = user?.customerType || "PF";
+                                return (
+                                    <button
+                                        key={level}
+                                        type="button"
+                                        onClick={() => setSelectedKycLevel(level)}
+                                        className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                                            selectedKycLevel === level
+                                                ? "border-primary bg-primary/5"
+                                                : "border-border hover:border-primary/50"
+                                        }`}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`w-3 h-3 rounded-full ${selectedKycLevel === level ? "bg-primary" : "bg-slate-200"}`} />
+                                                <span className={`font-bold ${config.color}`}>{config.label}</span>
+                                            </div>
+                                            <span className="text-sm text-muted-foreground">
+                                                {config.limits[customerType]}
+                                            </span>
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setKycLevelModalOpen(false)}>
+                            Cancelar
+                        </Button>
+                        <Button onClick={handleSaveKycLevel} disabled={savingKycLevel}>
+                            {savingKycLevel ? (
                                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
                             ) : (
                                 <Save className="h-4 w-4 mr-2" />

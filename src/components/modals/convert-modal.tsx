@@ -4,12 +4,18 @@ import * as React from "react";
 import { isAxiosError } from "axios";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowRight, TrendingUp, CheckCircle2, Wallet, Check, Star } from "lucide-react";
+import { Loader2, ArrowRight, TrendingUp, CheckCircle2, Wallet, Check, Star, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import http from "@/lib/http";
 import { useUsdtRate } from "@/lib/useUsdtRate";
 import { useAuth } from "@/contexts/auth-context";
 import Link from "next/link";
+
+function isLimitExceededError(message?: string): boolean {
+    if (!message) return false;
+    const lower = message.toLowerCase();
+    return lower.includes("limite") && (lower.includes("excedido") || lower.includes("upgrade"));
+}
 
 type ConvertModalProps = {
     open: boolean;
@@ -74,6 +80,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
     const [conversionId, setConversionId] = React.useState<string | null>(null);
     const [conversionStatus, setConversionStatus] = React.useState<ConversionStatus>("PENDING");
     const [conversionDetail, setConversionDetail] = React.useState<ConversionDetail | null>(null);
+    const [limitError, setLimitError] = React.useState<string | null>(null);
     const pollingRef = React.useRef<NodeJS.Timeout | null>(null);
 
     const customerSpread = user?.spreadValue ?? 0.95;
@@ -240,8 +247,13 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
             }
         } catch (err: unknown) {
             const message = isAxiosError(err) ? err.response?.data?.message : undefined;
-            toast.error(message || "Erro ao converter");
-            setStep("confirm");
+            if (isLimitExceededError(message)) {
+                setLimitError(message || "Limite mensal excedido. Considere fazer upgrade do seu nível KYC.");
+                setStep("confirm");
+            } else {
+                toast.error(message || "Erro ao converter");
+                setStep("confirm");
+            }
         } finally {
             setLoading(false);
         }
@@ -259,6 +271,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
             setConversionId(null);
             setConversionStatus("PENDING");
             setConversionDetail(null);
+            setLimitError(null);
         }, 200);
     }
 
@@ -518,9 +531,27 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                 </div>
                             </div>
 
+                            {limitError && (
+                                <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                                    <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                                    <div>
+                                        <p className="text-sm text-amber-800 dark:text-amber-200 font-medium">{limitError}</p>
+                                        <Link href="/customer/kyc" onClick={handleClose}>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="mt-2 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40"
+                                            >
+                                                Ver meus limites
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
+
                             <Button
                                 onClick={handleConvert}
-                                disabled={loading}
+                                disabled={loading || !!limitError}
                                 className="w-full bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 {loading ? (

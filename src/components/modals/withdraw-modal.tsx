@@ -6,9 +6,16 @@ import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useUiModals } from "@/stores/ui-modals";
-import { Loader2, ArrowLeft, Send, AlertCircle, CheckCircle2, KeyRound, Plus } from "lucide-react";
+import { Loader2, ArrowLeft, Send, AlertCircle, CheckCircle2, KeyRound, Plus, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import http from "@/lib/http";
+import Link from "next/link";
+
+function isLimitExceededError(message?: string): boolean {
+    if (!message) return false;
+    const lower = message.toLowerCase();
+    return lower.includes("limite") && (lower.includes("excedido") || lower.includes("upgrade"));
+}
 
 type PixKey = {
     id: string;
@@ -134,7 +141,9 @@ export function WithdrawModal() {
             const message = isAxiosError(err) ? err.response?.data?.message : undefined;
             const fallbackMessage = message || "Erro ao enviar PIX";
             setError(fallbackMessage);
-            toast.error(fallbackMessage);
+            if (!isLimitExceededError(message)) {
+                toast.error(fallbackMessage);
+            }
         } finally {
             setLoading(false);
         }
@@ -367,15 +376,33 @@ export function WithdrawModal() {
                             </div>
 
                             {error && (
-                                <div className="flex items-center gap-2 text-red-500 text-sm bg-red-500/10 rounded-lg px-3 py-2">
-                                    <AlertCircle className="w-4 h-4 shrink-0" />
-                                    <span>{error}</span>
-                                </div>
+                                isLimitExceededError(error) ? (
+                                    <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                                        <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                                        <div>
+                                            <p className="text-sm text-amber-800 dark:text-amber-200 font-medium">{error}</p>
+                                            <Link href="/customer/kyc" onClick={handleClose}>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="mt-2 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40"
+                                                >
+                                                    Ver meus limites
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-2 text-red-500 text-sm bg-red-500/10 rounded-lg px-3 py-2">
+                                        <AlertCircle className="w-4 h-4 shrink-0" />
+                                        <span>{error}</span>
+                                    </div>
+                                )
                             )}
 
                             <Button
                                 onClick={handleSendPix}
-                                disabled={loading}
+                                disabled={loading || isLimitExceededError(error ?? "")}
                                 className="w-full bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-green-500/25"
                             >
                                 {loading ? (

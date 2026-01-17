@@ -7,6 +7,7 @@ import http from "@/lib/http";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { LimitsCard } from "@/components/kyc/limits-card";
 import {
     Loader2,
     ShieldCheck,
@@ -198,13 +199,15 @@ export default function CustomerKycPage(): React.JSX.Element {
     return (
         <div className="max-w-lg mx-auto space-y-6">
             <div className="text-center">
-                <h1 className="text-2xl font-bold text-white">Verificação de Identidade</h1>
-                <p className="text-white/50 text-sm mt-1">
+                <h1 className="text-2xl font-bold text-foreground">Verificação de Identidade</h1>
+                <p className="text-muted-foreground text-sm mt-1">
                     Verifique sua identidade para ativar sua conta
                 </p>
             </div>
 
-            <div className="bg-[#1a1025] border border-white/10 rounded-2xl p-8">
+            <LimitsCard showUpgradeLink={false} />
+
+            <div className="premium-card p-8">
                 <div className={`p-6 rounded-xl border ${statusInfo.borderColor} ${statusInfo.bgColor} mb-6`}>
                     <div className="flex flex-col items-center text-center gap-4">
                         <div className={`p-4 rounded-full ${statusInfo.bgColor}`}>

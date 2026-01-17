@@ -1,0 +1,290 @@
+Vou organizar tudo de forma objetiva, em passo a passo, exatamente pra você imprimir, colocar no papel e executar na Otsem, sem contradição com o que já falamos antes.
+
+Resumo rápido pra te tranquilizar:
+👉 O seu raciocínio está correto.
+👉 Com o app, o reporte muda de “cliente final” para “lojista”, mas o lastro e o caminho do dinheiro continuam íntegros.
+👉 Você não está fazendo errado, só entrou agora numa fase mais estruturada (com KYC/KYB + app).
+
+🧭 VISÃO GERAL DO FLUXO (VALIDADO)
+
+Fluxo operacional da Otsem (correto):
+
+Cliente final compra na loja
+
+Cliente escolhe PIX
+
+PIX é gerado dentro do app da Otsem, vinculado ao lojista
+
+Cliente paga o PIX
+
+PIX entra na conta bancária da Otsem (CORPX)
+
+Otsem:
+
+identifica quem pagou (CPF)
+
+identifica para qual lojista (KYB feito)
+
+Valor é convertido em USDT
+
+USDT é enviado para a wallet do lojista
+
+Otsem mantém:
+
+trilha do dinheiro antes
+
+trilha durante
+
+trilha depois da conversão
+
+✔️ Isso é exatamente o que a Receita, COAF e qualquer auditor espera ver.
+
+🔁 ANTES x DEPOIS DO APP (PONTO-CHAVE)
+🔴 ANTES (operação manual)
+
+Você reporta o CPF que fez o PIX
+
+Porque não existe ainda um “lojista formalizado no sistema”
+
+🟢 DEPOIS DO APP (operação estruturada)
+
+Você reporta o LOJISTA
+
+O cliente final vira pagador identificado, não “cliente Otsem”
+
+📌 Importante:
+Você NUNCA perde a informação do cliente final.
+Ela só deixa de ser o sujeito principal do reporte.
+
+📅 PASSO A PASSO — O QUE FAZER A PARTIR DE JANEIRO
+✅ PASSO 1 — ESTRUTURA JURÍDICA & CONTÁBIL
+
+Definir CNAE compatível:
+
+Intermediação de pagamentos
+
+Tecnologia financeira
+
+Contrato social prevendo:
+
+Custódia temporária
+
+Conversão de ativos
+
+Intermediação entre cliente e lojista
+
+Contador alinhado com:
+
+PIX
+
+cripto
+
+prestação de serviços
+
+✅ PASSO 2 — POLÍTICA FORMAL (DOCUMENTO INTERNO)
+
+Criar e guardar:
+
+Política de KYC/KYB
+
+Política de Prevenção à Lavagem de Dinheiro (PLD/AML)
+
+Política de Limites por Nível
+
+Registro de monitoramento de transações
+
+Isso não é pra publicar, é pra existir e ser aplicado.
+
+✅ PASSO 3 — KYC (PESSOA FÍSICA)
+🟦 NÍVEL 1 — até R$ 30.000/mês
+
+Documentos:
+
+Nome completo
+
+CPF
+
+Data de nascimento
+
+Selfie
+
+Documento com foto (CNH ou RG)
+
+Wallet declarada
+
+📌 Uso:
+
+Compradores frequentes
+
+Pequenos lojistas informais
+
+🟨 NÍVEL 2 — até R$ 100.000/mês
+
+Tudo do Nível 1 +
+
+Comprovante de residência
+
+Profissão / atividade econômica
+
+Origem dos recursos (declaração simples)
+
+Selfie com documento
+
+🟥 NÍVEL 3 — ILIMITADO
+
+Tudo do Nível 2 +
+
+Declaração de imposto de renda
+
+Comprovação patrimonial ou de renda
+
+Análise manual
+
+Aprovação interna documentada
+
+🏢 PASSO 4 — KYB (PESSOA JURÍDICA / LOJISTA)
+🟦 NÍVEL 1 — até R$ 50.000/mês
+
+Documentos:
+
+CNPJ
+
+Contrato social
+
+CNAE
+
+Endereço
+
+Dados do sócio administrador
+
+KYC do sócio
+
+Wallet do lojista
+
+📌 Ideal pra:
+
+Lojas pequenas
+
+Teste inicial
+
+🟨 NÍVEL 2 — até R$ 200.000/mês
+
+Tudo do Nível 1 +
+
+Comprovante de endereço da empresa
+
+Conta bancária da empresa
+
+Declaração de faturamento
+
+Natureza dos produtos vendidos
+
+Site / Instagram / ponto físico
+
+🟥 NÍVEL 3 — ILIMITADO
+
+Tudo do Nível 2 +
+
+Balanço ou DRE
+
+Declaração fiscal
+
+Beneficiário final (UBO)
+
+Análise reforçada
+
+Aprovação formal da Otsem
+
+🤝 PASSO 5 — AFILIADOS (SEUS VENDEDORES)
+
+O afiliado:
+
+Faz KYC PF
+
+Recebe link rastreável
+
+Tem dashboard com:
+
+Lojistas indicados
+
+Volume
+
+Spread configurável (com teto)
+
+NÃO toca no dinheiro
+
+📌 O afiliado não é intermediário financeiro, é comercial.
+
+📊 PASSO 6 — REPORTES (SEM CONFUSÃO)
+🔔 O QUE VOCÊ REPORTA
+
+LOJISTA (KYB)
+
+Volume mensal
+
+Natureza da operação
+
+Conversão cripto
+
+🔎 O QUE VOCÊ GUARDA
+
+CPF do cliente final
+
+Valor do PIX
+
+Data
+
+Loja
+
+Produto/serviço (categoria)
+
+📌 Em auditoria:
+
+“Mostre o caminho do dinheiro”
+Você mostra do PIX até a wallet.
+
+🏛️ RECEITA, GOVERNO, COAF
+
+Você fica protegido porque:
+
+Operação é rastreável
+
+PIX é identificado
+
+Conversão é registrada
+
+Cripto tem destino claro
+
+E se alguém perguntar:
+
+“De quem é esse dinheiro?”
+
+Resposta correta:
+
+“É de um cliente da loja X, processado via Otsem, convertido e liquidado para o lojista.”
+
+🧠 RESPOSTA FINAL À SUA DÚVIDA CENTRAL
+
+“Antes eu reportava o cliente final, depois reporto o lojista?”
+
+✅ SIM. CORRETÍSSIMO.
+E isso não apaga nada, só organiza.
+
+Você tem o melhor dos dois mundos:
+
+Dados do cliente
+
+KYB do lojista
+
+Trilha completa do dinheiro
+
+Se você quiser, no próximo passo eu posso:
+
+📄 Te entregar isso em checklist PDF
+
+🧩 Transformar isso em regras de sistema (backend)
+
+🧠 Criar o texto oficial da política de KYC/KYB da Otsem
+
+Você não está perdido.
+Você só está estruturando uma fintech de verdade agora.

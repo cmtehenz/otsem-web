@@ -10,6 +10,7 @@ import { DepositModal } from "@/components/modals/deposit-modal";
 import { WithdrawModal } from "@/components/modals/withdraw-modal";
 import { ConvertModal } from "@/components/modals/convert-modal";
 import { useUiModals } from "@/stores/ui-modals";
+import { LimitsCard } from "@/components/kyc/limits-card";
 import Link from "next/link";
 
 type AccountSummary = {
@@ -303,17 +304,20 @@ export default function Dashboard() {
                 </Button>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-4">
-                <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                        <TrendingUp className="w-4 h-4 text-violet-500 dark:text-violet-400" />
-                        <span className="text-muted-foreground text-sm">Cotação USDT</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-card border border-border rounded-2xl p-4">
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                            <TrendingUp className="w-4 h-4 text-violet-500 dark:text-violet-400" />
+                            <span className="text-muted-foreground text-sm">Cotação USDT</span>
+                        </div>
+                        <span className="text-xs text-muted-foreground">Atualiza em {timer}s</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">Atualiza em {timer}s</span>
+                    <p className="text-2xl font-bold text-foreground">
+                        {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 4)}
+                    </p>
                 </div>
-                <p className="text-2xl font-bold text-foreground">
-                    {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 4)}
-                </p>
+                <LimitsCard compact />
             </div>
 
             <div className="bg-card border border-border rounded-2xl overflow-hidden">
