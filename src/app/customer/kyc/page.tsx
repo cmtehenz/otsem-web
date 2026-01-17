@@ -603,6 +603,16 @@ export default function CustomerKycPage(): React.JSX.Element {
                     requirements={upgradeTarget.requirements}
                     onSuccess={() => {
                         setUpgradeModalOpen(false);
+                        setUpgradeRequests(prev => [
+                            ...prev,
+                            {
+                                id: `local-${Date.now()}`,
+                                targetLevel: upgradeTarget.level,
+                                status: "PENDING",
+                                createdAt: new Date().toISOString(),
+                                updatedAt: new Date().toISOString(),
+                            }
+                        ]);
                     }}
                 />
             )}
