@@ -142,9 +142,10 @@ export function KycUpgradeModal({
                     {step === "upload" && (
                         <motion.div
                             key="upload"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.15 }}
                             className="space-y-5"
                         >
                             <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
@@ -254,9 +255,10 @@ export function KycUpgradeModal({
                     {step === "submitting" && (
                         <motion.div
                             key="submitting"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.15 }}
                             className="py-10 text-center"
                         >
                             <Loader2 className="w-12 h-12 text-primary mx-auto animate-spin mb-4" />
@@ -270,9 +272,10 @@ export function KycUpgradeModal({
                     {step === "success" && (
                         <motion.div
                             key="success"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.15 }}
                             className="py-10 text-center"
                         >
                             <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
