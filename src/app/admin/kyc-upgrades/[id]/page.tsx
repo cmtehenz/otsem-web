@@ -404,7 +404,7 @@ export default function KycUpgradeDetailPage() {
                             </DialogTitle>
                         </DialogHeader>
                         <div className="overflow-auto max-h-[70vh]">
-                            {previewUrl.includes(".pdf") ? (
+                            {previewUrl.toLowerCase().includes(".pdf") ? (
                                 <iframe
                                     src={previewUrl}
                                     className="w-full h-[70vh]"
@@ -415,6 +415,14 @@ export default function KycUpgradeDetailPage() {
                                     src={previewUrl}
                                     alt="Document"
                                     className="max-w-full mx-auto"
+                                    onError={(e) => {
+                                        const target = e.target as HTMLImageElement;
+                                        target.style.display = "none";
+                                        target.parentElement?.insertAdjacentHTML(
+                                            "beforeend",
+                                            `<div class="text-center py-8"><p class="text-muted-foreground">Não foi possível carregar a imagem.</p><a href="${previewUrl}" target="_blank" class="text-primary underline">Clique aqui para abrir</a></div>`
+                                        );
+                                    }}
                                 />
                             )}
                         </div>
