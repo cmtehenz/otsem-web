@@ -4,7 +4,24 @@
 
 OtsemPay is a digital banking platform built with Next.js 14 that provides comprehensive financial services including PIX payments, BRL/USDT cryptocurrency conversion, card payments, and KYC management. The application serves two user roles: customers who access banking features and administrators who manage the platform.
 
-## Recent Changes (Dec 2025)
+## Recent Changes (Jan 2026)
+
+- **KYC Upgrade Request System**: Complete workflow for customers to request KYC level upgrades:
+  - Customer modal (`KycUpgradeModal`) with document upload using presigned URLs
+  - Two-step upload flow: request presigned URL → upload directly to Object Storage
+  - Admin listing page at `/admin/kyc-upgrades` with stats cards (pending, approved, rejected)
+  - Admin detail page at `/admin/kyc-upgrades/[id]` with document viewing and approve/reject actions
+  - Sidebar menu: "Upgrades KYC" under Usuários & Carteiras
+  - API routes:
+    - `POST /api/uploads/request-url` - Generate presigned upload URL
+    - `POST /api/uploads/signed-url` - Generate signed viewing URL
+    - `POST /api/kyc-upgrade-requests` - Create upgrade request
+    - `GET /api/kyc-upgrade-requests?status=X` - List requests (admin)
+    - `GET /api/kyc-upgrade-requests/:id` - Get request details
+    - `POST /api/kyc-upgrade-requests/:id/approve` - Approve request
+    - `POST /api/kyc-upgrade-requests/:id/reject` - Reject request
+
+## Previous Changes (Dec 2025)
 
 - **Landing Page Light Theme**: Complete conversion to light theme with:
   - Background changed from dark (#0a0118) to light (#faf9fe)
