@@ -205,6 +205,7 @@ export default function CustomerKycPage(): React.JSX.Element {
     const [customerType, setCustomerType] = React.useState<"PF" | "PJ">("PF");
     const [kycLevel, setKycLevel] = React.useState<"LEVEL_1" | "LEVEL_2" | "LEVEL_3">("LEVEL_1");
     const [requestingUpgrade, setRequestingUpgrade] = React.useState<string | null>(null);
+    const [selectedTab, setSelectedTab] = React.useState<string>("LEVEL_1");
 
     const customerId = user?.customerId ?? null;
 
@@ -221,7 +222,9 @@ export default function CustomerKycPage(): React.JSX.Element {
                 setCustomerType(data.type || "PF");
                 
                 if (limitsRes?.data) {
-                    setKycLevel(limitsRes.data.kycLevel || "LEVEL_1");
+                    const level = limitsRes.data.kycLevel || "LEVEL_1";
+                    setKycLevel(level);
+                    setSelectedTab(level);
                     if (limitsRes.data.customerType) {
                         setCustomerType(limitsRes.data.customerType);
                     }
@@ -430,114 +433,180 @@ export default function CustomerKycPage(): React.JSX.Element {
                 )}
             </div>
 
-            {/* KYC Levels Section */}
-            <div className="space-y-4">
-                <div className="flex items-center gap-3">
+            {/* KYC Levels Section - Stepper Style */}
+            <div className="premium-card p-6">
+                <div className="flex items-center gap-3 mb-6">
                     <div className="p-2 rounded-xl bg-primary/10">
                         <TrendingUp className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                         <h2 className="text-lg font-bold text-foreground">Níveis de Verificação</h2>
                         <p className="text-sm text-muted-foreground">
-                            Aumente seu limite mensal evoluindo seu nível
+                            Evolua seu nível para aumentar seus limites
                         </p>
                     </div>
                 </div>
 
-                <div className="space-y-3">
+                {/* Progress Stepper Tabs */}
+                <div className="flex items-center justify-between mb-6 relative">
+                    {/* Progress Line Background */}
+                    <div className="absolute top-5 left-0 right-0 h-1 bg-muted-foreground/20 rounded-full mx-8" />
+                    
+                    {/* Progress Line Active */}
+                    <motion.div 
+                        className="absolute top-5 left-0 h-1 bg-gradient-to-r from-amber-500 via-blue-500 to-emerald-500 rounded-full mx-8"
+                        initial={{ width: "0%" }}
+                        animate={{ 
+                            width: kycLevel === "LEVEL_1" ? "0%" : kycLevel === "LEVEL_2" ? "50%" : "100%"
+                        }}
+                        transition={{ duration: 0.5 }}
+                    />
+
                     {KYC_LEVELS[customerType].map((level, index) => {
                         const LevelIcon = level.icon;
-                        const isCurrentLevel = level.level === kycLevel;
                         const levelNumber = parseInt(level.level.replace("LEVEL_", ""));
                         const currentNumber = parseInt(kycLevel.replace("LEVEL_", ""));
-                        const isLocked = levelNumber > currentNumber;
+                        const isCurrentLevel = level.level === kycLevel;
                         const isCompleted = levelNumber < currentNumber;
+                        const isLocked = levelNumber > currentNumber;
 
                         return (
-                            <motion.div
+                            <button
                                 key={level.level}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                                className={`premium-card p-5 relative overflow-hidden ${
-                                    isCurrentLevel ? "ring-2 ring-primary" : ""
+                                onClick={() => !isLocked && setSelectedTab(level.level)}
+                                disabled={isLocked}
+                                className={`relative z-10 flex flex-col items-center gap-2 transition-all ${
+                                    isLocked ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
                                 }`}
                             >
-                                {isCurrentLevel && (
-                                    <div className="absolute top-0 right-0 bg-primary text-white text-xs font-bold px-3 py-1 rounded-bl-xl">
-                                        Atual
-                                    </div>
-                                )}
-
-                                <div className="flex items-start gap-4">
-                                    <div className={`p-3 rounded-xl bg-gradient-to-br ${level.color} shadow-lg`}>
-                                        <LevelIcon className="h-6 w-6 text-white" />
-                                    </div>
-
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <h3 className="font-bold text-foreground">{level.name}</h3>
-                                            {isCompleted && (
-                                                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                                            )}
-                                        </div>
-                                        <p className={`text-lg font-black ${
-                                            level.level === "LEVEL_3" ? "text-emerald-600" : "text-primary"
-                                        }`}>
-                                            {level.limit}/mês
-                                        </p>
-
-                                        <div className="mt-3">
-                                            <p className="text-xs text-muted-foreground font-medium mb-2">Requisitos:</p>
-                                            <ul className="space-y-1">
-                                                {level.requirements.map((req, i) => (
-                                                    <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                                                        <div className={`w-1.5 h-1.5 rounded-full ${
-                                                            isCompleted || isCurrentLevel ? "bg-green-500" : "bg-muted-foreground/30"
-                                                        }`} />
-                                                        {req}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-
-                                        {isLocked && (
-                                            <Button
-                                                onClick={() => requestUpgrade(level.level)}
-                                                disabled={requestingUpgrade === level.level}
-                                                className={`mt-4 w-full bg-gradient-to-r ${level.color} hover:opacity-90 text-white font-semibold`}
-                                            >
-                                                {requestingUpgrade === level.level ? (
-                                                    <>
-                                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                        Solicitando...
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        Solicitar Upgrade
-                                                        <ArrowRight className="w-4 h-4 ml-2" />
-                                                    </>
-                                                )}
-                                            </Button>
-                                        )}
-
-                                        {isCurrentLevel && !isCompleted && (
-                                            <div className="mt-4 p-3 rounded-lg bg-primary/10 border border-primary/20">
-                                                <p className="text-sm text-primary font-medium">
-                                                    Este é seu nível atual. Complete os requisitos do próximo nível para aumentar seu limite.
-                                                </p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </motion.div>
+                                <motion.div
+                                    whileHover={!isLocked ? { scale: 1.1 } : {}}
+                                    whileTap={!isLocked ? { scale: 0.95 } : {}}
+                                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all ${
+                                        isCompleted
+                                            ? "bg-gradient-to-br from-green-500 to-emerald-600"
+                                            : isCurrentLevel
+                                            ? `bg-gradient-to-br ${level.color} ring-4 ring-white dark:ring-slate-800`
+                                            : "bg-muted-foreground/30"
+                                    }`}
+                                >
+                                    {isCompleted ? (
+                                        <CheckCircle2 className="w-5 h-5 text-white" />
+                                    ) : isLocked ? (
+                                        <span className="text-white/60 text-sm font-bold">{levelNumber}</span>
+                                    ) : (
+                                        <LevelIcon className="w-5 h-5 text-white" />
+                                    )}
+                                </motion.div>
+                                <span className={`text-xs font-bold ${
+                                    isCurrentLevel ? level.textColor : isCompleted ? "text-green-600" : "text-muted-foreground"
+                                }`}>
+                                    {level.name}
+                                </span>
+                                <span className={`text-[10px] ${
+                                    isCurrentLevel || isCompleted ? "text-foreground" : "text-muted-foreground/60"
+                                }`}>
+                                    {level.limit}
+                                </span>
+                            </button>
                         );
                     })}
                 </div>
 
-                <p className="text-xs text-muted-foreground text-center mt-4">
-                    Após solicitar upgrade, nossa equipe analisará seus documentos e entrará em contato.
-                </p>
+                {/* Selected Level Content */}
+                {KYC_LEVELS[customerType].map((level) => {
+                    const levelNumber = parseInt(level.level.replace("LEVEL_", ""));
+                    const currentNumber = parseInt(kycLevel.replace("LEVEL_", ""));
+                    const isCurrentLevel = level.level === kycLevel;
+                    const isCompleted = levelNumber < currentNumber;
+                    const isLocked = levelNumber > currentNumber;
+                    const isSelected = level.level === selectedTab;
+
+                    if (!isSelected) return null;
+
+                    return (
+                        <motion.div
+                            key={level.level}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className={`rounded-2xl p-5 border ${level.borderColor} ${level.bgColor}`}
+                        >
+                            <div className="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 className={`text-lg font-bold ${level.textColor}`}>{level.name}</h3>
+                                    <p className="text-2xl font-black text-foreground">{level.limit}/mês</p>
+                                </div>
+                                {isCurrentLevel && (
+                                    <span className="px-3 py-1 rounded-full bg-primary text-white text-xs font-bold">
+                                        Seu Nível
+                                    </span>
+                                )}
+                                {isCompleted && (
+                                    <span className="px-3 py-1 rounded-full bg-green-500 text-white text-xs font-bold flex items-center gap-1">
+                                        <CheckCircle2 className="w-3 h-3" />
+                                        Concluído
+                                    </span>
+                                )}
+                            </div>
+
+                            <div className="space-y-2 mb-4">
+                                <p className="text-sm font-medium text-foreground">Requisitos:</p>
+                                {level.requirements.map((req, i) => (
+                                    <div key={i} className="flex items-center gap-2">
+                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
+                                            isCompleted || isCurrentLevel 
+                                                ? "bg-green-500" 
+                                                : "bg-muted-foreground/20"
+                                        }`}>
+                                            {(isCompleted || isCurrentLevel) ? (
+                                                <CheckCircle2 className="w-3 h-3 text-white" />
+                                            ) : (
+                                                <span className="text-[10px] text-muted-foreground">{i + 1}</span>
+                                            )}
+                                        </div>
+                                        <span className={`text-sm ${
+                                            isCompleted || isCurrentLevel ? "text-foreground" : "text-muted-foreground"
+                                        }`}>
+                                            {req}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {isLocked && (
+                                <Button
+                                    onClick={() => requestUpgrade(level.level)}
+                                    disabled={requestingUpgrade === level.level}
+                                    className={`w-full bg-gradient-to-r ${level.color} hover:opacity-90 text-white font-semibold rounded-xl`}
+                                >
+                                    {requestingUpgrade === level.level ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                            Solicitando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            Solicitar Upgrade
+                                            <ArrowRight className="w-4 h-4 ml-2" />
+                                        </>
+                                    )}
+                                </Button>
+                            )}
+
+                            {isCurrentLevel && (
+                                <div className="text-center text-sm text-muted-foreground">
+                                    Complete os requisitos do próximo nível para aumentar seu limite
+                                </div>
+                            )}
+
+                            {isCompleted && (
+                                <div className="text-center text-sm text-green-600 font-medium">
+                                    Você já completou este nível!
+                                </div>
+                            )}
+                        </motion.div>
+                    );
+                })}
             </div>
         </div>
     );
