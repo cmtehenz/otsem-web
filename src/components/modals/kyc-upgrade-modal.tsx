@@ -130,7 +130,7 @@ export function KycUpgradeModal({
 
     return (
         <Dialog open={open} onOpenChange={handleClose}>
-            <DialogContent className="premium-card border-0 max-w-md">
+            <DialogContent className="bg-white dark:bg-[#1a1025] border border-white/70 dark:border-white/10 rounded-3xl max-w-md">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-bold text-foreground">
                         Solicitar Upgrade para {targetLevelName}
