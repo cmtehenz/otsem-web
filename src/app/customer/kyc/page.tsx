@@ -25,6 +25,7 @@ import {
     User,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { KycUpgradeModal } from "@/components/modals/kyc-upgrade-modal";
 
 interface CustomerResponse {
     id: string;
@@ -204,8 +205,14 @@ export default function CustomerKycPage(): React.JSX.Element {
     const [accountStatus, setAccountStatus] = React.useState<string>("not_requested");
     const [customerType, setCustomerType] = React.useState<"PF" | "PJ">("PF");
     const [kycLevel, setKycLevel] = React.useState<"LEVEL_1" | "LEVEL_2" | "LEVEL_3">("LEVEL_1");
-    const [requestingUpgrade, setRequestingUpgrade] = React.useState<string | null>(null);
     const [selectedTab, setSelectedTab] = React.useState<string>("LEVEL_1");
+    const [upgradeModalOpen, setUpgradeModalOpen] = React.useState(false);
+    const [upgradeTarget, setUpgradeTarget] = React.useState<{
+        level: string;
+        name: string;
+        limit: string;
+        requirements: string[];
+    } | null>(null);
 
     const customerId = user?.customerId ?? null;
 
@@ -240,22 +247,14 @@ export default function CustomerKycPage(): React.JSX.Element {
         if (user) void loadCustomer();
     }, [user]);
 
-    async function requestUpgrade(targetLevel: string) {
-        if (!customerId) return;
-        
-        try {
-            setRequestingUpgrade(targetLevel);
-            await http.post(`/customers/${customerId}/kyc/upgrade-request`, {
-                targetLevel,
-            });
-            toast.success("Solicitação de upgrade enviada! Nossa equipe entrará em contato.");
-        } catch (error: unknown) {
-            console.error(error);
-            const err = error as { response?: { data?: { message?: string } } };
-            toast.error(err?.response?.data?.message || "Erro ao solicitar upgrade");
-        } finally {
-            setRequestingUpgrade(null);
-        }
+    function openUpgradeModal(level: typeof KYC_LEVELS["PF"][0]) {
+        setUpgradeTarget({
+            level: level.level,
+            name: level.name,
+            limit: level.limit,
+            requirements: level.requirements,
+        });
+        setUpgradeModalOpen(true);
     }
 
     async function startVerification() {
@@ -508,21 +507,11 @@ export default function CustomerKycPage(): React.JSX.Element {
                                     </div>
 
                                     <Button
-                                        onClick={() => requestUpgrade(nextLevel.level)}
-                                        disabled={requestingUpgrade === nextLevel.level}
+                                        onClick={() => openUpgradeModal(nextLevel)}
                                         className={`mt-4 w-full bg-gradient-to-r ${nextLevel.color} hover:opacity-90 text-white font-semibold rounded-xl`}
                                     >
-                                        {requestingUpgrade === nextLevel.level ? (
-                                            <>
-                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                Solicitando...
-                                            </>
-                                        ) : (
-                                            <>
-                                                Solicitar Upgrade para {nextLevel.name}
-                                                <ArrowRight className="w-4 h-4 ml-2" />
-                                            </>
-                                        )}
+                                        Solicitar Upgrade para {nextLevel.name}
+                                        <ArrowRight className="w-4 h-4 ml-2" />
                                     </Button>
                                 </div>
                             </div>
@@ -539,6 +528,21 @@ export default function CustomerKycPage(): React.JSX.Element {
                     </div>
                 )}
             </div>
+
+            {/* Upgrade Modal */}
+            {upgradeTarget && (
+                <KycUpgradeModal
+                    open={upgradeModalOpen}
+                    onClose={() => setUpgradeModalOpen(false)}
+                    targetLevel={upgradeTarget.level}
+                    targetLevelName={upgradeTarget.name}
+                    targetLimit={upgradeTarget.limit}
+                    requirements={upgradeTarget.requirements}
+                    onSuccess={() => {
+                        setUpgradeModalOpen(false);
+                    }}
+                />
+            )}
         </div>
     );
 }

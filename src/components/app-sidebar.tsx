@@ -16,6 +16,7 @@ import {
   Wallet,
   UserPlus,
   ArrowRightLeft,
+  ArrowUpCircle,
 } from "lucide-react";
 
 import {
@@ -61,6 +62,7 @@ const nav: Item[] = [
       { title: "Usuários", url: "/admin/users", icon: Users },
       { title: "Carteiras USDT", url: "/admin/wallets", icon: Wallet },
       { title: "Afiliados", url: "/admin/affiliates", icon: UserPlus },
+      { title: "Upgrades KYC", url: "/admin/kyc-upgrades", icon: ArrowUpCircle },
     ],
   },
   {
