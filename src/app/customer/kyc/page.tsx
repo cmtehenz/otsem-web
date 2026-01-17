@@ -17,7 +17,14 @@ import {
     ExternalLink,
     RefreshCw,
     Fingerprint,
+    TrendingUp,
+    Crown,
+    Star,
+    ArrowRight,
+    Building2,
+    User,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface CustomerResponse {
     id: string;
@@ -27,6 +34,88 @@ interface CustomerResponse {
     email: string;
     createdAt: string;
 }
+
+interface LimitsResponse {
+    kycLevel: "LEVEL_1" | "LEVEL_2" | "LEVEL_3";
+    customerType: "PF" | "PJ";
+    monthlyLimit: number;
+    usedThisMonth: number;
+    remainingLimit: number;
+    resetDate: string;
+}
+
+const KYC_LEVELS = {
+    PF: [
+        {
+            level: "LEVEL_1",
+            name: "Nível 1",
+            limit: "R$ 30.000",
+            icon: User,
+            color: "from-amber-500 to-orange-500",
+            bgColor: "bg-amber-50",
+            borderColor: "border-amber-200",
+            textColor: "text-amber-700",
+            requirements: ["Verificação de identidade básica", "Documento com foto (RG ou CNH)", "Selfie de confirmação"],
+        },
+        {
+            level: "LEVEL_2",
+            name: "Nível 2",
+            limit: "R$ 100.000",
+            icon: Star,
+            color: "from-blue-500 to-indigo-500",
+            bgColor: "bg-blue-50",
+            borderColor: "border-blue-200",
+            textColor: "text-blue-700",
+            requirements: ["Comprovante de residência", "Comprovante de renda", "Análise manual"],
+        },
+        {
+            level: "LEVEL_3",
+            name: "Nível 3",
+            limit: "Ilimitado",
+            icon: Crown,
+            color: "from-emerald-500 to-teal-500",
+            bgColor: "bg-emerald-50",
+            borderColor: "border-emerald-200",
+            textColor: "text-emerald-700",
+            requirements: ["Declaração de IR", "Análise patrimonial", "Aprovação especial"],
+        },
+    ],
+    PJ: [
+        {
+            level: "LEVEL_1",
+            name: "Nível 1",
+            limit: "R$ 50.000",
+            icon: Building2,
+            color: "from-amber-500 to-orange-500",
+            bgColor: "bg-amber-50",
+            borderColor: "border-amber-200",
+            textColor: "text-amber-700",
+            requirements: ["CNPJ ativo", "Contrato social", "Documentos dos sócios"],
+        },
+        {
+            level: "LEVEL_2",
+            name: "Nível 2",
+            limit: "R$ 200.000",
+            icon: Star,
+            color: "from-blue-500 to-indigo-500",
+            bgColor: "bg-blue-50",
+            borderColor: "border-blue-200",
+            textColor: "text-blue-700",
+            requirements: ["Balanço patrimonial", "DRE dos últimos 12 meses", "Análise de crédito"],
+        },
+        {
+            level: "LEVEL_3",
+            name: "Nível 3",
+            limit: "Ilimitado",
+            icon: Crown,
+            color: "from-emerald-500 to-teal-500",
+            bgColor: "bg-emerald-50",
+            borderColor: "border-emerald-200",
+            textColor: "text-emerald-700",
+            requirements: ["Auditoria financeira", "Faturamento comprovado", "Aprovação especial"],
+        },
+    ],
+};
 
 type _AccountStatus = "not_requested" | "requested" | "in_review" | "approved" | "rejected" | "pending" | "completed";
 
@@ -113,6 +202,9 @@ export default function CustomerKycPage(): React.JSX.Element {
     const [startingVerification, setStartingVerification] = React.useState(false);
     const [refreshing, setRefreshing] = React.useState(false);
     const [accountStatus, setAccountStatus] = React.useState<string>("not_requested");
+    const [customerType, setCustomerType] = React.useState<"PF" | "PJ">("PF");
+    const [kycLevel, setKycLevel] = React.useState<"LEVEL_1" | "LEVEL_2" | "LEVEL_3">("LEVEL_1");
+    const [requestingUpgrade, setRequestingUpgrade] = React.useState<string | null>(null);
 
     const customerId = user?.customerId ?? null;
 
@@ -120,9 +212,20 @@ export default function CustomerKycPage(): React.JSX.Element {
         async function loadCustomer() {
             try {
                 setLoading(true);
-                const response = await http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me");
-                const data = "data" in response.data ? response.data.data : response.data;
+                const [customerRes, limitsRes] = await Promise.all([
+                    http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me"),
+                    http.get<LimitsResponse>("/customers/me/limits").catch(() => null),
+                ]);
+                const data = "data" in customerRes.data ? customerRes.data.data : customerRes.data;
                 setAccountStatus(data.accountStatus);
+                setCustomerType(data.type || "PF");
+                
+                if (limitsRes?.data) {
+                    setKycLevel(limitsRes.data.kycLevel || "LEVEL_1");
+                    if (limitsRes.data.customerType) {
+                        setCustomerType(limitsRes.data.customerType);
+                    }
+                }
             } catch (err) {
                 console.error(err);
                 toast.error("Não foi possível carregar os dados.");
@@ -133,6 +236,24 @@ export default function CustomerKycPage(): React.JSX.Element {
 
         if (user) void loadCustomer();
     }, [user]);
+
+    async function requestUpgrade(targetLevel: string) {
+        if (!customerId) return;
+        
+        try {
+            setRequestingUpgrade(targetLevel);
+            await http.post(`/customers/${customerId}/kyc/upgrade-request`, {
+                targetLevel,
+            });
+            toast.success("Solicitação de upgrade enviada! Nossa equipe entrará em contato.");
+        } catch (error: unknown) {
+            console.error(error);
+            const err = error as { response?: { data?: { message?: string } } };
+            toast.error(err?.response?.data?.message || "Erro ao solicitar upgrade");
+        } finally {
+            setRequestingUpgrade(null);
+        }
+    }
 
     async function startVerification() {
         if (!customerId) return;
@@ -307,6 +428,116 @@ export default function CustomerKycPage(): React.JSX.Element {
                         </p>
                     </div>
                 )}
+            </div>
+
+            {/* KYC Levels Section */}
+            <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-primary/10">
+                        <TrendingUp className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                        <h2 className="text-lg font-bold text-foreground">Níveis de Verificação</h2>
+                        <p className="text-sm text-muted-foreground">
+                            Aumente seu limite mensal evoluindo seu nível
+                        </p>
+                    </div>
+                </div>
+
+                <div className="space-y-3">
+                    {KYC_LEVELS[customerType].map((level, index) => {
+                        const LevelIcon = level.icon;
+                        const isCurrentLevel = level.level === kycLevel;
+                        const levelNumber = parseInt(level.level.replace("LEVEL_", ""));
+                        const currentNumber = parseInt(kycLevel.replace("LEVEL_", ""));
+                        const isLocked = levelNumber > currentNumber;
+                        const isCompleted = levelNumber < currentNumber;
+
+                        return (
+                            <motion.div
+                                key={level.level}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                                className={`premium-card p-5 relative overflow-hidden ${
+                                    isCurrentLevel ? "ring-2 ring-primary" : ""
+                                }`}
+                            >
+                                {isCurrentLevel && (
+                                    <div className="absolute top-0 right-0 bg-primary text-white text-xs font-bold px-3 py-1 rounded-bl-xl">
+                                        Atual
+                                    </div>
+                                )}
+
+                                <div className="flex items-start gap-4">
+                                    <div className={`p-3 rounded-xl bg-gradient-to-br ${level.color} shadow-lg`}>
+                                        <LevelIcon className="h-6 w-6 text-white" />
+                                    </div>
+
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <h3 className="font-bold text-foreground">{level.name}</h3>
+                                            {isCompleted && (
+                                                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                            )}
+                                        </div>
+                                        <p className={`text-lg font-black ${
+                                            level.level === "LEVEL_3" ? "text-emerald-600" : "text-primary"
+                                        }`}>
+                                            {level.limit}/mês
+                                        </p>
+
+                                        <div className="mt-3">
+                                            <p className="text-xs text-muted-foreground font-medium mb-2">Requisitos:</p>
+                                            <ul className="space-y-1">
+                                                {level.requirements.map((req, i) => (
+                                                    <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                        <div className={`w-1.5 h-1.5 rounded-full ${
+                                                            isCompleted || isCurrentLevel ? "bg-green-500" : "bg-muted-foreground/30"
+                                                        }`} />
+                                                        {req}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        {isLocked && (
+                                            <Button
+                                                onClick={() => requestUpgrade(level.level)}
+                                                disabled={requestingUpgrade === level.level}
+                                                className={`mt-4 w-full bg-gradient-to-r ${level.color} hover:opacity-90 text-white font-semibold`}
+                                            >
+                                                {requestingUpgrade === level.level ? (
+                                                    <>
+                                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                        Solicitando...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        Solicitar Upgrade
+                                                        <ArrowRight className="w-4 h-4 ml-2" />
+                                                    </>
+                                                )}
+                                            </Button>
+                                        )}
+
+                                        {isCurrentLevel && !isCompleted && (
+                                            <div className="mt-4 p-3 rounded-lg bg-primary/10 border border-primary/20">
+                                                <p className="text-sm text-primary font-medium">
+                                                    Este é seu nível atual. Complete os requisitos do próximo nível para aumentar seu limite.
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        );
+                    })}
+                </div>
+
+                <p className="text-xs text-muted-foreground text-center mt-4">
+                    Após solicitar upgrade, nossa equipe analisará seus documentos e entrará em contato.
+                </p>
             </div>
         </div>
     );
