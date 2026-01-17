@@ -539,6 +539,9 @@ export default function CustomerKycPage(): React.JSX.Element {
                     
                     if (!nextLevel) return null;
                     const NextIcon = nextLevel.icon;
+                    const hasPendingRequest = upgradeRequests.some(
+                        r => r.status === "PENDING" && r.targetLevel === nextLevel.level
+                    );
 
                     return (
                         <motion.div
@@ -569,13 +572,25 @@ export default function CustomerKycPage(): React.JSX.Element {
                                         ))}
                                     </div>
 
-                                    <Button
-                                        onClick={() => openUpgradeModal(nextLevel)}
-                                        className={`mt-4 w-full bg-gradient-to-r ${nextLevel.color} hover:opacity-90 text-white font-semibold rounded-xl`}
-                                    >
-                                        Solicitar Upgrade para {nextLevel.name}
-                                        <ArrowRight className="w-4 h-4 ml-2" />
-                                    </Button>
+                                    {hasPendingRequest ? (
+                                        <div className="mt-4 p-3 rounded-xl bg-amber-100 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700">
+                                            <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
+                                                <Clock className="w-4 h-4" />
+                                                <span className="text-sm font-medium">Solicitação em análise</span>
+                                            </div>
+                                            <p className="text-xs text-amber-600 dark:text-amber-500 mt-1">
+                                                A análise leva até 24 horas úteis. Você será notificado quando houver uma resposta.
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <Button
+                                            onClick={() => openUpgradeModal(nextLevel)}
+                                            className={`mt-4 w-full bg-gradient-to-r ${nextLevel.color} hover:opacity-90 text-white font-semibold rounded-xl`}
+                                        >
+                                            Solicitar Upgrade para {nextLevel.name}
+                                            <ArrowRight className="w-4 h-4 ml-2" />
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
