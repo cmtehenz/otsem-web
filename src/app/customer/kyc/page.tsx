@@ -325,93 +325,43 @@ export default function CustomerKycPage(): React.JSX.Element {
             <div className="text-center">
                 <h1 className="text-2xl font-bold text-foreground">Verificação de Identidade</h1>
                 <p className="text-muted-foreground text-sm mt-1">
-                    Verifique sua identidade para ativar sua conta
+                    Verifique sua identidade e aumente seus limites
                 </p>
             </div>
 
             <LimitsCard showUpgradeLink={false} />
 
-            <div className="premium-card p-8">
-                <div className={`p-6 rounded-xl border ${statusInfo.borderColor} ${statusInfo.bgColor} mb-6`}>
-                    <div className="flex flex-col items-center text-center gap-4">
-                        <div className={`p-4 rounded-full ${statusInfo.bgColor}`}>
-                            <StatusIcon className={`w-12 h-12 ${statusInfo.color}`} />
-                        </div>
-                        <div>
-                            <h3 className={`text-xl font-semibold ${statusInfo.color}`}>
-                                {statusInfo.title}
-                            </h3>
-                            <p className="text-white/60 mt-2 text-sm">{statusInfo.description}</p>
-                        </div>
+            {/* Card Único Integrado */}
+            <div className="premium-card p-6">
+                {/* Header com Status */}
+                <div className={`flex items-center gap-4 p-4 rounded-xl border ${statusInfo.borderColor} ${statusInfo.bgColor} mb-6`}>
+                    <div className={`p-3 rounded-full ${statusInfo.bgColor}`}>
+                        <StatusIcon className={`w-8 h-8 ${statusInfo.color}`} />
                     </div>
-                </div>
-
-                {isApproved && (
-                    <div className="text-center">
-                        <CheckCircle2 className="w-16 h-16 text-green-400 mx-auto mb-4" />
-                        <p className="text-white font-medium mb-2">Tudo certo!</p>
-                        <p className="text-white/60 text-sm mb-6">
-                            Sua conta está verificada e você tem acesso completo.
-                        </p>
-                        <Button
-                            onClick={() => router.push("/customer/dashboard")}
-                            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold w-full"
-                        >
-                            Ir para Dashboard
-                        </Button>
+                    <div className="flex-1">
+                        <h3 className={`font-bold ${statusInfo.color}`}>{statusInfo.title}</h3>
+                        <p className="text-muted-foreground text-sm">{statusInfo.description}</p>
                     </div>
-                )}
-
-                {isInReview && (
-                    <div className="text-center space-y-4">
-                        <Loader2 className="w-12 h-12 text-blue-400 mx-auto animate-spin" />
-                        <p className="text-white/60 text-sm">
-                            Aguarde enquanto processamos sua verificação.
-                        </p>
+                    {isInReview && (
                         <Button
-                            variant="outline"
+                            variant="ghost"
+                            size="sm"
                             onClick={refreshStatus}
                             disabled={refreshing}
-                            className="border-white/20 text-white hover:bg-white/10"
+                            className="text-muted-foreground"
                         >
-                            {refreshing ? (
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            ) : (
-                                <RefreshCw className="w-4 h-4 mr-2" />
-                            )}
-                            Atualizar Status
+                            {refreshing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                         </Button>
-                    </div>
-                )}
+                    )}
+                </div>
 
+                {/* Ação de Verificação se necessário */}
                 {needsVerification && (
-                    <div className="space-y-6">
-                        <div className="bg-white/5 rounded-xl p-4 space-y-3">
-                            <h4 className="text-white font-medium">Como funciona:</h4>
-                            <ul className="text-white/60 text-sm space-y-2">
-                                <li className="flex items-start gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">1</span>
-                                    Clique no botão abaixo para iniciar
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">2</span>
-                                    Tire uma foto do seu documento (RG ou CNH)
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">3</span>
-                                    Tire uma selfie para confirmar sua identidade
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">4</span>
-                                    Aguarde a aprovação automática
-                                </li>
-                            </ul>
-                        </div>
-
+                    <div className="mb-6">
                         <Button
                             onClick={startVerification}
                             disabled={startingVerification}
-                            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold w-full h-12"
+                            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold w-full h-12 rounded-xl"
                         >
                             {startingVerification ? (
                                 <>
@@ -421,48 +371,31 @@ export default function CustomerKycPage(): React.JSX.Element {
                             ) : (
                                 <>
                                     <ExternalLink className="w-5 h-5 mr-2" />
-                                    Iniciar Verificação
+                                    Iniciar Verificação de Identidade
                                 </>
                             )}
                         </Button>
-
-                        <p className="text-white/40 text-xs text-center">
-                            A verificação será feita em uma nova aba. Após concluir, volte aqui e atualize o status.
-                        </p>
                     </div>
                 )}
-            </div>
 
-            {/* KYC Levels Section - Stepper Style */}
-            <div className="premium-card p-6">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-primary/10">
-                        <TrendingUp className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                        <h2 className="text-lg font-bold text-foreground">Níveis de Verificação</h2>
-                        <p className="text-sm text-muted-foreground">
-                            Evolua seu nível para aumentar seus limites
-                        </p>
-                    </div>
-                </div>
+                {/* Progress Stepper */}
+                <div className="mb-6">
+                    <div className="flex items-center justify-between relative">
+                        {/* Progress Line Background */}
+                        <div className="absolute top-5 left-0 right-0 h-1 bg-muted-foreground/20 rounded-full mx-10" />
+                        
+                        {/* Progress Line Active */}
+                        <motion.div 
+                            className="absolute top-5 left-0 h-1 bg-gradient-to-r from-amber-500 via-blue-500 to-emerald-500 rounded-full mx-10"
+                            style={{ maxWidth: "calc(100% - 80px)" }}
+                            initial={{ width: "0%" }}
+                            animate={{ 
+                                width: kycLevel === "LEVEL_1" ? "0%" : kycLevel === "LEVEL_2" ? "50%" : "100%"
+                            }}
+                            transition={{ duration: 0.5 }}
+                        />
 
-                {/* Progress Stepper Tabs */}
-                <div className="flex items-center justify-between mb-6 relative">
-                    {/* Progress Line Background */}
-                    <div className="absolute top-5 left-0 right-0 h-1 bg-muted-foreground/20 rounded-full mx-8" />
-                    
-                    {/* Progress Line Active */}
-                    <motion.div 
-                        className="absolute top-5 left-0 h-1 bg-gradient-to-r from-amber-500 via-blue-500 to-emerald-500 rounded-full mx-8"
-                        initial={{ width: "0%" }}
-                        animate={{ 
-                            width: kycLevel === "LEVEL_1" ? "0%" : kycLevel === "LEVEL_2" ? "50%" : "100%"
-                        }}
-                        transition={{ duration: 0.5 }}
-                    />
-
-                    {KYC_LEVELS[customerType].map((level, index) => {
+                        {KYC_LEVELS[customerType].map((level, index) => {
                         const LevelIcon = level.icon;
                         const levelNumber = parseInt(level.level.replace("LEVEL_", ""));
                         const currentNumber = parseInt(kycLevel.replace("LEVEL_", ""));
@@ -511,6 +444,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                             </button>
                         );
                     })}
+                    </div>
                 </div>
 
                 {/* Selected Level Content */}
