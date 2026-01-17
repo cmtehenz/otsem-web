@@ -1,0 +1,11 @@
+react-dom-client.development.js:25631 Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+script.debug.js:1 [Vercel Web Analytics] Debug mode is enabled by default in development. No requests will be sent to the server.
+script.debug.js:1 [Vercel Web Analytics] Running queued event pageview Object
+script.debug.js:1 [Vercel Web Analytics] [pageview] https://0a982c3a-3382-4b9c-bea3-d0188fd5863f-00-2xden0cue9y8d.riker.replit.dev/customer/kyc Object
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+index.mjs:477 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+DescriptionWarning.useEffect @ index.mjs:477
+api.otsembank.com/customers/kyc-upgrade-requests:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+intercept-console-error.js:57 Submit error: AxiosErrorcode: "ERR_BAD_RESPONSE"config: {transitional: {…}, adapter: Array(3), transformRequest: Array(1), transformResponse: Array(1), timeout: 30000, …}message: "Request failed with status code 500"name: "AxiosError"request: XMLHttpRequest {onreadystatechange: null, readyState: 4, timeout: 30000, withCredentials: false, upload: XMLHttpRequestUpload, …}response: {data: {…}, status: 500, statusText: 'Internal Server Error', headers: AxiosHeaders, config: {…}, …}status: 500Symbol(next.console.error.digest): "NEXT_CONSOLE_ERROR"stack: "AxiosError: Request failed with status code 500\n    at settle (webpack-internal:///(app-pages-browser)/./node_modules/axios/lib/core/settle.js:24:12)\n    at XMLHttpRequest.onloadend (webpack-internal:///(app-pages-browser)/./node_modules/axios/lib/adapters/xhr.js:73:66)\n    at Axios.request (webpack-internal:///(app-pages-browser)/./node_modules/axios/lib/core/Axios.js:57:41)\n    at async handleSubmit (webpack-internal:///(app-pages-browser)/./src/components/modals/kyc-upgrade-modal.tsx:72:13)"[[Prototype]]: Error
+error @ intercept-console-error.js:57
