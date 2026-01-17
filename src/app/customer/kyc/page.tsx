@@ -236,7 +236,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                 const [customerRes, limitsRes, upgradeRes] = await Promise.all([
                     http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me"),
                     http.get<LimitsResponse>("/customers/me/limits").catch(() => null),
-                    http.get<{ data: UpgradeRequest[] } | UpgradeRequest[]>("/customers/kyc-upgrade-requests").catch((err) => {
+                    http.get<{ data: UpgradeRequest[] } | UpgradeRequest[]>("/customers/me/kyc-upgrade-requests").catch((err) => {
                         console.log("Erro ao buscar upgrade requests:", err?.response?.status);
                         return null;
                     }),
