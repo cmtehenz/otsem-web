@@ -37,7 +37,7 @@ interface UpgradeRequest {
     currentLevel: string;
     targetLevel: string;
     status: "PENDING" | "APPROVED" | "REJECTED";
-    documents: Array<{ name: string; objectPath: string }>;
+    documents: Array<{ name: string; url: string }>;
     adminNotes?: string;
     reviewedBy?: string;
     reviewedAt?: string;
@@ -86,7 +86,7 @@ export default function KycUpgradeDetailPage() {
         try {
             setLoading(true);
             const res = await http.get<{ data: UpgradeRequest }>(
-                `/api/kyc-upgrade-requests/${requestId}`
+                `/admin/kyc-upgrade-requests/${requestId}`
             );
             setRequest(res.data.data || res.data);
         } catch (error) {
@@ -105,7 +105,7 @@ export default function KycUpgradeDetailPage() {
     async function handleApprove() {
         try {
             setApproving(true);
-            await http.post(`/api/kyc-upgrade-requests/${requestId}/approve`);
+            await http.post(`/admin/kyc-upgrade-requests/${requestId}/approve`);
             toast.success("Solicitação aprovada com sucesso!");
             router.push("/admin/kyc-upgrades");
         } catch (error) {
@@ -124,7 +124,7 @@ export default function KycUpgradeDetailPage() {
 
         try {
             setRejecting(true);
-            await http.post(`/api/kyc-upgrade-requests/${requestId}/reject`, {
+            await http.post(`/admin/kyc-upgrade-requests/${requestId}/reject`, {
                 reason: rejectReason,
             });
             toast.success("Solicitação rejeitada");
@@ -138,17 +138,8 @@ export default function KycUpgradeDetailPage() {
         }
     }
 
-    async function viewDocument(objectPath: string) {
-        try {
-            const res = await http.post<{ url: string }>("/api/uploads/signed-url", {
-                objectPath,
-                method: "GET",
-            });
-            setPreviewUrl(res.data.url);
-        } catch (error) {
-            console.error(error);
-            toast.error("Erro ao carregar documento");
-        }
+    async function viewDocument(documentUrl: string) {
+        setPreviewUrl(documentUrl);
     }
 
     if (loading) {
@@ -292,13 +283,13 @@ export default function KycUpgradeDetailPage() {
                                         </div>
                                         <div>
                                             <p className="font-medium text-foreground">{doc.name}</p>
-                                            <p className="text-xs text-muted-foreground">{doc.objectPath}</p>
+                                            <p className="text-xs text-muted-foreground truncate max-w-[200px]">{doc.name}</p>
                                         </div>
                                     </div>
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => viewDocument(doc.objectPath)}
+                                        onClick={() => viewDocument(doc.url)}
                                     >
                                         <Eye className="w-4 h-4 mr-2" />
                                         Visualizar

@@ -33,7 +33,7 @@ interface UpgradeRequest {
     currentLevel: string;
     targetLevel: string;
     status: "PENDING" | "APPROVED" | "REJECTED";
-    documents: Array<{ name: string; objectPath: string }>;
+    documents: Array<{ name: string; url: string }>;
     createdAt: string;
     updatedAt: string;
 }
@@ -73,7 +73,7 @@ export default function KycUpgradesPage() {
         try {
             setLoading(true);
             const res = await http.get<{ data: UpgradeRequest[] }>(
-                `/api/kyc-upgrade-requests?status=${activeTab}`
+                `/admin/kyc-upgrade-requests?status=${activeTab}`
             );
             setRequests(res.data.data || []);
         } catch (error) {
