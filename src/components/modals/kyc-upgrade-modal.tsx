@@ -54,13 +54,21 @@ export function KycUpgradeModal({
 
         try {
             for (const file of Array.from(files)) {
-                const res = await http.post<{ uploadURL: string; objectPath: string }>("/api/uploads/request-url", {
-                    name: file.name,
-                    size: file.size,
-                    contentType: file.type || "application/octet-stream",
+                const res = await fetch("/api/uploads/request-url", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name: file.name,
+                        size: file.size,
+                        contentType: file.type || "application/octet-stream",
+                    }),
                 });
 
-                const { uploadURL, objectPath } = res.data;
+                if (!res.ok) {
+                    throw new Error("Erro ao obter URL de upload");
+                }
+
+                const { uploadURL, objectPath } = await res.json();
 
                 await fetch(uploadURL, {
                     method: "PUT",
