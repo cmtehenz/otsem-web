@@ -447,100 +447,97 @@ export default function CustomerKycPage(): React.JSX.Element {
                     </div>
                 </div>
 
-                {/* Selected Level Content */}
-                {KYC_LEVELS[customerType].map((level) => {
-                    const levelNumber = parseInt(level.level.replace("LEVEL_", ""));
-                    const currentNumber = parseInt(kycLevel.replace("LEVEL_", ""));
-                    const isCurrentLevel = level.level === kycLevel;
-                    const isCompleted = levelNumber < currentNumber;
-                    const isLocked = levelNumber > currentNumber;
-                    const isSelected = level.level === selectedTab;
+                {/* Current Level Info */}
+                {(() => {
+                    const currentLevelData = KYC_LEVELS[customerType].find(l => l.level === kycLevel);
+                    if (!currentLevelData) return null;
+                    
+                    return (
+                        <div className={`rounded-2xl p-4 border ${currentLevelData.borderColor} ${currentLevelData.bgColor}`}>
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-xs text-muted-foreground">Seu nível atual</p>
+                                    <p className={`text-lg font-bold ${currentLevelData.textColor}`}>{currentLevelData.name}</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-xs text-muted-foreground">Limite mensal</p>
+                                    <p className="text-lg font-black text-foreground">{currentLevelData.limit}</p>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })()}
 
-                    if (!isSelected) return null;
+                {/* Next Level Upgrade Card */}
+                {kycLevel !== "LEVEL_3" && (() => {
+                    const currentNumber = parseInt(kycLevel.replace("LEVEL_", ""));
+                    const nextLevel = KYC_LEVELS[customerType].find(l => 
+                        parseInt(l.level.replace("LEVEL_", "")) === currentNumber + 1
+                    );
+                    
+                    if (!nextLevel) return null;
+                    const NextIcon = nextLevel.icon;
 
                     return (
                         <motion.div
-                            key={level.level}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className={`rounded-2xl p-5 border ${level.borderColor} ${level.bgColor}`}
+                            className="rounded-2xl p-5 border-2 border-dashed border-primary/30 bg-primary/5"
                         >
-                            <div className="flex items-center justify-between mb-4">
-                                <div>
-                                    <h3 className={`text-lg font-bold ${level.textColor}`}>{level.name}</h3>
-                                    <p className="text-2xl font-black text-foreground">{level.limit}/mês</p>
+                            <div className="flex items-start gap-4">
+                                <div className={`p-3 rounded-xl bg-gradient-to-br ${nextLevel.color} shadow-lg`}>
+                                    <NextIcon className="h-6 w-6 text-white" />
                                 </div>
-                                {isCurrentLevel && (
-                                    <span className="px-3 py-1 rounded-full bg-primary text-white text-xs font-bold">
-                                        Seu Nível
-                                    </span>
-                                )}
-                                {isCompleted && (
-                                    <span className="px-3 py-1 rounded-full bg-green-500 text-white text-xs font-bold flex items-center gap-1">
-                                        <CheckCircle2 className="w-3 h-3" />
-                                        Concluído
-                                    </span>
-                                )}
-                            </div>
-
-                            <div className="space-y-2 mb-4">
-                                <p className="text-sm font-medium text-foreground">Requisitos:</p>
-                                {level.requirements.map((req, i) => (
-                                    <div key={i} className="flex items-center gap-2">
-                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                                            isCompleted || isCurrentLevel 
-                                                ? "bg-green-500" 
-                                                : "bg-muted-foreground/20"
-                                        }`}>
-                                            {(isCompleted || isCurrentLevel) ? (
-                                                <CheckCircle2 className="w-3 h-3 text-white" />
-                                            ) : (
-                                                <span className="text-[10px] text-muted-foreground">{i + 1}</span>
-                                            )}
-                                        </div>
-                                        <span className={`text-sm ${
-                                            isCompleted || isCurrentLevel ? "text-foreground" : "text-muted-foreground"
-                                        }`}>
-                                            {req}
-                                        </span>
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <h3 className="font-bold text-foreground">Evoluir para {nextLevel.name}</h3>
+                                        <ArrowRight className="w-4 h-4 text-primary" />
                                     </div>
-                                ))}
+                                    <p className={`text-xl font-black ${nextLevel.textColor}`}>
+                                        {nextLevel.limit}/mês
+                                    </p>
+
+                                    <div className="mt-3 space-y-1.5">
+                                        <p className="text-xs text-muted-foreground font-medium">Documentos necessários:</p>
+                                        {nextLevel.requirements.map((req, i) => (
+                                            <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                                {req}
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <Button
+                                        onClick={() => requestUpgrade(nextLevel.level)}
+                                        disabled={requestingUpgrade === nextLevel.level}
+                                        className={`mt-4 w-full bg-gradient-to-r ${nextLevel.color} hover:opacity-90 text-white font-semibold rounded-xl`}
+                                    >
+                                        {requestingUpgrade === nextLevel.level ? (
+                                            <>
+                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                Solicitando...
+                                            </>
+                                        ) : (
+                                            <>
+                                                Solicitar Upgrade para {nextLevel.name}
+                                                <ArrowRight className="w-4 h-4 ml-2" />
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
                             </div>
-
-                            {isLocked && (
-                                <Button
-                                    onClick={() => requestUpgrade(level.level)}
-                                    disabled={requestingUpgrade === level.level}
-                                    className={`w-full bg-gradient-to-r ${level.color} hover:opacity-90 text-white font-semibold rounded-xl`}
-                                >
-                                    {requestingUpgrade === level.level ? (
-                                        <>
-                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                            Solicitando...
-                                        </>
-                                    ) : (
-                                        <>
-                                            Solicitar Upgrade
-                                            <ArrowRight className="w-4 h-4 ml-2" />
-                                        </>
-                                    )}
-                                </Button>
-                            )}
-
-                            {isCurrentLevel && (
-                                <div className="text-center text-sm text-muted-foreground">
-                                    Complete os requisitos do próximo nível para aumentar seu limite
-                                </div>
-                            )}
-
-                            {isCompleted && (
-                                <div className="text-center text-sm text-green-600 font-medium">
-                                    Você já completou este nível!
-                                </div>
-                            )}
                         </motion.div>
                     );
-                })}
+                })()}
+
+                {/* Max Level Reached */}
+                {kycLevel === "LEVEL_3" && (
+                    <div className="rounded-2xl p-5 border border-emerald-200 bg-emerald-50 text-center">
+                        <Crown className="w-10 h-10 text-emerald-600 mx-auto mb-2" />
+                        <p className="text-lg font-bold text-emerald-700">Nível Máximo Atingido!</p>
+                        <p className="text-sm text-emerald-600">Você tem acesso ilimitado à plataforma.</p>
+                    </div>
+                )}
             </div>
         </div>
     );
