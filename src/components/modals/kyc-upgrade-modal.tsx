@@ -17,9 +17,9 @@ interface KycUpgradeModalProps {
     onSuccess: () => void;
 }
 
-interface UploadedFile {
+interface SelectedFile {
+    file: File;
     name: string;
-    objectPath: string;
     size: number;
 }
 
@@ -33,76 +33,42 @@ export function KycUpgradeModal({
     onSuccess,
 }: KycUpgradeModalProps) {
     const [step, setStep] = React.useState<"upload" | "submitting" | "success">("upload");
-    const [uploadedFiles, setUploadedFiles] = React.useState<UploadedFile[]>([]);
-    const [uploading, setUploading] = React.useState(false);
+    const [selectedFiles, setSelectedFiles] = React.useState<SelectedFile[]>([]);
     const [submitting, setSubmitting] = React.useState(false);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     function handleClose() {
-        if (!uploading && !submitting) {
+        if (!submitting) {
             setStep("upload");
-            setUploadedFiles([]);
+            setSelectedFiles([]);
             onClose();
         }
     }
 
-    async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
         const files = e.target.files;
         if (!files || files.length === 0) return;
 
-        setUploading(true);
+        const newFiles = Array.from(files).map(file => ({
+            file,
+            name: file.name,
+            size: file.size,
+        }));
 
-        try {
-            for (const file of Array.from(files)) {
-                const res = await fetch("/api/uploads/request-url", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        name: file.name,
-                        size: file.size,
-                        contentType: file.type || "application/octet-stream",
-                    }),
-                });
-
-                if (!res.ok) {
-                    throw new Error("Erro ao obter URL de upload");
-                }
-
-                const { uploadURL, objectPath } = await res.json();
-
-                await fetch(uploadURL, {
-                    method: "PUT",
-                    body: file,
-                    headers: {
-                        "Content-Type": file.type || "application/octet-stream",
-                    },
-                });
-
-                setUploadedFiles(prev => [...prev, {
-                    name: file.name,
-                    objectPath,
-                    size: file.size,
-                }]);
-            }
-            toast.success("Arquivo(s) enviado(s) com sucesso!");
-        } catch (error) {
-            console.error("Upload error:", error);
-            toast.error("Erro ao enviar arquivo(s)");
-        } finally {
-            setUploading(false);
-            if (fileInputRef.current) {
-                fileInputRef.current.value = "";
-            }
+        setSelectedFiles(prev => [...prev, ...newFiles]);
+        
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
         }
     }
 
     function removeFile(index: number) {
-        setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+        setSelectedFiles(prev => prev.filter((_, i) => i !== index));
     }
 
     async function handleSubmit() {
-        if (uploadedFiles.length === 0) {
-            toast.error("Envie pelo menos um documento");
+        if (selectedFiles.length === 0) {
+            toast.error("Selecione pelo menos um documento");
             return;
         }
 
@@ -110,12 +76,17 @@ export function KycUpgradeModal({
         setStep("submitting");
 
         try {
-            await http.post("/api/kyc-upgrade-requests", {
-                targetLevel,
-                documents: uploadedFiles.map(f => ({
-                    name: f.name,
-                    objectPath: f.objectPath,
-                })),
+            const formData = new FormData();
+            formData.append("targetLevel", targetLevel);
+            
+            selectedFiles.forEach((sf) => {
+                formData.append("documents", sf.file);
+            });
+
+            await http.post("/customers/kyc-upgrade-requests", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
             });
 
             setStep("success");
@@ -179,27 +150,20 @@ export function KycUpgradeModal({
                                 type="button"
                                 variant="outline"
                                 onClick={() => fileInputRef.current?.click()}
-                                disabled={uploading}
+                                disabled={submitting}
                                 className="w-full h-24 border-2 border-dashed border-primary/30 hover:border-primary/50 hover:bg-primary/5"
                             >
-                                {uploading ? (
-                                    <>
-                                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                        Enviando...
-                                    </>
-                                ) : (
-                                    <div className="flex flex-col items-center gap-2">
-                                        <Upload className="w-6 h-6 text-primary" />
-                                        <span className="text-sm text-muted-foreground">
-                                            Clique para selecionar arquivos
-                                        </span>
-                                    </div>
-                                )}
+                                <div className="flex flex-col items-center gap-2">
+                                    <Upload className="w-6 h-6 text-primary" />
+                                    <span className="text-sm text-muted-foreground">
+                                        Clique para selecionar arquivos
+                                    </span>
+                                </div>
                             </Button>
 
-                            {uploadedFiles.length > 0 && (
+                            {selectedFiles.length > 0 && (
                                 <div className="space-y-2">
-                                    {uploadedFiles.map((file, index) => (
+                                    {selectedFiles.map((file, index) => (
                                         <div
                                             key={index}
                                             className="flex items-center justify-between p-3 rounded-lg bg-muted"
@@ -237,7 +201,7 @@ export function KycUpgradeModal({
                             </Button>
                             <Button
                                 onClick={handleSubmit}
-                                disabled={uploadedFiles.length === 0 || uploading}
+                                disabled={selectedFiles.length === 0 || submitting}
                                 className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white"
                             >
                                 Enviar Solicitação
