@@ -236,7 +236,10 @@ export default function CustomerKycPage(): React.JSX.Element {
                 const [customerRes, limitsRes, upgradeRes] = await Promise.all([
                     http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me"),
                     http.get<LimitsResponse>("/customers/me/limits").catch(() => null),
-                    http.get<{ data: UpgradeRequest[] }>("/customers/kyc-upgrade-requests").catch(() => null),
+                    http.get<{ data: UpgradeRequest[] } | UpgradeRequest[]>("/customers/kyc-upgrade-requests").catch((err) => {
+                        console.log("Erro ao buscar upgrade requests:", err?.response?.status);
+                        return null;
+                    }),
                 ]);
                 const data = "data" in customerRes.data ? customerRes.data.data : customerRes.data;
                 setAccountStatus(data.accountStatus);
@@ -251,8 +254,13 @@ export default function CustomerKycPage(): React.JSX.Element {
                     }
                 }
 
-                if (upgradeRes?.data?.data) {
-                    setUpgradeRequests(upgradeRes.data.data);
+                if (upgradeRes?.data) {
+                    const requests = "data" in upgradeRes.data 
+                        ? upgradeRes.data.data 
+                        : Array.isArray(upgradeRes.data) 
+                            ? upgradeRes.data 
+                            : [];
+                    setUpgradeRequests(requests);
                 }
             } catch (err) {
                 console.error(err);
