@@ -255,11 +255,17 @@ export default function CustomerKycPage(): React.JSX.Element {
                 }
 
                 if (upgradeRes?.data) {
-                    const requests = "data" in upgradeRes.data 
-                        ? upgradeRes.data.data 
-                        : Array.isArray(upgradeRes.data) 
-                            ? upgradeRes.data 
-                            : [];
+                    console.log("Upgrade requests response:", upgradeRes.data);
+                    let requests: UpgradeRequest[] = [];
+                    const resData = upgradeRes.data as { data?: UpgradeRequest[] } | UpgradeRequest[];
+                    
+                    if (Array.isArray(resData)) {
+                        requests = resData;
+                    } else if (resData && typeof resData === 'object' && 'data' in resData && Array.isArray(resData.data)) {
+                        requests = resData.data;
+                    }
+                    
+                    console.log("Parsed upgrade requests:", requests);
                     setUpgradeRequests(requests);
                 }
             } catch (err) {
