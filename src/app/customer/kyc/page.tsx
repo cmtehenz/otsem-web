@@ -23,6 +23,9 @@ import {
     ArrowRight,
     Building2,
     User,
+    AlertTriangle,
+    Clock,
+    XCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { KycUpgradeModal } from "@/components/modals/kyc-upgrade-modal";
@@ -43,6 +46,15 @@ interface LimitsResponse {
     usedThisMonth: number;
     remainingLimit: number;
     resetDate: string;
+}
+
+interface UpgradeRequest {
+    id: string;
+    targetLevel: string;
+    status: "PENDING" | "APPROVED" | "REJECTED";
+    adminNotes?: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 const KYC_LEVELS = {
@@ -213,6 +225,7 @@ export default function CustomerKycPage(): React.JSX.Element {
         limit: string;
         requirements: string[];
     } | null>(null);
+    const [upgradeRequests, setUpgradeRequests] = React.useState<UpgradeRequest[]>([]);
 
     const customerId = user?.customerId ?? null;
 
@@ -220,9 +233,10 @@ export default function CustomerKycPage(): React.JSX.Element {
         async function loadCustomer() {
             try {
                 setLoading(true);
-                const [customerRes, limitsRes] = await Promise.all([
+                const [customerRes, limitsRes, upgradeRes] = await Promise.all([
                     http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me"),
                     http.get<LimitsResponse>("/customers/me/limits").catch(() => null),
+                    http.get<{ data: UpgradeRequest[] }>("/customers/kyc-upgrade-requests").catch(() => null),
                 ]);
                 const data = "data" in customerRes.data ? customerRes.data.data : customerRes.data;
                 setAccountStatus(data.accountStatus);
@@ -235,6 +249,10 @@ export default function CustomerKycPage(): React.JSX.Element {
                     if (limitsRes.data.customerType) {
                         setCustomerType(limitsRes.data.customerType);
                     }
+                }
+
+                if (upgradeRes?.data?.data) {
+                    setUpgradeRequests(upgradeRes.data.data);
                 }
             } catch (err) {
                 console.error(err);
@@ -329,6 +347,51 @@ export default function CustomerKycPage(): React.JSX.Element {
             </div>
 
             <LimitsCard showUpgradeLink={false} />
+
+            {/* Solicitações de Upgrade Pendentes ou Rejeitadas */}
+            {upgradeRequests.filter(r => r.status === "PENDING").length > 0 && (
+                <div className="rounded-2xl p-4 border border-amber-300 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-800">
+                    <div className="flex items-start gap-3">
+                        <div className="p-2 rounded-full bg-amber-100 dark:bg-amber-900/50">
+                            <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="font-bold text-amber-800 dark:text-amber-300">Solicitação em Análise</h3>
+                            <p className="text-sm text-amber-700 dark:text-amber-400 mt-1">
+                                Sua solicitação de upgrade está sendo analisada pela nossa equipe.
+                                Você receberá uma resposta em até 48 horas.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {upgradeRequests.filter(r => r.status === "REJECTED").map((request) => {
+                const targetLevelData = KYC_LEVELS[customerType].find(l => l.level === request.targetLevel);
+                return (
+                    <div key={request.id} className="rounded-2xl p-4 border border-red-300 bg-red-50 dark:bg-red-950/30 dark:border-red-800">
+                        <div className="flex items-start gap-3">
+                            <div className="p-2 rounded-full bg-red-100 dark:bg-red-900/50">
+                                <XCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="font-bold text-red-800 dark:text-red-300">
+                                    Solicitação Rejeitada - {targetLevelData?.name || request.targetLevel}
+                                </h3>
+                                {request.adminNotes && (
+                                    <div className="mt-2 p-3 rounded-lg bg-red-100 dark:bg-red-900/50 border border-red-200 dark:border-red-800">
+                                        <p className="text-xs text-red-600 dark:text-red-400 font-medium mb-1">Motivo da rejeição:</p>
+                                        <p className="text-sm text-red-800 dark:text-red-300">{request.adminNotes}</p>
+                                    </div>
+                                )}
+                                <p className="text-sm text-red-700 dark:text-red-400 mt-2">
+                                    Você pode enviar uma nova solicitação com os documentos corretos.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })}
 
             {/* Card Único Integrado */}
             <div className="premium-card p-6">
