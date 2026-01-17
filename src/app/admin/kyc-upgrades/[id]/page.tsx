@@ -72,7 +72,7 @@ const STATUS_CONFIG = {
 export default function KycUpgradeDetailPage() {
     const params = useParams();
     const router = useRouter();
-    const requestId = params.id as string;
+    const requestId = params?.id as string;
 
     const [loading, setLoading] = React.useState(true);
     const [request, setRequest] = React.useState<UpgradeRequest | null>(null);
