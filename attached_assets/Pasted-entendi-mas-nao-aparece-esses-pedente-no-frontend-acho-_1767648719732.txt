@@ -1,0 +1,96 @@
+entendi mas nao aparece esses pedente no frontend acho q isso deixa o usuario inseguro, pode me passar oq fazer no frontend oq esta acontecendo, oq posso melhorar , demora uns 4 min ate todas as transacoes
+
+Entendo a preocupação. Vou te explicar o fluxo atual e sugerir melhorias para o frontend:
+
+Status Atual do Fluxo SELL
+┌─────────────────────────────────────────────────────────────────┐
+│  CLIENTE ENVIA USDT                                             │
+│  └─> POST /wallet/submit-signed-sell (txHash)                   │
+│       └─> Cria conversão PENDING                                │
+│            └─> Cron detecta depósito OKX (1 min)                │
+│                 └─> USDT_RECEIVED                               │
+│                      └─> Vende USDT (próximo ciclo ~1 min)      │
+│                           └─> USDT_SOLD                         │
+│                                └─> Credita saldo (próximo ~1min)│
+│                                     └─> COMPLETED               │
+└─────────────────────────────────────────────────────────────────┘
+Tempo total: ~3-4 min (3 ciclos de 1 minuto)
+
+Melhorias para o Frontend
+1. Mostrar status da conversão em tempo real
+O frontend deve consultar o status da conversão:
+
+// Após chamar submit-signed-sell, salvar o conversionId
+const response = await fetch('/wallet/submit-signed-sell', {
+  method: 'POST',
+  body: JSON.stringify({ walletId, usdtAmount, network, txHash })
+});
+const { conversionId } = await response.json();
+// Polling para verificar status (a cada 10 segundos)
+const checkStatus = async () => {
+  const conv = await fetch(`/admin/conversions?id=${conversionId}`);
+  // Mostrar status: PENDING → USDT_RECEIVED → USDT_SOLD → COMPLETED
+};
+2. Criar endpoint para cliente ver suas conversões pendentes
+Vou criar um endpoint para o cliente ver suas conversões:
+
+Vou criar um endpoint para o cliente ver suas conversões e também acelerar o processamento:
+
+Agora vou adicionar os métodos no serviço:
+
+Pronto! Criei dois novos endpoints para o frontend:
+
+Novos Endpoints para o Frontend
+1. GET /wallet/my-conversions
+Lista todas as conversões do cliente com status traduzido:
+
+// Exemplo de uso
+const response = await fetch('/wallet/my-conversions?type=SELL', {
+  headers: { Authorization: `Bearer ${token}` }
+});
+// Resposta:
+[
+  {
+    id: "conv_123",
+    type: "SELL",
+    status: "PENDING",
+    statusLabel: "Aguardando confirmação do depósito",  // ← Traduzido!
+    network: "SOLANA",
+    usdtAmount: 10,
+    brlAmount: 53.48,
+    txHash: "2jJTmgo...",
+    createdAt: "2026-01-05T21:25:00.000Z"
+  }
+]
+2. GET /wallet/conversion/:id
+Detalhes de uma conversão específica para mostrar progresso.
+
+Fluxo Recomendado para o Frontend
+┌──────────────────────────────────────────────────────────────┐
+│  1. USUÁRIO CLICA EM "VENDER USDT"                           │
+│     └─> GET /wallet/quote-sell-usdt (mostrar cotação)        │
+│                                                              │
+│  2. USUÁRIO CONFIRMA                                         │
+│     └─> GET /wallet/sell-tx-data (dados para assinatura)     │
+│                                                              │
+│  3. APP ASSINA E ENVIA TRANSAÇÃO                             │
+│     └─> Solana/Tron wallet SDK                               │
+│                                                              │
+│  4. APP REGISTRA A VENDA                                     │
+│     └─> POST /wallet/submit-signed-sell                      │
+│         └─> Retorna { conversionId, status: "PENDING" }      │
+│                                                              │
+│  5. MOSTRAR TELA DE PROGRESSO                                │
+│     └─> Polling: GET /wallet/conversion/:id (a cada 10s)     │
+│         └─> PENDING → USDT_RECEIVED → USDT_SOLD → COMPLETED  │
+│                                                              │
+│  6. QUANDO COMPLETED                                         │
+│     └─> Mostrar "Crédito de R$ X adicionado ao seu saldo!"   │
+└──────────────────────────────────────────────────────────────┘
+Labels de Status (para mostrar ao usuário)
+Status	Label
+PENDING	Aguardando confirmação do depósito
+USDT_RECEIVED	USDT recebido, vendendo...
+USDT_SOLD	USDT vendido, creditando saldo...
+COMPLETED	Concluído
+O frontend deve chamar GET /wallet/my-conversions?type=SELL para mostrar vendas pendentes na tela inicial. Quer que eu ajude com mais alguma coisa?
