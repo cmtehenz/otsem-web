@@ -217,8 +217,8 @@ export default function Dashboard() {
         return (
             <div className="flex h-[80vh] flex-col items-center justify-center">
                 <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-purple-600 rounded-full blur-xl opacity-50 animate-pulse"></div>
-                    <Loader2 className="relative h-10 w-10 animate-spin text-violet-500 dark:text-violet-400" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] rounded-full blur-xl opacity-50 animate-pulse"></div>
+                    <Loader2 className="relative h-10 w-10 animate-spin text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                 </div>
                 <p className="text-sm text-muted-foreground mt-4">Carregando...</p>
             </div>
@@ -251,7 +251,7 @@ export default function Dashboard() {
                 </Button>
             </div>
 
-            <div className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl p-6 shadow-xl shadow-violet-500/20">
+            <div className="bg-gradient-to-br from-[#6F00FF] to-purple-700 rounded-2xl p-6 shadow-xl shadow-[#6F00FF]/50/20">
                 <div className="flex items-center justify-between mb-4">
                     <p className="text-white/80 text-sm">Saldo total estimado</p>
                     <Wallet className="w-5 h-5 text-white/60" />
@@ -290,7 +290,7 @@ export default function Dashboard() {
                 </Button>
                 <Button
                     onClick={() => setShowConvertModal(true)}
-                    className="bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-xl py-6 text-sm"
+                    className="bg-[#6F00FF] hover:bg-[#6F00FF]/50 text-white font-semibold rounded-xl py-6 text-sm"
                 >
                     <ArrowRightLeft className="w-5 h-5 mr-1.5" />
                     Comprar USDT
@@ -308,7 +308,7 @@ export default function Dashboard() {
                 <div className="bg-card border border-border rounded-2xl p-4">
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                            <TrendingUp className="w-4 h-4 text-violet-500 dark:text-violet-400" />
+                            <TrendingUp className="w-4 h-4 text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                             <span className="text-muted-foreground text-sm">Cotação USDT</span>
                         </div>
                         <span className="text-xs text-muted-foreground">Atualiza em {timer}s</span>
@@ -323,7 +323,7 @@ export default function Dashboard() {
             <div className="bg-card border border-border rounded-2xl overflow-hidden">
                 <div className="p-4 border-b border-border flex items-center justify-between">
                     <h2 className="text-foreground font-semibold">Últimas transações</h2>
-                    <Link href="/customer/transactions" className="text-sm text-violet-500 hover:text-violet-400 font-medium">
+                    <Link href="/customer/transactions" className="text-sm text-[#6F00FF]/50 hover:text-[#6F00FF] font-medium">
                         Ver todas
                     </Link>
                 </div>

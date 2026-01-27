@@ -453,8 +453,8 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                         onClick={() => { setNetwork("SOLANA"); setSelectedWallet(null); }}
                                         className={`flex-1 py-3 px-4 rounded-xl border transition font-medium ${
                                             network === "SOLANA"
-                                                ? "border-purple-500 bg-purple-500/20 text-purple-600 dark:text-purple-400"
-                                                : "border-border bg-muted text-muted-foreground hover:border-purple-500/30"
+                                                ? "border-[#6F00FF] bg-[#6F00FF]/20 text-[#6F00FF] dark:text-[#8B2FFF]"
+                                                : "border-border bg-muted text-muted-foreground hover:border-[#6F00FF]/30"
                                         }`}
                                     >
                                         Solana
@@ -546,7 +546,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 </div>
                                 <div className="flex items-center justify-between mt-1">
                                     <span className="text-muted-foreground text-sm">Rede:</span>
-                                    <span className={`text-sm font-medium ${network === "SOLANA" ? "text-purple-600" : "text-red-600"}`}>
+                                    <span className={`text-sm font-medium ${network === "SOLANA" ? "text-[#6F00FF]" : "text-red-600"}`}>
                                         {network}
                                     </span>
                                 </div>
@@ -668,7 +668,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Rede</span>
-                                        <span className={network === "SOLANA" ? "text-purple-600" : "text-red-600"}>
+                                        <span className={network === "SOLANA" ? "text-[#6F00FF]" : "text-red-600"}>
                                             {network}
                                         </span>
                                     </div>
@@ -809,7 +809,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                             }
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-violet-600 dark:text-violet-400 text-xs font-mono hover:underline"
+                                            className="text-[#6F00FF] dark:text-[#6F00FF] text-xs font-mono hover:underline"
                                         >
                                             {txHash.slice(0, 10)}...{txHash.slice(-6)}
                                         </a>
@@ -871,7 +871,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                             }
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-violet-600 dark:text-violet-400 text-xs font-mono hover:underline"
+                                            className="text-[#6F00FF] dark:text-[#6F00FF] text-xs font-mono hover:underline"
                                         >
                                             {txHash.slice(0, 10)}...{txHash.slice(-6)}
                                         </a>

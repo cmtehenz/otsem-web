@@ -124,7 +124,7 @@ export default function AdminCustomersPage(): React.JSX.Element {
             <div className="flex items-center justify-between">
                 <div>
                     {/* eslint-disable-next-line */}
-                    <h1 className="text-2xl font-semibold bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    <h1 className="text-2xl font-semibold bg-linear-to-r from-indigo-600 to-[#6F00FF] bg-clip-text text-transparent">
                         Clientes
                     </h1>
                     <p className="text-sm text-muted-foreground">

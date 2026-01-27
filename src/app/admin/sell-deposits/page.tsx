@@ -83,7 +83,7 @@ function getStatusColor(status: string): string {
         case "DEPOSIT_CONFIRMED":
             return "bg-blue-500/20 text-blue-600 border-blue-500/30";
         case "USDT_SOLD":
-            return "bg-purple-500/20 text-purple-600 border-purple-500/30";
+            return "bg-[#6F00FF]/20 text-[#6F00FF] border-[#6F00FF]/30";
         case "PIX_SENT":
             return "bg-cyan-500/20 text-cyan-600 border-cyan-500/30";
         case "COMPLETED":
@@ -350,7 +350,7 @@ export default function SellDepositsPage() {
                                                 {formatCurrency(deposit.brlAmount ?? 0)}
                                             </TableCell>
                                             <TableCell>
-                                                <Badge variant="outline" className={deposit.network === 'SOLANA' ? 'border-purple-500 text-purple-600' : 'border-red-500 text-red-600'}>
+                                                <Badge variant="outline" className={deposit.network === 'SOLANA' ? 'border-[#6F00FF] text-[#6F00FF]' : 'border-red-500 text-red-600'}>
                                                     {deposit.network || '-'}
                                                 </Badge>
                                             </TableCell>
@@ -421,7 +421,7 @@ export default function SellDepositsPage() {
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">Rede:</span>
-                                    <span className={selectedDeposit.network === "SOLANA" ? "text-purple-600" : "text-red-600"}>
+                                    <span className={selectedDeposit.network === "SOLANA" ? "text-[#6F00FF]" : "text-red-600"}>
                                         {selectedDeposit.network}
                                     </span>
                                 </div>

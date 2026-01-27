@@ -91,12 +91,12 @@ export default function BalanceCards({ balances }: Props) {
                 </CardContent>
             </Card>
 
-            <Card className="border-violet-500/20 bg-gradient-to-br from-violet-500/5 to-violet-600/10">
+            <Card className="border-[#6F00FF]/50/20 bg-gradient-to-br from-[#6F00FF]/50/5 to-[#6F00FF]/10">
                 <CardContent className="p-6">
                     <div className="flex items-start justify-between">
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">Patrimônio Total (BRL)</p>
-                            <p className="mt-2 text-3xl font-bold text-violet-600 dark:text-violet-400">
+                            <p className="mt-2 text-3xl font-bold text-[#6F00FF] dark:text-[#6F00FF]">
                                 {formatBRL(totalBRLEquivalent)}
                             </p>
                             <div className="mt-3 flex items-center gap-2 text-xs">
@@ -106,8 +106,8 @@ export default function BalanceCards({ balances }: Props) {
                                 </span>
                             </div>
                         </div>
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-500/10">
-                            <div className="text-xl font-bold text-violet-600">Σ</div>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#6F00FF]/50/10">
+                            <div className="text-xl font-bold text-[#6F00FF]">Σ</div>
                         </div>
                     </div>
                 </CardContent>

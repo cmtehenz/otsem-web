@@ -321,7 +321,7 @@ export default function TransactionsPage() {
     if (loading && page === 1) {
         return (
             <div className="flex h-[80vh] flex-col items-center justify-center">
-                <Loader2 className="h-10 w-10 animate-spin text-violet-500 dark:text-violet-400" />
+                <Loader2 className="h-10 w-10 animate-spin text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                 <p className="text-sm text-muted-foreground mt-4">Carregando transações...</p>
             </div>
         );
@@ -347,7 +347,7 @@ export default function TransactionsPage() {
             <div className="bg-card border border-border rounded-2xl overflow-hidden">
                 {loading ? (
                     <div className="flex items-center justify-center py-12">
-                        <Loader2 className="h-6 w-6 animate-spin text-violet-500" />
+                        <Loader2 className="h-6 w-6 animate-spin text-[#6F00FF]/50" />
                     </div>
                 ) : filteredTransactions.length > 0 ? (
                     <>
@@ -413,7 +413,7 @@ export default function TransactionsPage() {
                                                     variant={page === p ? "default" : "outline"}
                                                     size="icon"
                                                     onClick={() => setPage(p as number)}
-                                                    className={`h-8 w-8 ${page === p ? "bg-violet-600 hover:bg-violet-500 text-white" : "border-border"}`}
+                                                    className={`h-8 w-8 ${page === p ? "bg-[#6F00FF] hover:bg-[#6F00FF]/50 text-white" : "border-border"}`}
                                                 >
                                                     {p}
                                                 </Button>

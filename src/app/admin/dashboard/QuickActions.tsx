@@ -32,7 +32,7 @@ const actions = [
         label: "Transações",
         href: "/admin/transactions",
         icon: ArrowUpDown,
-        color: "border-violet-500/20 hover:bg-violet-500/5 hover:border-violet-500/40",
+        color: "border-[#6F00FF]/50/20 hover:bg-[#6F00FF]/50/5 hover:border-[#6F00FF]/50/40",
     },
     {
         label: "Carteiras USDT",

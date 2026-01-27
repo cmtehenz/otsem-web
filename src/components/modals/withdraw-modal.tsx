@@ -183,7 +183,7 @@ export function WithdrawModal() {
 
     return (
         <Dialog open={open.withdraw} onOpenChange={handleClose}>
-            <DialogContent className="bg-card border border-violet-500/20 max-w-sm shadow-2xl">
+            <DialogContent className="bg-card border border-[#6F00FF]/50/20 max-w-sm shadow-2xl">
                 <DialogHeader>
                     <DialogTitle className="text-foreground text-xl text-center flex items-center justify-center gap-2">
                         {(step === "amount" || step === "confirm") && (
@@ -216,15 +216,15 @@ export function WithdrawModal() {
                 <div className="flex flex-col items-center space-y-5 py-4">
                     {step === "loading" && (
                         <div className="flex flex-col items-center py-8">
-                            <Loader2 className="w-10 h-10 animate-spin text-violet-500 dark:text-violet-400" />
+                            <Loader2 className="w-10 h-10 animate-spin text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                             <p className="text-muted-foreground text-sm mt-4">Carregando chaves PIX...</p>
                         </div>
                     )}
 
                     {step === "nokeys" && (
                         <div className="w-full space-y-5 text-center">
-                            <div className="p-4 rounded-full bg-violet-500/20 inline-block">
-                                <KeyRound className="w-10 h-10 text-violet-500 dark:text-violet-400" />
+                            <div className="p-4 rounded-full bg-[#6F00FF]/50/20 inline-block">
+                                <KeyRound className="w-10 h-10 text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                             </div>
                             <div>
                                 <p className="text-foreground font-medium mb-2">
@@ -236,7 +236,7 @@ export function WithdrawModal() {
                             </div>
                             <Button
                                 onClick={handleGoToPixPage}
-                                className="w-full bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 shadow-lg shadow-violet-500/25"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 shadow-lg shadow-[#6F00FF]/50/25"
                             >
                                 <Plus className="w-5 h-5 mr-2" />
                                 Cadastrar Chave PIX
@@ -250,7 +250,7 @@ export function WithdrawModal() {
                                 <button
                                     key={key.id}
                                     onClick={() => handleSelectKey(key)}
-                                    className="w-full bg-muted border border-border rounded-xl p-4 hover:border-violet-500/50 hover:bg-violet-500/10 transition text-left"
+                                    className="w-full bg-muted border border-border rounded-xl p-4 hover:border-[#6F00FF]/50/50 hover:bg-[#6F00FF]/50/10 transition text-left"
                                 >
                                     <div className="flex items-center justify-between">
                                         <div>
@@ -268,7 +268,7 @@ export function WithdrawModal() {
                                                 {key.keyValue}
                                             </code>
                                         </div>
-                                        <div className="text-violet-500 dark:text-violet-400">
+                                        <div className="text-[#6F00FF]/50 dark:text-[#6F00FF]">
                                             <ArrowLeft className="w-5 h-5 rotate-180" />
                                         </div>
                                     </div>
@@ -277,7 +277,7 @@ export function WithdrawModal() {
 
                             <button
                                 onClick={handleGoToPixPage}
-                                className="w-full border border-dashed border-border rounded-xl p-4 hover:border-violet-500/50 hover:bg-violet-500/5 transition flex items-center justify-center gap-2 text-muted-foreground hover:text-violet-600 dark:hover:text-violet-300"
+                                className="w-full border border-dashed border-border rounded-xl p-4 hover:border-[#6F00FF]/50/50 hover:bg-[#6F00FF]/50/5 transition flex items-center justify-center gap-2 text-muted-foreground hover:text-[#6F00FF] dark:hover:text-[#6F00FF]/30"
                             >
                                 <Plus className="w-4 h-4" />
                                 <span className="text-sm">Cadastrar nova chave</span>
@@ -289,8 +289,8 @@ export function WithdrawModal() {
                         <div className="w-full space-y-5">
                             <div className="bg-muted border border-border rounded-xl p-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
-                                        <KeyRound className="w-5 h-5 text-violet-500 dark:text-violet-400" />
+                                    <div className="w-10 h-10 rounded-full bg-[#6F00FF]/50/20 flex items-center justify-center">
+                                        <KeyRound className="w-5 h-5 text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-foreground font-medium">
@@ -303,8 +303,8 @@ export function WithdrawModal() {
                                 </div>
                             </div>
 
-                            <div className="text-center py-4 bg-linear-to-b from-violet-500/10 to-transparent rounded-2xl">
-                                <p className="text-5xl font-bold bg-linear-to-r from-violet-500 to-purple-500 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
+                            <div className="text-center py-4 bg-linear-to-b from-[#6F00FF]/50/10 to-transparent rounded-2xl">
+                                <p className="text-5xl font-bold bg-linear-to-r from-[#6F00FF]/50 to-[#6F00FF] dark:from-[#6F00FF] dark:to-[#8B2FFF] bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                             </div>
@@ -319,7 +319,7 @@ export function WithdrawModal() {
                                     value={formatDisplayValue(cents)}
                                     onChange={handleInputChange}
                                     placeholder="0,00"
-                                    className="w-full pl-12 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full pl-12 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#6F00FF]/50/50 focus:ring-2 focus:ring-[#6F00FF]/50/20 focus:outline-none placeholder:text-muted-foreground/50"
                                     autoFocus
                                 />
                             </div>
@@ -329,7 +329,7 @@ export function WithdrawModal() {
                                     <button
                                         key={value}
                                         onClick={() => handleQuickAmount(value)}
-                                        className="px-4 py-2 text-sm font-medium rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-600 dark:text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/50 transition-colors"
+                                        className="px-4 py-2 text-sm font-medium rounded-full border border-[#6F00FF]/50/30 bg-[#6F00FF]/50/10 text-[#6F00FF] dark:text-[#6F00FF]/30 hover:bg-[#6F00FF]/50/20 hover:border-[#6F00FF]/50/50 transition-colors"
                                     >
                                         R$ {value}
                                     </button>
@@ -339,7 +339,7 @@ export function WithdrawModal() {
                             <Button
                                 onClick={handleContinueToConfirm}
                                 disabled={cents < 100}
-                                className="w-full bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-violet-500/25"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-[#6F00FF]/50/25"
                             >
                                 Continuar
                             </Button>
@@ -354,8 +354,8 @@ export function WithdrawModal() {
                         <div className="w-full space-y-5">
                             <div className="bg-muted border border-border rounded-xl p-4 space-y-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
-                                        <KeyRound className="w-5 h-5 text-violet-500 dark:text-violet-400" />
+                                    <div className="w-10 h-10 rounded-full bg-[#6F00FF]/50/20 flex items-center justify-center">
+                                        <KeyRound className="w-5 h-5 text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-foreground font-medium">
@@ -368,9 +368,9 @@ export function WithdrawModal() {
                                 </div>
                             </div>
 
-                            <div className="text-center py-6 bg-linear-to-b from-violet-500/10 to-transparent rounded-2xl">
+                            <div className="text-center py-6 bg-linear-to-b from-[#6F00FF]/50/10 to-transparent rounded-2xl">
                                 <p className="text-muted-foreground text-sm mb-1">Valor a transferir</p>
-                                <p className="text-4xl font-bold bg-linear-to-r from-violet-500 to-purple-500 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
+                                <p className="text-4xl font-bold bg-linear-to-r from-[#6F00FF]/50 to-[#6F00FF] dark:from-[#6F00FF] dark:to-[#8B2FFF] bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                             </div>
@@ -450,7 +450,7 @@ export function WithdrawModal() {
 
                             <Button
                                 onClick={handleClose}
-                                className="w-full bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 shadow-lg shadow-violet-500/25"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 shadow-lg shadow-[#6F00FF]/50/25"
                             >
                                 Fechar
                             </Button>

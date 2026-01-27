@@ -121,7 +121,7 @@ const Footer = () => {
               onClick={handleInstagramClick}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="mt-5 sm:mt-6 flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 text-white shadow-lg shadow-pink-500/25 social-icon-hover"
+              className="mt-5 sm:mt-6 flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-[#6F00FF] via-pink-500 to-orange-400 text-white shadow-lg shadow-pink-500/25 social-icon-hover"
               aria-label="Seguir no Instagram"
             >
               <Instagram className="w-5 h-5" strokeWidth={2} />

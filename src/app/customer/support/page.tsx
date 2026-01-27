@@ -157,7 +157,7 @@ export default function SupportPage() {
                 </p>
             </div>
 
-            <div className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl p-6">
+            <div className="bg-gradient-to-br from-[#6F00FF] to-purple-700 rounded-2xl p-6">
                 <div className="flex items-center gap-3 mb-2">
                     <CheckCircle2 className="w-5 h-5 text-green-300" />
                     <span className="text-white font-medium">Sistema Operacional</span>
@@ -191,11 +191,11 @@ export default function SupportPage() {
 
                 <a
                     href="mailto:suporte@otsempay.com"
-                    className="bg-card border border-border rounded-xl p-5 hover:border-violet-500/50 hover:bg-violet-500/5 transition group"
+                    className="bg-card border border-border rounded-xl p-5 hover:border-[#6F00FF]/50/50 hover:bg-[#6F00FF]/50/5 transition group"
                 >
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg bg-violet-500/20">
-                            <Mail className="w-5 h-5 text-violet-500" />
+                        <div className="p-2 rounded-lg bg-[#6F00FF]/50/20">
+                            <Mail className="w-5 h-5 text-[#6F00FF]/50" />
                         </div>
                         <span className="font-semibold text-foreground">Email</span>
                         <ExternalLink className="w-4 h-4 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition" />
@@ -226,7 +226,7 @@ export default function SupportPage() {
 
             <div>
                 <div className="flex items-center gap-2 mb-4">
-                    <BookOpen className="w-5 h-5 text-violet-500" />
+                    <BookOpen className="w-5 h-5 text-[#6F00FF]/50" />
                     <h2 className="text-lg font-semibold text-foreground">Tutoriais Rápidos</h2>
                 </div>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -234,12 +234,12 @@ export default function SupportPage() {
                         <button
                             key={index}
                             onClick={() => toast.info("Tutorial em desenvolvimento")}
-                            className="bg-card border border-border rounded-xl p-4 text-left hover:border-violet-500/50 hover:bg-accent/50 transition group"
+                            className="bg-card border border-border rounded-xl p-4 text-left hover:border-[#6F00FF]/50/50 hover:bg-accent/50 transition group"
                         >
                             <div className="text-3xl mb-3">{tutorial.icon}</div>
                             <h3 className="font-medium text-foreground mb-1">{tutorial.title}</h3>
                             <p className="text-xs text-muted-foreground">{tutorial.description}</p>
-                            <div className="flex items-center gap-1 text-violet-500 text-xs mt-3 opacity-0 group-hover:opacity-100 transition">
+                            <div className="flex items-center gap-1 text-[#6F00FF]/50 text-xs mt-3 opacity-0 group-hover:opacity-100 transition">
                                 Ver tutorial
                                 <ArrowRight className="w-3 h-3" />
                             </div>
@@ -250,7 +250,7 @@ export default function SupportPage() {
 
             <div>
                 <div className="flex items-center gap-2 mb-4">
-                    <HelpCircle className="w-5 h-5 text-violet-500" />
+                    <HelpCircle className="w-5 h-5 text-[#6F00FF]/50" />
                     <h2 className="text-lg font-semibold text-foreground">Perguntas Frequentes</h2>
                 </div>
                 <FAQAccordion items={faqItems} />
@@ -258,7 +258,7 @@ export default function SupportPage() {
 
             <div className="bg-card border border-border rounded-2xl p-6">
                 <div className="flex items-center gap-2 mb-4">
-                    <AlertCircle className="w-5 h-5 text-violet-500" />
+                    <AlertCircle className="w-5 h-5 text-[#6F00FF]/50" />
                     <h2 className="text-lg font-semibold text-foreground">Abrir Chamado</h2>
                 </div>
                 <p className="text-sm text-muted-foreground mb-6">
@@ -311,7 +311,7 @@ export default function SupportPage() {
                         <Button
                             type="submit"
                             disabled={submitting}
-                            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 gap-2"
+                            className="bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] gap-2"
                         >
                             {submitting ? (
                                 "Enviando..."

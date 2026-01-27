@@ -153,7 +153,7 @@ export function DepositModal() {
 
     return (
         <Dialog open={open.deposit} onOpenChange={handleClose}>
-            <DialogContent className="bg-card border border-violet-500/20 max-w-sm shadow-2xl">
+            <DialogContent className="bg-card border border-[#6F00FF]/50/20 max-w-sm shadow-2xl">
                 <DialogHeader>
                     <DialogTitle className="text-foreground text-xl text-center flex items-center justify-center gap-2">
                         {step === "qrcode" && (
@@ -179,8 +179,8 @@ export function DepositModal() {
                 <div className="flex flex-col items-center space-y-5 py-4">
                     {step === "amount" ? (
                         <div className="w-full space-y-5">
-                            <div className="text-center py-4 bg-gradient-to-b from-violet-500/10 to-transparent rounded-2xl">
-                                <p className="text-5xl font-bold bg-gradient-to-r from-violet-500 to-purple-500 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
+                            <div className="text-center py-4 bg-gradient-to-b from-[#6F00FF]/50/10 to-transparent rounded-2xl">
+                                <p className="text-5xl font-bold bg-gradient-to-r from-[#6F00FF]/50 to-[#6F00FF] dark:from-[#6F00FF] dark:to-[#8B2FFF] bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                             </div>
@@ -196,7 +196,7 @@ export function DepositModal() {
                                     value={inputValue}
                                     onChange={handleInputChange}
                                     placeholder="0,00"
-                                    className="w-full pl-12 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full pl-12 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#6F00FF]/50/50 focus:ring-2 focus:ring-[#6F00FF]/50/20 focus:outline-none placeholder:text-muted-foreground/50"
                                     autoFocus
                                 />
                             </div>
@@ -206,7 +206,7 @@ export function DepositModal() {
                                     <button
                                         key={value}
                                         onClick={() => handleQuickAmount(value)}
-                                        className="px-4 py-2 text-sm font-medium rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-600 dark:text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/50 transition-colors"
+                                        className="px-4 py-2 text-sm font-medium rounded-full border border-[#6F00FF]/50/30 bg-[#6F00FF]/50/10 text-[#6F00FF] dark:text-[#6F00FF]/30 hover:bg-[#6F00FF]/50/20 hover:border-[#6F00FF]/50/50 transition-colors"
                                     >
                                         R$ {value}
                                     </button>
@@ -216,7 +216,7 @@ export function DepositModal() {
                             <Button
                                 onClick={handleGenerateQrCode}
                                 disabled={cents < 100 || loading}
-                                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-violet-500/25"
+                                className="w-full bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-[#6F00FF]/50/25"
                             >
                                 {loading ? (
                                     <>
@@ -238,8 +238,8 @@ export function DepositModal() {
                     ) : loading ? (
                         <div className="flex flex-col items-center py-12">
                             <div className="relative">
-                                <div className="absolute inset-0 bg-violet-500/20 rounded-full blur-xl animate-pulse"></div>
-                                <Loader2 className="h-12 w-12 animate-spin text-violet-500 dark:text-violet-400 relative" />
+                                <div className="absolute inset-0 bg-[#6F00FF]/50/20 rounded-full blur-xl animate-pulse"></div>
+                                <Loader2 className="h-12 w-12 animate-spin text-[#6F00FF]/50 dark:text-[#6F00FF] relative" />
                             </div>
                             <p className="text-muted-foreground text-sm mt-6">Gerando QR Code...</p>
                         </div>
@@ -251,7 +251,7 @@ export function DepositModal() {
                             <p className="text-muted-foreground text-sm text-center mb-4">{error}</p>
                             <button
                                 onClick={handleBack}
-                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-violet-500/30 bg-violet-500/10 text-violet-600 dark:text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/50 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-[#6F00FF]/50/30 bg-[#6F00FF]/50/10 text-[#6F00FF] dark:text-[#6F00FF]/30 hover:bg-[#6F00FF]/50/20 hover:border-[#6F00FF]/50/50 transition-colors"
                             >
                                 <ArrowLeft className="w-4 h-4" />
                                 Tentar novamente
@@ -261,12 +261,12 @@ export function DepositModal() {
                         <>
                             <div className="text-center">
                                 <p className="text-muted-foreground text-sm">Valor do depósito</p>
-                                <p className="text-3xl font-bold bg-gradient-to-r from-violet-500 to-purple-500 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
+                                <p className="text-3xl font-bold bg-gradient-to-r from-[#6F00FF]/50 to-[#6F00FF] dark:from-[#6F00FF] dark:to-[#8B2FFF] bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                             </div>
 
-                            <div className="bg-white rounded-2xl p-4 shadow-lg shadow-violet-500/20">
+                            <div className="bg-white rounded-2xl p-4 shadow-lg shadow-[#6F00FF]/50/20">
                                 {qrCodeUrl ? (
                                     <img
                                         src={qrCodeUrl}
@@ -293,7 +293,7 @@ export function DepositModal() {
                                 <Button
                                     onClick={handleCopy}
                                     disabled={!pixCopiaECola}
-                                    className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl py-6 shadow-lg shadow-violet-500/25"
+                                    className="w-full bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 shadow-lg shadow-[#6F00FF]/50/25"
                                 >
                                     {copied ? (
                                         <>

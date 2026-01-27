@@ -209,7 +209,7 @@ export default function SettingsPage() {
                             <Button
                                 onClick={handleSaveProfile}
                                 disabled={saving}
-                                className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500"
+                                className="bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF]"
                             >
                                 {saving ? "Salvando..." : "Salvar alterações"}
                             </Button>
@@ -281,7 +281,7 @@ export default function SettingsPage() {
                             <Button
                                 onClick={handleChangePassword}
                                 disabled={changingPassword}
-                                className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500"
+                                className="bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF]"
                             >
                                 {changingPassword ? "Alterando..." : "Alterar senha"}
                             </Button>
@@ -357,7 +357,7 @@ export default function SettingsPage() {
                         <div className="mt-6 flex justify-end">
                             <Button
                                 onClick={() => toast.success("Preferências salvas!")}
-                                className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500"
+                                className="bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF]"
                             >
                                 Salvar preferências
                             </Button>
@@ -373,7 +373,7 @@ export default function SettingsPage() {
                             <button
                                 onClick={() => setTheme("light")}
                                 className={`relative p-4 rounded-xl border-2 transition-all ${theme === "light"
-                                    ? "border-violet-500 bg-violet-500/10"
+                                    ? "border-[#6F00FF]/50 bg-[#6F00FF]/50/10"
                                     : "border-border hover:border-muted-foreground"
                                     }`}
                             >
@@ -384,7 +384,7 @@ export default function SettingsPage() {
                                     <span className="font-medium text-foreground">Claro</span>
                                 </div>
                                 {theme === "light" && (
-                                    <div className="absolute top-2 right-2 w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center">
+                                    <div className="absolute top-2 right-2 w-5 h-5 bg-[#6F00FF]/50 rounded-full flex items-center justify-center">
                                         <Check className="w-3 h-3 text-white" />
                                     </div>
                                 )}
@@ -393,7 +393,7 @@ export default function SettingsPage() {
                             <button
                                 onClick={() => setTheme("dark")}
                                 className={`relative p-4 rounded-xl border-2 transition-all ${theme === "dark"
-                                    ? "border-violet-500 bg-violet-500/10"
+                                    ? "border-[#6F00FF]/50 bg-[#6F00FF]/50/10"
                                     : "border-border hover:border-muted-foreground"
                                     }`}
                             >
@@ -404,7 +404,7 @@ export default function SettingsPage() {
                                     <span className="font-medium text-foreground">Escuro</span>
                                 </div>
                                 {theme === "dark" && (
-                                    <div className="absolute top-2 right-2 w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center">
+                                    <div className="absolute top-2 right-2 w-5 h-5 bg-[#6F00FF]/50 rounded-full flex items-center justify-center">
                                         <Check className="w-3 h-3 text-white" />
                                     </div>
                                 )}

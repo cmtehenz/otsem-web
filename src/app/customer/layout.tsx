@@ -192,7 +192,7 @@ function CustomerSidebar({ kycStatus }: { kycStatus: string }) {
                     />
                     <span className="text-lg font-bold">
                         <span className="text-amber-500 dark:text-amber-400">Otsem</span>
-                        <span className="text-violet-600 dark:text-violet-400">Pay</span>
+                        <span className="text-[#6F00FF] dark:text-[#6F00FF]">Pay</span>
                     </span>
                 </Link>
             </SidebarHeader>
@@ -222,12 +222,12 @@ function CustomerSidebar({ kycStatus }: { kycStatus: string }) {
                                                 isActive={active}
                                                 className={
                                                     active
-                                                        ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-500 hover:to-purple-500 rounded-xl mx-2"
+                                                        ? "bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] text-white hover:from-[#6F00FF]/50 hover:to-[#6F00FF] rounded-xl mx-2"
                                                         : "text-foreground/70 hover:bg-accent hover:text-foreground rounded-xl mx-2"
                                                 }
                                             >
                                                 <Link href={item.href} className="flex items-center gap-3 px-3 py-2">
-                                                    <Icon className={active ? "h-4 w-4 text-white" : "h-4 w-4 text-violet-600 dark:text-violet-400"} />
+                                                    <Icon className={active ? "h-4 w-4 text-white" : "h-4 w-4 text-[#6F00FF] dark:text-[#6F00FF]"} />
                                                     <span className="font-medium">{item.label}</span>
                                                 </Link>
                                             </SidebarMenuButton>

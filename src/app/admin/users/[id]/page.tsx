@@ -629,7 +629,7 @@ export default function AdminUserDetailPage() {
                             </Button>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-3xl font-bold text-violet-600">
+                            <p className="text-3xl font-bold text-[#6F00FF]">
                                 {user.spreadPercent?.toFixed(2) ?? "0.95"}%
                             </p>
                             <p className="text-xs text-muted-foreground mt-1">
