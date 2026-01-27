@@ -53,7 +53,7 @@ const Footer = () => {
             </p>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-400/10 border border-yellow-400/20">
               <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 animate-pulse" />
-              <span className="text-[10px] font-black text-yellow-600 uppercase tracking-[0.2em]">Snapshot Global Ativo</span>
+                <span className="text-[10px] font-black text-yellow-600 uppercase tracking-[0.2em]">SISTEMA BANCÁRIO SEM FRONTEIRAS</span>
             </div>
           </motion.div>
 
