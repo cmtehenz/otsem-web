@@ -30,7 +30,7 @@ const CTABanner = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-primary via-[#8B2FFF] to-primary animate-gradient-shift" />
 
           <div className="absolute -top-16 -left-16 w-40 h-40 bg-white/8 rounded-full blur-2xl" />
-          <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-violet-400/12 rounded-full blur-2xl" />
+          <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-[#6F00FF]/12 rounded-full blur-2xl" />
 
           <div className="relative z-10 p-6 sm:p-10 md:p-12 text-center">
             <motion.div
