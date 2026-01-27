@@ -350,8 +350,8 @@
     .btn-premium:active {
         transform: scale(0.97);
         box-shadow: 
-            0 0 0 0.5px rgba(124, 58, 237, 0.5),
-            0 2px 6px rgba(124, 58, 237, 0.25);
+            0 0 0 0.5px rgba(111, 0, 255, 0.5),
+            0 2px 6px rgba(111, 0, 255, 0.25);
     }
 
     .btn-premium-outline {
