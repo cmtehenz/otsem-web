@@ -54,7 +54,8 @@ const StatsGrid = () => {
             className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-yellow-400 text-yellow-950 font-black text-[10px] uppercase tracking-[0.4em] mb-8 shadow-xl shadow-yellow-400/20"
           >
             <div className="w-2 h-2 rounded-full bg-yellow-950 animate-pulse" />
-            Snapshot em Tempo Real
+              SISTEMA BANCÁRIO SEM FRONTEIRAS
+
           </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
