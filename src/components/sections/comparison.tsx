@@ -10,7 +10,7 @@ const ComparisonSection = () => {
     { label: "IOF", value: "3.5%" },
     { label: "Tarifa bancaria", value: "0,1% a 2%" },
     { label: "Swift internacional", value: "R$ 100 a R$ 450" },
-    { label: "Tempo de liquidação", value: "2 a 5 dias uteis" },
+    { label: "Tempo de liquidação", value: "2 a 5 dias uteis - autorização do seu banco" },
   ];
 
   const otcItems = [
