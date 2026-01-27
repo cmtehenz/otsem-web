@@ -11,7 +11,6 @@ const stats = [
     label: "Mercado OTC global em 2024",
     color: "bg-primary/5",
     iconColor: "text-primary",
-    span: "col-span-1 md:col-span-2 lg:col-span-2",
   },
   {
     icon: Globe2,
@@ -19,7 +18,6 @@ const stats = [
     label: "Volume LATAM do mercado global",
     color: "bg-yellow-400/5",
     iconColor: "text-yellow-600",
-    span: "col-span-1 md:col-span-2 lg:col-span-2",
   },
   {
     icon: Timer,
@@ -27,7 +25,6 @@ const stats = [
     label: "Tempo de liquidacao ultra-rapida",
     color: "bg-primary/5",
     iconColor: "text-primary",
-    span: "col-span-1 md:col-span-2 lg:col-span-1",
   },
   {
     icon: BadgeCheck,
@@ -35,7 +32,6 @@ const stats = [
     label: "Sem imposto sobre operacoes",
     color: "bg-emerald-500/5",
     iconColor: "text-emerald-600",
-    span: "col-span-1 md:col-span-2 lg:col-span-3",
   },
 ];
 
