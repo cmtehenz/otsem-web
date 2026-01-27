@@ -231,7 +231,7 @@
     }
 
     .glass-nav {
-        @apply bg-white/40 border-b border-white/60 shadow-xl shadow-purple-500/[0.02];
+        @apply bg-white/40 border-b border-white/60 shadow-xl shadow-primary/[0.02];
         -webkit-backdrop-filter: blur(32px);
         backdrop-filter: blur(32px);
     }
