@@ -21,59 +21,59 @@ const CTABanner = () => {
     <section className="relative z-10 section-padding container-mobile">
       <div className="mx-auto max-w-4xl">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ type: "spring", stiffness: 80, damping: 18 }}
-          className="relative overflow-hidden rounded-[28px] sm:rounded-[32px] shadow-xl"
+          className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] shadow-xl"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-primary via-violet-600 to-primary" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary via-violet-600 to-primary animate-gradient-shift" />
 
-          <div className="absolute -top-20 -left-20 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
-          <div className="absolute -bottom-20 -right-20 w-56 h-56 bg-violet-400/15 rounded-full blur-2xl" />
+          <div className="absolute -top-16 -left-16 w-40 h-40 bg-white/8 rounded-full blur-2xl" />
+          <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-violet-400/12 rounded-full blur-2xl" />
 
-          <div className="relative z-10 p-8 sm:p-12 md:p-14 text-center">
+          <div className="relative z-10 p-6 sm:p-10 md:p-12 text-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.08 }}
-              className="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full bg-white/15 border border-white/20"
+              transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.06 }}
+              className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-white/12 border border-white/15"
             >
-              <Sparkles className="h-3.5 w-3.5 text-white" strokeWidth={2} />
-              <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-white">Oferta limitada</span>
+              <Sparkles className="h-3 w-3 text-white" strokeWidth={2} />
+              <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-white">Oferta limitada</span>
             </motion.div>
 
             <motion.h2
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.12 }}
-              className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tightest text-white mb-5 leading-tight"
+              transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.1 }}
+              className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tightest text-white mb-4 leading-tight"
             >
               Pronto para mover seu <br className="hidden sm:block" /> capital com liberdade?
             </motion.h2>
 
             <motion.p
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.16 }}
-              className="max-w-md mx-auto text-sm sm:text-base text-white/80 leading-relaxed font-medium mb-8"
+              transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.14 }}
+              className="max-w-md mx-auto text-[13px] sm:text-[14px] text-white/75 leading-relaxed font-medium mb-6"
             >
               Crie sua conta gratuitamente e comece a transacionar BRL e USDT em minutos.
             </motion.p>
 
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.2 }}
-              className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 mb-8"
+              transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.18 }}
+              className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 mb-6"
             >
               <motion.div whileTap={{ scale: 0.97 }} className="w-full sm:w-auto">
                 <Link href="/register" onClick={handleButtonClick} className="block">
-                  <button className="w-full sm:w-auto h-12 px-7 rounded-xl bg-white text-primary font-semibold text-[14px] flex items-center justify-center gap-2 shadow-lg">
+                  <button className="w-full sm:w-auto h-11 px-6 rounded-xl bg-white text-primary font-semibold text-[13px] flex items-center justify-center gap-2 shadow-lg ios-touch-effect">
                     Criar conta grátis
                     <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
                   </button>
@@ -81,7 +81,7 @@ const CTABanner = () => {
               </motion.div>
               <motion.div whileTap={{ scale: 0.97 }} className="w-full sm:w-auto">
                 <Link href="/login" onClick={() => haptic.light()} className="block">
-                  <button className="w-full sm:w-auto h-12 px-7 rounded-xl border border-white/25 bg-white/10 text-white font-semibold text-[14px]">
+                  <button className="w-full sm:w-auto h-11 px-6 rounded-xl border border-white/20 bg-white/8 text-white font-semibold text-[13px] ios-touch-effect">
                     Já tenho conta
                   </button>
                 </Link>
@@ -89,16 +89,16 @@ const CTABanner = () => {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.24 }}
-              className="flex flex-wrap justify-center gap-4 sm:gap-6"
+              transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.22 }}
+              className="flex flex-wrap justify-center gap-3 sm:gap-5"
             >
               {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center gap-2 text-[11px] sm:text-[12px] font-medium text-white/70">
-                  <div className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20">
-                    <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                <div key={index} className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-white/65">
+                  <div className="flex items-center justify-center w-4 h-4 rounded-full bg-white/15">
+                    <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
                   </div>
                   <span>{benefit}</span>
                 </div>
