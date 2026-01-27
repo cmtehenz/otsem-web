@@ -45,44 +45,44 @@ const HowItWorks = () => {
           </div>
           <h2 className="text-4xl md:text-6xl font-black tracking-tightest text-slate-900 leading-[0.9]">
             Como funciona <br />
-            <span className="text-violet-500 text-3xl md:text-5xl lg:text-6xl">
-              o ecossistema.
-            </span>
-          </h2>
-        </motion.div>
-
-        <div className="grid gap-6 md:grid-cols-3">
-          {steps.map((step, index) => (
-            <motion.div
-              key={step.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                type: "spring",
-                stiffness: 120,
-                damping: 25,
-                delay: index * 0.1,
-              }}
-              className="group relative rich-glass rounded-[2.5rem] p-8 sm:p-10 border border-white/40 shadow-xl shadow-black/5"
-            >
-              <span
-                className="absolute right-8 top-8 text-4xl font-black text-violet-500 select-none pointer-events-none group-hover:text-violet-700 transition-colors duration-500"
-                aria-hidden="true"
-              >
-                {step.id}
+            <span className="text-primary text-3xl md:text-5xl lg:text-6xl">
+                o ecossistema.
               </span>
-
-              <div className="relative z-10 space-y-8">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white border border-primary/10 shadow-sm transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
-                  <step.icon
-                    className="h-7 w-7 text-primary"
-                    strokeWidth={1.5}
-                  />
-                </div>
-
-                <div>
-                  <h3 className="text-xl font-black tracking-tight text-slate-900 mb-4 transition-colors group-hover:text-violet-600">
+            </h2>
+          </motion.div>
+  
+          <div className="grid gap-6 md:grid-cols-3">
+            {steps.map((step, index) => (
+              <motion.div
+                key={step.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  type: "spring",
+                  stiffness: 120,
+                  damping: 25,
+                  delay: index * 0.1,
+                }}
+                className="group relative rich-glass rounded-[2.5rem] p-8 sm:p-10 border border-white/40 shadow-xl shadow-black/5"
+              >
+                <span
+                  className="absolute right-8 top-8 text-4xl font-black text-primary select-none pointer-events-none group-hover:text-primary transition-colors duration-500"
+                  aria-hidden="true"
+                >
+                  {step.id}
+                </span>
+  
+                <div className="relative z-10 space-y-8">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white border border-primary/10 shadow-sm transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                    <step.icon
+                      className="h-7 w-7 text-primary"
+                      strokeWidth={1.5}
+                    />
+                  </div>
+  
+                  <div>
+                    <h3 className="text-xl font-black tracking-tight text-slate-900 mb-4 transition-colors group-hover:text-primary">
                     {step.title}
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed font-medium">
