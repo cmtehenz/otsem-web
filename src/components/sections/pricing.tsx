@@ -65,78 +65,78 @@ const Pricing = () => {
           </p>
         </motion.div>
 
-        <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
-          {plans.map((plan, index) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                type: "spring",
-                stiffness: 100,
-                damping: 20,
-                delay: index * 0.1
-              }}
-              className={`relative premium-card group ${
-                plan.popular
-                  ? "border-primary/30 shadow-primary/10"
-                  : ""
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-4 right-8 z-20">
-                  <span className="px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-white bg-primary rounded-full shadow-xl shadow-primary/40">
-                    Mais Popular
-                  </span>
-                </div>
-              )}
-
-              <div className="mb-10">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className={`flex h-14 w-14 items-center justify-center rounded-2xl transition-transform duration-500 group-hover:rotate-6 ${plan.popular ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'bg-primary/10 text-primary'}`}>
-                    <plan.icon className="h-7 w-7" strokeWidth={2.5} />
+<div className="mx-auto grid max-w-5xl gap-6 lg:gap-8 md:grid-cols-2">
+            {plans.map((plan, index) => (
+              <motion.div
+                key={plan.name}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 20,
+                  delay: index * 0.1
+                }}
+                className={`relative p-8 lg:p-10 rounded-3xl bg-white border group transition-all duration-300 hover:shadow-2xl ${
+                  plan.popular
+                    ? "border-primary/40 shadow-xl shadow-primary/10"
+                    : "border-slate-200 shadow-lg"
+                }`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
+                    <span className="px-5 py-2 text-[11px] font-black uppercase tracking-widest text-white bg-primary rounded-full shadow-lg shadow-primary/30">
+                      Mais Popular
+                    </span>
                   </div>
-                  <h3 className="text-2xl font-black text-slate-900 tracking-tight">{plan.name}</h3>
-                </div>
-                <p className="text-base text-muted-foreground font-semibold">{plan.description}</p>
-              </div>
+                )}
 
-              <div className="mb-10 p-6 rounded-3xl bg-black/[0.02] border border-black/[0.03]">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">{plan.priceLabel}</span>
-                <div className="flex items-baseline gap-2 mt-2">
-                  <span className="text-5xl sm:text-6xl font-black tracking-tighter text-slate-900">{plan.price}</span>
-                  <span className="text-sm text-muted-foreground font-bold uppercase tracking-widest">{plan.priceSuffix}</span>
-                </div>
-              </div>
-
-              <ul className="mb-10 space-y-4">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-4">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                      <Check className="h-3.5 w-3.5 text-emerald-600" strokeWidth={4} />
+                <div className="mb-8">
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className={`flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-500 group-hover:scale-110 ${plan.popular ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'bg-primary/10 text-primary'}`}>
+                      <plan.icon className="h-6 w-6" strokeWidth={2} />
                     </div>
-                    <span className="text-base text-slate-700 font-bold">{feature}</span>
-                  </li>
-                ))}
-              </ul>
+                    <h3 className="text-xl lg:text-2xl font-black text-slate-900 tracking-tight">{plan.name}</h3>
+                  </div>
+                  <p className="text-sm text-slate-500 font-medium">{plan.description}</p>
+                </div>
 
-              <Link href="/register" onClick={handleButtonClick}>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`w-full rounded-2xl py-5 text-base font-black transition-all shadow-2xl ${
-                    plan.popular
-                      ? "btn-premium"
-                      : "btn-premium-outline"
-                  }`}
-                >
-                  {plan.cta}
-                </motion.button>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+                <div className="mb-8 p-5 rounded-2xl bg-slate-50 border border-slate-100">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{plan.priceLabel}</span>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="text-4xl lg:text-5xl font-black tracking-tight text-slate-900">{plan.price}</span>
+                    <span className="text-xs text-slate-500 font-semibold">{plan.priceSuffix}</span>
+                  </div>
+                </div>
+
+                <ul className="mb-8 space-y-3">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-3">
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100">
+                        <Check className="h-3 w-3 text-emerald-600" strokeWidth={3} />
+                      </div>
+                      <span className="text-sm text-slate-700 font-semibold">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link href="/register" onClick={handleButtonClick}>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`w-full rounded-xl py-4 text-sm font-bold transition-all ${
+                      plan.popular
+                        ? "bg-primary text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40"
+                        : "bg-slate-900 text-white hover:bg-slate-800"
+                    }`}
+                  >
+                    {plan.cta}
+                  </motion.button>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
       </div>
     </section>
   );
