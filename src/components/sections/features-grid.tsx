@@ -115,31 +115,31 @@ const FeaturesGrid = () => {
           </div>
         </div>
 
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {mainFeatures.map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                type: "spring",
-                stiffness: 100,
-                damping: 20,
-                delay: index * 0.1
-              }}
-              className="liquid-glass p-10 rounded-[3rem] border-white/40 group hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500"
-            >
-              <div className="mb-10 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 border border-primary/10 transition-all duration-500 group-hover:scale-110 group-hover:shadow-lg">
-                <feature.icon className="h-8 w-8 text-primary" strokeWidth={1.5} />
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">{feature.title}</h3>
-              <p className="text-[15px] text-muted-foreground leading-relaxed font-semibold opacity-80 group-hover:opacity-100 transition-opacity">
-                {feature.description}
-              </p>
-            </motion.div>
-          ))}
-        </div>
+<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {mainFeatures.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 20,
+                  delay: index * 0.1
+                }}
+                className="liquid-glass p-6 sm:p-8 rounded-2xl border-white/40 group hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 flex flex-col"
+              >
+                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 border border-primary/10 transition-all duration-500 group-hover:scale-110 group-hover:shadow-lg flex-shrink-0">
+                  <feature.icon className="h-7 w-7 text-primary" strokeWidth={1.5} />
+                </div>
+                <h3 className="text-lg sm:text-xl font-black text-slate-900 mb-3 tracking-tight">{feature.title}</h3>
+                <p className="text-sm text-slate-600 leading-relaxed font-medium">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
       </div>
     </section>
   );
