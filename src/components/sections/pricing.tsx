@@ -19,7 +19,7 @@ const Pricing = () => {
       price: "3%",
       priceSuffix: "por transação",
       features: [
-        "Liquidação em 10-30 min",
+        "Liquidação imediata",
         "0% IOF (isento)",
         "Contratos personalizados",
         "Suporte dedicado"

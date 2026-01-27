@@ -21,7 +21,7 @@ const stats = [
   },
   {
     icon: Timer,
-    value: "10-30m",
+    value: "Imediato",
     label: "Tempo de liquidacao ultra-rapida",
     color: "bg-primary/5",
     iconColor: "text-primary",
