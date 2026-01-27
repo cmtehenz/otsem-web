@@ -44,7 +44,7 @@ const Footer = () => {
                 className="w-10 h-10 object-contain transition-transform duration-500 group-hover:rotate-12"
               />
               <span className="text-[1.5rem] font-black tracking-tighter">
-                <span className="text-violet-600">Otsem</span>
+                <span className="text-primary">Otsem</span>
                 <span className="text-slate-900">Pay</span>
               </span>
             </Link>
