@@ -18,10 +18,9 @@ import Link from "next/link";
 
 const HeroSection = () => {
   const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, 150]);
+  const y1 = useTransform(scrollY, [0, 500], [0, 100]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
-
-  const springY = useSpring(y1, { stiffness: 100, damping: 20 });
+  const springY = useSpring(y1, { stiffness: 80, damping: 20 });
 
   const handleButtonClick = useCallback(() => {
     haptic.medium();
@@ -32,22 +31,22 @@ const HeroSection = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.05,
+        staggerChildren: 0.08,
         delayChildren: 0.1
       }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 24 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         type: "spring" as const,
-        stiffness: 150,
-        damping: 25,
-        mass: 1
+        stiffness: 120,
+        damping: 20,
+        mass: 0.8
       }
     }
   };
@@ -56,64 +55,64 @@ const HeroSection = () => {
   const wavePath2 = "M 0 50 Q 250 90 500 50 T 1000 50";
 
   return (
-    <section className="relative z-10 min-h-[100dvh] flex flex-col pt-24 lg:pt-32 overflow-hidden">
+    <section className="relative z-10 min-h-[100dvh] flex flex-col pt-20 sm:pt-24 lg:pt-28 overflow-hidden">
       <motion.div
         animate={{
-          x: [0, 30, 0],
-          y: [0, -20, 0],
+          x: [0, 20, 0],
+          y: [0, -15, 0],
+          scale: [1, 1.06, 1]
+        }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-[-5%] right-[-10%] w-[80vw] sm:w-[60vw] h-[80vw] sm:h-[60vw] max-w-[500px] max-h-[500px] bg-primary/8 blur-[100px] rounded-full pointer-events-none"
+      />
+      <motion.div
+        animate={{
+          x: [0, -25, 0],
+          y: [0, 20, 0],
           scale: [1, 1.1, 1]
         }}
-        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[-10%] right-[-5%] w-[60vw] h-[60vw] bg-primary/10 blur-[140px] rounded-full pointer-events-none"
-      />
-      <motion.div
-        animate={{
-          x: [0, -40, 0],
-          y: [0, 30, 0],
-          scale: [1, 1.2, 1]
-        }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-primary/10 blur-[120px] rounded-full pointer-events-none"
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        className="absolute bottom-[-5%] left-[-15%] w-[70vw] sm:w-[50vw] h-[70vw] sm:h-[50vw] max-w-[400px] max-h-[400px] bg-primary/8 blur-[80px] rounded-full pointer-events-none"
       />
 
-      <div className="container mx-auto px-6 flex-grow flex flex-col lg:flex-row items-center gap-12 lg:gap-20 py-12">
+      <div className="container mx-auto px-5 sm:px-6 flex-grow flex flex-col lg:flex-row items-center gap-8 lg:gap-16 py-8 sm:py-12">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
           className="w-full lg:w-[55%] text-left relative z-20"
         >
-          <motion.div variants={itemVariants} className="mb-10">
-            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-violet-100 border border-primary/30 shadow-xl shadow-black/5 text-primary font-black text-[10px] uppercase tracking-[0.4em]">
-              <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(124,58,237,0.5)]" />
-                <span className="whitespace-nowrap">SISTEMA BANCÁRIO SEM FRONTEIRAS</span>
+          <motion.div variants={itemVariants} className="mb-6 sm:mb-8">
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-violet-50 border border-primary/15 shadow-sm text-primary font-semibold text-[10px] sm:text-[11px] uppercase tracking-[0.2em]">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              <span className="whitespace-nowrap">Sistema sem fronteiras</span>
             </div>
           </motion.div>
 
           <motion.h1
             variants={itemVariants}
-            className="font-black tracking-tightest leading-[0.9] mb-12 relative"
+            className="font-bold tracking-tightest leading-[0.95] mb-6 sm:mb-8 relative"
           >
-            <div className="relative mb-1 overflow-visible">
-              <span className="text-5xl sm:text-6xl md:text-7xl lg:text-[6.5rem] xl:text-[7.5rem] text-slate-900 block">
+            <div className="relative mb-1">
+              <span className="text-[11vw] sm:text-5xl md:text-6xl lg:text-[5.5rem] text-slate-900 block leading-[1.05]">
                 Sua ponte
               </span>
             </div>
 
-            <div className="relative h-8 sm:h-12 lg:h-14 -my-2 sm:-my-4 lg:-my-6 z-10 overflow-visible">
+            <div className="relative h-6 sm:h-10 lg:h-12 -my-1 sm:-my-3 z-10">
               <motion.div
                 initial={{ opacity: 0, scaleX: 0 }}
                 animate={{ opacity: 1, scaleX: 1 }}
-                transition={{ duration: 1, delay: 0.5, type: "spring", stiffness: 60 }}
+                transition={{ duration: 0.8, delay: 0.4, type: "spring", stiffness: 50 }}
                 className="absolute inset-0 flex items-center justify-center"
               >
                 <svg viewBox="0 0 1000 100" className="w-full h-full overflow-visible">
                   <defs>
                     <linearGradient id="waveGradientHero" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" stopColor="#FACC15" stopOpacity="0" />
-                      <stop offset="20%" stopColor="#FACC15" stopOpacity="0.8" />
+                      <stop offset="20%" stopColor="#FACC15" stopOpacity="0.7" />
                       <stop offset="50%" stopColor="#FDE047" stopOpacity="1" />
-                      <stop offset="80%" stopColor="#FACC15" stopOpacity="0.8" />
+                      <stop offset="80%" stopColor="#FACC15" stopOpacity="0.7" />
                       <stop offset="100%" stopColor="#FACC15" stopOpacity="0" />
                     </linearGradient>
                   </defs>
@@ -121,28 +120,18 @@ const HeroSection = () => {
                     d={wavePath1}
                     fill="none"
                     stroke="url(#waveGradientHero)"
-                    strokeWidth="8"
+                    strokeWidth="6"
                     strokeLinecap="round"
                     animate={{ d: [wavePath1, wavePath2, wavePath1] }}
-                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                    style={{ filter: "drop-shadow(0 0 12px rgba(250, 204, 21, 0.6))" }}
-                  />
-                  <motion.path
-                    d={wavePath2}
-                    fill="none"
-                    stroke="url(#waveGradientHero)"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    opacity="0.3"
-                    animate={{ d: [wavePath2, wavePath1, wavePath2] }}
-                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                    style={{ filter: "drop-shadow(0 0 8px rgba(250, 204, 21, 0.5))" }}
                   />
                 </svg>
               </motion.div>
             </div>
 
-            <div className="relative overflow-visible">
-              <span className="text-[10vw] sm:text-[9vw] lg:text-[7rem] xl:text-[8rem] text-primary leading-none">
+            <div className="relative">
+              <span className="text-[11vw] sm:text-5xl md:text-6xl lg:text-[5.5rem] text-primary leading-[1.05]">
                 liquida <span className="text-slate-900">global.</span>
               </span>
             </div>
@@ -150,39 +139,38 @@ const HeroSection = () => {
 
           <motion.p
             variants={itemVariants}
-            className="max-w-xl text-lg md:text-xl text-slate-700 font-medium leading-relaxed mb-12"
+            className="max-w-lg text-base sm:text-lg text-slate-600 font-medium leading-relaxed mb-8 sm:mb-10"
           >
-            Converta BRL em USDT instantaneamente com <span className="text-slate-900 font-black">segurança institucional</span> e as menores taxas do mercado global.
+            Converta BRL em USDT instantaneamente com <span className="text-slate-900 font-semibold">segurança institucional</span> e as menores taxas do mercado.
           </motion.p>
 
           <motion.div
             variants={itemVariants}
-            className="flex flex-col sm:flex-row items-center gap-5"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4"
           >
             <motion.div
-              whileHover={{ y: -3, scale: 1.01 }}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.97 }}
+              className="w-full sm:w-auto"
             >
               <Link
                 href="/register"
-                className="w-full sm:w-auto"
+                className="block w-full"
                 onClick={handleButtonClick}
               >
-                <button className="btn-premium w-full sm:w-auto group px-8 py-4 text-lg rounded-2xl font-black tracking-tight">
+                <button className="btn-premium w-full sm:w-auto group px-6 sm:px-7 py-3.5 text-[15px] rounded-[14px] font-semibold">
                   Abrir Conta VIP
-                  <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-2" />
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </button>
               </Link>
             </motion.div>
             <motion.a
               href="#como-funciona"
-              className="w-full sm:w-auto"
+              className="block w-full sm:w-auto"
               onClick={() => haptic.light()}
-              whileHover={{ y: -3, scale: 1.01 }}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.97 }}
             >
-              <button className="btn-premium-outline w-full sm:w-auto px-8 py-4 text-lg rounded-2xl font-black tracking-tight">
-                <Globe className="w-5 h-5 text-primary" />
+              <button className="btn-premium-outline w-full sm:w-auto px-6 sm:px-7 py-3.5 text-[15px] rounded-[14px] font-semibold">
+                <Globe className="w-4 h-4 text-primary" />
                 Explorar
               </button>
             </motion.a>
@@ -190,28 +178,28 @@ const HeroSection = () => {
 
           <motion.div
             variants={itemVariants}
-            className="mt-14 flex items-center gap-8 border-t border-black/[0.05] pt-10"
+            className="mt-10 sm:mt-12 flex items-center gap-5 sm:gap-6 border-t border-slate-100 pt-8 sm:pt-10"
           >
-            <div className="flex -space-x-4">
-              {[1, 2, 3, 4, 5].map((i) => (
+            <div className="flex -space-x-3">
+              {[1, 2, 3, 4].map((i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.8 + i * 0.05 }}
-                  className="w-12 h-12 rounded-full border-4 border-white bg-slate-100 overflow-hidden shadow-lg ring-1 ring-black/5"
+                  transition={{ delay: 0.6 + i * 0.05 }}
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-[3px] border-white bg-slate-100 overflow-hidden shadow-md"
                 >
                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 42}`} alt="User" />
                 </motion.div>
               ))}
-              <div className="w-12 h-12 rounded-full border-4 border-white bg-primary flex items-center justify-center text-[10px] font-black text-white shadow-lg ring-1 ring-black/5">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-[3px] border-white bg-primary flex items-center justify-center text-[9px] font-semibold text-white shadow-md">
                 +10k
               </div>
             </div>
-            <div className="text-sm font-bold text-slate-600 leading-snug">
-              <span className="text-slate-900 font-black text-lg">10.000+</span> lideres globais <br />
-              confiam na <span className="text-primary font-black">OtsemPay</span>
+            <div className="text-[13px] sm:text-sm font-medium text-slate-500 leading-snug">
+              <span className="text-slate-900 font-semibold">10.000+</span> líderes <br className="sm:hidden" />
+              confiam na <span className="text-primary font-semibold">OtsemPay</span>
             </div>
           </motion.div>
         </motion.div>
@@ -221,111 +209,107 @@ const HeroSection = () => {
           className="w-full lg:w-[45%] relative hidden lg:block"
         >
           <motion.div
-            animate={{ y: [0, -15, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-10 -right-6 z-30 bg-white border border-slate-200 p-6 rounded-[2rem] shadow-2xl group hover:scale-105 transition-transform duration-500"
-            style={{ WebkitBackdropFilter: "blur(24px)", backdropFilter: "blur(24px)" }}
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-6 -right-4 z-30 ios-card-elevated group"
           >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-yellow-400/20 flex items-center justify-center text-yellow-600 border border-yellow-400/30">
-                <Zap className="w-6 h-6" />
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-yellow-50 flex items-center justify-center text-yellow-600 border border-yellow-100">
+                <Zap className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Liquidez</p>
-                <p className="text-xl font-black text-slate-800 tracking-tight">Instantanea</p>
+                <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Liquidez</p>
+                <p className="text-lg font-semibold text-slate-800 tracking-tight">Instantânea</p>
               </div>
             </div>
           </motion.div>
 
           <motion.div
-            animate={{ y: [0, 15, 0] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            className="absolute -bottom-8 -left-12 z-30 bg-white border border-slate-200 p-6 rounded-[2rem] shadow-2xl group hover:scale-105 transition-transform duration-500"
-            style={{ WebkitBackdropFilter: "blur(24px)", backdropFilter: "blur(24px)" }}
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            className="absolute -bottom-4 -left-8 z-30 ios-card-elevated group"
           >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center text-primary border border-primary/30">
-                <ShieldCheck className="w-6 h-6" />
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/15">
+                <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Seguranca</p>
-                <p className="text-xl font-black text-slate-800 tracking-tight">Institucional</p>
+                <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Segurança</p>
+                <p className="text-lg font-semibold text-slate-800 tracking-tight">Institucional</p>
               </div>
             </div>
           </motion.div>
 
           <motion.div
             className="relative z-20"
-            initial={{ y: 50, opacity: 0 }}
+            initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+            transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1], delay: 0.2 }}
           >
-            <IPhoneMockup className="scale-105 origin-center">
+            <IPhoneMockup className="scale-100 origin-center">
               <div className="bg-gradient-to-b from-slate-50 to-white h-full overflow-hidden">
-                <div className="p-7 pt-14 space-y-8">
+                <div className="p-5 pt-12 space-y-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Patrimonio Total</p>
-                      <p className="text-4xl font-black tracking-tightest text-slate-800 mt-2">R$ 152.480</p>
+                      <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Patrimônio Total</p>
+                      <p className="text-3xl font-bold tracking-tight text-slate-800 mt-1">R$ 152.480</p>
                     </div>
-                    <div className="w-14 h-14 rounded-2xl bg-primary shadow-lg shadow-primary/20 flex items-center justify-center text-white">
-                      <Wallet className="w-7 h-7" />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-white/90 border border-slate-200 p-5 rounded-[2rem] shadow-sm">
-                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.1em]">BRL Cash</p>
-                      <p className="text-xl font-black text-slate-800 mt-1">48.2K</p>
-                    </div>
-                    <div className="bg-white/90 border border-slate-200 p-5 rounded-[2rem] shadow-sm">
-                      <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.1em]">USDT Balance</p>
-                      <p className="text-xl font-black text-primary mt-1">18.4K</p>
+                    <div className="w-11 h-11 rounded-2xl bg-primary shadow-lg shadow-primary/20 flex items-center justify-center text-white">
+                      <Wallet className="w-5 h-5" />
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between px-1">
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Atividade</p>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div className="ios-card">
+                      <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider">BRL Cash</p>
+                      <p className="text-lg font-bold text-slate-800 mt-0.5">48.2K</p>
                     </div>
+                    <div className="ios-card">
+                      <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider">USDT Balance</p>
+                      <p className="text-lg font-bold text-primary mt-0.5">18.4K</p>
+                    </div>
+                  </div>
 
-                    <div className="p-4 rounded-[2rem] bg-white border border-slate-100 flex items-center justify-between shadow-sm">
-                      <div className="flex items-center gap-4">
-                        <div className="w-11 h-11 rounded-xl bg-emerald-500/15 flex items-center justify-center border border-emerald-500/30">
-                          <ArrowDownLeft className="w-5 h-5 text-emerald-600" />
+                  <div className="space-y-2">
+                    <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider px-1">Atividade</p>
+
+                    <div className="ios-card flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center border border-emerald-100">
+                          <ArrowDownLeft className="w-4 h-4 text-emerald-600" />
                         </div>
                         <div>
-                          <p className="text-sm font-black text-slate-800">PIX Recebido</p>
-                          <p className="text-[10px] text-slate-500 font-bold">Hoje, 14:32</p>
+                          <p className="text-[13px] font-semibold text-slate-800">PIX Recebido</p>
+                          <p className="text-[10px] text-slate-400 font-medium">Hoje, 14:32</p>
                         </div>
                       </div>
-                      <p className="text-sm font-black text-emerald-600">+R$ 12.000</p>
+                      <p className="text-[13px] font-semibold text-emerald-600">+R$ 12.000</p>
                     </div>
 
-                    <div className="p-4 rounded-[2rem] bg-white border border-slate-100 flex items-center justify-between shadow-sm">
-                      <div className="flex items-center gap-4">
-                        <div className="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30">
-                          <RefreshCw className="w-5 h-5 text-primary" />
+                    <div className="ios-card flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/15">
+                          <RefreshCw className="w-4 h-4 text-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-black text-slate-800">Swap BRL → USDT</p>
-                          <p className="text-[10px] text-slate-500 font-bold">Hoje, 15:45</p>
+                          <p className="text-[13px] font-semibold text-slate-800">Swap BRL → USDT</p>
+                          <p className="text-[10px] text-slate-400 font-medium">Hoje, 15:45</p>
                         </div>
                       </div>
-                      <p className="text-sm font-black text-primary">-$ 2.450</p>
+                      <p className="text-[13px] font-semibold text-primary">-$ 2.450</p>
                     </div>
 
-                    <div className="p-4 rounded-[2rem] bg-white border border-slate-100 flex items-center justify-between shadow-sm">
-                      <div className="flex items-center gap-4">
-                        <div className="w-11 h-11 rounded-xl bg-blue-500/15 flex items-center justify-center border border-blue-500/30">
-                          <ArrowUpRight className="w-5 h-5 text-blue-600" />
+                    <div className="ios-card flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100">
+                          <ArrowUpRight className="w-4 h-4 text-blue-600" />
                         </div>
                         <div>
-                          <p className="text-sm font-black text-slate-800">Saque USDT</p>
-                          <p className="text-[10px] text-slate-500 font-bold">Ontem, 09:12</p>
+                          <p className="text-[13px] font-semibold text-slate-800">Saque USDT</p>
+                          <p className="text-[10px] text-slate-400 font-medium">Ontem, 09:12</p>
                         </div>
                       </div>
-                      <p className="text-sm font-black text-blue-600">-$ 500</p>
+                      <p className="text-[13px] font-semibold text-blue-600">-$ 500</p>
                     </div>
                   </div>
                 </div>
