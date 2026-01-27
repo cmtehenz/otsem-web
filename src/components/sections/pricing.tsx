@@ -50,7 +50,7 @@ const Pricing = () => {
         "Condições especiais"
       ],
       cta: "Falar com especialista",
-      icon: TrendingUp,
+      icon: MoneyGrowthIcon,
       popular: true,
     }
   ];
