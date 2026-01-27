@@ -32,7 +32,7 @@ export default function Home() {
             scale: [1, 1.05, 1]
           }}
           transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-          className="absolute bottom-[5%] right-[-10%] w-[60vw] h-[60vw] max-w-[500px] max-h-[500px] bg-gradient-to-tl from-violet-400/6 to-primary/4 blur-[80px] rounded-full"
+          className="absolute bottom-[5%] right-[-10%] w-[60vw] h-[60vw] max-w-[500px] max-h-[500px] bg-gradient-to-tl from-[#6F00FF]/6 to-primary/4 blur-[80px] rounded-full"
         />
         <motion.div
           animate={{
