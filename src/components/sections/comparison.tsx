@@ -11,7 +11,7 @@ const ComparisonSection = () => {
     { label: "Tarifa bancaria", value: "0,1% a 2%" },
     { label: "Swift internacional", value: "R$ 100 a R$ 450" },
     { label: "Tempo de liquidação", value: "2 a 5 dias uteis" },
-    { label: "Autorização", value: "autorização do seu banco" },
+    { label: "Autorização", value: "Autorização do seu banco" },
   ];
 
   const otcItems = [
@@ -20,7 +20,7 @@ const ComparisonSection = () => {
     { label: "Tarifa OTC", value: "Incluso no spread" },
     { label: "Transferência", value: "Sem custo adicional" },
     { label: "Tempo de liquidação", value: "Imediatamente" },
-    { label: "Autorização", value: "autorização nenhuma" },
+    { label: "Autorização", value: "Autorização nenhuma" },
   ];
 
   return (
