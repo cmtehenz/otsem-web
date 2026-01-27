@@ -128,7 +128,7 @@ function LoginPageInner(): React.JSX.Element {
                             <FeatureItem
                                 icon={<Zap className="h-5 w-5 text-yellow-500" />}
                                 title="Liquidacao rapida"
-                                desc="Operacoes finalizadas em 10-30 min"
+                                desc="Operacoes finalizadas imediatamente"
                             />
                             <FeatureItem
                                 icon={<Shield className="h-5 w-5 text-primary" />}
