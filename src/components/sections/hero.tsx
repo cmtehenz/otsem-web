@@ -73,7 +73,7 @@ const HeroSection = () => {
           scale: [1, 1.2, 1]
         }}
         transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-purple-600/10 blur-[120px] rounded-full pointer-events-none"
+        className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-primary/10 blur-[120px] rounded-full pointer-events-none"
       />
 
       <div className="container mx-auto px-6 flex-grow flex flex-col lg:flex-row items-center gap-12 lg:gap-20 py-12">
