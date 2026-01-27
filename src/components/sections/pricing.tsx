@@ -95,15 +95,19 @@ const Pricing = () => {
                 </div>
               )}
 
-              <div className="mb-4">
-                <div className="flex items-center gap-2.5 mb-1.5">
-                  <div className={`flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-105 ${plan.popular ? 'bg-primary text-white shadow-md' : 'bg-primary/10 text-primary'}`}>
-                    <plan.icon className="h-4 w-4" strokeWidth={1.75} />
+                <div className="mb-4">
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <div className={`flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-105 ${plan.popular ? 'bg-primary text-white shadow-md' : 'bg-primary/10 text-primary'}`}>
+                      {plan.iconImage ? (
+                        <Image src={plan.iconImage} alt="" width={20} height={20} className="h-5 w-5 object-contain" />
+                      ) : plan.icon ? (
+                        <plan.icon className="h-4 w-4" strokeWidth={1.75} />
+                      ) : null}
+                    </div>
+                    <h3 className="text-[14px] sm:text-base font-bold text-slate-900 tracking-tight">{plan.name}</h3>
                   </div>
-                  <h3 className="text-[14px] sm:text-base font-bold text-slate-900 tracking-tight">{plan.name}</h3>
+                  <p className="text-[11px] sm:text-[12px] text-slate-500 font-medium">{plan.description}</p>
                 </div>
-                <p className="text-[11px] sm:text-[12px] text-slate-500 font-medium">{plan.description}</p>
-              </div>
 
               <div className="mb-4 p-3 rounded-xl bg-slate-50 border border-slate-100">
                 <span className="text-[8px] font-semibold uppercase tracking-wider text-slate-400">{plan.priceLabel}</span>
