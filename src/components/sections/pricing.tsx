@@ -41,7 +41,7 @@ const Pricing = () => {
         "Condições especiais"
       ],
       cta: "Falar com especialista",
-      icon: Headphones,
+      icon: TrendingUp,
       popular: true,
     }
   ];
