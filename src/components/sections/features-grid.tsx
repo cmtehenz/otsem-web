@@ -74,13 +74,13 @@ const FeaturesGrid = () => {
               <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-primary/5 border border-primary/10 text-primary font-black text-[10px] uppercase tracking-[0.3em] mb-8">
                 Recursos Premium
               </div>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tightest text-slate-900 leading-[1.1]">
-                Ecossistema <br />
-                <span className="text-primary/40">completo.</span>
-              </h2>
-              <p className="mt-8 text-lg text-muted-foreground leading-relaxed font-semibold max-w-md">
-                Ferramentas de elite para gerenciar suas conversões com total privacidade e velocidade.
-              </p>
+<h2 className="text-4xl md:text-6xl font-black tracking-tightest text-slate-900 leading-[1.1]">
+                  Ecossistema <br />
+                  <span className="text-primary">completo.</span>
+                </h2>
+                <p className="mt-8 text-lg text-slate-600 leading-relaxed font-semibold max-w-md">
+                  Ferramentas de elite para gerenciar suas conversões com total privacidade e velocidade.
+                </p>
             </motion.div>
 
             <motion.div
