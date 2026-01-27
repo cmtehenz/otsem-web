@@ -171,32 +171,32 @@ const Header = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1, duration: 0.4 }}
-                      onClick={() => {
-                        haptic.selection();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="flex items-center justify-between px-5 py-4 text-base font-bold text-slate-700 hover:text-violet-600 hover:bg-violet-50 rounded-2xl transition-all"
+                        onClick={() => {
+                          haptic.selection();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="flex items-center justify-between px-5 py-4 text-base font-bold text-slate-700 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
+                      >
+                        {link.label}
+                        <ChevronRight className="w-5 h-5 text-slate-400" />
+                      </motion.a>
+                    ))}
+  
+                    <div className="h-px bg-slate-200 my-2 mx-4" />
+  
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3, duration: 0.4 }}
                     >
-                      {link.label}
-                      <ChevronRight className="w-5 h-5 text-slate-400" />
-                    </motion.a>
-                  ))}
-
-                  <div className="h-px bg-slate-200 my-2 mx-4" />
-
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3, duration: 0.4 }}
-                  >
-                    <Link
-                      href="/login"
-                      onClick={() => {
-                        haptic.selection();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="flex items-center justify-between px-5 py-4 text-base font-bold text-slate-700 hover:text-violet-600 hover:bg-violet-50 rounded-2xl transition-all"
-                    >
+                      <Link
+                        href="/login"
+                        onClick={() => {
+                          haptic.selection();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="flex items-center justify-between px-5 py-4 text-base font-bold text-slate-700 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
+                      >
                       Entrar
                       <ChevronRight className="w-5 h-5 text-slate-400" />
                     </Link>
