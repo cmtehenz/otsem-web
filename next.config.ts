@@ -3,12 +3,13 @@ import path from 'node:path';
 const loaderPath = require.resolve('orchids-visual-edits/loader.js');
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: [
-    '*.replit.dev',
-    '*.replit.app', 
-    '*.riker.replit.dev',
-    '*.picard.replit.dev',
-  ],
+    allowedDevOrigins: [
+      '*.replit.dev',
+      '*.replit.app', 
+      '*.riker.replit.dev',
+      '*.picard.replit.dev',
+      '*.orchids.cloud',
+    ],
   async rewrites() {
     const base =
       (process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_URL || "")
