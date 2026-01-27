@@ -73,21 +73,21 @@ const StatsGrid = () => {
           </motion.h2>
         </div>
 
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-4 lg:grid-cols-5">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{
-                type: "spring",
-                stiffness: 120,
-                damping: 25,
-                delay: index * 0.05,
-              }}
-              className={`${stat.span} relative group`}
-            >
+<div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{
+                  type: "spring",
+                  stiffness: 120,
+                  damping: 25,
+                  delay: index * 0.05,
+                }}
+                className="relative group"
+              >
               <div className="rich-glass p-8 lg:p-10 rounded-[2.5rem] h-full flex flex-col justify-between transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-2 group-hover:bg-white/60">
                 <div className="space-y-8">
                   <div
