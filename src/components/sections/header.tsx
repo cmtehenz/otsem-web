@@ -66,50 +66,50 @@ const Header = () => {
                   className="w-9 h-9 object-contain relative z-10"
                   whileHover={{ rotate: 8, scale: 1.1 }}
                 />
-              <span className="text-[1.65rem] font-black tracking-tighter flex items-center">
-                <span className="text-violet-600">Otsem</span>
-                <span className="text-slate-900">Pay</span>
-              </span>
-            </Link>
-          </motion.div>
-
-          <nav className="hidden items-center gap-2 md:flex">
-            {navLinks.map((link) => (
-              <motion.a
-                key={link.href}
-                href={link.href}
-                onClick={handleNavClick}
-                className="relative px-5 py-2.5 text-sm font-black text-slate-600 transition-all hover:text-violet-600 rounded-2xl hover:bg-violet-50"
-                whileHover={{ scale: 1.05, y: -1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {link.label}
-              </motion.a>
-            ))}
-          </nav>
-
-          <div className="hidden items-center gap-6 md:flex">
-            <motion.div whileHover={{ scale: 1.05, x: -2 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                href="/login"
-                onClick={handleNavClick}
-                className="text-sm font-black text-slate-600 hover:text-violet-600 transition-colors px-2"
-              >
-                Entrar
+                <span className="text-[1.65rem] font-black tracking-tighter flex items-center">
+                  <span className="text-primary">Otsem</span>
+                  <span className="text-slate-900">Pay</span>
+                </span>
               </Link>
             </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href="/register" onClick={handleButtonClick}>
-                <button
-                  type="button"
-                  className="btn-premium py-3 px-8 rounded-2xl text-sm shadow-2xl shadow-primary/40"
+  
+            <nav className="hidden items-center gap-2 md:flex">
+              {navLinks.map((link) => (
+                <motion.a
+                  key={link.href}
+                  href={link.href}
+                  onClick={handleNavClick}
+                  className="relative px-5 py-2.5 text-sm font-black text-slate-600 transition-all hover:text-primary rounded-2xl hover:bg-primary/5"
+                  whileHover={{ scale: 1.05, y: -1 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Sparkles className="w-4 h-4 text-yellow-300" />
-                  Criar conta
-                </button>
-              </Link>
-            </motion.div>
-          </div>
+                  {link.label}
+                </motion.a>
+              ))}
+            </nav>
+  
+            <div className="hidden items-center gap-6 md:flex">
+              <motion.div whileHover={{ scale: 1.05, x: -2 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/login"
+                  onClick={handleNavClick}
+                  className="text-sm font-black text-slate-600 hover:text-primary transition-colors px-2"
+                >
+                  Entrar
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link href="/register" onClick={handleButtonClick}>
+                  <button
+                    type="button"
+                    className="btn-premium py-3 px-8 rounded-2xl text-sm shadow-2xl shadow-primary/40"
+                  >
+                    <Sparkles className="w-4 h-4 text-yellow-300" />
+                    Criar conta
+                  </button>
+                </Link>
+              </motion.div>
+            </div>
 
           <motion.button
             className="flex items-center justify-center w-10 h-10 rounded-xl glass-nav md:hidden"
