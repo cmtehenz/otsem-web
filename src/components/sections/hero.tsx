@@ -142,7 +142,7 @@ const HeroSection = () => {
             </div>
 
             <div className="relative overflow-visible">
-              <span className="text-[10vw] sm:text-[9vw] lg:text-[7rem] xl:text-[8rem] text-violet-600 leading-none">
+              <span className="text-[10vw] sm:text-[9vw] lg:text-[7rem] xl:text-[8rem] text-primary leading-none">
                 liquida <span className="text-slate-900">global.</span>
               </span>
             </div>
