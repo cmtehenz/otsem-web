@@ -252,9 +252,7 @@
     }
 
     .btn-premium-outline {
-        @apply relative overflow-hidden bg-white/40 border-2 border-primary/20 text-foreground font-black py-4 px-10 rounded-2xl transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-black/[0.02] hover:bg-white/60 hover:border-primary/40 flex items-center justify-center gap-2;
-        -webkit-backdrop-filter: blur(24px);
-        backdrop-filter: blur(24px);
+        @apply relative overflow-hidden bg-white border-2 border-slate-300 text-slate-900 font-black py-4 px-10 rounded-2xl transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:bg-slate-50 hover:border-slate-400 flex items-center justify-center gap-2;
     }
 
     .tracking-tightest {
