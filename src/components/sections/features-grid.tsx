@@ -63,78 +63,78 @@ const FeaturesGrid = () => {
   return (
     <section id="recursos" className="relative z-10 section-padding">
       <div className="mx-auto max-w-5xl container-mobile">
-        <div className="mb-16 sm:mb-20">
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+        <div className="mb-12 sm:mb-16">
+          <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -16 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ type: "spring", stiffness: 100, damping: 18 }}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/8 border border-primary/15 text-primary font-semibold text-[10px] sm:text-[11px] uppercase tracking-[0.2em] mb-5">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/8 border border-primary/12 text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
                 Recursos Premium
               </div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tightest text-slate-900 leading-[1.1]">
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tightest text-slate-900 leading-[1.1]">
                 Ecossistema <br />
                 <span className="text-primary">completo.</span>
               </h2>
-              <p className="mt-5 text-base text-slate-600 leading-relaxed font-medium max-w-sm">
+              <p className="mt-4 text-[14px] sm:text-base text-slate-600 leading-relaxed font-medium max-w-sm">
                 Ferramentas de elite para gerenciar suas conversões com privacidade e velocidade.
               </p>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 16 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.08 }}
-              className="grid gap-3 grid-cols-2"
+              transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.06 }}
+              className="grid gap-2.5 sm:gap-3 grid-cols-2"
             >
               {secondaryFeatures.map((feature, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={{ opacity: 0, y: 14 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{
                     type: "spring",
                     stiffness: 100,
                     damping: 18,
-                    delay: index * 0.05
+                    delay: index * 0.04
                   }}
-                  className="ios-card group active:scale-[0.98] transition-transform duration-200"
+                  className="ios-card-premium group"
                 >
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/8 border border-primary/10 transition-transform duration-300 group-hover:scale-105">
-                    <feature.icon className="h-5 w-5 text-primary" strokeWidth={1.75} />
+                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-primary/8 border border-primary/10 transition-transform duration-300 group-hover:scale-105">
+                    <feature.icon className="h-4 w-4 text-primary" strokeWidth={1.75} />
                   </div>
-                  <h3 className="font-semibold text-slate-900 text-[13px] sm:text-sm tracking-tight">{feature.title}</h3>
-                  <p className="mt-1 text-[11px] sm:text-xs text-slate-500 font-medium leading-snug">{feature.description}</p>
+                  <h3 className="font-semibold text-slate-900 text-[12px] sm:text-[13px] tracking-tight">{feature.title}</h3>
+                  <p className="mt-0.5 text-[10px] sm:text-[11px] text-slate-500 font-medium leading-snug">{feature.description}</p>
                 </motion.div>
               ))}
             </motion.div>
           </div>
         </div>
 
-        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-2.5 sm:gap-3 grid-cols-2 lg:grid-cols-4">
           {mainFeatures.map((feature, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{
                 type: "spring",
                 stiffness: 100,
                 damping: 18,
-                delay: index * 0.08
+                delay: index * 0.06
               }}
-              className="ios-card-elevated group active:scale-[0.98] transition-transform duration-200"
+              className="ios-card-premium group"
             >
-              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 border border-primary/15 transition-transform duration-300 group-hover:scale-105">
-                <feature.icon className="h-5 w-5 text-primary" strokeWidth={1.75} />
+              <div className="mb-3 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/12 transition-transform duration-300 group-hover:scale-105">
+                <feature.icon className="h-4 w-4 sm:h-5 sm:w-5 text-primary" strokeWidth={1.75} />
               </div>
-              <h3 className="text-sm sm:text-base font-semibold text-slate-900 mb-2 tracking-tight">{feature.title}</h3>
-              <p className="text-[11px] sm:text-xs text-slate-500 leading-relaxed font-medium">
+              <h3 className="text-[12px] sm:text-[14px] font-semibold text-slate-900 mb-1 tracking-tight">{feature.title}</h3>
+              <p className="text-[10px] sm:text-[11px] text-slate-500 leading-relaxed font-medium">
                 {feature.description}
               </p>
             </motion.div>
