@@ -25,7 +25,7 @@ const Pricing = () => {
         "Suporte dedicado"
       ],
       cta: "Começar agora",
-      icon: Sparkles,
+        icon: ArrowLeftRight,
       popular: false,
     },
     {
