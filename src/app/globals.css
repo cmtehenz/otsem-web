@@ -215,7 +215,7 @@
     }
 
     .premium-card {
-        @apply bg-white/80 border border-white/70 rounded-3xl p-8 shadow-2xl shadow-purple-500/5;
+        @apply bg-white/80 border border-white/70 rounded-3xl p-8 shadow-2xl shadow-primary/5;
         -webkit-backdrop-filter: blur(64px);
         backdrop-filter: blur(64px);
         box-shadow:
