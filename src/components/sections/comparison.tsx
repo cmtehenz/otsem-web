@@ -39,7 +39,7 @@ const ComparisonSection = () => {
           </div>
           <h2 className="text-4xl md:text-6xl font-black tracking-tightest text-slate-900 leading-[0.9]">
             Por que migrar para <br />
-            <span className="text-primary/90 text-3xl md:text-5xl lg:text-6xl">
+            <span className="text-primary text-3xl md:text-5xl lg:text-6xl">
               o ecossistema OTC?
             </span>
           </h2>
