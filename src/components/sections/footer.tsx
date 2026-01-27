@@ -122,9 +122,9 @@ const Footer = () => {
           <p className="text-[12px] font-medium text-slate-400">
             © 2025 OtsemPay. Todos os direitos reservados.
           </p>
-          <p className="text-[12px] font-medium text-slate-400">
-            CNPJ: 00.000.000/0001-00
-          </p>
+            <p className="text-[12px] font-medium text-slate-400">
+              CNPJ: 12.474.440/0001-60
+            </p>
         </motion.div>
       </div>
     </footer>
