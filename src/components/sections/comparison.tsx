@@ -7,7 +7,7 @@ import { Building2, Zap, X, Check, Crown } from "lucide-react";
 const ComparisonSection = () => {
   const traditionalItems = [
     { label: "Spread bancário", value: "6% a 12%" },
-    { label: "IOF", value: "0,38%" },
+    { label: "IOF", value: "3.5%" },
     { label: "Tarifa bancaria", value: "0,1% a 2%" },
     { label: "Swift internacional", value: "R$ 100 a R$ 450" },
     { label: "Tempo de liquidação", value: "2 a 5 dias uteis" },
