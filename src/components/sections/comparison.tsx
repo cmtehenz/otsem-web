@@ -18,7 +18,7 @@ const ComparisonSection = () => {
     { label: "IOF", value: "0% (isento)" },
     { label: "Tarifa OTC", value: "Incluso no spread" },
     { label: "Transferência", value: "Sem custo adicional" },
-    { label: "Tempo de liquidação", value: "10 a 30 minutos" },
+    { label: "Tempo de liquidação", value: "Imediatamente" },
   ];
 
   return (
