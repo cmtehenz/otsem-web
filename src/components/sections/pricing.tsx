@@ -2,7 +2,7 @@
 
 import React, { useCallback } from "react";
 import { motion } from "framer-motion";
-import { Check, Sparkles, TrendingUp } from "lucide-react";
+import { Check, ArrowLeftRight, TrendingUp } from "lucide-react";
 import haptic from "@/lib/haptics";
 import Link from "next/link";
 
