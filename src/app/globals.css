@@ -199,14 +199,39 @@
 }
 
 @keyframes ios-glow {
-    0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.3); }
-    50% { box-shadow: 0 0 40px rgba(124, 58, 237, 0.5); }
+  0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(124, 58, 237, 0.5); }
 }
 
 @keyframes float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    25% { transform: translateY(-10px) rotate(1deg); }
-    75% { transform: translateY(5px) rotate(-1deg); }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-10px) rotate(1deg); }
+  75% { transform: translateY(5px) rotate(-1deg); }
+}
+
+@keyframes ios-scale-in {
+  0% { opacity: 0; transform: scale(0.92); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes ios-slide-up {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ios-blur-in {
+  0% { opacity: 0; filter: blur(8px); transform: scale(0.96); }
+  100% { opacity: 1; filter: blur(0); transform: scale(1); }
+}
+
+@keyframes subtle-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 @layer utilities {
