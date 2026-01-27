@@ -20,6 +20,7 @@ const ComparisonSection = () => {
     { label: "Tarifa OTC", value: "Incluso no spread" },
     { label: "Transferência", value: "Sem custo adicional" },
     { label: "Tempo de liquidação", value: "Imediatamente" },
+    { label: "Autorização", value: "autorização nenhuma" },
   ];
 
   return (
