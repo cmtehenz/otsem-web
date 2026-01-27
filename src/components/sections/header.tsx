@@ -60,12 +60,12 @@ const Header = () => {
               href="/"
               onClick={handleNavClick}
             >
-              <motion.img
-                src="/images/logo-light.png"
-                alt="OtsemPay Logo"
-                className="w-9 h-9 object-contain relative z-10"
-                whileHover={{ rotate: 8, scale: 1.1 }}
-              />
+<motion.img
+                  src="/images/logo.png"
+                  alt="OtsemPay Logo"
+                  className="w-9 h-9 object-contain relative z-10"
+                  whileHover={{ rotate: 8, scale: 1.1 }}
+                />
               <span className="text-[1.65rem] font-black tracking-tighter flex items-center">
                 <span className="text-violet-600">Otsem</span>
                 <span className="text-slate-900">Pay</span>
