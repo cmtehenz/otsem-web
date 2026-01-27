@@ -23,7 +23,7 @@ export default function Home() {
             scale: [1, 1.08, 1]
           }}
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-15%] left-[-15%] w-[70vw] h-[70vw] max-w-[600px] max-h-[600px] bg-gradient-to-br from-primary/8 to-violet-400/5 blur-[100px] rounded-full"
+          className="absolute top-[-15%] left-[-15%] w-[70vw] h-[70vw] max-w-[600px] max-h-[600px] bg-gradient-to-br from-primary/8 to-[#6F00FF]/5 blur-[100px] rounded-full"
         />
         <motion.div
           animate={{
