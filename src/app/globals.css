@@ -394,10 +394,69 @@
     }
 
     .section-padding {
-        @apply py-16 sm:py-20 lg:py-28;
+        @apply py-14 sm:py-18 lg:py-24;
     }
 
     .container-mobile {
-        @apply px-5 sm:px-6 lg:px-8;
+        @apply px-4 sm:px-6 lg:px-8;
+    }
+
+    .animate-ios-scale-in {
+        animation: ios-scale-in 0.5s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    }
+
+    .animate-ios-slide-up {
+        animation: ios-slide-up 0.6s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    }
+
+    .animate-ios-blur-in {
+        animation: ios-blur-in 0.7s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    }
+
+    .animate-subtle-float {
+        animation: subtle-float 4s ease-in-out infinite;
+    }
+
+    .animate-gradient-shift {
+        background-size: 200% 200%;
+        animation: gradient-shift 8s ease infinite;
+    }
+
+    .ios-card-premium {
+        @apply bg-white rounded-[20px] p-4 sm:p-5;
+        box-shadow: 
+            0 0 0 0.5px rgba(0, 0, 0, 0.03),
+            0 1px 3px rgba(0, 0, 0, 0.02),
+            0 8px 20px rgba(0, 0, 0, 0.05);
+        transition: all 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    .ios-card-premium:active {
+        transform: scale(0.98);
+    }
+
+    .ios-touch-effect {
+        transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease;
+    }
+
+    .ios-touch-effect:active {
+        transform: scale(0.97);
+        opacity: 0.9;
+    }
+
+    .mobile-safe-area {
+        padding-bottom: env(safe-area-inset-bottom, 20px);
+    }
+
+    .social-icon-hover {
+        @apply transition-all duration-300 ease-out;
+    }
+
+    .social-icon-hover:hover {
+        transform: scale(1.1) translateY(-2px);
+    }
+
+    .social-icon-hover:active {
+        transform: scale(0.95);
     }
 }
