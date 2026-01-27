@@ -2,7 +2,16 @@
 
 import React, { useCallback } from "react";
 import { motion } from "framer-motion";
-import { Check, ArrowLeftRight, TrendingUp } from "lucide-react";
+import { Check, ArrowLeftRight } from "lucide-react";
+
+const MoneyGrowthIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="8" width="14" height="10" rx="1" />
+    <circle cx="9" cy="13" r="2.5" />
+    <path d="M18 4v10" />
+    <path d="M15 7l3-3 3 3" />
+  </svg>
+);
 import haptic from "@/lib/haptics";
 import Link from "next/link";
 
