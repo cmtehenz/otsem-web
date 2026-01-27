@@ -16,7 +16,7 @@ const Pricing = () => {
       name: "Operação OTC",
       description: "Spread que diminui com volume",
       priceLabel: "A partir de",
-      price: "3%",
+      price: "0.98%",
       priceSuffix: "por transação",
       features: [
         "Liquidação imediata",
