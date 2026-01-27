@@ -15,7 +15,7 @@ const ComparisonSection = () => {
   ];
 
   const otcItems = [
-    { label: "Spread OTC", value: "A partir de 3%" },
+      { label: "Spread OTC", value: "A partir de 0.98%" },
     { label: "IOF", value: "0% (isento)" },
     { label: "Tarifa OTC", value: "Incluso no spread" },
     { label: "Transferência", value: "Sem custo adicional" },
