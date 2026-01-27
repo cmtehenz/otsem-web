@@ -66,10 +66,10 @@ const StatsGrid = () => {
               damping: 20,
               delay: 0.1,
             }}
-            className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tightest max-w-5xl leading-[0.9]"
-          >
-            Poder financeiro <br />
-            <span className="text-primary/80">sem fronteiras.</span>
+className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tightest max-w-5xl leading-[0.9] text-slate-900"
+            >
+              Poder financeiro <br />
+              <span className="text-primary">sem fronteiras.</span>
           </motion.h2>
         </div>
 
