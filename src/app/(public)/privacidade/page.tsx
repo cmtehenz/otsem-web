@@ -295,8 +295,8 @@ A data da última atualização será sempre indicada no topo desta página.`}
                 <p className="mt-2 text-white/70">
                   E-mail: privacidade@otsembank.com.br<br />
                   Endereço: São Paulo, SP - Brasil<br />
-                  CNPJ: 00.000.000/0001-00
-                </p>
+                    CNPJ: 12.474.440/0001-60
+                  </p>
               </div>
             </div>
           </Section>
