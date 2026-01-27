@@ -86,7 +86,7 @@ const HeroSection = () => {
           <motion.div variants={itemVariants} className="mb-10">
             <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-violet-100 border border-primary/30 shadow-xl shadow-black/5 text-primary font-black text-[10px] uppercase tracking-[0.4em]">
               <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(124,58,237,0.5)]" />
-              <span className="whitespace-nowrap">Sistema Bancário Sem Fronteiras</span>
+                <span className="whitespace-nowrap">SISTEMA BANCÁRIO SEM FRONTEIRAS</span>
             </div>
           </motion.div>
 
