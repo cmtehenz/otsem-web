@@ -31,21 +31,22 @@ const HeroSection = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1
+        staggerChildren: 0.06,
+        delayChildren: 0.08
       }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 24 },
+    hidden: { opacity: 0, y: 20, filter: "blur(4px)" },
     visible: {
       opacity: 1,
       y: 0,
+      filter: "blur(0px)",
       transition: {
         type: "spring" as const,
-        stiffness: 120,
-        damping: 20,
+        stiffness: 100,
+        damping: 18,
         mass: 0.8
       }
     }
@@ -58,32 +59,32 @@ const HeroSection = () => {
     <section className="relative z-10 min-h-[100dvh] flex flex-col pt-20 sm:pt-24 lg:pt-28 overflow-hidden">
       <motion.div
         animate={{
-          x: [0, 20, 0],
-          y: [0, -15, 0],
-          scale: [1, 1.06, 1]
+          x: [0, 15, 0],
+          y: [0, -10, 0],
+          scale: [1, 1.04, 1]
         }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[-5%] right-[-10%] w-[80vw] sm:w-[60vw] h-[80vw] sm:h-[60vw] max-w-[500px] max-h-[500px] bg-primary/8 blur-[100px] rounded-full pointer-events-none"
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-[-8%] right-[-12%] w-[75vw] sm:w-[55vw] h-[75vw] sm:h-[55vw] max-w-[450px] max-h-[450px] bg-primary/6 blur-[80px] rounded-full pointer-events-none"
       />
       <motion.div
         animate={{
-          x: [0, -25, 0],
-          y: [0, 20, 0],
-          scale: [1, 1.1, 1]
+          x: [0, -20, 0],
+          y: [0, 15, 0],
+          scale: [1, 1.08, 1]
         }}
-        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute bottom-[-5%] left-[-15%] w-[70vw] sm:w-[50vw] h-[70vw] sm:h-[50vw] max-w-[400px] max-h-[400px] bg-primary/8 blur-[80px] rounded-full pointer-events-none"
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        className="absolute bottom-[-8%] left-[-12%] w-[65vw] sm:w-[45vw] h-[65vw] sm:h-[45vw] max-w-[380px] max-h-[380px] bg-primary/6 blur-[70px] rounded-full pointer-events-none"
       />
 
-      <div className="container mx-auto px-5 sm:px-6 flex-grow flex flex-col lg:flex-row items-center gap-8 lg:gap-16 py-8 sm:py-12">
+      <div className="container mx-auto px-4 sm:px-6 flex-grow flex flex-col lg:flex-row items-center gap-6 lg:gap-12 py-6 sm:py-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
           className="w-full lg:w-[55%] text-left relative z-20"
         >
-          <motion.div variants={itemVariants} className="mb-6 sm:mb-8">
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-violet-50 border border-primary/15 shadow-sm text-primary font-semibold text-[10px] sm:text-[11px] uppercase tracking-[0.2em]">
+          <motion.div variants={itemVariants} className="mb-5 sm:mb-6">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-violet-50 border border-primary/12 shadow-sm text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.18em]">
               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               <span className="whitespace-nowrap">Sistema sem fronteiras</span>
             </div>
@@ -91,19 +92,19 @@ const HeroSection = () => {
 
           <motion.h1
             variants={itemVariants}
-            className="font-bold tracking-tightest leading-[0.95] mb-6 sm:mb-8 relative"
+            className="font-bold tracking-tightest leading-[0.95] mb-5 sm:mb-7 relative"
           >
-            <div className="relative mb-1">
-              <span className="text-[11vw] sm:text-5xl md:text-6xl lg:text-[5.5rem] text-slate-900 block leading-[1.05]">
+            <div className="relative mb-0.5">
+              <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-slate-900 block leading-[1.05]">
                 Sua ponte
               </span>
             </div>
 
-            <div className="relative h-6 sm:h-10 lg:h-12 -my-1 sm:-my-3 z-10">
+            <div className="relative h-5 sm:h-8 lg:h-10 -my-0.5 sm:-my-2 z-10">
               <motion.div
                 initial={{ opacity: 0, scaleX: 0 }}
                 animate={{ opacity: 1, scaleX: 1 }}
-                transition={{ duration: 0.8, delay: 0.4, type: "spring", stiffness: 50 }}
+                transition={{ duration: 0.7, delay: 0.35, type: "spring", stiffness: 50 }}
                 className="absolute inset-0 flex items-center justify-center"
               >
                 <svg viewBox="0 0 1000 100" className="w-full h-full overflow-visible">
@@ -120,18 +121,18 @@ const HeroSection = () => {
                     d={wavePath1}
                     fill="none"
                     stroke="url(#waveGradientHero)"
-                    strokeWidth="6"
+                    strokeWidth="5"
                     strokeLinecap="round"
                     animate={{ d: [wavePath1, wavePath2, wavePath1] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                    style={{ filter: "drop-shadow(0 0 8px rgba(250, 204, 21, 0.5))" }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                    style={{ filter: "drop-shadow(0 0 6px rgba(250, 204, 21, 0.4))" }}
                   />
                 </svg>
               </motion.div>
             </div>
 
             <div className="relative">
-              <span className="text-[11vw] sm:text-5xl md:text-6xl lg:text-[5.5rem] text-primary leading-[1.05]">
+              <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-primary leading-[1.05]">
                 liquida <span className="text-slate-900">global.</span>
               </span>
             </div>
@@ -139,14 +140,14 @@ const HeroSection = () => {
 
           <motion.p
             variants={itemVariants}
-            className="max-w-lg text-base sm:text-lg text-slate-600 font-medium leading-relaxed mb-8 sm:mb-10"
+            className="max-w-md text-[15px] sm:text-base lg:text-lg text-slate-600 font-medium leading-relaxed mb-6 sm:mb-8"
           >
             Converta BRL em USDT instantaneamente com <span className="text-slate-900 font-semibold">segurança institucional</span> e as menores taxas do mercado.
           </motion.p>
 
           <motion.div
             variants={itemVariants}
-            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3"
           >
             <motion.div
               whileTap={{ scale: 0.97 }}
@@ -157,7 +158,7 @@ const HeroSection = () => {
                 className="block w-full"
                 onClick={handleButtonClick}
               >
-                <button className="btn-premium w-full sm:w-auto group px-6 sm:px-7 py-3.5 text-[15px] rounded-[14px] font-semibold">
+                <button className="btn-premium w-full sm:w-auto group px-5 sm:px-6 py-3 sm:py-3.5 text-[14px] sm:text-[15px] rounded-[12px] sm:rounded-[14px] font-semibold">
                   Abrir Conta VIP
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </button>
@@ -169,7 +170,7 @@ const HeroSection = () => {
               onClick={() => haptic.light()}
               whileTap={{ scale: 0.97 }}
             >
-              <button className="btn-premium-outline w-full sm:w-auto px-6 sm:px-7 py-3.5 text-[15px] rounded-[14px] font-semibold">
+              <button className="btn-premium-outline w-full sm:w-auto px-5 sm:px-6 py-3 sm:py-3.5 text-[14px] sm:text-[15px] rounded-[12px] sm:rounded-[14px] font-semibold">
                 <Globe className="w-4 h-4 text-primary" />
                 Explorar
               </button>
@@ -178,26 +179,26 @@ const HeroSection = () => {
 
           <motion.div
             variants={itemVariants}
-            className="mt-10 sm:mt-12 flex items-center gap-5 sm:gap-6 border-t border-slate-100 pt-8 sm:pt-10"
+            className="mt-8 sm:mt-10 flex items-center gap-4 sm:gap-5 border-t border-slate-100 pt-6 sm:pt-8"
           >
-            <div className="flex -space-x-3">
+            <div className="flex -space-x-2.5">
               {[1, 2, 3, 4].map((i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.6 + i * 0.05 }}
-                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-[3px] border-white bg-slate-100 overflow-hidden shadow-md"
+                  transition={{ delay: 0.5 + i * 0.04 }}
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-[2.5px] border-white bg-slate-100 overflow-hidden shadow-md"
                 >
                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 42}`} alt="User" />
                 </motion.div>
               ))}
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-[3px] border-white bg-primary flex items-center justify-center text-[9px] font-semibold text-white shadow-md">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-[2.5px] border-white bg-primary flex items-center justify-center text-[8px] sm:text-[9px] font-semibold text-white shadow-md">
                 +10k
               </div>
             </div>
-            <div className="text-[13px] sm:text-sm font-medium text-slate-500 leading-snug">
+            <div className="text-[12px] sm:text-[13px] font-medium text-slate-500 leading-snug">
               <span className="text-slate-900 font-semibold">10.000+</span> líderes <br className="sm:hidden" />
               confiam na <span className="text-primary font-semibold">OtsemPay</span>
             </div>
@@ -209,107 +210,107 @@ const HeroSection = () => {
           className="w-full lg:w-[45%] relative hidden lg:block"
         >
           <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-6 -right-4 z-30 ios-card-elevated group"
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-5 -right-3 z-30 ios-card-elevated group"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-yellow-50 flex items-center justify-center text-yellow-600 border border-yellow-100">
-                <Zap className="w-5 h-5" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-yellow-50 flex items-center justify-center text-yellow-600 border border-yellow-100">
+                <Zap className="w-4.5 h-4.5" />
               </div>
               <div>
-                <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Liquidez</p>
-                <p className="text-lg font-semibold text-slate-800 tracking-tight">Instantânea</p>
+                <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Liquidez</p>
+                <p className="text-base font-semibold text-slate-800 tracking-tight">Instantânea</p>
               </div>
             </div>
           </motion.div>
 
           <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            className="absolute -bottom-4 -left-8 z-30 ios-card-elevated group"
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+            className="absolute -bottom-3 -left-6 z-30 ios-card-elevated group"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/15">
-                <ShieldCheck className="w-5 h-5" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/15">
+                <ShieldCheck className="w-4.5 h-4.5" />
               </div>
               <div>
-                <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Segurança</p>
-                <p className="text-lg font-semibold text-slate-800 tracking-tight">Institucional</p>
+                <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Segurança</p>
+                <p className="text-base font-semibold text-slate-800 tracking-tight">Institucional</p>
               </div>
             </div>
           </motion.div>
 
           <motion.div
             className="relative z-20"
-            initial={{ y: 40, opacity: 0 }}
+            initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1], delay: 0.2 }}
+            transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1], delay: 0.15 }}
           >
             <IPhoneMockup className="scale-100 origin-center">
               <div className="bg-gradient-to-b from-slate-50 to-white h-full overflow-hidden">
-                <div className="p-5 pt-12 space-y-6">
+                <div className="p-4 pt-10 space-y-5">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Patrimônio Total</p>
-                      <p className="text-3xl font-bold tracking-tight text-slate-800 mt-1">R$ 152.480</p>
+                      <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider">Patrimônio Total</p>
+                      <p className="text-2xl font-bold tracking-tight text-slate-800 mt-0.5">R$ 152.480</p>
                     </div>
-                    <div className="w-11 h-11 rounded-2xl bg-primary shadow-lg shadow-primary/20 flex items-center justify-center text-white">
-                      <Wallet className="w-5 h-5" />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2.5">
-                    <div className="ios-card">
-                      <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider">BRL Cash</p>
-                      <p className="text-lg font-bold text-slate-800 mt-0.5">48.2K</p>
-                    </div>
-                    <div className="ios-card">
-                      <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider">USDT Balance</p>
-                      <p className="text-lg font-bold text-primary mt-0.5">18.4K</p>
+                    <div className="w-10 h-10 rounded-xl bg-primary shadow-lg shadow-primary/20 flex items-center justify-center text-white">
+                      <Wallet className="w-4.5 h-4.5" />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider px-1">Atividade</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="ios-card p-3">
+                      <p className="text-[7px] font-semibold text-slate-400 uppercase tracking-wider">BRL Cash</p>
+                      <p className="text-base font-bold text-slate-800 mt-0.5">48.2K</p>
+                    </div>
+                    <div className="ios-card p-3">
+                      <p className="text-[7px] font-semibold text-slate-400 uppercase tracking-wider">USDT Balance</p>
+                      <p className="text-base font-bold text-primary mt-0.5">18.4K</p>
+                    </div>
+                  </div>
 
-                    <div className="ios-card flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center border border-emerald-100">
-                          <ArrowDownLeft className="w-4 h-4 text-emerald-600" />
+                  <div className="space-y-1.5">
+                    <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider px-1">Atividade</p>
+
+                    <div className="ios-card p-3 flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center border border-emerald-100">
+                          <ArrowDownLeft className="w-3.5 h-3.5 text-emerald-600" />
                         </div>
                         <div>
-                          <p className="text-[13px] font-semibold text-slate-800">PIX Recebido</p>
-                          <p className="text-[10px] text-slate-400 font-medium">Hoje, 14:32</p>
+                          <p className="text-[12px] font-semibold text-slate-800">PIX Recebido</p>
+                          <p className="text-[9px] text-slate-400 font-medium">Hoje, 14:32</p>
                         </div>
                       </div>
-                      <p className="text-[13px] font-semibold text-emerald-600">+R$ 12.000</p>
+                      <p className="text-[12px] font-semibold text-emerald-600">+R$ 12.000</p>
                     </div>
 
-                    <div className="ios-card flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/15">
-                          <RefreshCw className="w-4 h-4 text-primary" />
+                    <div className="ios-card p-3 flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/15">
+                          <RefreshCw className="w-3.5 h-3.5 text-primary" />
                         </div>
                         <div>
-                          <p className="text-[13px] font-semibold text-slate-800">Swap BRL → USDT</p>
-                          <p className="text-[10px] text-slate-400 font-medium">Hoje, 15:45</p>
+                          <p className="text-[12px] font-semibold text-slate-800">Swap BRL → USDT</p>
+                          <p className="text-[9px] text-slate-400 font-medium">Hoje, 15:45</p>
                         </div>
                       </div>
-                      <p className="text-[13px] font-semibold text-primary">-$ 2.450</p>
+                      <p className="text-[12px] font-semibold text-primary">-$ 2.450</p>
                     </div>
 
-                    <div className="ios-card flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100">
-                          <ArrowUpRight className="w-4 h-4 text-blue-600" />
+                    <div className="ios-card p-3 flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center border border-blue-100">
+                          <ArrowUpRight className="w-3.5 h-3.5 text-blue-600" />
                         </div>
                         <div>
-                          <p className="text-[13px] font-semibold text-slate-800">Saque USDT</p>
-                          <p className="text-[10px] text-slate-400 font-medium">Ontem, 09:12</p>
+                          <p className="text-[12px] font-semibold text-slate-800">Saque USDT</p>
+                          <p className="text-[9px] text-slate-400 font-medium">Ontem, 09:12</p>
                         </div>
                       </div>
-                      <p className="text-[13px] font-semibold text-blue-600">-$ 500</p>
+                      <p className="text-[12px] font-semibold text-blue-600">-$ 500</p>
                     </div>
                   </div>
                 </div>
