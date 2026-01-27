@@ -46,7 +46,7 @@ const FeaturesGrid = () => {
     {
       icon: Zap,
       title: "Maior Agilidade",
-      description: "Negociações rápidas e adaptadas à urgência. Liquidação em 10 a 30 minutos.",
+      description: "Negociações rápidas e adaptadas à urgência. Liquidação imediata.",
     },
     {
       icon: KeyRound,
