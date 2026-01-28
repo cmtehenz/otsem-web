@@ -95,9 +95,9 @@ const HeroSection = () => {
             className="font-bold tracking-tightest leading-[0.95] mb-5 sm:mb-7 relative"
           >
             <div className="relative mb-0.5">
-              <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-slate-900 block leading-[1.05]">
-                Sua ponte
-              </span>
+<span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-slate-900 block leading-[1.05]">
+                  Sua Ponte
+                </span>
             </div>
 
             <div className="relative h-5 sm:h-8 lg:h-10 -my-0.5 sm:-my-2 z-10">
