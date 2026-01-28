@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { TrendingUp, Globe2, Timer, BadgeCheck } from "lucide-react";
 
 const stats = [
@@ -43,40 +42,20 @@ const StatsGrid = () => {
 
       <div className="container mx-auto container-mobile">
         <div className="flex flex-col items-center text-center mb-8 sm:mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400 text-yellow-950 font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-5 shadow-md"
-          >
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400 text-yellow-950 font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-5 shadow-md">
             <div className="w-1.5 h-1.5 rounded-full bg-yellow-950 animate-pulse" />
             Sistema sem fronteiras
-          </motion.div>
-          <motion.h2
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1], delay: 0.06 }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest max-w-md leading-[1.1] text-slate-900"
-          >
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest max-w-md leading-[1.1] text-slate-900">
             Poder financeiro <br />
             <span className="text-primary">sem fronteiras.</span>
-          </motion.h2>
+          </h2>
         </div>
 
         <div className="grid gap-2.5 sm:gap-3 grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-20px" }}
-              transition={{
-                duration: 0.4,
-                ease: [0.25, 0.1, 0.25, 1],
-                delay: index * 0.05,
-              }}
               className="relative group"
             >
               <div className="ios-card-premium h-full flex flex-col">
@@ -104,7 +83,7 @@ const StatsGrid = () => {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
