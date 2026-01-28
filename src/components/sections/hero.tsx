@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import haptic from "@/lib/haptics";
 import { IPhoneMockup } from "@/components/ui/iphone-mockup";
-import ExchangeWidget from "@/components/ui/exchange-widget";
+import ExchangeWidgetMobile from "@/components/ui/exchange-widget-mobile";
 import Link from "next/link";
 
 const HeroSection = () => {
@@ -204,12 +204,12 @@ const HeroSection = () => {
 
           <motion.div
             style={{ y: springY, opacity }}
-            className="w-full lg:w-[45%] relative hidden lg:flex items-center gap-2"
+            className="w-full lg:w-[45%] relative hidden lg:flex items-center justify-center"
           >
           <motion.div
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-5 left-[45%] -translate-x-1/2 z-30 ios-card-elevated group"
+            className="absolute -top-2 left-[10%] z-30 ios-card-elevated group"
           >
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-yellow-50 flex items-center justify-center text-yellow-600 border border-yellow-100">
@@ -225,7 +225,7 @@ const HeroSection = () => {
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
-            className="absolute -bottom-3 left-[15%] z-30 ios-card-elevated group"
+            className="absolute -bottom-6 right-[5%] z-30 ios-card-elevated group"
           >
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/15">
@@ -238,23 +238,17 @@ const HeroSection = () => {
             </div>
           </motion.div>
 
-          <div className="relative z-20 self-center -mr-4">
-            <ExchangeWidget />
-          </div>
-
           <motion.div
-            className="relative z-20 flex-shrink-0"
+            className="relative z-20"
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1], delay: 0.15 }}
           >
-                <IPhoneMockup className="scale-[0.85] origin-center">
-                    <img 
-                      src="/images/app-mockup.webp" 
-                      alt="App Preview" 
-                      className="w-full h-full object-cover scale-[1.02]"
-                    />
-                </IPhoneMockup>
+            <div className="absolute -inset-4 bg-gradient-to-b from-primary/20 via-violet-600/10 to-transparent blur-3xl rounded-full opacity-60 pointer-events-none" />
+            
+            <IPhoneMockup className="relative">
+              <ExchangeWidgetMobile />
+            </IPhoneMockup>
           </motion.div>
         </motion.div>
       </div>
