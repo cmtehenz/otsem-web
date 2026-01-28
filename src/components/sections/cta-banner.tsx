@@ -30,9 +30,9 @@ const CTABanner = () => {
                 <span className="text-[11px] sm:text-[12px] font-bold tracking-tight text-white">Otsem Pay</span>
               </div>
 
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tightest text-white mb-4 leading-tight">
-              Pronto para mover seu <br className="hidden sm:block" /> capital com liberdade?
-            </h2>
+<h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tightest text-white mb-4 leading-tight">
+                Pronto para mover seu<br />capital com liberdade?
+              </h2>
 
             <p className="max-w-md mx-auto text-[13px] sm:text-[14px] text-white/75 leading-relaxed font-medium mb-6">
               Crie sua conta gratuitamente e comece a transacionar BRL e USDT em minutos.
