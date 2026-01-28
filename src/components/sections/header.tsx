@@ -100,13 +100,12 @@ const Header = () => {
             </motion.div>
             <motion.div whileTap={{ scale: 0.97 }}>
               <Link href="/register" onClick={handleButtonClick}>
-                <button
-                  type="button"
-                  className="btn-premium py-2 px-4 rounded-xl text-[12px] sm:text-[13px]"
-                >
-                  <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                  Criar conta
-                </button>
+                  <button
+                    type="button"
+                    className="btn-premium py-2 px-4 rounded-xl text-[12px] sm:text-[13px]"
+                  >
+                    Crie sua conta
+                  </button>
               </Link>
             </motion.div>
           </div>
