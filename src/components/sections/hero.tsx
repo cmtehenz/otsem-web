@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import haptic from "@/lib/haptics";
 import { IPhoneMockup } from "@/components/ui/iphone-mockup";
+import ExchangeWidget from "@/components/ui/exchange-widget";
 import Link from "next/link";
 
 const HeroSection = () => {
