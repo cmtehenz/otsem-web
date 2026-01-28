@@ -54,10 +54,10 @@ const Header = () => {
           >
             <img
               src="/images/logo.png"
-              alt="OtsemPay Logo"
+              alt="Otsem Pay Logo"
               className="w-7 h-7 sm:w-8 sm:h-8 object-contain relative z-10 transition-transform duration-150 group-hover:scale-105"
             />
-            <span className="text-lg sm:text-xl font-bold tracking-tight flex items-center">
+            <span className="text-lg sm:text-xl font-bold tracking-tight flex items-center gap-1">
               <span className="text-primary">Otsem</span>
               <span className="text-slate-900">Pay</span>
             </span>

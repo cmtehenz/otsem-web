@@ -53,10 +53,10 @@ const Footer = () => {
               <Link href="/" className="inline-flex items-center gap-2.5 mb-6 group ios-touch-effect">
                 <img
                   src="/images/logo-light.png"
-                  alt="OtsemPay Logo"
+                  alt="Otsem Pay Logo"
                   className="w-9 h-9 object-contain transition-transform duration-500 group-hover:rotate-12"
                 />
-                <span className="text-[1.35rem] font-black tracking-tighter">
+                <span className="text-[1.35rem] font-black tracking-tighter flex items-center gap-1">
                   <span className="text-primary">Otsem</span>
                   <span className="text-slate-900">Pay</span>
                 </span>
