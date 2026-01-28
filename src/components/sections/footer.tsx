@@ -13,12 +13,7 @@ const Footer = () => {
       { label: "API", href: "#" },
       { label: "Integracoes", href: "#" },
     ],
-    empresa: [
-      { label: "Sobre nos", href: "#" },
-      { label: "Blog", href: "#" },
-      { label: "Carreiras", href: "#" },
-      { label: "Contato", href: "#" },
-    ],
+
 
   };
 
