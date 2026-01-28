@@ -81,55 +81,55 @@ const ExchangeWidget = () => {
         </span>
       </div>
 
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 relative z-10">
-        <div className="bg-slate-50/80 rounded-xl p-5 border border-slate-100 h-[110px] flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Você envia</span>
-            <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full border border-slate-100">
-              <img src="https://flagcdn.com/w20/br.png" alt="BR" className="w-4 h-3 rounded-sm object-cover" />
-              <span className="text-[11px] font-bold text-slate-600">BRL</span>
-            </div>
-          </div>
-          <div className="flex items-center mt-2">
-            <span className="text-slate-400 text-xl font-medium mr-1">R$</span>
-            <input
-              type="text"
-              value={formatBRL((numericAmount * 100).toString())}
-              onChange={handleAmountChange}
-              placeholder="0,00"
-              className="w-full bg-transparent text-2xl font-bold text-slate-900 outline-none placeholder:text-slate-200"
-            />
-          </div>
-        </div>
-
-        <div className="flex-shrink-0">
-          <div className="w-11 h-11 rounded-xl bg-slate-900 flex items-center justify-center shadow-lg">
-            <ArrowRight className="w-5 h-5 text-white" />
-          </div>
-        </div>
-
-        <div className="bg-primary/[0.04] rounded-xl p-5 border border-primary/10 h-[110px] flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-primary/50 uppercase tracking-wider">Você recebe</span>
-            <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full border border-primary/10">
-              <div className="w-4 h-4 rounded-full bg-[#26A17B] flex items-center justify-center">
-                <span className="text-[9px] font-bold text-white">₮</span>
+      <div className="flex items-center gap-3 relative z-10">
+          <div className="flex-1 basis-0 min-w-0 bg-slate-50/80 rounded-xl p-5 border border-slate-100 h-[110px] flex flex-col justify-between">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Você envia</span>
+              <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full border border-slate-100">
+                <img src="https://flagcdn.com/w20/br.png" alt="BR" className="w-4 h-3 rounded-sm object-cover" />
+                <span className="text-[11px] font-bold text-slate-600">BRL</span>
               </div>
-              <span className="text-[11px] font-bold text-primary">USDT</span>
+            </div>
+            <div className="flex items-center mt-2">
+              <span className="text-slate-400 text-xl font-medium mr-1">R$</span>
+              <input
+                type="text"
+                value={formatBRL((numericAmount * 100).toString())}
+                onChange={handleAmountChange}
+                placeholder="0,00"
+                className="w-full bg-transparent text-2xl font-bold text-slate-900 outline-none placeholder:text-slate-200"
+              />
             </div>
           </div>
-          <motion.div
-            animate={isAnimating ? { scale: [1, 1.02, 1] } : {}}
-            transition={{ duration: 0.2 }}
-            className="flex items-baseline mt-2"
-          >
-            <span className="text-2xl font-bold text-slate-900">
-              {convertedAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </span>
-            <span className="ml-1.5 text-slate-400 font-medium text-sm">USDT</span>
-          </motion.div>
+
+          <div className="flex-shrink-0">
+            <div className="w-11 h-11 rounded-xl bg-slate-900 flex items-center justify-center shadow-lg">
+              <ArrowRight className="w-5 h-5 text-white" />
+            </div>
+          </div>
+
+          <div className="flex-1 basis-0 min-w-0 bg-primary/[0.04] rounded-xl p-5 border border-primary/10 h-[110px] flex flex-col justify-between">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-primary/50 uppercase tracking-wider">Você recebe</span>
+              <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full border border-primary/10">
+                <div className="w-4 h-4 rounded-full bg-[#26A17B] flex items-center justify-center">
+                  <span className="text-[9px] font-bold text-white">₮</span>
+                </div>
+                <span className="text-[11px] font-bold text-primary">USDT</span>
+              </div>
+            </div>
+            <motion.div
+              animate={isAnimating ? { scale: [1, 1.02, 1] } : {}}
+              transition={{ duration: 0.2 }}
+              className="flex items-baseline mt-2"
+            >
+              <span className="text-2xl font-bold text-slate-900">
+                {convertedAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+              <span className="ml-1.5 text-slate-400 font-medium text-sm">USDT</span>
+            </motion.div>
+          </div>
         </div>
-      </div>
 
       <div className="flex items-center justify-between mt-5 relative z-10">
         <motion.button
