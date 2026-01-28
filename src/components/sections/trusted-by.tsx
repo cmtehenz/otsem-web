@@ -5,11 +5,12 @@ import { motion } from "framer-motion";
 
 const TrustedBy = () => {
   const logos = [
-    { name: "OKX", width: 80, height: 30 },
-    { name: "Binance", width: 100, height: 30 },
-    { name: "Coinbase", width: 100, height: 30 },
-    { name: "Kraken", width: 90, height: 30 },
-    { name: "Mercado Bitcoin", width: 110, height: 30 },
+    { name: "Bitso", src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/8dca9fc2-17fe-42a1-b323-5e4a298d9904/Untitled-1769575462967.png" },
+    { name: "Kraken", src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/8dca9fc2-17fe-42a1-b323-5e4a298d9904/Untitled-1769575462968.png" },
+    { name: "Mercado Bitcoin", src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/8dca9fc2-17fe-42a1-b323-5e4a298d9904/Untitled-1769575462976.png" },
+    { name: "Wolf", src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/8dca9fc2-17fe-42a1-b323-5e4a298d9904/Untitled-1769575462977.png" },
+    { name: "Coinbase", src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/8dca9fc2-17fe-42a1-b323-5e4a298d9904/Untitled-1769575462981.png" },
+    { name: "Binance", src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/8dca9fc2-17fe-42a1-b323-5e4a298d9904/Untitled-1769575462983.png" },
   ];
 
   return (
