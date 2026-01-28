@@ -123,113 +123,96 @@ const ExchangeWidget = () => {
               </div>
             </div>
 
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={direction}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                {/* Input section - You send */}
-                <div className="relative bg-gradient-to-br from-slate-50 to-slate-100/70 rounded-3xl p-5 border border-slate-100 mb-3">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Você envia</span>
-                    <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">
-                      {direction === "buy" ? (
-                        <>
-                          <img src="https://flagcdn.com/w40/br.png" alt="BR" className="w-5 h-3.5 rounded object-cover" />
-                          <span className="text-sm font-bold text-slate-700">BRL</span>
-                        </>
-                      ) : (
-                        <>
-                          <div className="w-5 h-5 rounded-full bg-[#26A17B] flex items-center justify-center">
-                            <span className="text-[10px] font-bold text-white">₮</span>
-                          </div>
-                          <span className="text-sm font-bold text-slate-700">USDT</span>
-                        </>
-                      )}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={direction}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {/* Input section - You send */}
+                  <div className="relative bg-gradient-to-br from-slate-50 to-slate-100/70 rounded-3xl p-5 border border-slate-100">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Você envia</span>
+                      <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">
+                        {direction === "buy" ? (
+                          <>
+                            <img src="https://flagcdn.com/w40/br.png" alt="BR" className="w-5 h-3.5 rounded object-cover" />
+                            <span className="text-sm font-bold text-slate-700">BRL</span>
+                          </>
+                        ) : (
+                          <>
+                            <div className="w-5 h-5 rounded-full bg-[#26A17B] flex items-center justify-center">
+                              <span className="text-[10px] font-bold text-white">₮</span>
+                            </div>
+                            <span className="text-sm font-bold text-slate-700">USDT</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <span className="text-slate-300 text-3xl font-semibold">
+                        {direction === "buy" ? "R$" : ""}
+                      </span>
+                      <input
+                        ref={inputRef}
+                        type="text"
+                        value={formatBRL((numericAmount * 100).toString())}
+                        onChange={handleAmountChange}
+                        placeholder="0,00"
+                        className="w-full bg-transparent text-4xl font-bold text-slate-900 outline-none placeholder:text-slate-200"
+                      />
                     </div>
                   </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <span className="text-slate-300 text-3xl font-semibold">
-                      {direction === "buy" ? "R$" : ""}
-                    </span>
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      value={formatBRL((numericAmount * 100).toString())}
-                      onChange={handleAmountChange}
-                      placeholder="0,00"
-                      className="w-full bg-transparent text-4xl font-bold text-slate-900 outline-none placeholder:text-slate-200"
-                    />
+
+                  {/* Swap button */}
+                  <div className="flex justify-center -my-5 relative z-10">
+                    <button
+                      onClick={toggleDirection}
+                      className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-xl shadow-primary/30 border-4 border-white transition-transform duration-150 hover:scale-105 active:scale-95"
+                    >
+                      <ArrowDownUp className="w-5 h-5 text-white" />
+                    </button>
                   </div>
 
-                  {/* Preset amounts */}
-                  <div className="flex gap-2 mt-4">
-                    {presetAmounts.map((preset) => (
-                      <button
-                        key={preset}
-                        onClick={() => setAmount(preset.toString())}
-                        className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all duration-150 active:scale-95 ${
-                          numericAmount === preset
-                            ? "bg-primary text-white shadow-lg shadow-primary/25"
-                            : "bg-white text-slate-500 border border-slate-200 hover:border-primary/30 hover:text-primary"
-                        }`}
-                      >
-                        {direction === "buy" ? `R$${preset}` : preset}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Swap button */}
-                <div className="flex justify-center -my-2 relative z-10">
-                  <button
-                    onClick={toggleDirection}
-                    className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-xl shadow-primary/30 border-4 border-white transition-transform duration-150 hover:scale-105 active:scale-95"
-                  >
-                    <ArrowDownUp className="w-5 h-5 text-white" />
-                  </button>
-                </div>
-
-                {/* Output section - You receive */}
-                <div className="relative bg-gradient-to-br from-primary/[0.04] to-primary/[0.02] rounded-3xl p-5 border border-primary/15 mt-3">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-bold text-primary/50 uppercase tracking-wider">Você recebe</span>
-                    <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-primary/20 shadow-sm">
-                      {direction === "buy" ? (
-                        <>
-                          <div className="w-5 h-5 rounded-full bg-[#26A17B] flex items-center justify-center">
-                            <span className="text-[10px] font-bold text-white">₮</span>
-                          </div>
-                          <span className="text-sm font-bold text-slate-700">USDT</span>
-                        </>
-                      ) : (
-                        <>
-                          <img src="https://flagcdn.com/w40/br.png" alt="BR" className="w-5 h-3.5 rounded object-cover" />
-                          <span className="text-sm font-bold text-slate-700">BRL</span>
-                        </>
-                      )}
+                  {/* Output section - You receive */}
+                  <div className="relative bg-gradient-to-br from-slate-50 to-slate-100/70 rounded-3xl p-5 border border-slate-100">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Você recebe</span>
+                      <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">
+                        {direction === "buy" ? (
+                          <>
+                            <div className="w-5 h-5 rounded-full bg-[#26A17B] flex items-center justify-center">
+                              <span className="text-[10px] font-bold text-white">₮</span>
+                            </div>
+                            <span className="text-sm font-bold text-slate-700">USDT</span>
+                          </>
+                        ) : (
+                          <>
+                            <img src="https://flagcdn.com/w40/br.png" alt="BR" className="w-5 h-3.5 rounded object-cover" />
+                            <span className="text-sm font-bold text-slate-700">BRL</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      {direction === "sell" && <span className="text-slate-300 text-3xl font-semibold">R$</span>}
+                      <span className="text-4xl font-bold text-slate-900">
+                        {convertedAmount.toLocaleString(direction === "buy" ? "en-US" : "pt-BR", { 
+                          minimumFractionDigits: 2, 
+                          maximumFractionDigits: 2 
+                        })}
+                      </span>
+                      <span className="text-slate-400 font-semibold text-lg">
+                        {direction === "buy" ? "USDT" : ""}
+                      </span>
                     </div>
                   </div>
-                  
-                  <div className="flex items-baseline gap-2">
-                    {direction === "sell" && <span className="text-slate-300 text-3xl font-semibold">R$</span>}
-                    <span className="text-4xl font-bold text-slate-900">
-                      {convertedAmount.toLocaleString(direction === "buy" ? "en-US" : "pt-BR", { 
-                        minimumFractionDigits: 2, 
-                        maximumFractionDigits: 2 
-                      })}
-                    </span>
-                    <span className="text-slate-400 font-semibold text-lg">
-                      {direction === "buy" ? "USDT" : ""}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+                </motion.div>
+              </AnimatePresence>
 
               {/* CTA Button */}
               <button
