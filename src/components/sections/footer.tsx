@@ -110,14 +110,14 @@ const Footer = () => {
               <ul className="space-y-2 sm:space-y-2.5">
                 {footerLinks.legal.map((link) => (
                   <li key={link.label}>
-                    {'external' in link && link.external ? (
+                    {link.external ? (
                       <button
-                        onClick={() => {
-                          if (typeof window !== "undefined") {
-                            window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: link.href } }, "*");
-                          }
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: link.href } }, "*");
                         }}
-                        className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block"
+                        className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer"
                       >
                         {link.label}
                       </button>
