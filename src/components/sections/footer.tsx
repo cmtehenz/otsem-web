@@ -21,7 +21,7 @@ const Footer = () => {
     ],
     legal: [
       { label: "Termos de uso", href: "https://drive.google.com/file/d/1w5iM6U1BRHhKemNVXcKiEc1TJ1YjqFCu/view?usp=share_link", external: true },
-      { label: "Privacidade", href: "/privacidade" },
+      { label: "Privacidade", href: "https://drive.google.com/file/d/1X0RHbjkm9uG9k_v7wqBIKMVWkbKI8Qcv/view?usp=share_link", external: true },
       { label: "Cookies", href: "/cookies" },
       { label: "Status", href: "#" },
     ],
