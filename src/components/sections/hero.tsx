@@ -231,7 +231,7 @@ const HeroSection = () => {
                 </div>
               ))}
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-[2.5px] border-white bg-primary flex items-center justify-center text-[8px] sm:text-[9px] font-semibold text-white shadow-md">
-                +10k
+                +6k
               </div>
             </div>
             <div className="text-[12px] sm:text-[13px] font-medium text-slate-500 leading-snug">
