@@ -56,7 +56,7 @@ const Pricing = () => {
             Taxas transparentes
           </h2>
           <p className="mx-auto mt-2 max-w-md text-[13px] sm:text-[14px] text-slate-600 font-medium leading-relaxed">
-            Sem taxas escondidas. Você sabe exatamente quanto vai pagar.
+            Sem taxas ocultas. Você sabe exatamente quanto vai pagar.
           </p>
         </div>
 
