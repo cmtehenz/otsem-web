@@ -27,9 +27,8 @@ const CTABanner = () => {
 
           <div className="relative z-10 p-6 sm:p-10 md:p-12 text-center">
             <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-white/12 border border-white/15">
-              <Sparkles className="h-3 w-3 text-white" strokeWidth={2} />
-              <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-white">Oferta limitada</span>
-            </div>
+                <span className="text-[11px] sm:text-[12px] font-bold tracking-tight text-white">Otsem Pay</span>
+              </div>
 
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tightest text-white mb-4 leading-tight">
               Pronto para mover seu <br className="hidden sm:block" /> capital com liberdade?
