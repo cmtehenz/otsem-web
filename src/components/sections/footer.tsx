@@ -20,7 +20,7 @@ const Footer = () => {
       { label: "Contato", href: "#" },
     ],
     legal: [
-      { label: "Termos de uso", href: "#" },
+      { label: "Termos de uso", href: "https://drive.google.com/file/d/1w5iM6U1BRHhKemNVXcKiEc1TJ1YjqFCu/view?usp=share_link", external: true },
       { label: "Privacidade", href: "/privacidade" },
       { label: "Cookies", href: "/cookies" },
       { label: "Status", href: "#" },
