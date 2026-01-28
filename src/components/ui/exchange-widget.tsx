@@ -262,39 +262,157 @@ const ExchangeWidget = () => {
               </motion.div>
             </AnimatePresence>
 
-            {/* CTA Button */}
-            <motion.button
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full mt-6 py-4 bg-gradient-to-r from-primary via-violet-600 to-primary bg-[length:200%_100%] text-white text-base font-bold rounded-2xl shadow-xl shadow-primary/25 flex items-center justify-center gap-2.5 relative overflow-hidden group"
-            >
-              <motion.div 
-                animate={{ x: ["-100%", "100%"] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-12"
-              />
-              <Sparkles className="w-5 h-5" />
-              <span>Converter Agora</span>
-            </motion.button>
+              {/* CTA Button */}
+              <motion.button
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setShowAuthScreen(true)}
+                className="w-full mt-6 py-4 bg-gradient-to-r from-primary via-violet-600 to-primary bg-[length:200%_100%] text-white text-base font-bold rounded-2xl shadow-xl shadow-primary/25 flex items-center justify-center gap-2.5 relative overflow-hidden group"
+              >
+                <motion.div 
+                  animate={{ x: ["-100%", "100%"] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-12"
+                />
+                <Sparkles className="w-5 h-5" />
+                <span>Converter Agora</span>
+              </motion.button>
 
-            {/* Trust badges */}
-            <div className="flex items-center justify-center gap-6 mt-5">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center">
-                  <Shield className="w-3.5 h-3.5 text-emerald-500" />
+              {/* Trust badges */}
+              <div className="flex items-center justify-center gap-6 mt-5">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center">
+                    <Shield className="w-3.5 h-3.5 text-emerald-500" />
+                  </div>
+                  <span className="text-xs text-slate-500 font-medium">100% Seguro</span>
                 </div>
-                <span className="text-xs text-slate-500 font-medium">100% Seguro</span>
-              </div>
-              <div className="w-px h-4 bg-slate-200" />
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs text-slate-500">Taxa:</span>
-                <span className="text-xs text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-md">0.98%</span>
+                <div className="w-px h-4 bg-slate-200" />
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs text-slate-500">Taxa:</span>
+                  <span className="text-xs text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-md">0.98%</span>
+                </div>
               </div>
             </div>
           </div>
+
+          {/* Auth Screen Overlay */}
+          <AnimatePresence>
+            {showAuthScreen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0 bg-white rounded-[28px] overflow-hidden z-30"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-50/80 via-white to-primary/[0.02] pointer-events-none" />
+                <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary/8 to-violet-500/5 blur-3xl rounded-full translate-x-10 -translate-y-10 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-400/8 to-primary/5 blur-3xl rounded-full -translate-x-10 translate-y-10 pointer-events-none" />
+                
+                <div className="relative p-6 sm:p-7 h-full flex flex-col">
+                  {/* Back button */}
+                  <motion.button
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 }}
+                    onClick={() => setShowAuthScreen(false)}
+                    className="flex items-center gap-2 text-slate-500 hover:text-slate-700 transition-colors mb-6 self-start"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span className="text-sm font-medium">Voltar</span>
+                  </motion.button>
+
+                  {/* Auth content */}
+                  <div className="flex-1 flex flex-col items-center justify-center">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15 }}
+                      className="w-16 h-16 rounded-3xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-xl shadow-primary/30 mb-6"
+                    >
+                      <Sparkles className="w-8 h-8 text-white" />
+                    </motion.div>
+
+                    <motion.h3
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="text-xl font-bold text-slate-900 text-center mb-2"
+                    >
+                      Acesse sua conta
+                    </motion.h3>
+
+                    <motion.p
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.25 }}
+                      className="text-sm text-slate-500 text-center mb-8 max-w-[260px]"
+                    >
+                      Para continuar com sua conversão, faça login ou crie uma conta
+                    </motion.p>
+
+                    {/* Auth buttons */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className="w-full space-y-3"
+                    >
+                      <Link href="/login" className="block">
+                        <motion.div
+                          whileHover={{ scale: 1.02, y: -2 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="w-full py-4 bg-gradient-to-r from-primary via-violet-600 to-primary bg-[length:200%_100%] text-white text-base font-bold rounded-2xl shadow-xl shadow-primary/25 flex items-center justify-center gap-2.5 relative overflow-hidden"
+                        >
+                          <motion.div 
+                            animate={{ x: ["-100%", "100%"] }}
+                            transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-12"
+                          />
+                          <LogIn className="w-5 h-5" />
+                          <span>Entrar</span>
+                        </motion.div>
+                      </Link>
+
+                      <Link href="/register" className="block">
+                        <motion.div
+                          whileHover={{ scale: 1.02, y: -2 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="w-full py-4 bg-white border-2 border-primary/20 text-primary text-base font-bold rounded-2xl flex items-center justify-center gap-2.5 hover:border-primary/40 transition-colors"
+                        >
+                          <UserPlus className="w-5 h-5" />
+                          <span>Criar Conta</span>
+                        </motion.div>
+                      </Link>
+                    </motion.div>
+
+                    {/* Conversion summary */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.35 }}
+                      className="mt-8 w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-100"
+                    >
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-slate-500">Sua conversão:</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-slate-700">
+                            {direction === "buy" ? "R$" : ""}{numericAmount.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} {direction === "sell" ? "USDT" : ""}
+                          </span>
+                          <span className="text-slate-400">→</span>
+                          <span className="font-bold text-primary">
+                            {direction === "sell" ? "R$" : ""}{convertedAmount.toLocaleString(direction === "buy" ? "en-US" : "pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {direction === "buy" ? "USDT" : ""}
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
   );
 };
 
