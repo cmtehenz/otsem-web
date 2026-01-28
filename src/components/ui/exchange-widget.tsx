@@ -262,35 +262,34 @@ const ExchangeWidget = () => {
               </motion.div>
             </AnimatePresence>
 
-              {/* CTA Button */}
-              <motion.button
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setShowAuthScreen(true)}
-                className="w-full mt-6 py-4 bg-gradient-to-r from-primary via-violet-600 to-primary bg-[length:200%_100%] text-white text-base font-bold rounded-2xl shadow-xl shadow-primary/25 flex items-center justify-center gap-2.5 relative overflow-hidden group"
-              >
-                <motion.div 
-                  animate={{ x: ["-100%", "100%"] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-12"
-                />
-                <Sparkles className="w-5 h-5" />
-                <span>Converter Agora</span>
-              </motion.button>
+            {/* CTA Button */}
+            <motion.button
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setShowAuthScreen(true)}
+              className="w-full mt-6 py-4 bg-gradient-to-r from-primary via-violet-600 to-primary bg-[length:200%_100%] text-white text-base font-bold rounded-2xl shadow-xl shadow-primary/25 flex items-center justify-center gap-2.5 relative overflow-hidden group"
+            >
+              <motion.div 
+                animate={{ x: ["-100%", "100%"] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-12"
+              />
+              <Sparkles className="w-5 h-5" />
+              <span>Converter Agora</span>
+            </motion.button>
 
-              {/* Trust badges */}
-              <div className="flex items-center justify-center gap-6 mt-5">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center">
-                    <Shield className="w-3.5 h-3.5 text-emerald-500" />
-                  </div>
-                  <span className="text-xs text-slate-500 font-medium">100% Seguro</span>
+            {/* Trust badges */}
+            <div className="flex items-center justify-center gap-6 mt-5">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center">
+                  <Shield className="w-3.5 h-3.5 text-emerald-500" />
                 </div>
-                <div className="w-px h-4 bg-slate-200" />
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs text-slate-500">Taxa:</span>
-                  <span className="text-xs text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-md">0.98%</span>
-                </div>
+                <span className="text-xs text-slate-500 font-medium">100% Seguro</span>
+              </div>
+              <div className="w-px h-4 bg-slate-200" />
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-slate-500">Taxa:</span>
+                <span className="text-xs text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-md">0.98%</span>
               </div>
             </div>
           </div>
@@ -412,7 +411,8 @@ const ExchangeWidget = () => {
             )}
           </AnimatePresence>
         </div>
-      </motion.div>
+      </div>
+    </motion.div>
   );
 };
 
