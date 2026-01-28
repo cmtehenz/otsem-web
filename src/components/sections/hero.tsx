@@ -205,8 +205,7 @@ const HeroSection = () => {
         </motion.div>
 
         {/* Right side - Exchange Widget */}
-        <motion.div
-          style={{ y: springY, opacity }}
+        <div
           className="w-full lg:w-[50%] relative flex items-center justify-center"
         >
           {/* Floating badges around widget */}
