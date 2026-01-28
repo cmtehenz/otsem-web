@@ -6,11 +6,7 @@ import {
   ArrowRight,
   ShieldCheck,
   Zap,
-  Wallet,
-  ArrowDownLeft,
-  RefreshCw,
   Globe,
-  ArrowUpRight,
 } from "lucide-react";
 import haptic from "@/lib/haptics";
 import { IPhoneMockup } from "@/components/ui/iphone-mockup";
