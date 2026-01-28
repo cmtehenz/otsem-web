@@ -33,7 +33,7 @@ const ExchangeWidget = () => {
     };
 
     fetchRate();
-    const interval = setInterval(fetchRate, 15000); // Reduced frequency
+    const interval = setInterval(fetchRate, 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -72,8 +72,8 @@ const ExchangeWidget = () => {
     >
       <div className="relative">
         {/* Simplified outer glow - static */}
-        <div className="absolute -inset-[2px] bg-gradient-to-br from-primary/30 via-violet-500/20 to-emerald-400/15 rounded-[32px] blur-xl opacity-40" />
-        <div className="absolute -inset-1 bg-gradient-to-r from-primary/15 via-violet-500/15 to-primary/15 rounded-[30px] opacity-70" />
+        <div className="absolute -inset-[2px] bg-gradient-to-br from-primary/30 via-primary/20 to-emerald-400/15 rounded-[32px] blur-xl opacity-40" />
+        <div className="absolute -inset-1 bg-gradient-to-r from-primary/15 via-primary/10 to-primary/15 rounded-[30px] opacity-70" />
         
         {/* Main card */}
         <div className="relative bg-white rounded-[28px] overflow-hidden shadow-2xl shadow-primary/10 border border-slate-100">
@@ -81,7 +81,7 @@ const ExchangeWidget = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-slate-50/80 via-white to-primary/[0.02] pointer-events-none" />
           
           {/* Static decorative elements */}
-          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary/8 to-violet-500/5 blur-3xl rounded-full translate-x-10 -translate-y-10 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary/8 to-primary/5 blur-3xl rounded-full translate-x-10 -translate-y-10 pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-400/8 to-primary/5 blur-3xl rounded-full -translate-x-10 translate-y-10 pointer-events-none" />
           
           <div className="relative p-6 sm:p-7">
@@ -89,7 +89,7 @@ const ExchangeWidget = () => {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-lg shadow-primary/30">
+                  <div className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
                     <Sparkles className="w-5 h-5 text-white" />
                   </div>
                   <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-400 rounded-full border-2 border-white flex items-center justify-center">
@@ -188,14 +188,14 @@ const ExchangeWidget = () => {
                 <div className="flex justify-center -my-2 relative z-10">
                   <button
                     onClick={toggleDirection}
-                    className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-xl shadow-primary/30 border-4 border-white transition-transform duration-150 hover:scale-105 active:scale-95"
+                    className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-xl shadow-primary/30 border-4 border-white transition-transform duration-150 hover:scale-105 active:scale-95"
                   >
                     <ArrowDownUp className="w-5 h-5 text-white" />
                   </button>
                 </div>
 
                 {/* Output section - You receive */}
-                <div className="relative bg-gradient-to-br from-primary/[0.04] to-violet-500/[0.03] rounded-3xl p-5 border border-primary/15 mt-3">
+                <div className="relative bg-gradient-to-br from-primary/[0.04] to-primary/[0.02] rounded-3xl p-5 border border-primary/15 mt-3">
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-xs font-bold text-primary/50 uppercase tracking-wider">Você recebe</span>
                     <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-primary/20 shadow-sm">
@@ -234,7 +234,7 @@ const ExchangeWidget = () => {
             {/* CTA Button */}
             <button
               onClick={() => setShowAuthScreen(true)}
-              className="w-full mt-6 py-4 bg-gradient-to-r from-primary via-violet-600 to-primary bg-[length:200%_100%] text-white text-base font-bold rounded-2xl shadow-xl shadow-primary/25 flex items-center justify-center gap-2.5 relative overflow-hidden transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
+              className="btn-premium w-full mt-6 py-4 text-base rounded-2xl"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer" />
               <Sparkles className="w-5 h-5" />
@@ -268,7 +268,7 @@ const ExchangeWidget = () => {
                 className="absolute inset-0 bg-white rounded-[28px] overflow-hidden z-30"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-slate-50/80 via-white to-primary/[0.02] pointer-events-none" />
-                <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary/8 to-violet-500/5 blur-3xl rounded-full translate-x-10 -translate-y-10 pointer-events-none" />
+                <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary/8 to-primary/5 blur-3xl rounded-full translate-x-10 -translate-y-10 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-400/8 to-primary/5 blur-3xl rounded-full -translate-x-10 translate-y-10 pointer-events-none" />
                 
                 <div className="relative p-6 sm:p-7 h-full flex flex-col">
@@ -283,7 +283,7 @@ const ExchangeWidget = () => {
 
                   {/* Auth content */}
                   <div className="flex-1 flex flex-col items-center justify-center">
-                    <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-xl shadow-primary/30 mb-6">
+                    <div className="w-16 h-16 rounded-3xl bg-primary flex items-center justify-center shadow-xl shadow-primary/30 mb-6">
                       <Sparkles className="w-8 h-8 text-white" />
                     </div>
 
@@ -298,7 +298,7 @@ const ExchangeWidget = () => {
                     {/* Auth buttons */}
                     <div className="w-full space-y-3">
                       <Link href="/login" className="block">
-                        <button className="w-full py-4 bg-gradient-to-r from-primary via-violet-600 to-primary bg-[length:200%_100%] text-white text-base font-bold rounded-2xl shadow-xl shadow-primary/25 flex items-center justify-center gap-2.5 relative overflow-hidden transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]">
+                        <button className="btn-premium w-full py-4 text-base rounded-2xl">
                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer" />
                           <LogIn className="w-5 h-5" />
                           <span>Entrar</span>
