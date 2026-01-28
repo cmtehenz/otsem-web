@@ -15,11 +15,6 @@ import ExchangeWidget from "@/components/ui/exchange-widget";
 import Link from "next/link";
 
 const HeroSection = () => {
-  const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, 100]);
-  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
-  const springY = useSpring(y1, { stiffness: 80, damping: 20 });
-
   const handleButtonClick = useCallback(() => {
     haptic.medium();
   }, []);
