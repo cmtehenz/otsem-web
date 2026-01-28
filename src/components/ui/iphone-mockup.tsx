@@ -28,7 +28,7 @@ export const IPhoneMockup = ({ children, className = "" }: IPhoneMockupProps) =>
           </div>
       </div>
 
-      <div className="absolute inset-0 pointer-events-none rounded-[3.5rem] ring-1 ring-inset ring-white/20 z-40 shadow-inner" />
+      <div className="absolute inset-0 pointer-events-none rounded-[3.5rem] ring-1 ring-inset ring-white/20 z-40" />
     </div>
   );
 };
