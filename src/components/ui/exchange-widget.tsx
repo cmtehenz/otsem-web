@@ -281,9 +281,9 @@ const ExchangeWidget = () => {
 
                   {/* Auth content */}
                   <div className="flex-1 flex flex-col items-center justify-center">
-                    <div className="w-16 h-16 rounded-3xl bg-primary flex items-center justify-center shadow-xl shadow-primary/30 mb-6">
-                      <Sparkles className="w-8 h-8 text-white" />
-                    </div>
+                      <div className="w-16 h-16 rounded-3xl bg-primary flex items-center justify-center shadow-xl shadow-primary/30 mb-6">
+                        <Repeat className="w-8 h-8 text-white" />
+                      </div>
 
                     <h3 className="text-xl font-bold text-slate-900 text-center mb-2">
                       Acesse sua conta
