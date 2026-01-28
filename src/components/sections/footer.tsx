@@ -120,28 +120,31 @@ const Footer = () => {
               <h3 className="mb-3 sm:mb-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">Legal</h3>
               <ul className="space-y-2 sm:space-y-2.5">
                 <li>
-                  <span
-                    onClick={() => window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: "https://drive.google.com/file/d/1w5iM6U1BRHhKemNVXcKiEc1TJ1YjqFCu/view?usp=share_link" } }, "*")}
-                    className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer"
+                  <button
+                    type="button"
+                    onClick={handleTermosClick}
+                    className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer bg-transparent border-none p-0 text-left"
                   >
                     Termos de uso
-                  </span>
+                  </button>
                 </li>
                 <li>
-                  <span
-                    onClick={() => window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: "https://drive.google.com/file/d/1X0RHbjkm9uG9k_v7wqBIKMVWkbKI8Qcv/view?usp=share_link" } }, "*")}
-                    className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer"
+                  <button
+                    type="button"
+                    onClick={handlePrivacidadeClick}
+                    className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer bg-transparent border-none p-0 text-left"
                   >
                     Privacidade
-                  </span>
+                  </button>
                 </li>
                 <li>
-                  <span
-                    onClick={() => window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: "https://drive.google.com/file/d/1YNdbDQsdICp700B7O6RSOi2oHmbgcn6S/view?usp=share_link" } }, "*")}
-                    className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer"
+                  <button
+                    type="button"
+                    onClick={handleCookiesClick}
+                    className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer bg-transparent border-none p-0 text-left"
                   >
                     Cookies
-                  </span>
+                  </button>
                 </li>
                 <li>
                   <Link href="#" className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block">
@@ -150,15 +153,14 @@ const Footer = () => {
                 </li>
               </ul>
 
-              <motion.button
-              onClick={handleInstagramClick}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="mt-5 sm:mt-6 flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-[#6F00FF] via-pink-500 to-orange-400 text-white shadow-lg shadow-pink-500/25 social-icon-hover"
-              aria-label="Seguir no Instagram"
-            >
-              <Instagram className="w-5 h-5" strokeWidth={2} />
-            </motion.button>
+              <button
+                type="button"
+                onClick={handleInstagramClick}
+                className="mt-5 sm:mt-6 flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-[#6F00FF] via-pink-500 to-orange-400 text-white shadow-lg shadow-pink-500/25 hover:scale-105 active:scale-95 transition-transform"
+                aria-label="Seguir no Instagram"
+              >
+                <Instagram className="w-5 h-5" strokeWidth={2} />
+              </button>
           </motion.div>
         </div>
 
