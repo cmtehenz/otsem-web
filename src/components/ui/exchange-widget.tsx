@@ -89,8 +89,8 @@ const ExchangeWidget = () => {
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-                      <ArrowLeftRight className="w-5 h-5 text-white" />
+<div className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
+                        <Globe className="w-5 h-5 text-white" />
                     </div>
                     <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-400 rounded-full border-2 border-white flex items-center justify-center">
                       <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
