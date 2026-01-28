@@ -238,6 +238,10 @@ const HeroSection = () => {
             </div>
           </motion.div>
 
+          <div className="relative z-20 self-center -mr-4">
+            <ExchangeWidget />
+          </div>
+
           <motion.div
             className="relative z-20 flex-shrink-0"
             initial={{ y: 30, opacity: 0 }}
@@ -252,10 +256,6 @@ const HeroSection = () => {
                     />
                 </IPhoneMockup>
           </motion.div>
-
-          <div className="relative z-20 self-center -ml-4">
-            <ExchangeWidget />
-          </div>
         </motion.div>
       </div>
     </section>
