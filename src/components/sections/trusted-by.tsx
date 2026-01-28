@@ -32,7 +32,7 @@ const TrustedBy = () => {
               key={logo.name}
               className="group relative ios-touch-effect"
             >
-              <div className="opacity-80 hover:opacity-100 transition-all duration-500 group-hover:scale-105 filter drop-shadow-sm">
+              <div className="opacity-100 hover:opacity-100 transition-all duration-500 group-hover:scale-105 filter drop-shadow-sm">
                   <img 
                     src={logo.src} 
                     alt={logo.name} 
