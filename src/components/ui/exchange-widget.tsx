@@ -87,20 +87,20 @@ const ExchangeWidget = () => {
           <div className="relative p-6 sm:p-7">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-                    <Sparkles className="w-5 h-5 text-white" />
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
+                      <ArrowLeftRight className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-400 rounded-full border-2 border-white flex items-center justify-center">
+                      <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+                    </div>
                   </div>
-                  <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-400 rounded-full border-2 border-white flex items-center justify-center">
-                    <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900 tracking-tight">Câmbio Instantâneo</h3>
+                    <p className="text-xs text-slate-500 font-medium">Cotação em tempo real</p>
                   </div>
                 </div>
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 tracking-tight">Câmbio Instantâneo</h3>
-                  <p className="text-xs text-slate-500 font-medium">Cotação em tempo real</p>
-                </div>
-              </div>
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-xs font-bold text-emerald-600">
