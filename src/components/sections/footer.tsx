@@ -100,39 +100,46 @@ const Footer = () => {
             </ul>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.12, ease: [0.32, 0.72, 0, 1] }}
-          >
-            <h3 className="mb-3 sm:mb-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">Legal</h3>
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.12, ease: [0.32, 0.72, 0, 1] }}
+            >
+              <h3 className="mb-3 sm:mb-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">Legal</h3>
               <ul className="space-y-2 sm:space-y-2.5">
-                {footerLinks.legal.map((link) => (
-                  <li key={link.label}>
-                    {link.external ? (
-                      <a
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: link.href } }, "*");
-                        }}
-                        className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer"
-                      >
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link href={link.href} className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block">
-                        {link.label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
+                <li>
+                  <span
+                    onClick={() => window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: "https://drive.google.com/file/d/1w5iM6U1BRHhKemNVXcKiEc1TJ1YjqFCu/view?usp=share_link" } }, "*")}
+                    className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer"
+                  >
+                    Termos de uso
+                  </span>
+                </li>
+                <li>
+                  <span
+                    onClick={() => window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: "https://drive.google.com/file/d/1X0RHbjkm9uG9k_v7wqBIKMVWkbKI8Qcv/view?usp=share_link" } }, "*")}
+                    className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer"
+                  >
+                    Privacidade
+                  </span>
+                </li>
+                <li>
+                  <span
+                    onClick={() => window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: "https://drive.google.com/file/d/1YNdbDQsdICp700B7O6RSOi2oHmbgcn6S/view?usp=share_link" } }, "*")}
+                    className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer"
+                  >
+                    Cookies
+                  </span>
+                </li>
+                <li>
+                  <Link href="#" className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block">
+                    Status
+                  </Link>
+                </li>
               </ul>
 
-            <motion.button
+              <motion.button
               onClick={handleInstagramClick}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
