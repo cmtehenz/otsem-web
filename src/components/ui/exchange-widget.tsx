@@ -6,8 +6,29 @@ import { ArrowDownUp, TrendingUp } from "lucide-react";
 
 const ExchangeWidget = () => {
   const [amount, setAmount] = useState("1000");
-  const [rate] = useState(6.01);
+  const [rate, setRate] = useState(6.01);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRate = async () => {
+      try {
+        const response = await fetch("https://www.okx.com/api/v5/market/ticker?instId=USDT-BRL");
+        const data = await response.json();
+        if (data.code === "0" && data.data?.[0]?.last) {
+          setRate(parseFloat(data.data[0].last));
+        }
+      } catch (error) {
+        console.error("Failed to fetch OKX rate:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRate();
+    const interval = setInterval(fetchRate, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const numericAmount = parseFloat(amount.replace(/[^\d.]/g, "")) || 0;
   const convertedAmount = numericAmount / rate;
