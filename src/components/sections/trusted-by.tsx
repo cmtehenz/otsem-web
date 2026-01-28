@@ -54,11 +54,13 @@ const TrustedBy = () => {
               }}
               className="group relative ios-touch-effect"
             >
-              <div className="opacity-40 grayscale hover:grayscale-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-105 filter drop-shadow-sm">
-                <div className="h-6 sm:h-8 md:h-9 flex items-center justify-center text-lg sm:text-xl md:text-2xl font-bold text-slate-600">
-                  {logo.name}
+              <div className="opacity-50 grayscale hover:grayscale-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-105 filter drop-shadow-sm">
+                  <img 
+                    src={logo.src} 
+                    alt={logo.name} 
+                    className="h-8 sm:h-10 md:h-12 w-auto object-contain"
+                  />
                 </div>
-              </div>
             </motion.div>
           ))}
         </div>
