@@ -44,7 +44,7 @@ const StatsGrid = () => {
         <div className="flex flex-col items-center text-center mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400 text-yellow-950 font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-5 shadow-md">
             <div className="w-1.5 h-1.5 rounded-full bg-yellow-950 animate-pulse" />
-            Sistema sem fronteiras
+            Plataforma Financeira Global
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest max-w-md leading-[1.1] text-slate-900">
             Poder financeiro <br />
