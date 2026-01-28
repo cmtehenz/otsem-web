@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   ShieldCheck,
