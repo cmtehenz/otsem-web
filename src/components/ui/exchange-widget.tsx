@@ -40,7 +40,7 @@ const ExchangeWidget = () => {
       initial={{ opacity: 0, x: 30, scale: 0.95 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
       transition={{ duration: 0.6, delay: 0.4, ease: [0.32, 0.72, 0, 1] }}
-      className="w-[260px] bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_8px_40px_-12px_rgba(111,0,255,0.15),0_0_0_1px_rgba(111,0,255,0.06)] p-4 border border-white/60"
+      className="w-[300px] bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_8px_40px_-12px_rgba(111,0,255,0.15),0_0_0_1px_rgba(111,0,255,0.06)] p-5 border border-white/60"
     >
       <div className="flex items-center justify-between mb-3">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
