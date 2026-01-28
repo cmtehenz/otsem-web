@@ -61,8 +61,6 @@ const ExchangeWidget = () => {
     setDirection(prev => prev === "buy" ? "sell" : "buy");
   };
 
-  const presetAmounts = [500, 1000, 2500, 5000];
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
