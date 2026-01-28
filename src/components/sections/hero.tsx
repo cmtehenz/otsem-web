@@ -164,25 +164,25 @@ const HeroSection = () => {
             </div>
           </motion.div>
 
-          <motion.h1
-            variants={itemVariants}
-            className="font-bold tracking-tightest leading-[0.95] mb-5 sm:mb-7 relative"
-          >
-            <div className="relative mb-0.5">
-              <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-slate-900 block leading-[1.05]">
-                Sua Ponte
-              </span>
-            </div>
+<motion.h1
+              variants={itemVariants}
+              className="font-black tracking-tighter leading-[0.95] mb-5 sm:mb-7 relative"
+            >
+              <div className="relative mb-0.5">
+                <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-slate-900 block leading-[1.05]">
+                  Sua Ponte
+                </span>
+              </div>
 
-            {/* Animated wave stripe */}
-            <AnimatedWave />
+              {/* Animated wave stripe */}
+              <AnimatedWave />
 
-            <div className="relative">
-              <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-primary leading-[1.05]">
-                Liquida <span className="text-slate-900">Global.</span>
-              </span>
-            </div>
-          </motion.h1>
+              <div className="relative">
+                <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-primary leading-[1.05]">
+                  Líquida <span className="text-slate-900">Global.</span>
+                </span>
+              </div>
+            </motion.h1>
 
           <motion.p
             variants={itemVariants}
