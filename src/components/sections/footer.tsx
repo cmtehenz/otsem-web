@@ -59,7 +59,7 @@ const Footer = () => {
               </p>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400/10 border border-yellow-400/20">
                 <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 animate-pulse" />
-                <span className="text-[9px] sm:text-[10px] font-bold text-yellow-600 uppercase tracking-[0.15em]">SISTEMA SEM FRONTEIRAS</span>
+                <span className="text-[9px] sm:text-[10px] font-bold text-yellow-600 uppercase tracking-[0.15em]">Plataforma Financeira Global</span>
               </div>
             </div>
 
