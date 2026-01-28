@@ -10,7 +10,7 @@ interface IPhoneMockupProps {
 export const IPhoneMockup = ({ children, className = "" }: IPhoneMockupProps) => {
   return (
     <div className={`relative ${className}`}>
-      <div className="relative mx-auto border-gray-900 bg-gray-900 border-[8px] rounded-[3.5rem] h-[720px] w-[360px] shadow-[0_0_80px_-15px_rgba(0,0,0,0.5)] overflow-hidden">
+      <div className="relative mx-auto border-gray-900 bg-gray-900 border-[8px] rounded-[3.5rem] h-[720px] w-[360px] shadow-2xl overflow-hidden">
         <div className="absolute top-24 -left-2.5 w-1 h-12 bg-gray-800 rounded-r-lg" />
         <div className="absolute top-40 -left-2.5 w-1 h-20 bg-gray-800 rounded-r-lg" />
         <div className="absolute top-64 -left-2.5 w-1 h-20 bg-gray-800 rounded-r-lg" />
