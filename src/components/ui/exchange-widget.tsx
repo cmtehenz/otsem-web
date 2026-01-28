@@ -8,10 +8,8 @@ import Link from "next/link";
 const ExchangeWidget = () => {
   const [amount, setAmount] = useState("1000");
   const [rate, setRate] = useState(6.01);
-  const [isAnimating, setIsAnimating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [direction, setDirection] = useState<"buy" | "sell">("buy");
-  const [showRateUpdate, setShowRateUpdate] = useState(false);
   const [showAuthScreen, setShowAuthScreen] = useState(false);
   const prevRateRef = useRef(rate);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -24,10 +22,6 @@ const ExchangeWidget = () => {
         if (data.code === "0" && data.data?.[0]?.last) {
           const baseRate = parseFloat(data.data[0].last);
           const newRate = baseRate * 1.0098;
-          if (Math.abs(newRate - prevRateRef.current) > 0.01) {
-            setShowRateUpdate(true);
-            setTimeout(() => setShowRateUpdate(false), 2000);
-          }
           prevRateRef.current = newRate;
           setRate(newRate);
         }
@@ -39,7 +33,7 @@ const ExchangeWidget = () => {
     };
 
     fetchRate();
-    const interval = setInterval(fetchRate, 10000);
+    const interval = setInterval(fetchRate, 15000); // Reduced frequency
     return () => clearInterval(interval);
   }, []);
 
@@ -65,35 +59,28 @@ const ExchangeWidget = () => {
 
   const toggleDirection = () => {
     setDirection(prev => prev === "buy" ? "sell" : "buy");
-    setIsAnimating(true);
   };
-
-  useEffect(() => {
-    setIsAnimating(true);
-    const timer = setTimeout(() => setIsAnimating(false), 400);
-    return () => clearTimeout(timer);
-  }, [amount, direction]);
 
   const presetAmounts = [500, 1000, 2500, 5000];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
       className="w-full max-w-[420px]"
     >
       <div className="relative">
-        {/* Outer glow effects */}
-        <div className="absolute -inset-[2px] bg-gradient-to-br from-primary/40 via-violet-500/30 to-emerald-400/20 rounded-[32px] blur-2xl opacity-50" />
-        <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-violet-500/20 to-primary/20 rounded-[30px] opacity-80" />
+        {/* Simplified outer glow - static */}
+        <div className="absolute -inset-[2px] bg-gradient-to-br from-primary/30 via-violet-500/20 to-emerald-400/15 rounded-[32px] blur-xl opacity-40" />
+        <div className="absolute -inset-1 bg-gradient-to-r from-primary/15 via-violet-500/15 to-primary/15 rounded-[30px] opacity-70" />
         
         {/* Main card */}
         <div className="relative bg-white rounded-[28px] overflow-hidden shadow-2xl shadow-primary/10 border border-slate-100">
-          {/* Subtle gradient overlay */}
+          {/* Static gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-slate-50/80 via-white to-primary/[0.02] pointer-events-none" />
           
-          {/* Decorative elements */}
+          {/* Static decorative elements */}
           <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary/8 to-violet-500/5 blur-3xl rounded-full translate-x-10 -translate-y-10 pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-400/8 to-primary/5 blur-3xl rounded-full -translate-x-10 translate-y-10 pointer-events-none" />
           
@@ -114,26 +101,16 @@ const ExchangeWidget = () => {
                   <p className="text-xs text-slate-500 font-medium">Cotação em tempo real</p>
                 </div>
               </div>
-              <motion.div 
-                animate={showRateUpdate ? { scale: [1, 1.1, 1] } : {}}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100"
-              >
-                <motion.div 
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                  className="w-2 h-2 rounded-full bg-emerald-500" 
-                />
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-xs font-bold text-emerald-600">
                   {isLoading ? "..." : "LIVE"}
                 </span>
-              </motion.div>
+              </div>
             </div>
 
             {/* Exchange rate banner */}
-            <motion.div 
-              animate={showRateUpdate ? { scale: [1, 1.02, 1] } : {}}
-              className="flex items-center justify-between px-4 py-3 mb-5 rounded-2xl bg-gradient-to-r from-slate-50 to-slate-100/50 border border-slate-100"
-            >
+            <div className="flex items-center justify-between px-4 py-3 mb-5 rounded-2xl bg-gradient-to-r from-slate-50 to-slate-100/50 border border-slate-100">
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-emerald-500" />
                 <span className="text-sm text-slate-600 font-medium">
@@ -144,15 +121,15 @@ const ExchangeWidget = () => {
                 <Zap className="w-3.5 h-3.5" />
                 <span>~30s</span>
               </div>
-            </motion.div>
+            </div>
 
             <AnimatePresence mode="wait">
               <motion.div
                 key={direction}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
               >
                 {/* Input section - You send */}
                 <div className="relative bg-gradient-to-br from-slate-50 to-slate-100/70 rounded-3xl p-5 border border-slate-100 mb-3">
@@ -192,33 +169,29 @@ const ExchangeWidget = () => {
                   {/* Preset amounts */}
                   <div className="flex gap-2 mt-4">
                     {presetAmounts.map((preset) => (
-                      <motion.button
+                      <button
                         key={preset}
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
                         onClick={() => setAmount(preset.toString())}
-                        className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
+                        className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all duration-150 active:scale-95 ${
                           numericAmount === preset
                             ? "bg-primary text-white shadow-lg shadow-primary/25"
                             : "bg-white text-slate-500 border border-slate-200 hover:border-primary/30 hover:text-primary"
                         }`}
                       >
                         {direction === "buy" ? `R$${preset}` : preset}
-                      </motion.button>
+                      </button>
                     ))}
                   </div>
                 </div>
 
                 {/* Swap button */}
                 <div className="flex justify-center -my-2 relative z-10">
-                  <motion.button
-                    whileHover={{ scale: 1.1, rotate: 180 }}
-                    whileTap={{ scale: 0.9 }}
+                  <button
                     onClick={toggleDirection}
-                    className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-xl shadow-primary/30 border-4 border-white"
+                    className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-xl shadow-primary/30 border-4 border-white transition-transform duration-150 hover:scale-105 active:scale-95"
                   >
                     <ArrowDownUp className="w-5 h-5 text-white" />
-                  </motion.button>
+                  </button>
                 </div>
 
                 {/* Output section - You receive */}
@@ -242,11 +215,7 @@ const ExchangeWidget = () => {
                     </div>
                   </div>
                   
-                  <motion.div
-                    animate={isAnimating ? { scale: [1, 1.02, 1] } : {}}
-                    transition={{ duration: 0.3 }}
-                    className="flex items-baseline gap-2"
-                  >
+                  <div className="flex items-baseline gap-2">
                     {direction === "sell" && <span className="text-slate-300 text-3xl font-semibold">R$</span>}
                     <span className="text-4xl font-bold text-slate-900">
                       {convertedAmount.toLocaleString(direction === "buy" ? "en-US" : "pt-BR", { 
@@ -257,26 +226,20 @@ const ExchangeWidget = () => {
                     <span className="text-slate-400 font-semibold text-lg">
                       {direction === "buy" ? "USDT" : ""}
                     </span>
-                  </motion.div>
+                  </div>
                 </div>
               </motion.div>
             </AnimatePresence>
 
             {/* CTA Button */}
-            <motion.button
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.98 }}
+            <button
               onClick={() => setShowAuthScreen(true)}
-              className="w-full mt-6 py-4 bg-gradient-to-r from-primary via-violet-600 to-primary bg-[length:200%_100%] text-white text-base font-bold rounded-2xl shadow-xl shadow-primary/25 flex items-center justify-center gap-2.5 relative overflow-hidden group"
+              className="w-full mt-6 py-4 bg-gradient-to-r from-primary via-violet-600 to-primary bg-[length:200%_100%] text-white text-base font-bold rounded-2xl shadow-xl shadow-primary/25 flex items-center justify-center gap-2.5 relative overflow-hidden transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
             >
-              <motion.div 
-                animate={{ x: ["-100%", "100%"] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-12"
-              />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer" />
               <Sparkles className="w-5 h-5" />
               <span>Converter Agora</span>
-            </motion.button>
+            </button>
 
             {/* Trust badges */}
             <div className="flex items-center justify-center gap-6 mt-5">
@@ -301,7 +264,7 @@ const ExchangeWidget = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2 }}
                 className="absolute inset-0 bg-white rounded-[28px] overflow-hidden z-30"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-slate-50/80 via-white to-primary/[0.02] pointer-events-none" />
@@ -310,88 +273,48 @@ const ExchangeWidget = () => {
                 
                 <div className="relative p-6 sm:p-7 h-full flex flex-col">
                   {/* Back button */}
-                  <motion.button
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 }}
+                  <button
                     onClick={() => setShowAuthScreen(false)}
                     className="flex items-center gap-2 text-slate-500 hover:text-slate-700 transition-colors mb-6 self-start"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     <span className="text-sm font-medium">Voltar</span>
-                  </motion.button>
+                  </button>
 
                   {/* Auth content */}
                   <div className="flex-1 flex flex-col items-center justify-center">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.15 }}
-                      className="w-16 h-16 rounded-3xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-xl shadow-primary/30 mb-6"
-                    >
+                    <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-xl shadow-primary/30 mb-6">
                       <Sparkles className="w-8 h-8 text-white" />
-                    </motion.div>
+                    </div>
 
-                    <motion.h3
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 }}
-                      className="text-xl font-bold text-slate-900 text-center mb-2"
-                    >
+                    <h3 className="text-xl font-bold text-slate-900 text-center mb-2">
                       Acesse sua conta
-                    </motion.h3>
+                    </h3>
 
-                    <motion.p
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.25 }}
-                      className="text-sm text-slate-500 text-center mb-8 max-w-[260px]"
-                    >
+                    <p className="text-sm text-slate-500 text-center mb-8 max-w-[260px]">
                       Para continuar com sua conversão, faça login ou crie uma conta
-                    </motion.p>
+                    </p>
 
                     {/* Auth buttons */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
-                      className="w-full space-y-3"
-                    >
+                    <div className="w-full space-y-3">
                       <Link href="/login" className="block">
-                        <motion.div
-                          whileHover={{ scale: 1.02, y: -2 }}
-                          whileTap={{ scale: 0.98 }}
-                          className="w-full py-4 bg-gradient-to-r from-primary via-violet-600 to-primary bg-[length:200%_100%] text-white text-base font-bold rounded-2xl shadow-xl shadow-primary/25 flex items-center justify-center gap-2.5 relative overflow-hidden"
-                        >
-                          <motion.div 
-                            animate={{ x: ["-100%", "100%"] }}
-                            transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-12"
-                          />
+                        <button className="w-full py-4 bg-gradient-to-r from-primary via-violet-600 to-primary bg-[length:200%_100%] text-white text-base font-bold rounded-2xl shadow-xl shadow-primary/25 flex items-center justify-center gap-2.5 relative overflow-hidden transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]">
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer" />
                           <LogIn className="w-5 h-5" />
                           <span>Entrar</span>
-                        </motion.div>
+                        </button>
                       </Link>
 
                       <Link href="/register" className="block">
-                        <motion.div
-                          whileHover={{ scale: 1.02, y: -2 }}
-                          whileTap={{ scale: 0.98 }}
-                          className="w-full py-4 bg-white border-2 border-primary/20 text-primary text-base font-bold rounded-2xl flex items-center justify-center gap-2.5 hover:border-primary/40 transition-colors"
-                        >
+                        <button className="w-full py-4 bg-white border-2 border-primary/20 text-primary text-base font-bold rounded-2xl flex items-center justify-center gap-2.5 hover:border-primary/40 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]">
                           <UserPlus className="w-5 h-5" />
                           <span>Criar Conta</span>
-                        </motion.div>
+                        </button>
                       </Link>
-                    </motion.div>
+                    </div>
 
                     {/* Conversion summary */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.35 }}
-                      className="mt-8 w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-100"
-                    >
+                    <div className="mt-8 w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-100">
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-slate-500">Sua conversão:</span>
                         <div className="flex items-center gap-2">
@@ -404,7 +327,7 @@ const ExchangeWidget = () => {
                           </span>
                         </div>
                       </div>
-                    </motion.div>
+                    </div>
                   </div>
                 </div>
               </motion.div>
