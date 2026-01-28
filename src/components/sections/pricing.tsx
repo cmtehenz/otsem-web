@@ -29,21 +29,21 @@ const Pricing = () => {
       popular: false,
     },
       {
-        name: "Alta Volumetria",
-        description: "Para operações acima de R$ 500k",
-        priceLabel: "Taxa sob",
-        price: "consulta",
-        priceSuffix: "por transação",
-        features: [
-          "Spreads negociáveis",
-          "Atendimento VIP",
-          "Mesa OTC dedicada",
-          "Condições especiais"
-        ],
-        cta: "Falar com especialista",
-        iconImage: "/images/money-growth.png",
-        popular: true,
-      }
+          name: "Alta Volumetria",
+          description: "Para operações acima de R$ 500k",
+          priceLabel: "Taxa sob",
+          price: "consulta",
+          priceSuffix: "por transação",
+          features: [
+            "Spreads negociáveis",
+            "Atendimento VIP",
+            "Mesa OTC dedicada",
+            "Condições especiais"
+          ],
+          cta: "Falar com especialista",
+          icon: TrendingUp,
+          popular: true,
+        }
   ];
 
   return (
