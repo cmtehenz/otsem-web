@@ -235,9 +235,9 @@ const HeroSection = () => {
               </div>
             </div>
             <div className="text-[12px] sm:text-[13px] font-medium text-slate-500 leading-snug">
-              <span className="text-slate-900 font-semibold">10.000+</span> líderes <br className="sm:hidden" />
-              confiam na <span className="text-primary font-semibold">OtsemPay</span>
-            </div>
+                Mais de <span className="text-slate-900 font-semibold">6 mil</span> clientes <br className="sm:hidden" />
+                confiam na <span className="text-primary font-semibold">Otsem Pay</span>
+              </div>
           </motion.div>
         </motion.div>
 
