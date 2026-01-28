@@ -31,7 +31,7 @@ const Pricing = () => {
           name: "Alta Volumetria",
           description: "Para operações acima de R$ 500k",
           priceLabel: "Taxa sob",
-          price: "consulta",
+          price: "Consulta",
           priceSuffix: "por transação",
           features: [
             "Spreads negociáveis",
