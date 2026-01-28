@@ -41,8 +41,8 @@ const CTABanner = () => {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 mb-6">
               <div className="w-full sm:w-auto">
                 <Link href="/register" onClick={handleButtonClick} className="block">
-                  <button className="w-full sm:w-auto h-11 px-6 rounded-xl bg-white text-primary font-semibold text-[13px] flex items-center justify-center gap-2 shadow-lg ios-touch-effect active:scale-[0.97] transition-transform">
-                    Criar conta grátis
+                    <button className="w-full sm:w-auto h-11 px-6 rounded-xl bg-white text-primary font-semibold text-[13px] flex items-center justify-center gap-2 shadow-lg ios-touch-effect active:scale-[0.97] transition-transform">
+                      Crie sua conta
                     <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
                   </button>
                 </Link>
