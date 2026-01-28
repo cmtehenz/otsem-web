@@ -155,7 +155,7 @@ const HeroSection = () => {
                 onClick={handleButtonClick}
               >
                 <button className="btn-premium w-full sm:w-auto group px-5 sm:px-6 py-3 sm:py-3.5 text-[14px] sm:text-[15px] rounded-[12px] sm:rounded-[14px] font-semibold">
-                  Abrir Conta VIP
+                  Crie sua conta
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </button>
               </Link>
