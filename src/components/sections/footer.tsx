@@ -88,23 +88,7 @@ const Footer = () => {
             </ul>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.09, ease: [0.32, 0.72, 0, 1] }}
-          >
-            <h3 className="mb-3 sm:mb-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">Empresa</h3>
-            <ul className="space-y-2 sm:space-y-2.5">
-              {footerLinks.empresa.map((link) => (
-                <li key={link.label}>
-                  <a href={link.href} className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
+
 
             <motion.div
               initial={{ opacity: 0, y: 16 }}
