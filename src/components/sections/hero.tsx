@@ -243,15 +243,13 @@ const HeroSection = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1], delay: 0.15 }}
           >
-                <IPhoneMockup className="scale-100 origin-center">
-                  <div className="bg-black h-full w-full overflow-hidden">
-                    <img 
-                      src="/images/app-mockup.webp" 
-                      alt="App Preview" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </IPhoneMockup>
+                  <IPhoneMockup className="scale-100 origin-center">
+                      <img 
+                        src="/images/app-mockup.webp" 
+                        alt="App Preview" 
+                        className="w-full h-full object-cover scale-[1.02]"
+                      />
+                  </IPhoneMockup>
           </motion.div>
         </motion.div>
       </div>
