@@ -73,7 +73,7 @@ const HeroSection = () => {
         className="absolute bottom-[-8%] left-[-12%] w-[65vw] sm:w-[45vw] h-[65vw] sm:h-[45vw] max-w-[380px] max-h-[380px] bg-primary/6 blur-[70px] rounded-full pointer-events-none"
       />
 
-      <div className="container mx-auto px-4 sm:px-6 flex-grow flex flex-col lg:flex-row items-center gap-6 lg:gap-12 py-6 sm:py-10">
+        <div className="container mx-auto px-4 sm:px-6 flex-grow flex flex-col lg:flex-row items-center gap-6 lg:gap-6 py-6 sm:py-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
