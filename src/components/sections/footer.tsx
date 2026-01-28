@@ -19,12 +19,7 @@ const Footer = () => {
       { label: "Carreiras", href: "#" },
       { label: "Contato", href: "#" },
     ],
-    legal: [
-        { label: "Termos de uso", href: "https://drive.google.com/file/d/1w5iM6U1BRHhKemNVXcKiEc1TJ1YjqFCu/view?usp=share_link", external: true as const },
-        { label: "Privacidade", href: "https://drive.google.com/file/d/1X0RHbjkm9uG9k_v7wqBIKMVWkbKI8Qcv/view?usp=share_link", external: true as const },
-        { label: "Cookies", href: "https://drive.google.com/file/d/1YNdbDQsdICp700B7O6RSOi2oHmbgcn6S/view?usp=share_link", external: true as const },
-        { label: "Status", href: "#", external: false as const },
-      ],
+
   };
 
   const handleInstagramClick = () => {
