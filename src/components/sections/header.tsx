@@ -167,10 +167,9 @@ const Header = () => {
                     }}
                     className="block"
                   >
-                    <button className="w-full btn-premium py-3 rounded-xl text-[14px]">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      Criar conta agora
-                    </button>
+<button className="w-full btn-premium py-3 rounded-xl text-[14px]">
+                        Crie sua conta
+                      </button>
                   </Link>
                 </div>
               </div>
