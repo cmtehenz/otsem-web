@@ -273,12 +273,12 @@ const HeroSection = () => {
             </div>
           </motion.div>
 
-          {/* The Exchange Widget */}
-          <div className="relative z-20 w-full flex justify-center px-2 sm:px-0">
-            <ExchangeWidget />
+            {/* The Exchange Widget */}
+            <div className="relative z-20 w-full flex justify-center px-2 sm:px-0">
+              <ExchangeWidget />
+            </div>
           </div>
-        </motion.div>
-      </div>
+        </div>
     </section>
   );
 };
