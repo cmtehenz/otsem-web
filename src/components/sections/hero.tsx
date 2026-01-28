@@ -247,75 +247,69 @@ const HeroSection = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1], delay: 0.15 }}
           >
-            <IPhoneMockup className="scale-100 origin-center">
-              <div className="bg-gradient-to-b from-slate-50 to-white h-full overflow-hidden">
-                <div className="p-4 pt-10 space-y-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider">Patrimônio Total</p>
-                      <p className="text-2xl font-bold tracking-tight text-slate-800 mt-0.5">R$ 152.480</p>
+              <IPhoneMockup className="scale-100 origin-center">
+                <div className="bg-gradient-to-b from-slate-50 to-white h-full overflow-hidden">
+                  <div className="p-4 pt-10 space-y-4">
+                    <div className="text-center mb-1">
+                      <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Converter</p>
+                      <p className="text-lg font-bold text-slate-800">BRL → USDT</p>
                     </div>
-                    <div className="w-10 h-10 rounded-xl bg-primary shadow-lg shadow-primary/20 flex items-center justify-center text-white">
-                      <Wallet className="w-4.5 h-4.5" />
-                    </div>
-                  </div>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="ios-card p-3">
-                      <p className="text-[7px] font-semibold text-slate-400 uppercase tracking-wider">BRL Cash</p>
-                      <p className="text-base font-bold text-slate-800 mt-0.5">48.2K</p>
-                    </div>
-                    <div className="ios-card p-3">
-                      <p className="text-[7px] font-semibold text-slate-400 uppercase tracking-wider">USDT Balance</p>
-                      <p className="text-base font-bold text-primary mt-0.5">18.4K</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider px-1">Atividade</p>
-
-                    <div className="ios-card p-3 flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center border border-emerald-100">
-                          <ArrowDownLeft className="w-3.5 h-3.5 text-emerald-600" />
-                        </div>
-                        <div>
-                          <p className="text-[12px] font-semibold text-slate-800">PIX Recebido</p>
-                          <p className="text-[9px] text-slate-400 font-medium">Hoje, 14:32</p>
+                    <div className="ios-card p-3.5">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[9px] text-slate-400 font-medium">Você envia</span>
+                        <span className="text-[9px] text-slate-400">Saldo: R$ 48.200</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xl font-bold text-slate-800">10.000,00</span>
+                        <div className="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-full">
+                          <span className="text-sm">🇧🇷</span>
+                          <span className="font-semibold text-slate-800 text-[11px]">BRL</span>
                         </div>
                       </div>
-                      <p className="text-[12px] font-semibold text-emerald-600">+R$ 12.000</p>
                     </div>
 
-                    <div className="ios-card p-3 flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/15">
-                          <RefreshCw className="w-3.5 h-3.5 text-primary" />
-                        </div>
-                        <div>
-                          <p className="text-[12px] font-semibold text-slate-800">Swap BRL → USDT</p>
-                          <p className="text-[9px] text-slate-400 font-medium">Hoje, 15:45</p>
-                        </div>
+                    <div className="flex justify-center -my-1 relative z-10">
+                      <div className="w-9 h-9 rounded-full bg-primary shadow-lg shadow-primary/25 flex items-center justify-center">
+                        <RefreshCw className="w-4 h-4 text-white" />
                       </div>
-                      <p className="text-[12px] font-semibold text-primary">-$ 2.450</p>
                     </div>
 
-                    <div className="ios-card p-3 flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center border border-blue-100">
-                          <ArrowUpRight className="w-3.5 h-3.5 text-blue-600" />
-                        </div>
-                        <div>
-                          <p className="text-[12px] font-semibold text-slate-800">Saque USDT</p>
-                          <p className="text-[9px] text-slate-400 font-medium">Ontem, 09:12</p>
+                    <div className="ios-card p-3.5 border-2 border-primary/20">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[9px] text-slate-400 font-medium">Você recebe</span>
+                        <span className="text-[9px] text-emerald-500 font-semibold">Melhor taxa</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xl font-bold text-primary">1.704,08</span>
+                        <div className="flex items-center gap-1.5 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
+                          <span className="text-sm">💵</span>
+                          <span className="font-semibold text-emerald-700 text-[11px]">USDT</span>
                         </div>
                       </div>
-                      <p className="text-[12px] font-semibold text-blue-600">-$ 500</p>
                     </div>
+
+                    <div className="ios-card p-3 space-y-2">
+                      <div className="flex justify-between text-[10px]">
+                        <span className="text-slate-400">Taxa de câmbio</span>
+                        <span className="font-semibold text-slate-700">1 USDT = R$ 5,80</span>
+                      </div>
+                      <div className="flex justify-between text-[10px]">
+                        <span className="text-slate-400">Taxa de serviço</span>
+                        <span className="font-semibold text-emerald-600">0,98%</span>
+                      </div>
+                      <div className="flex justify-between text-[10px]">
+                        <span className="text-slate-400">Tempo estimado</span>
+                        <span className="font-semibold text-slate-700">~10 segundos</span>
+                      </div>
+                    </div>
+
+                    <button className="w-full bg-primary text-white font-semibold py-3 rounded-2xl text-[13px] shadow-lg shadow-primary/25">
+                      Confirmar Conversão
+                    </button>
                   </div>
                 </div>
-              </div>
-            </IPhoneMockup>
+              </IPhoneMockup>
           </motion.div>
         </motion.div>
       </div>
