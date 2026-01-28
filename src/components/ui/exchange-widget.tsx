@@ -67,13 +67,13 @@ const ExchangeWidget = () => {
           </div>
         </div>
         <div className="flex items-center">
-          <span className="text-slate-400 text-sm font-medium mr-1">R$</span>
-          <input
-            type="text"
-            value={formatBRL((numericAmount * 100).toString())}
-            onChange={handleAmountChange}
-            placeholder="0,00"
-            className="w-full bg-transparent text-lg font-bold text-slate-800 outline-none placeholder:text-slate-300"
+            <span className="text-slate-400 text-base font-medium mr-1">R$</span>
+            <input
+              type="text"
+              value={formatBRL((numericAmount * 100).toString())}
+              onChange={handleAmountChange}
+              placeholder="0,00"
+              className="w-full bg-transparent text-xl font-bold text-slate-800 outline-none placeholder:text-slate-300"
           />
         </div>
       </div>
