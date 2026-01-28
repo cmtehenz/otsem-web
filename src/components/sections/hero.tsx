@@ -6,7 +6,7 @@ import {
   ArrowRight,
   ShieldCheck,
   Zap,
-  Globe,
+  BookOpen,
 } from "lucide-react";
 import haptic from "@/lib/haptics";
 import { IPhoneMockup } from "@/components/ui/iphone-mockup";
