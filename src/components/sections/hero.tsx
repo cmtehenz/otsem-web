@@ -202,10 +202,10 @@ const HeroSection = () => {
           </motion.div>
         </motion.div>
 
-        <motion.div
-          style={{ y: springY, opacity }}
-          className="w-full lg:w-[45%] relative hidden lg:flex items-center gap-4"
-        >
+          <motion.div
+            style={{ y: springY, opacity }}
+            className="w-full lg:w-[45%] relative hidden lg:flex items-center gap-2"
+          >
           <motion.div
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
