@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowDownUp, Sparkles, TrendingUp, Shield, Zap, Check, ArrowLeft, LogIn, UserPlus } from "lucide-react";
+import { ArrowDownUp, TrendingUp, Shield, Zap, Check, ArrowLeft, LogIn, UserPlus, ArrowLeftRight } from "lucide-react";
 import Link from "next/link";
 
 const ExchangeWidget = () => {
