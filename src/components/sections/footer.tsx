@@ -111,8 +111,10 @@ const Footer = () => {
                 {footerLinks.legal.map((link) => (
                   <li key={link.label}>
                     {link.external ? (
-                      <button
-                        type="button"
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         onClick={(e) => {
                           e.preventDefault();
                           window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: link.href } }, "*");
@@ -120,7 +122,7 @@ const Footer = () => {
                         className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer"
                       >
                         {link.label}
-                      </button>
+                      </a>
                     ) : (
                       <Link href={link.href} className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block">
                         {link.label}
