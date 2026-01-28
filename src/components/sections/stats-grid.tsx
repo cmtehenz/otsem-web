@@ -38,11 +38,8 @@ const stats = [
 const StatsGrid = () => {
   return (
     <section className="relative z-10 section-padding overflow-hidden">
-      <motion.div
-        animate={{ scale: [1, 1.06, 1], opacity: [0.03, 0.06, 0.03] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[85%] max-w-[550px] max-h-[550px] -z-20 bg-[radial-gradient(circle_at_center,rgba(124,58,237,0.1),transparent_70%)] pointer-events-none"
-      />
+      {/* Static background - no animation */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[85%] max-w-[550px] max-h-[550px] -z-20 bg-[radial-gradient(circle_at_center,rgba(124,58,237,0.08),transparent_70%)] pointer-events-none" />
 
       <div className="container mx-auto container-mobile">
         <div className="flex flex-col items-center text-center mb-8 sm:mb-12">
@@ -50,7 +47,7 @@ const StatsGrid = () => {
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ type: "spring", stiffness: 100, damping: 18 }}
+            transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400 text-yellow-950 font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-5 shadow-md"
           >
             <div className="w-1.5 h-1.5 rounded-full bg-yellow-950 animate-pulse" />
@@ -60,7 +57,7 @@ const StatsGrid = () => {
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.06 }}
+            transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1], delay: 0.06 }}
             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest max-w-md leading-[1.1] text-slate-900"
           >
             Poder financeiro <br />
@@ -76,9 +73,8 @@ const StatsGrid = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-20px" }}
               transition={{
-                type: "spring",
-                stiffness: 100,
-                damping: 18,
+                duration: 0.4,
+                ease: [0.25, 0.1, 0.25, 1],
                 delay: index * 0.05,
               }}
               className="relative group"
@@ -86,7 +82,7 @@ const StatsGrid = () => {
               <div className="ios-card-premium h-full flex flex-col">
                 <div className="space-y-3 sm:space-y-4">
                   <div
-                    className={`flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl ${stat.color} border border-slate-100/80 transition-transform duration-300 group-hover:scale-105`}
+                    className={`flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl ${stat.color} border border-slate-100/80 transition-transform duration-200 group-hover:scale-105`}
                   >
                     <stat.icon
                       className={`h-4 w-4 sm:h-5 sm:w-5 ${stat.iconColor}`}
