@@ -28,18 +28,18 @@ const TrustedBy = () => {
 
         <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 md:gap-16">
           {logos.map((logo) => (
-            <div
-              key={logo.name}
-              className="group relative ios-touch-effect"
-            >
-              <div className="opacity-100 hover:opacity-100 transition-all duration-500 group-hover:scale-105 filter drop-shadow-sm">
-                  <img 
-                    src={logo.src} 
-                    alt={logo.name} 
-                    className="h-8 sm:h-10 md:h-12 w-auto object-contain"
-                  />
-                </div>
-            </div>
+              <div
+                key={logo.name}
+                className="group relative ios-touch-effect"
+              >
+                <div className="transition-all duration-500 group-hover:scale-105">
+                    <img 
+                      src={logo.src} 
+                      alt={logo.name} 
+                      className="h-8 sm:h-10 md:h-12 w-auto object-contain"
+                    />
+                  </div>
+              </div>
           ))}
         </div>
       </div>
