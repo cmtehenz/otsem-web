@@ -19,7 +19,7 @@ const TrustedBy = () => {
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="text-center mb-10 sm:mb-14">
           <span className="inline-block px-3 py-1.5 rounded-full bg-white/60 border border-white shadow-sm text-primary font-bold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
-            Ecosystem Partners
+            Parceiros do Ecossistema
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tightest text-slate-900 leading-tight">
             Confiado por os gigantes do mercado
