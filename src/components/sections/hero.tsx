@@ -132,9 +132,9 @@ const HeroSection = () => {
             </div>
 
             <div className="relative">
-              <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-primary leading-[1.05]">
-                liquida <span className="text-slate-900">global.</span>
-              </span>
+<span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-primary leading-[1.05]">
+                  Liquida <span className="text-slate-900">Global.</span>
+                </span>
             </div>
           </motion.h1>
 
