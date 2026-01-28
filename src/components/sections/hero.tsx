@@ -166,10 +166,10 @@ const HeroSection = () => {
               onClick={() => haptic.light()}
               whileTap={{ scale: 0.97 }}
             >
-              <button className="btn-premium-outline w-full sm:w-auto px-5 sm:px-6 py-3 sm:py-3.5 text-[14px] sm:text-[15px] rounded-[12px] sm:rounded-[14px] font-semibold">
-                <Globe className="w-4 h-4 text-primary" />
-                Explorar
-              </button>
+<button className="btn-premium-outline w-full sm:w-auto px-5 sm:px-6 py-3 sm:py-3.5 text-[14px] sm:text-[15px] rounded-[12px] sm:rounded-[14px] font-semibold">
+                  <BookOpen className="w-4 h-4 text-primary" />
+                  Saber mais
+                </button>
             </motion.a>
           </motion.div>
 
