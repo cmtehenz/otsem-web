@@ -14,6 +14,107 @@ import haptic from "@/lib/haptics";
 import ExchangeWidget from "@/components/ui/exchange-widget";
 import Link from "next/link";
 
+// Animated Wave Component
+const AnimatedWave = () => {
+  return (
+    <div className="relative h-6 sm:h-8 lg:h-10 -my-1 sm:-my-2 z-10 overflow-hidden">
+      {/* Main animated wave SVG */}
+      <svg
+        className="absolute inset-0 w-full h-full"
+        viewBox="0 0 400 40"
+        preserveAspectRatio="none"
+        fill="none"
+      >
+        <defs>
+          {/* Gradient for the wave */}
+          <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#FACC15" stopOpacity="0" />
+            <stop offset="20%" stopColor="#FACC15" stopOpacity="0.8" />
+            <stop offset="50%" stopColor="#FDE047" stopOpacity="1" />
+            <stop offset="80%" stopColor="#FACC15" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#FACC15" stopOpacity="0" />
+          </linearGradient>
+          {/* Glow filter */}
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        
+        {/* Animated wave path */}
+        <motion.path
+          d="M0,20 Q50,10 100,20 T200,20 T300,20 T400,20"
+          stroke="url(#waveGradient)"
+          strokeWidth="3"
+          strokeLinecap="round"
+          fill="none"
+          filter="url(#glow)"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ 
+            pathLength: 1, 
+            opacity: 1,
+            d: [
+              "M0,20 Q50,10 100,20 T200,20 T300,20 T400,20",
+              "M0,20 Q50,28 100,20 T200,20 T300,20 T400,20",
+              "M0,20 Q50,10 100,20 T200,20 T300,20 T400,20",
+            ]
+          }}
+          transition={{
+            pathLength: { duration: 1, ease: "easeOut" },
+            opacity: { duration: 0.5 },
+            d: { 
+              duration: 3, 
+              ease: "easeInOut", 
+              repeat: Infinity,
+              repeatType: "loop"
+            }
+          }}
+        />
+      </svg>
+      
+      {/* Shimmer effect overlay */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute top-1/2 -translate-y-1/2 h-1 w-24 bg-gradient-to-r from-transparent via-yellow-200 to-transparent rounded-full blur-sm"
+          animate={{
+            x: ["-100%", "500%"],
+          }}
+          transition={{
+            duration: 2.5,
+            ease: "easeInOut",
+            repeat: Infinity,
+            repeatDelay: 1,
+          }}
+        />
+      </div>
+      
+      {/* Particle dots */}
+      <div className="absolute inset-0 flex items-center justify-center gap-1">
+        {[...Array(5)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="w-1 h-1 rounded-full bg-yellow-400"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ 
+              opacity: [0, 1, 0],
+              scale: [0, 1.2, 0],
+            }}
+            transition={{
+              duration: 2,
+              ease: "easeInOut",
+              repeat: Infinity,
+              delay: i * 0.4,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const HeroSection = () => {
   const handleButtonClick = useCallback(() => {
     haptic.medium();
@@ -57,7 +158,7 @@ const HeroSection = () => {
           className="w-full lg:w-[50%] text-left relative z-20"
         >
           <motion.div variants={itemVariants} className="mb-5 sm:mb-6">
-            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#6F00FF]/10 border border-primary/12 shadow-sm text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.18em]">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-primary/10 border border-primary/12 shadow-sm text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.18em]">
               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               <span className="whitespace-nowrap">Sistema sem fronteiras</span>
             </div>
@@ -73,12 +174,8 @@ const HeroSection = () => {
               </span>
             </div>
 
-            {/* Simplified wave - static with CSS gradient */}
-            <div className="relative h-5 sm:h-8 lg:h-10 -my-0.5 sm:-my-2 z-10">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-full h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent rounded-full opacity-70" />
-              </div>
-            </div>
+            {/* Animated wave stripe */}
+            <AnimatedWave />
 
             <div className="relative">
               <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-primary leading-[1.05]">
