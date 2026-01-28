@@ -7,10 +7,11 @@ import {
   ShieldCheck,
   Zap,
   BookOpen,
+  Globe,
+  Clock,
 } from "lucide-react";
 import haptic from "@/lib/haptics";
-import { IPhoneMockup } from "@/components/ui/iphone-mockup";
-import ExchangeWidgetMobile from "@/components/ui/exchange-widget-mobile";
+import ExchangeWidget from "@/components/ui/exchange-widget";
 import Link from "next/link";
 
 const HeroSection = () => {
@@ -73,12 +74,13 @@ const HeroSection = () => {
         className="absolute bottom-[-8%] left-[-12%] w-[65vw] sm:w-[45vw] h-[65vw] sm:h-[45vw] max-w-[380px] max-h-[380px] bg-primary/6 blur-[70px] rounded-full pointer-events-none"
       />
 
-        <div className="container mx-auto px-4 sm:px-6 flex-grow flex flex-col lg:flex-row items-center gap-6 lg:gap-6 py-6 sm:py-10">
+      <div className="container mx-auto px-4 sm:px-6 flex-grow flex flex-col lg:flex-row items-center gap-8 lg:gap-12 py-6 sm:py-10">
+        {/* Left side - Text content */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="w-full lg:w-[55%] text-left relative z-20"
+          className="w-full lg:w-[50%] text-left relative z-20"
         >
           <motion.div variants={itemVariants} className="mb-5 sm:mb-6">
             <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#6F00FF]/10 border border-primary/12 shadow-sm text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.18em]">
@@ -92,9 +94,9 @@ const HeroSection = () => {
             className="font-bold tracking-tightest leading-[0.95] mb-5 sm:mb-7 relative"
           >
             <div className="relative mb-0.5">
-<span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-slate-900 block leading-[1.05]">
-                  Sua Ponte
-                </span>
+              <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-slate-900 block leading-[1.05]">
+                Sua Ponte
+              </span>
             </div>
 
             <div className="relative h-5 sm:h-8 lg:h-10 -my-0.5 sm:-my-2 z-10">
@@ -129,9 +131,9 @@ const HeroSection = () => {
             </div>
 
             <div className="relative">
-<span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-primary leading-[1.05]">
-                  Liquida <span className="text-slate-900">Global.</span>
-                </span>
+              <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-primary leading-[1.05]">
+                Liquida <span className="text-slate-900">Global.</span>
+              </span>
             </div>
           </motion.h1>
 
@@ -167,10 +169,10 @@ const HeroSection = () => {
               onClick={() => haptic.light()}
               whileTap={{ scale: 0.97 }}
             >
-<button className="btn-premium-outline w-full sm:w-auto px-5 sm:px-6 py-3 sm:py-3.5 text-[14px] sm:text-[15px] rounded-[12px] sm:rounded-[14px] font-semibold">
-                  <BookOpen className="w-4 h-4 text-primary" />
-                  Saber mais
-                </button>
+              <button className="btn-premium-outline w-full sm:w-auto px-5 sm:px-6 py-3 sm:py-3.5 text-[14px] sm:text-[15px] rounded-[12px] sm:rounded-[14px] font-semibold">
+                <BookOpen className="w-4 h-4 text-primary" />
+                Saber mais
+              </button>
             </motion.a>
           </motion.div>
 
@@ -202,14 +204,16 @@ const HeroSection = () => {
           </motion.div>
         </motion.div>
 
-          <motion.div
-            style={{ y: springY, opacity }}
-            className="w-full lg:w-[45%] relative hidden lg:flex items-center justify-center"
-          >
+        {/* Right side - Exchange Widget */}
+        <motion.div
+          style={{ y: springY, opacity }}
+          className="w-full lg:w-[50%] relative flex items-center justify-center"
+        >
+          {/* Floating badges around widget */}
           <motion.div
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-2 left-[10%] z-30 ios-card-elevated group"
+            className="absolute -top-4 sm:top-0 left-0 sm:left-4 z-30 ios-card-elevated hidden sm:block"
           >
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-yellow-50 flex items-center justify-center text-yellow-600 border border-yellow-100">
@@ -225,7 +229,7 @@ const HeroSection = () => {
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
-            className="absolute -bottom-6 right-[5%] z-30 ios-card-elevated group"
+            className="absolute -bottom-4 sm:bottom-4 right-0 sm:right-4 z-30 ios-card-elevated hidden sm:block"
           >
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/15">
@@ -239,17 +243,41 @@ const HeroSection = () => {
           </motion.div>
 
           <motion.div
-            className="relative z-20"
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1], delay: 0.15 }}
+            animate={{ y: [0, -6, 0], x: [0, 4, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute top-1/2 -translate-y-1/2 -left-8 z-30 ios-card-elevated hidden xl:block"
           >
-            <div className="absolute -inset-4 bg-gradient-to-b from-primary/20 via-violet-600/10 to-transparent blur-3xl rounded-full opacity-60 pointer-events-none" />
-            
-            <IPhoneMockup className="relative">
-              <ExchangeWidgetMobile />
-            </IPhoneMockup>
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100">
+                <Globe className="w-4.5 h-4.5" />
+              </div>
+              <div>
+                <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Cobertura</p>
+                <p className="text-base font-semibold text-slate-800 tracking-tight">Global</p>
+              </div>
+            </div>
           </motion.div>
+
+          <motion.div
+            animate={{ y: [0, 6, 0], x: [0, -4, 0] }}
+            transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            className="absolute top-8 -right-4 z-30 ios-card-elevated hidden xl:block"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100">
+                <Clock className="w-4.5 h-4.5" />
+              </div>
+              <div>
+                <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Tempo</p>
+                <p className="text-base font-semibold text-slate-800 tracking-tight">~30 seg</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* The Exchange Widget */}
+          <div className="relative z-20 w-full flex justify-center px-2 sm:px-0">
+            <ExchangeWidget />
+          </div>
         </motion.div>
       </div>
     </section>
