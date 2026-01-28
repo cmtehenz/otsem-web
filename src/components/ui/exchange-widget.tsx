@@ -105,8 +105,8 @@ const ExchangeWidget = () => {
           transition={{ duration: 0.2 }}
           className="flex items-baseline"
         >
-          <span className="text-lg font-bold text-slate-800">
-            ≈ {convertedAmount.toLocaleString("en-US", {
+          <span className="text-xl font-bold text-slate-800">
+              ≈ {convertedAmount.toLocaleString("en-US", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}
