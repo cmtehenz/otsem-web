@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { UserPlus, Landmark, ArrowLeftRight } from "lucide-react";
 
 const HowItWorks = () => {
@@ -32,13 +31,7 @@ const HowItWorks = () => {
   return (
     <section id="como-funciona" className="relative z-10 section-padding">
       <div className="mx-auto max-w-5xl container-mobile">
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ type: "spring", stiffness: 100, damping: 18 }}
-          className="mb-8 sm:mb-12 text-center"
-        >
+        <div className="mb-8 sm:mb-12 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/8 border border-primary/12 text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             Fluxo Inteligente
@@ -47,21 +40,12 @@ const HowItWorks = () => {
             Como funciona <br />
             <span className="text-primary">o ecossistema.</span>
           </h2>
-        </motion.div>
+        </div>
 
         <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
-          {steps.map((step, index) => (
-            <motion.div
+          {steps.map((step) => (
+            <div
               key={step.id}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                type: "spring",
-                stiffness: 100,
-                damping: 18,
-                delay: index * 0.06,
-              }}
               className="group relative ios-card-premium"
             >
               <span
@@ -88,7 +72,7 @@ const HowItWorks = () => {
                   </p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

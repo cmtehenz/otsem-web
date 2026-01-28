@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { Building2, Zap, X, Check, Crown } from "lucide-react";
 
 const ComparisonSection = () => {
@@ -26,13 +25,7 @@ const ComparisonSection = () => {
   return (
     <section className="relative z-10 section-padding">
       <div className="mx-auto max-w-5xl container-mobile">
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ type: "spring", stiffness: 100, damping: 18 }}
-          className="mb-8 sm:mb-12 text-center"
-        >
+        <div className="mb-8 sm:mb-12 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/8 border border-primary/12 text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             Comparativo
@@ -41,16 +34,10 @@ const ComparisonSection = () => {
             Por que migrar para <br />
             <span className="text-primary">o ecossistema OTC?</span>
           </h2>
-        </motion.div>
+        </div>
 
         <div className="grid gap-3 sm:gap-4 lg:grid-cols-2 max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, x: -16 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.08 }}
-            className="ios-card-premium group"
-          >
+          <div className="ios-card-premium group">
             <div className="mb-4 sm:mb-5 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 border border-red-100 transition-transform duration-300 group-hover:scale-105">
                 <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-red-500" strokeWidth={1.75} />
@@ -83,24 +70,14 @@ const ComparisonSection = () => {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 16 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.12 }}
-            className="relative ios-card-premium bg-emerald-50/30 border-emerald-200/50 group"
-          >
+          <div className="relative ios-card-premium bg-emerald-50/30 border-emerald-200/50 group">
             <div className="absolute -top-2 right-4">
-              <motion.span
-                animate={{ y: [0, -2, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                className="inline-flex items-center gap-1 px-2.5 py-1 text-[8px] sm:text-[9px] font-semibold uppercase tracking-wider text-white bg-emerald-500 rounded-full shadow-md"
-              >
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[8px] sm:text-[9px] font-semibold uppercase tracking-wider text-white bg-emerald-500 rounded-full shadow-md">
                 <Crown className="h-2.5 w-2.5" strokeWidth={2} />
                 VIP
-              </motion.span>
+              </span>
             </div>
 
             <div className="mb-4 sm:mb-5 flex items-center gap-3">
@@ -135,7 +112,7 @@ const ComparisonSection = () => {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
