@@ -231,15 +231,13 @@ const ExchangeWidget = () => {
               </motion.div>
             </AnimatePresence>
 
-            {/* CTA Button */}
-            <button
-              onClick={() => setShowAuthScreen(true)}
-              className="btn-premium w-full mt-6 py-4 text-base rounded-2xl"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer" />
-              <Sparkles className="w-5 h-5" />
-              <span>Converter Agora</span>
-            </button>
+              {/* CTA Button */}
+              <button
+                onClick={() => setShowAuthScreen(true)}
+                className="w-full mt-6 py-4 text-base rounded-2xl bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold flex items-center justify-center gap-2.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-yellow-400/30"
+              >
+                <span>Converter Agora</span>
+              </button>
 
             {/* Trust badges */}
             <div className="flex items-center justify-center gap-6 mt-5">
