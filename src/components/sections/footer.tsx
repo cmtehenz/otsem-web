@@ -22,10 +22,26 @@ const Footer = () => {
 
   };
 
-  const handleInstagramClick = () => {
+  const openExternalUrl = (url: string) => {
     if (typeof window !== "undefined") {
-      window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: "https://instagram.com/otsempay" } }, "*");
+      window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url } }, "*");
     }
+  };
+
+  const handleInstagramClick = () => {
+    openExternalUrl("https://instagram.com/otsempay");
+  };
+
+  const handleTermosClick = () => {
+    openExternalUrl("https://drive.google.com/file/d/1w5iM6U1BRHhKemNVXcKiEc1TJ1YjqFCu/view?usp=share_link");
+  };
+
+  const handlePrivacidadeClick = () => {
+    openExternalUrl("https://drive.google.com/file/d/1X0RHbjkm9uG9k_v7wqBIKMVWkbKI8Qcv/view?usp=share_link");
+  };
+
+  const handleCookiesClick = () => {
+    openExternalUrl("https://drive.google.com/file/d/1YNdbDQsdICp700B7O6RSOi2oHmbgcn6S/view?usp=share_link");
   };
 
   return (
