@@ -16,7 +16,8 @@ const ExchangeWidget = () => {
         const response = await fetch("https://www.okx.com/api/v5/market/ticker?instId=USDT-BRL");
         const data = await response.json();
         if (data.code === "0" && data.data?.[0]?.last) {
-          setRate(parseFloat(data.data[0].last));
+          const baseRate = parseFloat(data.data[0].last);
+          setRate(baseRate * 1.0098); // Add 0.98% markup
         }
       } catch (error) {
         console.error("Failed to fetch OKX rate:", error);
