@@ -128,34 +128,32 @@ const Header = () => {
             >
               <div className="ios-glass rounded-2xl p-2.5 shadow-xl overflow-hidden">
                 <nav className="space-y-0.5">
-                  {navLinks.map((link) => (
-                    <a
-                      key={link.href}
-                      href={link.href}
+                    {navLinks.map((link) => (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => {
+                          haptic.selection();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="flex items-center px-3 py-3 text-[14px] font-semibold text-slate-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all ios-touch-effect"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+
+                    <div className="h-px bg-slate-200/60 my-1 mx-2" />
+
+                    <Link
+                      href="/login"
                       onClick={() => {
                         haptic.selection();
                         setMobileMenuOpen(false);
                       }}
-                      className="flex items-center justify-between px-3 py-3 text-[14px] font-semibold text-slate-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all ios-touch-effect"
+                      className="flex items-center px-3 py-3 text-[14px] font-semibold text-slate-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all ios-touch-effect"
                     >
-                      {link.label}
-                      <ChevronRight className="w-4 h-4 text-slate-300" />
-                    </a>
-                  ))}
-
-                  <div className="h-px bg-slate-200/60 my-1 mx-2" />
-
-                  <Link
-                    href="/login"
-                    onClick={() => {
-                      haptic.selection();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="flex items-center justify-between px-3 py-3 text-[14px] font-semibold text-slate-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all ios-touch-effect"
-                  >
-                    Entrar
-                    <ChevronRight className="w-4 h-4 text-slate-300" />
-                  </Link>
+                      Entrar
+                    </Link>
                 </nav>
 
                 <div className="mt-1.5 px-1">
