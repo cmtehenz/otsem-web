@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useCallback } from "react";
-import { motion } from "framer-motion";
 import { Check, ArrowLeftRight, TrendingUp } from "lucide-react";
 import haptic from "@/lib/haptics";
 import Link from "next/link";
@@ -49,13 +48,7 @@ const Pricing = () => {
   return (
     <section id="precos" className="relative z-10 section-padding">
       <div className="mx-auto max-w-5xl container-mobile">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ type: "spring", stiffness: 100, damping: 18 }}
-          className="mb-8 sm:mb-12 text-center"
-        >
+        <div className="mb-8 sm:mb-12 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/8 border border-primary/12 text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
             Preços Claros
           </div>
@@ -65,21 +58,12 @@ const Pricing = () => {
           <p className="mx-auto mt-2 max-w-md text-[13px] sm:text-[14px] text-slate-600 font-medium leading-relaxed">
             Sem taxas escondidas. Você sabe exatamente quanto vai pagar.
           </p>
-        </motion.div>
+        </div>
 
         <div className="mx-auto grid max-w-3xl gap-3 sm:gap-4 md:grid-cols-2">
-          {plans.map((plan, index) => (
-            <motion.div
+          {plans.map((plan) => (
+            <div
               key={plan.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                type: "spring",
-                stiffness: 100,
-                damping: 18,
-                delay: index * 0.06
-              }}
               className={`relative ios-card-premium group ${
                 plan.popular
                   ? "ring-2 ring-primary/25 bg-primary/[0.02]"
@@ -126,18 +110,17 @@ const Pricing = () => {
               </ul>
 
               <Link href="/register" onClick={handleButtonClick} className="block">
-                <motion.button
-                  whileTap={{ scale: 0.98 }}
-                  className={`w-full rounded-xl py-3 text-[12px] sm:text-[13px] font-semibold transition-all ${
+                <button
+                  className={`w-full rounded-xl py-3 text-[12px] sm:text-[13px] font-semibold transition-all active:scale-[0.98] ${
                     plan.popular
                       ? "bg-primary text-white shadow-md shadow-primary/20"
                       : "bg-slate-900 text-white"
                   }`}
                 >
                   {plan.cta}
-                </motion.button>
+                </button>
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
