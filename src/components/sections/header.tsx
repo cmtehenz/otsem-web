@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronRight, Sparkles } from "lucide-react";
+import { Menu, X, ChevronRight } from "lucide-react";
 import haptic from "@/lib/haptics";
 import Link from "next/link";
 
