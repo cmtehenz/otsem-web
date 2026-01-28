@@ -107,15 +107,28 @@ const Footer = () => {
             transition={{ duration: 0.5, delay: 0.12, ease: [0.32, 0.72, 0, 1] }}
           >
             <h3 className="mb-3 sm:mb-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">Legal</h3>
-            <ul className="space-y-2 sm:space-y-2.5">
-              {footerLinks.legal.map((link) => (
-                <li key={link.label}>
-                  <Link href={link.href} className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+              <ul className="space-y-2 sm:space-y-2.5">
+                {footerLinks.legal.map((link) => (
+                  <li key={link.label}>
+                    {'external' in link && link.external ? (
+                      <button
+                        onClick={() => {
+                          if (typeof window !== "undefined") {
+                            window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: link.href } }, "*");
+                          }
+                        }}
+                        className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block"
+                      >
+                        {link.label}
+                      </button>
+                    ) : (
+                      <Link href={link.href} className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block">
+                        {link.label}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
 
             <motion.button
               onClick={handleInstagramClick}
