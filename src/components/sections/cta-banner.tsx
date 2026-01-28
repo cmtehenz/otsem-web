@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback } from "react";
-import { Check, ArrowRight, Sparkles } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
 import haptic from "@/lib/haptics";
 import Link from "next/link";
 
