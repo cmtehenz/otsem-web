@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowDownUp, Sparkles, TrendingUp, Shield, Zap, Check } from "lucide-react";
+import { ArrowDownUp, Sparkles, TrendingUp, Shield, Zap, Check, ArrowLeft, LogIn, UserPlus } from "lucide-react";
+import Link from "next/link";
 
 const ExchangeWidget = () => {
   const [amount, setAmount] = useState("1000");
@@ -11,6 +12,7 @@ const ExchangeWidget = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [direction, setDirection] = useState<"buy" | "sell">("buy");
   const [showRateUpdate, setShowRateUpdate] = useState(false);
+  const [showAuthScreen, setShowAuthScreen] = useState(false);
   const prevRateRef = useRef(rate);
   const inputRef = useRef<HTMLInputElement>(null);
 
