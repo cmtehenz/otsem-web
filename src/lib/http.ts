@@ -39,7 +39,7 @@ httpClient.interceptors.request.use(
     }
 );
 
-// Interceptor para tratar erros de autenticação
+// Interceptor para tratar erros de autenticação e rede
 httpClient.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -53,6 +53,12 @@ httpClient.interceptors.response.use(
                 !window.location.pathname.includes('/register')) {
                 window.location.href = '/login';
             }
+        }
+
+        // Trata erro de rede (quando a API está offline ou o URL está errado)
+        if (!error.response && error.request) {
+            console.error('Erro de rede: Sem resposta do servidor', error.config?.url);
+            error.message = 'Não foi possível conectar ao servidor. Verifique sua conexão ou tente novamente mais tarde.';
         }
 
         return Promise.reject(error);
