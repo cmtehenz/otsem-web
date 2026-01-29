@@ -122,18 +122,16 @@ export default function Dashboard() {
                     return;
                 }
 
-                const [accountRes, transactionsRes] = await Promise.all([
-                    http.get<AccountSummary>(`/accounts/${customerId}/summary`),
-                    http.get<Transaction[] | { data: Transaction[] }>("/transactions?limit=10")
+                const [accountRes, statementRes] = await Promise.all([
+                    http.get<AccountSummary>(`/customers/${customerId}/balance`),
+                    http.get<{ statements: Transaction[] }>(`/customers/${customerId}/statement?limit=10`)
                 ]);
                 
                 if (!cancelled) {
                     setAccount(accountRes.data);
-                    const txData = transactionsRes.data;
-                    if (Array.isArray(txData)) {
-                        setTransactions(txData);
-                    } else if (txData && 'data' in txData) {
-                        setTransactions(txData.data);
+                    const txData = statementRes.data;
+                    if (txData && Array.isArray(txData.statements)) {
+                        setTransactions(txData.statements);
                     } else {
                         setTransactions([]);
                     }
