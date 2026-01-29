@@ -5,47 +5,24 @@ import http from "@/lib/http";
 import { ArrowDownLeft, ArrowUpRight, ArrowRightLeft, Loader2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useAuth } from "@/contexts/auth-context";
 
 type Transaction = {
-    id: string;
-    accountId: string;
+    transactionId: string;
     type: "PIX_IN" | "PIX_OUT" | "CONVERSION" | "TRANSFER";
-    subType?: "BUY" | "SELL" | null;
-    status: "PENDING" | "COMPLETED" | "FAILED";
-    amount: string;
-    balanceBefore: string;
-    balanceAfter: string;
+    status: "PENDING" | "COMPLETED" | "FAILED" | "PROCESSING";
+    amount: number;
     description: string;
-    payerName: string | null;
-    payerTaxNumber: string | null;
-    payerMessage: string | null;
-    receiverName: string | null;
-    receiverPixKey: string | null;
-    endToEnd: string | null;
-    txid: string | null;
-    externalId: string | null;
-    usdtAmount?: string | null;
-    rate?: string | null;
-    walletAddress?: string | null;
-    externalData: {
-        txid?: string;
-        chave?: string;
-        valor?: string;
-        horario?: string;
-        pagador?: {
-            nome?: string;
-            cpfCnpj?: string;
-        };
-        endToEndId?: string;
-        usdtAmount?: number;
-        rate?: string;
-        walletAddress?: string;
-        network?: string;
-        txHash?: string;
-    } | null;
+    senderName?: string | null;
+    senderCpf?: string | null;
+    recipientName?: string | null;
+    recipientCpf?: string | null;
+    recipientCnpj?: string | null;
     createdAt: string;
-    completedAt: string | null;
-    processedAt: string | null;
+    // Campos legados ou de conversão
+    usdtAmount?: string | number | null;
+    subType?: "BUY" | "SELL" | null;
+    externalData?: any;
 };
 
 const ITEMS_PER_PAGE = 10;
