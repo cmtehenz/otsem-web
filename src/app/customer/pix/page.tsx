@@ -64,6 +64,8 @@ function getKeyTypeIcon(type: string) {
 }
 
 export default function CustomerPixPage() {
+    const { user } = useAuth();
+    const customerId = user?.customerId;
     const [loading, setLoading] = React.useState(true);
     const [pixKeys, setPixKeys] = React.useState<PixKey[]>([]);
     const [showModal, setShowModal] = React.useState(false);
@@ -73,13 +75,13 @@ export default function CustomerPixPage() {
     const [newValue, setNewValue] = React.useState("");
     const [submitting, setSubmitting] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
-    const [validating, setValidating] = React.useState<string | null>(null);
 
     async function loadPixKeys() {
+        if (!customerId) return;
         try {
             setLoading(true);
-            const res = await http.get<PixKey[]>("/pix-keys");
-            setPixKeys(res.data || []);
+            const res = await http.get<{ keys: PixKey[] }>(`/pix/keys/account-holders/${customerId}`);
+            setPixKeys(res.data.keys || []);
         } catch {
             setPixKeys([]);
         } finally {
@@ -89,15 +91,16 @@ export default function CustomerPixPage() {
 
     React.useEffect(() => {
         loadPixKeys();
-    }, []);
+    }, [customerId]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+        if (!customerId) return;
         setSubmitting(true);
         try {
-            await http.post("/pix-keys", {
+            await http.post(`/pix/keys/account-holders/${customerId}`, {
                 keyType: newType,
-                keyValue: newType === "RANDOM" ? undefined : newValue,
+                keyValue: newType === "EVP" ? undefined : newValue,
             });
             toast.success("Chave Pix cadastrada com sucesso!");
             setShowModal(false);
@@ -112,10 +115,10 @@ export default function CustomerPixPage() {
     }
 
     async function handleDelete() {
-        if (!keyToDelete) return;
+        if (!keyToDelete || !customerId) return;
         setDeleting(true);
         try {
-            await http.delete(`/pix-keys/${keyToDelete.id}`);
+            await http.delete(`/pix/keys/account-holders/${customerId}/key/${keyToDelete.keyValue}`);
             toast.success("Chave Pix removida com sucesso!");
             setShowDeleteModal(false);
             setKeyToDelete(null);
@@ -130,19 +133,6 @@ export default function CustomerPixPage() {
     async function onCopy(text: string) {
         await navigator.clipboard.writeText(text);
         toast.success("Chave copiada!");
-    }
-
-    async function handleValidate(pixKeyId: string) {
-        setValidating(pixKeyId);
-        try {
-            await http.post(`/inter/pix/validar-chave/${pixKeyId}`);
-            toast.success("Chave validada com sucesso!");
-            loadPixKeys();
-        } catch (err: unknown) {
-            toast.error(getErrorMessage(err, "Erro ao validar chave"));
-        } finally {
-            setValidating(null);
-        }
     }
 
     function openDeleteModal(key: PixKey) {
