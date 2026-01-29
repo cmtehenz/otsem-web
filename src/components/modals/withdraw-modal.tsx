@@ -46,6 +46,8 @@ const QUICK_AMOUNTS = [50, 100, 200, 500, 1000];
 
 export function WithdrawModal() {
     const router = useRouter();
+    const { user } = useAuth();
+    const customerId = user?.customerId;
     const { open, closeModal, triggerRefresh } = useUiModals();
     const [step, setStep] = React.useState<"loading" | "nokeys" | "select" | "amount" | "confirm" | "success">("loading");
     const [pixKeys, setPixKeys] = React.useState<PixKey[]>([]);
@@ -56,9 +58,62 @@ export function WithdrawModal() {
     const [txResult, setTxResult] = React.useState<SendPixResponse | null>(null);
 
     React.useEffect(() => {
-        if (open.withdraw) {
+        if (open.withdraw && customerId) {
             loadPixKeys();
         }
+    }, [open.withdraw, customerId]);
+
+    async function loadPixKeys() {
+        if (!customerId) return;
+        setStep("loading");
+        try {
+            const res = await http.get<{ keys: PixKey[] }>(`/pix/keys/account-holders/${customerId}`);
+            const keys = res.data.keys || [];
+            setPixKeys(keys);
+
+            if (keys.length === 0) {
+                setStep("nokeys");
+            } else {
+                setStep("select");
+            }
+        } catch {
+            setPixKeys([]);
+            setStep("nokeys");
+        }
+    }
+
+    async function handleSendPix() {
+        if (!selectedKey || !customerId) return;
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            const valorDecimal = Number((cents / 100).toFixed(2));
+
+            const res = await http.post<SendPixResponse>(`/pix/transactions/account-holders/${customerId}/send`, {
+                amount: valorDecimal,
+                description: `Transferência PIX para ${selectedKey.keyValue}`,
+                recipientKeyType: selectedKey.keyType,
+                recipientKeyValue: selectedKey.keyValue
+            });
+
+            setTxResult(res.data);
+            setStep("success");
+            triggerRefresh();
+            toast.success("PIX enviado com sucesso!");
+        } catch (err: unknown) {
+            console.error("Send PIX error:", err);
+            const message = isAxiosError(err) ? err.response?.data?.message : undefined;
+            const fallbackMessage = message || "Erro ao enviar PIX";
+            setError(fallbackMessage);
+            if (!isLimitExceededError(message)) {
+                toast.error(fallbackMessage);
+            }
+        } finally {
+            setLoading(false);
+        }
+    }
     }, [open.withdraw]);
 
     async function loadPixKeys() {
