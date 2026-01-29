@@ -19,6 +19,7 @@ type CobrancaResponse = {
 const QUICK_AMOUNTS = [50, 100, 200, 500, 1000];
 
 export function DepositModal() {
+    const { user } = useAuth();
     const { open, closeModal, triggerRefresh } = useUiModals();
     const [step, setStep] = React.useState<"amount" | "qrcode">("amount");
     const [cents, setCents] = React.useState(0);
