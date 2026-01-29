@@ -124,7 +124,7 @@ export default function NewAccreditationPFPage() {
                 },
             };
 
-            await http.post("/accreditation/person", payload);
+            await http.post("/customers/pf", payload);
             toast.success("Credenciamento PF solicitado com sucesso!");
             router.push("/admin/kyc");
         } catch (err) {
