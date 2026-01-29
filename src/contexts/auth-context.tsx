@@ -23,12 +23,8 @@ interface AuthContextData {
 }
 
 interface LoginResponse {
-    success: boolean;
-    data: {
-        user: User;
-        accessToken: string;
-        refreshToken: string;
-    };
+    access_token: string;
+    user: User;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -48,9 +44,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
-    // Carrega o usuário ao montar o componente (do JWT, sem chamar API)
+    // Carrega o usuário ao montar o componente
     useEffect(() => {
-        function loadUser() {
+        async function loadUser() {
             try {
                 const token = getAccessToken();
 
@@ -74,10 +70,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     return;
                 }
 
-                // customerId vem direto do JWT
+                let customerId = payload.customerId;
+
+                // Se for CUSTOMER e não tiver customerId no JWT, tenta buscar na API
+                if (payload.role === "CUSTOMER" && !customerId) {
+                    try {
+                        const response = await httpClient.get("/customers/me");
+                        if (response.data && response.data.id) {
+                            customerId = response.data.id;
+                        }
+                    } catch (error) {
+                        console.warn("Não foi possível buscar dados do customer:", error);
+                    }
+                }
+
                 setUser({
                     id: payload.sub,
-                    customerId: payload.customerId,
+                    customerId: customerId,
                     email: payload.email,
                     role: payload.role,
                 });
@@ -101,7 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 { headers: { "X-Anonymous": "true" } }
             );
 
-            const { accessToken, user: userData } = loginResponse.data.data;
+            const { access_token: accessToken, user: userData } = loginResponse.data;
             const role = userData.role;
 
             if (!accessToken) {
@@ -115,10 +124,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             setTokens(accessToken, "");
 
-            // customerId vem direto do JWT
+            let customerId = payload.customerId || userData.customerId;
+
+            // Se for CUSTOMER e não tiver customerId, busca na API
+            if (role === "CUSTOMER" && !customerId) {
+                try {
+                    // Espera um pouco para garantir que o interceptor de token funcione ou passa o token manualmente
+                    const response = await httpClient.get("/customers/me", {
+                        headers: { Authorization: `Bearer ${accessToken}` }
+                    });
+                    if (response.data && response.data.id) {
+                        customerId = response.data.id;
+                    }
+                } catch (error) {
+                    console.warn("Não foi possível buscar dados do customer no login:", error);
+                }
+            }
+
             const newUser = {
                 id: payload.sub,
-                customerId: payload.customerId,
+                customerId: customerId,
                 email: payload.email || userData.email,
                 role: role,
                 name: userData.name || undefined,
