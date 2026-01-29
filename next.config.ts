@@ -1,5 +1,19 @@
 import type { NextConfig } from 'next';
 import path from 'node:path';
+import fs from 'node:fs';
+
+// Force load .env for configurations that run before Next.js loads envs
+if (fs.existsSync('.env')) {
+  try {
+    // @ts-ignore - process.loadEnvFile is available in Node 20.6.0+
+    if (typeof process.loadEnvFile === 'function') {
+      process.loadEnvFile('.env');
+    }
+  } catch (e) {
+    console.warn('[next.config.js] Failed to load .env file:', e);
+  }
+}
+
 const loaderPath = require.resolve('orchids-visual-edits/loader.js');
 
 const nextConfig: NextConfig = {
@@ -19,12 +33,10 @@ const nextConfig: NextConfig = {
 
       if (!base) {
         console.warn(
-          "[next.config.js] API base ausente — rewrites desativados. " +
-          "Defina NEXT_PUBLIC_API_URL no arquivo .env."
+          "[next.config.js] API base ausente — rewrites desativados."
         );
         return [];
       }
-
 
     return [
       { source: "/auth/:path*", destination: `${base}/auth/:path*` },
