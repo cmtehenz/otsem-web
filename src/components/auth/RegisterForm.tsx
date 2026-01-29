@@ -328,20 +328,20 @@ function RegisterPageInner(): React.JSX.Element {
                 />
             </div>
 
-            <div className="fixed top-6 left-6 z-50">
+            <div className="fixed top-4 left-4 sm:top-6 sm:left-6 z-50">
                 <Link href="/">
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl liquid-glass text-slate-900/70 hover:text-slate-900 font-bold text-sm transition-colors"
+                        className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl liquid-glass text-slate-900/70 hover:text-slate-900 font-bold text-xs sm:text-sm transition-colors"
                     >
-                        <ArrowLeft className="w-4 h-4" />
-                        Voltar
+                        <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        <span className="hidden xs:inline">Voltar</span>
                     </motion.button>
                 </Link>
             </div>
 
-            <div className="flex min-h-screen w-full items-center justify-center px-4 py-24 lg:px-8 xl:px-16">
+            <div className="flex min-h-screen w-full items-center justify-center px-4 py-20 sm:py-24 lg:px-8 xl:px-16">
                 <div className="flex w-full max-w-6xl items-center gap-16">
                     <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:gap-8">
                         <div>
@@ -373,33 +373,33 @@ function RegisterPageInner(): React.JSX.Element {
                     </div>
 
                     <div className="w-full lg:flex-1 lg:max-w-md">
-                        <Card className="overflow-hidden rounded-[2.5rem] border-white/40 rich-glass">
-                            <CardHeader className="space-y-3 border-b border-black/[0.03] pb-6">
-                                <div className="mx-auto flex h-14 w-14 items-center justify-center overflow-hidden">
+                        <Card className="overflow-hidden rounded-3xl sm:rounded-[2.5rem] border-white/40 rich-glass">
+                            <CardHeader className="space-y-2 sm:space-y-3 border-b border-black/[0.03] pb-4 sm:pb-6 pt-6">
+                                <div className="mx-auto flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center overflow-hidden">
                                     <img
                                         src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/8dca9fc2-17fe-42a1-b323-5e4a298d9904/Untitled-1769589355434.png?width=8000&height=8000&resize=contain"
                                         alt="Otsem Pay"
                                         className="h-full w-full object-contain"
                                     />
                                 </div>
-                                <CardTitle className="text-center text-2xl font-black text-slate-900">
+                                <CardTitle className="text-center text-xl sm:text-2xl font-black text-slate-900">
                                     Criar conta
                                 </CardTitle>
-                                <p className="text-center text-sm text-slate-500 font-medium">
+                                <p className="text-center text-xs sm:text-sm text-slate-500 font-medium">
                                     Preencha os dados para comecar
                                 </p>
                             </CardHeader>
 
-                            <CardContent className="p-6 sm:p-8">
-                                <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4" noValidate>
+                            <CardContent className="p-4 sm:p-6 md:p-8">
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-3.5 sm:gap-4" noValidate>
 
                                     {/* Customer Type Selection */}
                                     <div className="grid gap-2">
-                                        <Label className="text-sm font-black text-slate-900">
+                                        <Label className="text-xs sm:text-sm font-black text-slate-900">
                                             Tipo de cadastro
                                         </Label>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <label className={`flex items-center gap-3 rounded-2xl border p-4 cursor-pointer transition ${
+                                        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                                            <label className={`flex items-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl border p-3 sm:p-4 cursor-pointer transition ${
                                                 customerType === "PF"
                                                     ? "border-primary bg-primary/5"
                                                     : "border-black/[0.05] bg-white/60 hover:bg-white/80"
@@ -410,14 +410,14 @@ function RegisterPageInner(): React.JSX.Element {
                                                     className="h-4 w-4 text-primary focus:ring-2 focus:ring-primary/20"
                                                     {...form.register("customerType")}
                                                 />
-                                                <div className="flex items-center gap-2">
-                                                    <User className="h-4 w-4 text-primary" />
-                                                    <span className="text-sm font-bold text-slate-900">
+                                                <div className="flex items-center gap-1.5 sm:gap-2">
+                                                    <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
+                                                    <span className="text-xs sm:text-sm font-bold text-slate-900 leading-tight">
                                                         Pessoa Física
                                                     </span>
                                                 </div>
                                             </label>
-                                            <label className={`flex items-center gap-3 rounded-2xl border p-4 cursor-pointer transition ${
+                                            <label className={`flex items-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl border p-3 sm:p-4 cursor-pointer transition ${
                                                 customerType === "PJ"
                                                     ? "border-primary bg-primary/5"
                                                     : "border-black/[0.05] bg-white/60 hover:bg-white/80"
@@ -428,9 +428,9 @@ function RegisterPageInner(): React.JSX.Element {
                                                     className="h-4 w-4 text-primary focus:ring-2 focus:ring-primary/20"
                                                     {...form.register("customerType")}
                                                 />
-                                                <div className="flex items-center gap-2">
-                                                    <Building2 className="h-4 w-4 text-primary" />
-                                                    <span className="text-sm font-bold text-slate-900">
+                                                <div className="flex items-center gap-1.5 sm:gap-2">
+                                                    <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
+                                                    <span className="text-xs sm:text-sm font-bold text-slate-900 leading-tight">
                                                         Pessoa Jurídica
                                                     </span>
                                                 </div>
@@ -442,15 +442,15 @@ function RegisterPageInner(): React.JSX.Element {
                                     </div>
 
                                     {/* Full Name */}
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="name" className="text-sm font-black text-slate-900">
+                                    <div className="grid gap-1.5 sm:gap-2">
+                                        <Label htmlFor="name" className="text-xs sm:text-sm font-black text-slate-900">
                                             Nome completo
                                         </Label>
                                         <div className="relative">
-                                            <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                            <User className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                                             <Input
                                                 id="name"
-                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-3 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                 placeholder="Seu nome completo"
                                                 {...form.register("name")}
                                             />
@@ -461,18 +461,18 @@ function RegisterPageInner(): React.JSX.Element {
                                     </div>
 
                                     {/* Age */}
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="age" className="text-sm font-black text-slate-900">
+                                    <div className="grid gap-1.5 sm:gap-2">
+                                        <Label htmlFor="age" className="text-xs sm:text-sm font-black text-slate-900">
                                             Idade
                                         </Label>
                                         <div className="relative">
-                                            <Calendar className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                            <Calendar className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                                             <Input
                                                 id="age"
                                                 type="number"
                                                 min="18"
                                                 max="120"
-                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-3 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                 placeholder="Sua idade"
                                                 {...form.register("age")}
                                             />
@@ -484,15 +484,16 @@ function RegisterPageInner(): React.JSX.Element {
 
                                     {/* CPF Field (only for PF) */}
                                     {customerType === "PF" && (
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="cpf" className="text-sm font-black text-slate-900">
+                                        <div className="grid gap-1.5 sm:gap-2">
+                                            <Label htmlFor="cpf" className="text-xs sm:text-sm font-black text-slate-900">
                                                 CPF
                                             </Label>
                                             <div className="relative">
-                                                <IdCard className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                                <IdCard className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                                                 <Input
                                                     id="cpf"
-                                                    className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                    inputMode="numeric"
+                                                    className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-3 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                     placeholder="000.000.000-00"
                                                     value={cpfValue}
                                                     onChange={(e) => {
@@ -509,15 +510,16 @@ function RegisterPageInner(): React.JSX.Element {
 
                                     {/* CNPJ Field (only for PJ) */}
                                     {customerType === "PJ" && (
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="cnpj" className="text-sm font-black text-slate-900">
+                                        <div className="grid gap-1.5 sm:gap-2">
+                                            <Label htmlFor="cnpj" className="text-xs sm:text-sm font-black text-slate-900">
                                                 CNPJ
                                             </Label>
                                             <div className="relative">
-                                                <Building2 className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                                <Building2 className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                                                 <Input
                                                     id="cnpj"
-                                                    className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                    inputMode="numeric"
+                                                    className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-3 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                     placeholder="00.000.000/0000-00"
                                                     value={cnpjValue}
                                                     onChange={(e) => {
@@ -533,16 +535,18 @@ function RegisterPageInner(): React.JSX.Element {
                                     )}
 
                                     {/* Email */}
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="email" className="text-sm font-black text-slate-900">
+                                    <div className="grid gap-1.5 sm:gap-2">
+                                        <Label htmlFor="email" className="text-xs sm:text-sm font-black text-slate-900">
                                             E-mail
                                         </Label>
                                         <div className="relative">
-                                            <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                            <Mail className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                                             <Input
                                                 id="email"
                                                 type="email"
-                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                inputMode="email"
+                                                autoComplete="email"
+                                                className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-3 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                 placeholder="voce@exemplo.com"
                                                 {...form.register("email")}
                                             />
@@ -552,23 +556,24 @@ function RegisterPageInner(): React.JSX.Element {
                                         )}
                                     </div>
 
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="password" className="text-sm font-black text-slate-900">
+                                    <div className="grid gap-1.5 sm:gap-2">
+                                        <Label htmlFor="password" className="text-xs sm:text-sm font-black text-slate-900">
                                             Senha
                                         </Label>
                                         <div className="relative">
-                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                            <Lock className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                                             <Input
                                                 id="password"
                                                 type={showPw ? "text" : "password"}
-                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 pr-10 text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                autoComplete="new-password"
+                                                className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-10 sm:pr-11 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                 placeholder="Minimo 8 caracteres"
                                                 {...form.register("password")}
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPw((v) => !v)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-900"
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-900 p-1 touch-manipulation"
                                                 aria-label={showPw ? "Ocultar senha" : "Mostrar senha"}
                                             >
                                                 {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -576,12 +581,12 @@ function RegisterPageInner(): React.JSX.Element {
                                         </div>
 
                                         {pw && (
-                                            <div className="mt-1">
+                                            <div className="mt-1 sm:mt-1.5">
                                                 <div className="flex gap-1">
                                                     {[0, 1, 2, 3].map((i) => (
                                                         <div
                                                             key={i}
-                                                            className={`h-1 flex-1 rounded-full transition-all ${i <= score
+                                                            className={`h-1 sm:h-1.5 flex-1 rounded-full transition-all ${i <= score
                                                                 ? score <= 1
                                                                     ? "bg-red-500"
                                                                     : score === 2
@@ -592,7 +597,7 @@ function RegisterPageInner(): React.JSX.Element {
                                                         />
                                                     ))}
                                                 </div>
-                                                <p className="mt-1.5 text-xs text-slate-500">
+                                                <p className="mt-1 sm:mt-1.5 text-[10px] sm:text-xs text-slate-500">
                                                     Forca:{" "}
                                                     <span
                                                         className={`font-bold ${score <= 1 ? "text-red-500" : score === 2 ? "text-yellow-500" : "text-emerald-500"}`}
@@ -608,23 +613,24 @@ function RegisterPageInner(): React.JSX.Element {
                                         )}
                                     </div>
 
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="confirm" className="text-sm font-black text-slate-900">
+                                    <div className="grid gap-1.5 sm:gap-2">
+                                        <Label htmlFor="confirm" className="text-xs sm:text-sm font-black text-slate-900">
                                             Confirmar senha
                                         </Label>
                                         <div className="relative">
-                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                            <Lock className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                                             <Input
                                                 id="confirm"
                                                 type={showConfirm ? "text" : "password"}
-                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 pr-10 text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                autoComplete="new-password"
+                                                className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-10 sm:pr-11 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                 placeholder="Repita a senha"
                                                 {...form.register("confirm")}
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowConfirm((v) => !v)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-900"
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-900 p-1 touch-manipulation"
                                                 aria-label={showConfirm ? "Ocultar confirmação" : "Mostrar confirmação"}
                                             >
                                                 {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -635,13 +641,13 @@ function RegisterPageInner(): React.JSX.Element {
                                         )}
                                     </div>
 
-                                    <label className="flex items-start gap-3 rounded-2xl border border-black/[0.05] bg-white/60 p-3 text-sm transition hover:bg-white/80">
+                                    <label className="flex items-start gap-2.5 sm:gap-3 rounded-xl sm:rounded-2xl border border-black/[0.05] bg-white/60 p-2.5 sm:p-3 text-xs sm:text-sm transition hover:bg-white/80 cursor-pointer">
                                         <input
                                             type="checkbox"
-                                            className="mt-0.5 h-4 w-4 rounded border-black/10 bg-white/60 text-primary focus:ring-2 focus:ring-primary/20"
+                                            className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-black/10 bg-white/60 text-primary focus:ring-2 focus:ring-primary/20 cursor-pointer"
                                             {...form.register("accept")}
                                         />
-                                        <span className="text-slate-500 font-medium">
+                                        <span className="text-slate-500 font-medium leading-relaxed">
                                             Aceito os{" "}
                                             <a
                                                 className="font-bold text-primary hover:underline"
@@ -670,21 +676,21 @@ function RegisterPageInner(): React.JSX.Element {
                                         <button
                                             type="button"
                                             onClick={() => setShowAffiliateField(true)}
-                                            className="flex items-center justify-center gap-2 rounded-2xl border border-dashed border-black/10 p-3 text-sm text-slate-500 transition hover:border-primary/50 hover:text-primary font-medium"
+                                            className="flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl border border-dashed border-black/10 p-2.5 sm:p-3 text-xs sm:text-sm text-slate-500 transition hover:border-primary/50 hover:text-primary font-medium touch-manipulation"
                                         >
-                                            <Gift className="h-4 w-4" />
+                                            <Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                             Tenho um codigo de indicacao
                                         </button>
                                     ) : (
-                                        <div className="grid gap-2 rounded-2xl border border-primary/30 bg-primary/5 p-3">
-                                            <Label htmlFor="affiliateCode" className="flex items-center gap-2 text-sm font-black text-slate-900">
-                                                <Gift className="h-4 w-4 text-primary" />
+                                        <div className="grid gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl border border-primary/30 bg-primary/5 p-2.5 sm:p-3">
+                                            <Label htmlFor="affiliateCode" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-black text-slate-900">
+                                                <Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                                                 Codigo de indicacao
                                             </Label>
                                             <div className="relative">
                                                 <Input
                                                     id="affiliateCode"
-                                                    className="h-12 rounded-2xl border-black/[0.05] bg-white/80 pr-10 text-slate-900 uppercase placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                    className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/80 pr-10 sm:pr-11 text-sm sm:text-base text-slate-900 uppercase placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                                                     placeholder="Ex: PARCEIRO123"
                                                     {...form.register("affiliateCode")}
                                                 />
@@ -706,20 +712,20 @@ function RegisterPageInner(): React.JSX.Element {
                                         disabled={loading}
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
-                                        className="btn-premium h-12 rounded-2xl font-black text-base disabled:opacity-50"
+                                        className="btn-premium h-11 sm:h-12 rounded-xl sm:rounded-2xl font-black text-sm sm:text-base disabled:opacity-50 touch-manipulation"
                                         aria-busy={loading}
                                     >
                                         {loading ? 'Criando conta...' : 'Criar conta'}
-                                        {!loading && <ArrowRight className="ml-2 h-4 w-4" />}
+                                        {!loading && <ArrowRight className="ml-1.5 sm:ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                                     </motion.button>
 
-                                    <Separator className="my-2 bg-black/[0.03]" />
+                                    <Separator className="my-1.5 sm:my-2 bg-black/[0.03]" />
 
-                                    <p className="text-center text-sm text-slate-500 font-medium">
+                                    <p className="text-center text-xs sm:text-sm text-slate-500 font-medium">
                                         Ja tem uma conta?{" "}
                                         <Link
                                             href="/login"
-                                            className="font-bold text-primary transition hover:text-primary/80"
+                                            className="font-bold text-primary transition hover:text-primary/80 touch-manipulation"
                                         >
                                             Entrar
                                         </Link>
@@ -728,14 +734,14 @@ function RegisterPageInner(): React.JSX.Element {
                             </CardContent>
                         </Card>
 
-                        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500 font-medium">
-                            <div className="flex items-center gap-1.5">
-                                <Shield className="h-3.5 w-3.5 text-emerald-500" />
-                                Conexao segura
+                        <div className="mt-4 sm:mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-[10px] sm:text-xs text-slate-500 font-medium">
+                            <div className="flex items-center gap-1 sm:gap-1.5">
+                                <Shield className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-emerald-500 flex-shrink-0" />
+                                <span>Conexao segura</span>
                             </div>
-                            <div className="flex items-center gap-1.5">
-                                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                                Registro verificado
+                            <div className="flex items-center gap-1 sm:gap-1.5">
+                                <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary flex-shrink-0" />
+                                <span>Registro verificado</span>
                             </div>
                         </div>
                     </div>
