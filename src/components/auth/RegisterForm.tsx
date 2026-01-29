@@ -184,7 +184,7 @@ function getHttpMessage(e: unknown, fallback = "Falha no cadastro"): string {
             (Array.isArray(obj.message) ? obj.message :
                 Array.isArray(obj.response?.data?.message) ? obj.response?.data?.message : null);
         if (arr && arr.length) return arr.join(", ");
-        const msg = obj.message ?? obj.response?.data?.message;
+        const msg = obj.response?.data?.message ?? obj.message;
         if (typeof msg === "string" && msg.trim()) return msg;
     }
     if (e instanceof Error && e.message.trim()) return e.message;
