@@ -10,6 +10,7 @@ import { Loader2, ArrowLeft, Send, AlertCircle, CheckCircle2, KeyRound, Plus, Al
 import { toast } from "sonner";
 import http from "@/lib/http";
 import Link from "next/link";
+import { useAuth } from "@/contexts/auth-context";
 
 function isLimitExceededError(message?: string): boolean {
     if (!message) return false;
