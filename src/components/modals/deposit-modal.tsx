@@ -8,29 +8,12 @@ import { Copy, Check, QrCode, Loader2, ArrowLeft, Clock } from "lucide-react";
 import { toast } from "sonner";
 import http from "@/lib/http";
 import QRCode from "qrcode";
+import { useAuth } from "@/contexts/auth-context";
 
 type CobrancaResponse = {
-    txid: string;
-    calendario: {
-        criacao: string;
-        expiracao: number;
-    };
-    devedor?: {
-        cpf?: string;
-        cnpj?: string;
-        nome?: string;
-    };
-    valor: {
-        original: string;
-    };
-    chave: string;
-    solicitacaoPagador?: string;
-    pixCopiaECola: string;
-    loc?: {
-        id: number;
-        location: string;
-        tipoCob: string;
-    };
+    qrCode: string;
+    qrCodeImage: string;
+    expiresAt: string;
 };
 
 const QUICK_AMOUNTS = [50, 100, 200, 500, 1000];
