@@ -16,6 +16,10 @@ type PixKey = {
     keyType: string;
     keyValue: string;
     status: string;
+    validated?: boolean;
+    validatedAt?: string | null;
+    validationAttempted?: boolean;
+    validationError?: string | null;
     createdAt: string;
 };
 
@@ -75,6 +79,7 @@ export default function CustomerPixPage() {
     const [newValue, setNewValue] = React.useState("");
     const [submitting, setSubmitting] = React.useState(false);
     const [deleting, setDeleting] = React.useState(false);
+    const [validating, setValidating] = React.useState<string | null>(null);
 
     async function loadPixKeys() {
         if (!customerId) return;
@@ -133,6 +138,19 @@ export default function CustomerPixPage() {
     async function onCopy(text: string) {
         await navigator.clipboard.writeText(text);
         toast.success("Chave copiada!");
+    }
+
+    async function handleValidate(pixKeyId: string) {
+        setValidating(pixKeyId);
+        try {
+            await http.post(`/inter/pix/validar-chave/${pixKeyId}`);
+            toast.success("Chave validada com sucesso!");
+            loadPixKeys();
+        } catch (err: unknown) {
+            toast.error(getErrorMessage(err, "Erro ao validar chave"));
+        } finally {
+            setValidating(null);
+        }
     }
 
     function openDeleteModal(key: PixKey) {
@@ -340,7 +358,7 @@ export default function CustomerPixPage() {
                                     onChange={e => setNewValue(e.target.value)}
                                     placeholder={
                                         newType === "CPF" ? "000.000.000-00" :
-                                            newType === "CNPJ" ? "00.000.000/0000-00" :
+                                            newType === "CNPJ" ? "000.000.000/0000-00" :
                                                 newType === "EMAIL" ? "seu@email.com" :
                                                     "+55 11 99999-9999"
                                     }
