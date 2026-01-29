@@ -62,7 +62,7 @@ const Footer = () => {
                 </span>
               </Link>
               <p className="max-w-[280px] text-[13px] sm:text-[14px] text-slate-500 leading-relaxed font-medium mb-6">
-                Redefinindo a liquidez global com tecnologia de ponta e seguranca absoluta. Sua ponte entre o tradicional e o digital.
+                Converta BRL em USDT instantaneamente com segurança institucional e as menores taxas do mercado.
               </p>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400/10 border border-yellow-400/20">
                 <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 animate-pulse" />
