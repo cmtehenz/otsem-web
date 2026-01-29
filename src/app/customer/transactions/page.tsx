@@ -51,6 +51,8 @@ function formatDate(dateString: string): string {
 }
 
 export default function TransactionsPage() {
+    const { user } = useAuth();
+    const customerId = user?.customerId;
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
@@ -58,28 +60,26 @@ export default function TransactionsPage() {
     const [total, setTotal] = useState(0);
 
     const fetchTransactions = useCallback(async () => {
+        if (!customerId) return;
         setLoading(true);
         try {
             const res = await http.get<{
-                data: Transaction[];
+                statements: Transaction[];
                 total: number;
                 page: number;
                 limit: number;
-                totalPages: number;
-                hasNext: boolean;
-                hasPrev: boolean;
-            }>(`/transactions?page=${page}&limit=${ITEMS_PER_PAGE}`);
+            }>(`/customers/${customerId}/statement?page=${page}&limit=${ITEMS_PER_PAGE}`);
             
-            setTransactions(res.data.data || []);
+            setTransactions(res.data.statements || []);
             setTotal(res.data.total || 0);
-            setTotalPages(res.data.totalPages || 1);
+            setTotalPages(Math.ceil((res.data.total || 0) / ITEMS_PER_PAGE));
         } catch (err) {
             console.error("Erro ao carregar transações:", err);
             setTransactions([]);
         } finally {
             setLoading(false);
         }
-    }, [page]);
+    }, [page, customerId]);
 
     useEffect(() => {
         fetchTransactions();
@@ -122,7 +122,7 @@ export default function TransactionsPage() {
             const txAmount = Number(tx.amount);
             
             const hasMatchingConversion = allTx.some((other) => {
-                if (other.id === tx.id) return false;
+                if (other.transactionId === tx.transactionId) return false;
                 if (other.type !== "CONVERSION") return false;
                 
                 const otherTime = new Date(other.createdAt).getTime();
@@ -141,7 +141,7 @@ export default function TransactionsPage() {
     function renderTransaction(tx: Transaction) {
         const amount = Number(tx.amount);
         const isIncoming = tx.type === "PIX_IN";
-        const isPending = tx.status === "PENDING";
+        const isPending = tx.status === "PENDING" || tx.status === "PROCESSING";
         const isCompleted = tx.status === "COMPLETED";
         const isConversion = tx.type === "CONVERSION";
         
@@ -189,14 +189,12 @@ export default function TransactionsPage() {
             }
         } else if (tx.description && !isUUID(tx.description)) {
             displayName = tx.description;
-        } else if (isIncoming && tx.payerName) {
-            displayName = `Depósito de ${tx.payerName}`;
+        } else if (isIncoming && tx.senderName) {
+            displayName = `Depósito de ${tx.senderName}`;
         } else if (isIncoming && tx.externalData?.pagador?.nome) {
             displayName = `Depósito de ${tx.externalData.pagador.nome}`;
-        } else if (!isIncoming && tx.receiverPixKey) {
-            displayName = `Transferência PIX para ${tx.receiverPixKey}`;
-        } else if (!isIncoming && tx.receiverName) {
-            displayName = `Transferência para ${tx.receiverName}`;
+        } else if (!isIncoming && tx.recipientName) {
+            displayName = `Transferência para ${tx.recipientName}`;
         } else {
             displayName = isIncoming ? "Depósito PIX" : "Transferência PIX";
         }
@@ -232,10 +230,10 @@ export default function TransactionsPage() {
                     ? "text-green-500 dark:text-green-400" 
                     : "text-red-500 dark:text-red-400";
 
-        const statusLabel = isPending ? "Pendente" : tx.status === "FAILED" ? "Falhou" : "";
+        const statusLabel = isPending ? "Processando" : tx.status === "FAILED" ? "Falhou" : "";
 
         return (
-            <div key={tx.id} className="flex items-center gap-4 p-4 hover:bg-accent/50 transition border-b border-border last:border-b-0">
+            <div key={tx.transactionId} className="flex items-center gap-4 p-4 hover:bg-accent/50 transition border-b border-border last:border-b-0">
                 <div className={`p-2.5 rounded-full ${iconBgColor}`}>
                     {isConversionTx ? (
                         <ArrowRightLeft className={`w-4 h-4 ${iconColor}`} />
@@ -288,7 +286,7 @@ export default function TransactionsPage() {
                     </div>
                 ) : (
                     <span className={`font-bold ${amountColor}`}>
-                        {isIncoming ? "+" : "-"}{formatCurrency(amount)}
+                        {isIncoming ? "+" : "-"}{formatCurrency(Math.abs(amount))}
                     </span>
                 )}
             </div>
