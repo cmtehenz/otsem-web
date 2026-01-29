@@ -245,8 +245,7 @@ export default function AdminUserDetailPage() {
             const response = await http.patch(`/admin/users/${userId}/spread`, {
                 spreadPercent: spreadNum,
             });
-            console.log("Spread update response:", response.data);
-            
+
             // Atualiza o estado local com o novo spread
             if (user) {
                 setUser({

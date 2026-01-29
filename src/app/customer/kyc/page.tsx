@@ -237,7 +237,6 @@ export default function CustomerKycPage(): React.JSX.Element {
                     http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me"),
                     http.get<LimitsResponse>("/customers/me/limits").catch(() => null),
                     http.get<{ data: UpgradeRequest[] } | UpgradeRequest[]>("/customers/me/kyc-upgrade-requests").catch((err) => {
-                        console.log("Erro ao buscar upgrade requests:", err?.response?.status);
                         return null;
                     }),
                 ]);
@@ -255,17 +254,15 @@ export default function CustomerKycPage(): React.JSX.Element {
                 }
 
                 if (upgradeRes?.data) {
-                    console.log("Upgrade requests response:", upgradeRes.data);
                     let requests: UpgradeRequest[] = [];
                     const resData = upgradeRes.data as { data?: UpgradeRequest[] } | UpgradeRequest[];
-                    
+
                     if (Array.isArray(resData)) {
                         requests = resData;
                     } else if (resData && typeof resData === 'object' && 'data' in resData && Array.isArray(resData.data)) {
                         requests = resData.data;
                     }
-                    
-                    console.log("Parsed upgrade requests:", requests);
+
                     setUpgradeRequests(requests);
                 }
             } catch (err) {
