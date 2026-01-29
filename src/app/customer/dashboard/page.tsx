@@ -14,58 +14,30 @@ import { LimitsCard } from "@/components/kyc/limits-card";
 import Link from "next/link";
 
 type AccountSummary = {
-    id: string;
-    balance: number;
-    status: string;
-    pixKey: string;
-    pixKeyType: string;
-    dailyLimit: number;
-    monthlyLimit: number;
-    blockedAmount: number;
-    createdAt: string;
+    accountHolderId: string;
+    availableBalance: number;
+    blockedBalance: number;
+    totalBalance: number;
+    currency: string;
     updatedAt: string;
 };
 
 type Transaction = {
-    id: string;
-    accountId: string;
+    transactionId: string;
     type: "PIX_IN" | "PIX_OUT" | "CONVERSION" | "TRANSFER";
-    subType?: "BUY" | "SELL" | null;
-    status: "PENDING" | "COMPLETED" | "FAILED";
-    amount: string;
-    balanceBefore: string;
-    balanceAfter: string;
+    status: "PENDING" | "COMPLETED" | "FAILED" | "PROCESSING";
+    amount: number;
     description: string;
-    payerName: string | null;
-    payerTaxNumber: string | null;
-    payerMessage: string | null;
-    receiverName: string | null;
-    receiverPixKey: string | null;
-    endToEnd: string | null;
-    txid: string | null;
-    externalId: string | null;
-    usdtAmount?: string | null;
-    rate?: string | null;
-    walletAddress?: string | null;
-    externalData: {
-        txid?: string;
-        chave?: string;
-        valor?: string;
-        horario?: string;
-        pagador?: {
-            nome?: string;
-            cpfCnpj?: string;
-        };
-        endToEndId?: string;
-        usdtAmount?: number;
-        rate?: string;
-        walletAddress?: string;
-        network?: string;
-        txHash?: string;
-    } | null;
+    senderName?: string | null;
+    senderCpf?: string | null;
+    recipientName?: string | null;
+    recipientCpf?: string | null;
+    recipientCnpj?: string | null;
     createdAt: string;
-    completedAt: string | null;
-    processedAt: string | null;
+    // Campos legados ou de conversão que podem vir da API ou serem calculados
+    usdtAmount?: string | number | null;
+    subType?: "BUY" | "SELL" | null;
+    externalData?: any;
 };
 
 type WalletType = {
