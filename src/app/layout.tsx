@@ -22,14 +22,12 @@ import type { ReactNode } from "react";
 import { ConnectionStatus } from "@/components/connection-status";
 import { validateEnv } from "@/lib/env";
 
-// Validate env on server or client load
-validateEnv();
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  validateEnv();
   return (
     <html lang="en">
       <body className="antialiased">
