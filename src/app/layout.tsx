@@ -27,7 +27,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  validateEnv();
   return (
     <html lang="en">
       <body className="antialiased">
