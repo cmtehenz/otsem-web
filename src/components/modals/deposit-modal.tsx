@@ -56,6 +56,12 @@ export function DepositModal() {
     }
 
     async function handleGenerateQrCode() {
+        const customerId = user?.customerId;
+        if (!customerId) {
+            toast.error("Erro ao identificar usuário");
+            return;
+        }
+
         if (cents < 100) {
             toast.error("Valor mínimo: R$ 1,00");
             return;
@@ -67,15 +73,18 @@ export function DepositModal() {
         try {
             const valorDecimal = Number((cents / 100).toFixed(2));
             
-            const res = await http.post<CobrancaResponse>("/inter/pix/cobrancas", {
-                valor: valorDecimal,
-                expiracao: 86400
+            const res = await http.post<CobrancaResponse>("/pix/transactions/qr/static", {
+                accountHolderId: customerId,
+                amount: valorDecimal,
+                description: `Depósito via PIX - ${formatCurrency(cents)}`
             });
 
-            const pixCode = res.data.pixCopiaECola;
+            const pixCode = res.data.qrCode;
             setPixCopiaECola(pixCode);
 
-            if (pixCode) {
+            if (res.data.qrCodeImage) {
+                setQrCodeUrl(res.data.qrCodeImage);
+            } else if (pixCode) {
                 const url = await QRCode.toDataURL(pixCode, {
                     width: 240,
                     margin: 2,
