@@ -4,7 +4,7 @@
 import * as React from "react";
 import { useSelectedLayoutSegments } from "next/navigation";
 
-import { AuthProvider, useAuth } from "@/contexts/auth-context";
+import { useAuth } from "@/contexts/auth-context";
 import { Protected } from "@/components/auth/Protected";
 import { RoleGuard } from "@/components/auth/RoleGuard";
 
@@ -90,10 +90,9 @@ function HeaderLogout() {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     return (
-        <AuthProvider>
-            <Protected>
-                <RoleGuard roles={["ADMIN"]} redirectTo="/customer/dashboard">
-                    <SidebarProvider
+        <Protected>
+            <RoleGuard roles={["ADMIN"]} redirectTo="/customer/dashboard">
+                <SidebarProvider
                         style={{ "--sidebar-width": "19rem" } as React.CSSProperties}
                     >
                         <AppSidebar />
@@ -117,8 +116,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             </main>
                         </SidebarInset>
                     </SidebarProvider>
-                </RoleGuard>
-            </Protected>
-        </AuthProvider>
+            </RoleGuard>
+        </Protected>
     );
 }
