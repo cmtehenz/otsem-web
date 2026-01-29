@@ -2,16 +2,20 @@ import type { NextConfig } from 'next';
 import path from 'node:path';
 import fs from 'node:fs';
 
-// Force load .env for configurations that run before Next.js loads envs
-if (fs.existsSync('.env')) {
-  try {
-    // @ts-ignore - process.loadEnvFile is available in Node 20.6.0+
-    if (typeof process.loadEnvFile === 'function') {
-      process.loadEnvFile('.env');
+// Manual env loading for next.config.ts
+const envPath = path.resolve(process.cwd(), '.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  envContent.split('\n').forEach(line => {
+    const match = line.match(/^([^=]+)=(.*)$/);
+    if (match) {
+      const key = match[1].trim();
+      const value = match[2].trim().replace(/^["']|["']$/g, '');
+      if (!process.env[key]) {
+        process.env[key] = value;
+      }
     }
-  } catch (e) {
-    console.warn('[next.config.js] Failed to load .env file:', e);
-  }
+  });
 }
 
 const loaderPath = require.resolve('orchids-visual-edits/loader.js');
