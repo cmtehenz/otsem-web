@@ -1,127 +1,89 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { TrendingUp, Globe2, Timer, BadgeCheck } from "lucide-react";
 
 const stats = [
   {
     icon: TrendingUp,
     value: "US$ 415B",
-    label: "Mercado OTC global em 2024",
-    color: "bg-primary/5",
+    label: "Mercado OTC global",
+    color: "bg-primary/8",
     iconColor: "text-primary",
-    span: "col-span-1 md:col-span-2 lg:col-span-2",
   },
   {
     icon: Globe2,
     value: "9.1%",
-    label: "Volume LATAM do mercado global",
-    color: "bg-yellow-400/5",
+    label: "Volume LATAM global",
+    color: "bg-yellow-50",
     iconColor: "text-yellow-600",
-    span: "col-span-1 md:col-span-2 lg:col-span-2",
   },
   {
     icon: Timer,
-    value: "10-30m",
-    label: "Tempo de liquidacao ultra-rapida",
-    color: "bg-primary/5",
+    value: "Imediato",
+    label: "Liquidação ultra-rápida",
+    color: "bg-primary/8",
     iconColor: "text-primary",
-    span: "col-span-1 md:col-span-2 lg:col-span-1",
   },
   {
     icon: BadgeCheck,
     value: "0% IOF",
-    label: "Sem imposto sobre operacoes",
-    color: "bg-emerald-500/5",
+    label: "Sem imposto",
+    color: "bg-emerald-50",
     iconColor: "text-emerald-600",
-    span: "col-span-1 md:col-span-2 lg:col-span-3",
   },
 ];
 
 const StatsGrid = () => {
   return (
-    <section className="relative z-10 py-24 lg:py-40 overflow-hidden">
-      <motion.div
-        animate={{ scale: [1, 1.1, 1], opacity: [0.05, 0.08, 0.05] }}
-        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] -z-20 bg-[radial-gradient(circle_at_center,rgba(124,58,237,0.15),transparent_70%)] pointer-events-none"
-      />
+    <section className="relative z-10 section-padding overflow-hidden">
+      {/* Static background - no animation */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[85%] max-w-[550px] max-h-[550px] -z-20 bg-[radial-gradient(circle_at_center,rgba(124,58,237,0.08),transparent_70%)] pointer-events-none" />
 
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col items-center text-center mb-20 lg:mb-24">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ type: "spring", stiffness: 120, damping: 20 }}
-            className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-yellow-400 text-yellow-950 font-black text-[10px] uppercase tracking-[0.4em] mb-8 shadow-xl shadow-yellow-400/20"
-          >
-            <div className="w-2 h-2 rounded-full bg-yellow-950 animate-pulse" />
-            Snapshot em Tempo Real
-          </motion.div>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{
-              type: "spring",
-              stiffness: 100,
-              damping: 20,
-              delay: 0.1,
-            }}
-            className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tightest max-w-5xl leading-[0.9]"
-          >
+      <div className="container mx-auto container-mobile">
+        <div className="flex flex-col items-center text-center mb-8 sm:mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400 text-yellow-950 font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-5 shadow-md">
+            <div className="w-1.5 h-1.5 rounded-full bg-yellow-950 animate-pulse" />
+            Plataforma Financeira Global
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest max-w-md leading-[1.1] text-slate-900">
             Poder financeiro <br />
-            <span className="text-primary/80">sem fronteiras.</span>
-          </motion.h2>
+            <span className="text-primary">sem fronteiras.</span>
+          </h2>
         </div>
 
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid gap-2.5 sm:gap-3 grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{
-                type: "spring",
-                stiffness: 120,
-                damping: 25,
-                delay: index * 0.05,
-              }}
-              className={`${stat.span} relative group`}
+              className="relative group"
             >
-              <div className="rich-glass p-8 lg:p-10 rounded-[2.5rem] h-full flex flex-col justify-between transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-2 group-hover:bg-white/60">
-                <div className="space-y-8">
+              <div className="ios-card-premium h-full flex flex-col">
+                <div className="space-y-3 sm:space-y-4">
                   <div
-                    className={`flex h-14 w-14 items-center justify-center rounded-2xl ${stat.color} border border-white/60 shadow-xl shadow-black/5 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6`}
+                    className={`flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl ${stat.color} border border-slate-100/80 transition-transform duration-200 group-hover:scale-105`}
                   >
                     <stat.icon
-                      className={`h-7 w-7 ${stat.iconColor}`}
-                      strokeWidth={1.5}
+                      className={`h-4 w-4 sm:h-5 sm:w-5 ${stat.iconColor}`}
+                      strokeWidth={1.75}
                     />
                   </div>
 
                   <div>
-                    <div className="text-4xl lg:text-6xl font-black tracking-tightest text-slate-900 mb-4 flex items-baseline gap-2">
+                    <div className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 mb-1 flex items-baseline gap-1">
                       {stat.value}
                       {stat.value.includes("%") && (
-                        <span className="text-yellow-500 text-2xl">↑</span>
+                        <span className="text-yellow-500 text-sm sm:text-base">↑</span>
                       )}
                     </div>
 
-                    <div className="text-[10px] lg:text-xs text-muted-foreground font-black uppercase tracking-[0.3em] leading-relaxed max-w-[200px]">
+                    <div className="text-[9px] sm:text-[10px] text-slate-500 font-semibold uppercase tracking-wider leading-snug">
                       {stat.label}
                     </div>
                   </div>
                 </div>
-
-                <div
-                  className={`absolute top-0 right-0 w-32 h-32 ${stat.iconColor} opacity-0 group-hover:opacity-[0.05] blur-[60px] -z-10 rounded-full transition-opacity duration-700`}
-                />
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

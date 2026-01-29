@@ -5,47 +5,24 @@ import http from "@/lib/http";
 import { ArrowDownLeft, ArrowUpRight, ArrowRightLeft, Loader2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useAuth } from "@/contexts/auth-context";
 
 type Transaction = {
-    id: string;
-    accountId: string;
+    transactionId: string;
     type: "PIX_IN" | "PIX_OUT" | "CONVERSION" | "TRANSFER";
-    subType?: "BUY" | "SELL" | null;
-    status: "PENDING" | "COMPLETED" | "FAILED";
-    amount: string;
-    balanceBefore: string;
-    balanceAfter: string;
+    status: "PENDING" | "COMPLETED" | "FAILED" | "PROCESSING";
+    amount: number;
     description: string;
-    payerName: string | null;
-    payerTaxNumber: string | null;
-    payerMessage: string | null;
-    receiverName: string | null;
-    receiverPixKey: string | null;
-    endToEnd: string | null;
-    txid: string | null;
-    externalId: string | null;
-    usdtAmount?: string | null;
-    rate?: string | null;
-    walletAddress?: string | null;
-    externalData: {
-        txid?: string;
-        chave?: string;
-        valor?: string;
-        horario?: string;
-        pagador?: {
-            nome?: string;
-            cpfCnpj?: string;
-        };
-        endToEndId?: string;
-        usdtAmount?: number;
-        rate?: string;
-        walletAddress?: string;
-        network?: string;
-        txHash?: string;
-    } | null;
+    senderName?: string | null;
+    senderCpf?: string | null;
+    recipientName?: string | null;
+    recipientCpf?: string | null;
+    recipientCnpj?: string | null;
     createdAt: string;
-    completedAt: string | null;
-    processedAt: string | null;
+    // Campos legados ou de conversão
+    usdtAmount?: string | number | null;
+    subType?: "BUY" | "SELL" | null;
+    externalData?: any;
 };
 
 const ITEMS_PER_PAGE = 10;
@@ -74,6 +51,8 @@ function formatDate(dateString: string): string {
 }
 
 export default function TransactionsPage() {
+    const { user } = useAuth();
+    const customerId = user?.customerId;
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
@@ -81,28 +60,26 @@ export default function TransactionsPage() {
     const [total, setTotal] = useState(0);
 
     const fetchTransactions = useCallback(async () => {
+        if (!customerId) return;
         setLoading(true);
         try {
             const res = await http.get<{
-                data: Transaction[];
+                statements: Transaction[];
                 total: number;
                 page: number;
                 limit: number;
-                totalPages: number;
-                hasNext: boolean;
-                hasPrev: boolean;
-            }>(`/transactions?page=${page}&limit=${ITEMS_PER_PAGE}`);
+            }>(`/customers/${customerId}/statement?page=${page}&limit=${ITEMS_PER_PAGE}`);
             
-            setTransactions(res.data.data || []);
+            setTransactions(res.data.statements || []);
             setTotal(res.data.total || 0);
-            setTotalPages(res.data.totalPages || 1);
+            setTotalPages(Math.ceil((res.data.total || 0) / ITEMS_PER_PAGE));
         } catch (err) {
             console.error("Erro ao carregar transações:", err);
             setTransactions([]);
         } finally {
             setLoading(false);
         }
-    }, [page]);
+    }, [page, customerId]);
 
     useEffect(() => {
         fetchTransactions();
@@ -145,7 +122,7 @@ export default function TransactionsPage() {
             const txAmount = Number(tx.amount);
             
             const hasMatchingConversion = allTx.some((other) => {
-                if (other.id === tx.id) return false;
+                if (other.transactionId === tx.transactionId) return false;
                 if (other.type !== "CONVERSION") return false;
                 
                 const otherTime = new Date(other.createdAt).getTime();
@@ -164,7 +141,7 @@ export default function TransactionsPage() {
     function renderTransaction(tx: Transaction) {
         const amount = Number(tx.amount);
         const isIncoming = tx.type === "PIX_IN";
-        const isPending = tx.status === "PENDING";
+        const isPending = tx.status === "PENDING" || tx.status === "PROCESSING";
         const isCompleted = tx.status === "COMPLETED";
         const isConversion = tx.type === "CONVERSION";
         
@@ -212,14 +189,12 @@ export default function TransactionsPage() {
             }
         } else if (tx.description && !isUUID(tx.description)) {
             displayName = tx.description;
-        } else if (isIncoming && tx.payerName) {
-            displayName = `Depósito de ${tx.payerName}`;
+        } else if (isIncoming && tx.senderName) {
+            displayName = `Depósito de ${tx.senderName}`;
         } else if (isIncoming && tx.externalData?.pagador?.nome) {
             displayName = `Depósito de ${tx.externalData.pagador.nome}`;
-        } else if (!isIncoming && tx.receiverPixKey) {
-            displayName = `Transferência PIX para ${tx.receiverPixKey}`;
-        } else if (!isIncoming && tx.receiverName) {
-            displayName = `Transferência para ${tx.receiverName}`;
+        } else if (!isIncoming && tx.recipientName) {
+            displayName = `Transferência para ${tx.recipientName}`;
         } else {
             displayName = isIncoming ? "Depósito PIX" : "Transferência PIX";
         }
@@ -255,10 +230,10 @@ export default function TransactionsPage() {
                     ? "text-green-500 dark:text-green-400" 
                     : "text-red-500 dark:text-red-400";
 
-        const statusLabel = isPending ? "Pendente" : tx.status === "FAILED" ? "Falhou" : "";
+        const statusLabel = isPending ? "Processando" : tx.status === "FAILED" ? "Falhou" : "";
 
         return (
-            <div key={tx.id} className="flex items-center gap-4 p-4 hover:bg-accent/50 transition border-b border-border last:border-b-0">
+            <div key={tx.transactionId} className="flex items-center gap-4 p-4 hover:bg-accent/50 transition border-b border-border last:border-b-0">
                 <div className={`p-2.5 rounded-full ${iconBgColor}`}>
                     {isConversionTx ? (
                         <ArrowRightLeft className={`w-4 h-4 ${iconColor}`} />
@@ -311,7 +286,7 @@ export default function TransactionsPage() {
                     </div>
                 ) : (
                     <span className={`font-bold ${amountColor}`}>
-                        {isIncoming ? "+" : "-"}{formatCurrency(amount)}
+                        {isIncoming ? "+" : "-"}{formatCurrency(Math.abs(amount))}
                     </span>
                 )}
             </div>
@@ -321,7 +296,7 @@ export default function TransactionsPage() {
     if (loading && page === 1) {
         return (
             <div className="flex h-[80vh] flex-col items-center justify-center">
-                <Loader2 className="h-10 w-10 animate-spin text-violet-500 dark:text-violet-400" />
+                <Loader2 className="h-10 w-10 animate-spin text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                 <p className="text-sm text-muted-foreground mt-4">Carregando transações...</p>
             </div>
         );
@@ -347,7 +322,7 @@ export default function TransactionsPage() {
             <div className="bg-card border border-border rounded-2xl overflow-hidden">
                 {loading ? (
                     <div className="flex items-center justify-center py-12">
-                        <Loader2 className="h-6 w-6 animate-spin text-violet-500" />
+                        <Loader2 className="h-6 w-6 animate-spin text-[#6F00FF]/50" />
                     </div>
                 ) : filteredTransactions.length > 0 ? (
                     <>
@@ -413,7 +388,7 @@ export default function TransactionsPage() {
                                                     variant={page === p ? "default" : "outline"}
                                                     size="icon"
                                                     onClick={() => setPage(p as number)}
-                                                    className={`h-8 w-8 ${page === p ? "bg-violet-600 hover:bg-violet-500 text-white" : "border-border"}`}
+                                                    className={`h-8 w-8 ${page === p ? "bg-[#6F00FF] hover:bg-[#6F00FF]/50 text-white" : "border-border"}`}
                                                 >
                                                     {p}
                                                 </Button>

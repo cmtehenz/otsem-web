@@ -135,7 +135,7 @@ function getStatusColor(status: string) {
         case "PIX_SENT":
             return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
         case "USDT_BOUGHT":
-            return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400";
+            return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-[#8B2FFF]";
         case "USDT_WITHDRAWN":
             return "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400";
         case "FAILED":
@@ -320,10 +320,10 @@ export default function ConversionsPage() {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Comissões Afiliados</CardTitle>
-                        <Users className="h-4 w-4 text-violet-600" />
+                        <Users className="h-4 w-4 text-[#6F00FF]" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-violet-600">
+                        <div className="text-2xl font-bold text-[#6F00FF]">
                             {formatCurrencyCents(stats?.totalCommissions ?? 0)}
                         </div>
                         <p className="text-xs text-muted-foreground">
@@ -477,13 +477,13 @@ export default function ConversionsPage() {
                                                 {formatCurrency(conv.netProfit ?? 0)}
                                             </TableCell>
                                             <TableCell>
-                                                <Badge variant="outline" className={conv.network === 'SOLANA' ? 'border-purple-500 text-purple-600' : 'border-blue-500 text-blue-600'}>
+                                                <Badge variant="outline" className={conv.network === 'SOLANA' ? 'border-[#6F00FF] text-[#6F00FF]' : 'border-blue-500 text-blue-600'}>
                                                     {conv.network || '-'}
                                                 </Badge>
                                             </TableCell>
                                             <TableCell>
                                                 {conv.affiliate ? (
-                                                    <div className="text-violet-600">
+                                                    <div className="text-[#6F00FF]">
                                                         <span className="font-medium">{conv.affiliate.code}</span>
                                                         <p className="text-xs">{formatCurrency(conv.affiliateCommission ?? 0)}</p>
                                                     </div>
@@ -573,7 +573,7 @@ export default function ConversionsPage() {
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-sm text-muted-foreground">Rede</p>
-                                        <Badge variant="outline" className={selectedConversion.network === 'SOLANA' ? 'border-purple-500 text-purple-600' : 'border-blue-500 text-blue-600'}>
+                                        <Badge variant="outline" className={selectedConversion.network === 'SOLANA' ? 'border-[#6F00FF] text-[#6F00FF]' : 'border-blue-500 text-blue-600'}>
                                             {selectedConversion.network || '-'}
                                         </Badge>
                                     </div>
@@ -608,7 +608,7 @@ export default function ConversionsPage() {
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-muted-foreground">Comissão Afiliado:</span>
-                                            <span className="text-violet-600">{formatCurrency(selectedConversion.affiliateCommission ?? 0)}</span>
+                                            <span className="text-[#6F00FF]">{formatCurrency(selectedConversion.affiliateCommission ?? 0)}</span>
                                         </div>
                                         <div className="flex justify-between border-t pt-2">
                                             <span className="font-semibold">Lucro Líquido:</span>
@@ -630,11 +630,11 @@ export default function ConversionsPage() {
                                         </div>
                                         <div className="space-y-1">
                                             <p className="text-sm text-muted-foreground">Código</p>
-                                            <p className="font-medium text-violet-600">{selectedConversion.affiliate.code}</p>
+                                            <p className="font-medium text-[#6F00FF]">{selectedConversion.affiliate.code}</p>
                                         </div>
                                         <div className="space-y-1">
                                             <p className="text-sm text-muted-foreground">Comissão</p>
-                                            <p className="font-bold text-violet-600">
+                                            <p className="font-bold text-[#6F00FF]">
                                                 {formatCurrency(selectedConversion.affiliateCommission ?? 0)}
                                             </p>
                                         </div>

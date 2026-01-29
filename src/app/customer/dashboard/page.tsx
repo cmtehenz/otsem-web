@@ -14,58 +14,30 @@ import { LimitsCard } from "@/components/kyc/limits-card";
 import Link from "next/link";
 
 type AccountSummary = {
-    id: string;
-    balance: number;
-    status: string;
-    pixKey: string;
-    pixKeyType: string;
-    dailyLimit: number;
-    monthlyLimit: number;
-    blockedAmount: number;
-    createdAt: string;
+    accountHolderId: string;
+    availableBalance: number;
+    blockedBalance: number;
+    totalBalance: number;
+    currency: string;
     updatedAt: string;
 };
 
 type Transaction = {
-    id: string;
-    accountId: string;
+    transactionId: string;
     type: "PIX_IN" | "PIX_OUT" | "CONVERSION" | "TRANSFER";
-    subType?: "BUY" | "SELL" | null;
-    status: "PENDING" | "COMPLETED" | "FAILED";
-    amount: string;
-    balanceBefore: string;
-    balanceAfter: string;
+    status: "PENDING" | "COMPLETED" | "FAILED" | "PROCESSING";
+    amount: number;
     description: string;
-    payerName: string | null;
-    payerTaxNumber: string | null;
-    payerMessage: string | null;
-    receiverName: string | null;
-    receiverPixKey: string | null;
-    endToEnd: string | null;
-    txid: string | null;
-    externalId: string | null;
-    usdtAmount?: string | null;
-    rate?: string | null;
-    walletAddress?: string | null;
-    externalData: {
-        txid?: string;
-        chave?: string;
-        valor?: string;
-        horario?: string;
-        pagador?: {
-            nome?: string;
-            cpfCnpj?: string;
-        };
-        endToEndId?: string;
-        usdtAmount?: number;
-        rate?: string;
-        walletAddress?: string;
-        network?: string;
-        txHash?: string;
-    } | null;
+    senderName?: string | null;
+    senderCpf?: string | null;
+    recipientName?: string | null;
+    recipientCpf?: string | null;
+    recipientCnpj?: string | null;
     createdAt: string;
-    completedAt: string | null;
-    processedAt: string | null;
+    // Campos legados ou de conversão que podem vir da API ou serem calculados
+    usdtAmount?: string | number | null;
+    subType?: "BUY" | "SELL" | null;
+    externalData?: any;
 };
 
 type WalletType = {
@@ -150,18 +122,16 @@ export default function Dashboard() {
                     return;
                 }
 
-                const [accountRes, transactionsRes] = await Promise.all([
-                    http.get<AccountSummary>(`/accounts/${customerId}/summary`),
-                    http.get<Transaction[] | { data: Transaction[] }>("/transactions?limit=10")
+                const [accountRes, statementRes] = await Promise.all([
+                    http.get<AccountSummary>(`/customers/${customerId}/balance`),
+                    http.get<{ statements: Transaction[] }>(`/customers/${customerId}/statement?limit=10`)
                 ]);
                 
                 if (!cancelled) {
                     setAccount(accountRes.data);
-                    const txData = transactionsRes.data;
-                    if (Array.isArray(txData)) {
-                        setTransactions(txData);
-                    } else if (txData && 'data' in txData) {
-                        setTransactions(txData.data);
+                    const txData = statementRes.data;
+                    if (txData && Array.isArray(txData.statements)) {
+                        setTransactions(txData.statements);
                     } else {
                         setTransactions([]);
                     }
@@ -207,7 +177,7 @@ export default function Dashboard() {
         }
     }, [wallets]);
 
-    const saldoBRL = account?.balance ?? 0;
+    const saldoBRL = account?.availableBalance ?? 0;
     const saldoUSDT = usdtBalance ?? 0;
     const saldoTotal = saldoBRL + (saldoUSDT * usdtRateWithSpread);
 
@@ -217,8 +187,8 @@ export default function Dashboard() {
         return (
             <div className="flex h-[80vh] flex-col items-center justify-center">
                 <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-purple-600 rounded-full blur-xl opacity-50 animate-pulse"></div>
-                    <Loader2 className="relative h-10 w-10 animate-spin text-violet-500 dark:text-violet-400" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] rounded-full blur-xl opacity-50 animate-pulse"></div>
+                    <Loader2 className="relative h-10 w-10 animate-spin text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                 </div>
                 <p className="text-sm text-muted-foreground mt-4">Carregando...</p>
             </div>
@@ -251,7 +221,7 @@ export default function Dashboard() {
                 </Button>
             </div>
 
-            <div className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl p-6 shadow-xl shadow-violet-500/20">
+            <div className="bg-gradient-to-br from-[#6F00FF] to-purple-700 rounded-2xl p-6 shadow-xl shadow-[#6F00FF]/50/20">
                 <div className="flex items-center justify-between mb-4">
                     <p className="text-white/80 text-sm">Saldo total estimado</p>
                     <Wallet className="w-5 h-5 text-white/60" />
@@ -290,7 +260,7 @@ export default function Dashboard() {
                 </Button>
                 <Button
                     onClick={() => setShowConvertModal(true)}
-                    className="bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-xl py-6 text-sm"
+                    className="bg-[#6F00FF] hover:bg-[#6F00FF]/50 text-white font-semibold rounded-xl py-6 text-sm"
                 >
                     <ArrowRightLeft className="w-5 h-5 mr-1.5" />
                     Comprar USDT
@@ -308,7 +278,7 @@ export default function Dashboard() {
                 <div className="bg-card border border-border rounded-2xl p-4">
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                            <TrendingUp className="w-4 h-4 text-violet-500 dark:text-violet-400" />
+                            <TrendingUp className="w-4 h-4 text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                             <span className="text-muted-foreground text-sm">Cotação USDT</span>
                         </div>
                         <span className="text-xs text-muted-foreground">Atualiza em {timer}s</span>
@@ -323,7 +293,7 @@ export default function Dashboard() {
             <div className="bg-card border border-border rounded-2xl overflow-hidden">
                 <div className="p-4 border-b border-border flex items-center justify-between">
                     <h2 className="text-foreground font-semibold">Últimas transações</h2>
-                    <Link href="/customer/transactions" className="text-sm text-violet-500 hover:text-violet-400 font-medium">
+                    <Link href="/customer/transactions" className="text-sm text-[#6F00FF]/50 hover:text-[#6F00FF] font-medium">
                         Ver todas
                     </Link>
                 </div>
@@ -366,7 +336,7 @@ export default function Dashboard() {
                                 const txAmount = Number(tx.amount);
                                 
                                 const hasMatchingConversion = allTx.some((other) => {
-                                    if (other.id === tx.id) return false;
+                                    if (other.transactionId === tx.transactionId) return false;
                                     if (other.type !== "CONVERSION") return false;
                                     
                                     const otherTime = new Date(other.createdAt).getTime();
@@ -383,7 +353,7 @@ export default function Dashboard() {
                             .map((tx) => {
                             const amount = Number(tx.amount);
                             const isIncoming = tx.type === "PIX_IN";
-                            const isPending = tx.status === "PENDING";
+                            const isPending = tx.status === "PENDING" || tx.status === "PROCESSING";
                             const isCompleted = tx.status === "COMPLETED";
                             const isConversion = tx.type === "CONVERSION";
                             
@@ -431,14 +401,12 @@ export default function Dashboard() {
                                 }
                             } else if (tx.description && !isUUID(tx.description)) {
                                 displayName = tx.description;
-                            } else if (isIncoming && tx.payerName) {
-                                displayName = `Depósito de ${tx.payerName}`;
+                            } else if (isIncoming && tx.senderName) {
+                                displayName = `Depósito de ${tx.senderName}`;
                             } else if (isIncoming && tx.externalData?.pagador?.nome) {
                                 displayName = `Depósito de ${tx.externalData.pagador.nome}`;
-                            } else if (!isIncoming && tx.receiverPixKey) {
-                                displayName = `Transferência PIX para ${tx.receiverPixKey}`;
-                            } else if (!isIncoming && tx.receiverName) {
-                                displayName = `Transferência para ${tx.receiverName}`;
+                            } else if (!isIncoming && tx.recipientName) {
+                                displayName = `Transferência para ${tx.recipientName}`;
                             } else {
                                 displayName = isIncoming ? "Depósito PIX" : "Transferência PIX";
                             }
@@ -475,7 +443,7 @@ export default function Dashboard() {
                                         : "text-red-500 dark:text-red-400";
 
                             return (
-                                <div key={tx.id} className="flex items-center gap-4 p-4 hover:bg-accent/50 transition">
+                                <div key={tx.transactionId} className="flex items-center gap-4 p-4 hover:bg-accent/50 transition">
                                     <div className={`p-2.5 rounded-full ${iconBgColor}`}>
                                         {isConversionTx ? (
                                             <ArrowRightLeft className={`w-4 h-4 ${iconColor}`} />
@@ -521,7 +489,7 @@ export default function Dashboard() {
                                         </div>
                                     ) : (
                                         <span className={`font-bold ${amountColor}`}>
-                                            {isIncoming ? "+" : "-"}{formatCurrency(amount)}
+                                            {isIncoming ? "+" : "-"}{formatCurrency(Math.abs(amount))}
                                         </span>
                                     )}
                                 </div>

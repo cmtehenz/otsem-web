@@ -51,7 +51,7 @@ function formatDate(dateStr: string): string {
 }
 
 const networkConfig: Record<string, { label: string; className: string }> = {
-    SOLANA: { label: "Solana", className: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400" },
+    SOLANA: { label: "Solana", className: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-[#8B2FFF]" },
     TRON: { label: "Tron (TRC20)", className: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" },
 };
 

@@ -205,7 +205,6 @@ export default function AdminPixTransactionsPage(): React.JSX.Element {
             setHistory(res.data.items);
             setTotal(res.data.total);
         } catch (e) {
-            console.log(e);
             toast.error("Falha ao carregar histórico");
         } finally {
             setLoadingHistory(false);

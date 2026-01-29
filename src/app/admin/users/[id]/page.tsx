@@ -245,8 +245,7 @@ export default function AdminUserDetailPage() {
             const response = await http.patch(`/admin/users/${userId}/spread`, {
                 spreadPercent: spreadNum,
             });
-            console.log("Spread update response:", response.data);
-            
+
             // Atualiza o estado local com o novo spread
             if (user) {
                 setUser({
@@ -629,7 +628,7 @@ export default function AdminUserDetailPage() {
                             </Button>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-3xl font-bold text-violet-600">
+                            <p className="text-3xl font-bold text-[#6F00FF]">
                                 {user.spreadPercent?.toFixed(2) ?? "0.95"}%
                             </p>
                             <p className="text-xs text-muted-foreground mt-1">

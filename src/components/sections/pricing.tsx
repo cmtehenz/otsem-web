@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useCallback } from "react";
-import { motion } from "framer-motion";
-import { Check, Sparkles, Headphones } from "lucide-react";
+import { Check, ArrowLeftRight, TrendingUp } from "lucide-react";
 import haptic from "@/lib/haptics";
 import Link from "next/link";
 
@@ -14,127 +13,114 @@ const Pricing = () => {
   const plans = [
     {
       name: "Operação OTC",
-      description: "Spread que diminui com volumetria",
+      description: "Spread que diminui com volume",
       priceLabel: "A partir de",
-      price: "3%",
+      price: "0.98%",
       priceSuffix: "por transação",
       features: [
-        "Liquidação em 10-30 min",
+        "Liquidação imediata",
         "0% IOF (isento)",
         "Contratos personalizados",
         "Suporte dedicado"
       ],
       cta: "Começar agora",
-      icon: Sparkles,
+        icon: ArrowLeftRight,
       popular: false,
     },
-    {
-      name: "Alta Volumetria",
-      description: "Para operações acima de R$ 500k",
-      priceLabel: "Taxa sob",
-      price: "consulta",
-      priceSuffix: "por transação",
-      features: [
-        "Spreads negociáveis",
-        "Atendimento VIP",
-        "Mesa OTC dedicada",
-        "Condições especiais"
-      ],
-      cta: "Falar com especialista",
-      icon: Headphones,
-      popular: true,
-    }
+      {
+          name: "Alta Volumetria",
+          description: "Para operações acima de R$ 500k",
+          priceLabel: "Taxa sob",
+          price: "Consulta",
+          priceSuffix: "por transação",
+          features: [
+            "Spreads negociáveis",
+            "Atendimento VIP",
+            "Mesa OTC dedicada",
+            "Condições especiais"
+          ],
+          cta: "Falar com especialista",
+          icon: TrendingUp,
+          popular: true,
+        }
   ];
 
   return (
-    <section id="precos" className="relative z-10 py-16 sm:py-24">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ type: "spring", stiffness: 100, damping: 20 }}
-          className="mb-12 sm:mb-16 text-center"
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary font-bold text-[11px] uppercase tracking-wider mb-6">
+    <section id="precos" className="relative z-10 section-padding">
+      <div className="mx-auto max-w-5xl container-mobile">
+        <div className="mb-8 sm:mb-12 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/8 border border-primary/12 text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
             Preços Claros
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black tracking-tightest text-slate-900">Taxas transparentes</h2>
-          <p className="mx-auto mt-4 max-w-xl text-base text-slate-600 font-medium leading-relaxed">
-            Sem taxas escondidas. Você sabe exatamente quanto vai pagar em cada operação.
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tightest text-slate-900">
+            Taxas transparentes
+          </h2>
+          <p className="mx-auto mt-2 max-w-md text-[13px] sm:text-[14px] text-slate-600 font-medium leading-relaxed">
+            Sem taxas ocultas. Você sabe exatamente quanto vai pagar.
           </p>
-        </motion.div>
+        </div>
 
-        <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
-          {plans.map((plan, index) => (
-            <motion.div
+        <div className="mx-auto grid max-w-3xl gap-3 sm:gap-4 md:grid-cols-2">
+          {plans.map((plan) => (
+            <div
               key={plan.name}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                type: "spring",
-                stiffness: 100,
-                damping: 20,
-                delay: index * 0.1
-              }}
-              className={`relative premium-card group ${
+              className={`relative ios-card-premium group ${
                 plan.popular
-                  ? "border-primary/30 shadow-primary/10"
+                  ? "ring-2 ring-primary/25 bg-primary/[0.02]"
                   : ""
               }`}
             >
               {plan.popular && (
-                <div className="absolute -top-4 right-8 z-20">
-                  <span className="px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-white bg-primary rounded-full shadow-xl shadow-primary/40">
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-20">
+                  <span className="px-2.5 py-1 text-[8px] sm:text-[9px] font-semibold uppercase tracking-wider text-white bg-primary rounded-full shadow-md">
                     Mais Popular
                   </span>
                 </div>
               )}
 
-              <div className="mb-10">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className={`flex h-14 w-14 items-center justify-center rounded-2xl transition-transform duration-500 group-hover:rotate-6 ${plan.popular ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'bg-primary/10 text-primary'}`}>
-                    <plan.icon className="h-7 w-7" strokeWidth={2.5} />
+                <div className="mb-4">
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    {'icon' in plan && plan.icon ? (
+                      <div className={`flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-105 ${plan.popular ? 'bg-primary text-white shadow-md' : 'bg-primary/10 text-primary'}`}>
+                        <plan.icon className="h-4 w-4" strokeWidth={1.75} />
+                      </div>
+                    ) : null}
+                    <h3 className="text-[14px] sm:text-base font-bold text-slate-900 tracking-tight">{plan.name}</h3>
                   </div>
-                  <h3 className="text-2xl font-black text-slate-900 tracking-tight">{plan.name}</h3>
+                  <p className="text-[11px] sm:text-[12px] text-slate-500 font-medium">{plan.description}</p>
                 </div>
-                <p className="text-base text-muted-foreground font-semibold">{plan.description}</p>
-              </div>
 
-              <div className="mb-10 p-6 rounded-3xl bg-black/[0.02] border border-black/[0.03]">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">{plan.priceLabel}</span>
-                <div className="flex items-baseline gap-2 mt-2">
-                  <span className="text-5xl sm:text-6xl font-black tracking-tighter text-slate-900">{plan.price}</span>
-                  <span className="text-sm text-muted-foreground font-bold uppercase tracking-widest">{plan.priceSuffix}</span>
+              <div className="mb-4 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-[8px] font-semibold uppercase tracking-wider text-slate-400">{plan.priceLabel}</span>
+                <div className="flex items-baseline gap-1 mt-0.5">
+                  <span className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">{plan.price}</span>
+                  <span className="text-[10px] text-slate-500 font-medium">{plan.priceSuffix}</span>
                 </div>
               </div>
 
-              <ul className="mb-10 space-y-4">
+              <ul className="mb-4 space-y-1.5">
                 {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-4">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                      <Check className="h-3.5 w-3.5 text-emerald-600" strokeWidth={4} />
+                  <li key={i} className="flex items-center gap-2">
+                    <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100">
+                      <Check className="h-2.5 w-2.5 text-emerald-600" strokeWidth={3} />
                     </div>
-                    <span className="text-base text-slate-700 font-bold">{feature}</span>
+                    <span className="text-[12px] text-slate-700 font-medium">{feature}</span>
                   </li>
                 ))}
               </ul>
 
-              <Link href="/register" onClick={handleButtonClick}>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`w-full rounded-2xl py-5 text-base font-black transition-all shadow-2xl ${
+              <Link href="/register" onClick={handleButtonClick} className="block">
+                <button
+                  className={`w-full rounded-xl py-3 text-[12px] sm:text-[13px] font-semibold transition-all active:scale-[0.98] ${
                     plan.popular
-                      ? "btn-premium"
-                      : "btn-premium-outline"
+                      ? "bg-primary text-white shadow-md shadow-primary/20"
+                      : "bg-slate-900 text-white"
                   }`}
                 >
                   {plan.cta}
-                </motion.button>
+                </button>
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

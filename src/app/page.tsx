@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Header from "@/components/sections/header";
 import HeroSection from "@/components/sections/hero";
 import TrustedBy from "@/components/sections/trusted-by";
@@ -15,33 +14,11 @@ import Footer from "@/components/sections/footer";
 export default function Home() {
   return (
     <div className="relative flex min-h-screen flex-col overflow-x-hidden selection:bg-primary/20 selection:text-primary bg-white">
+      {/* Static background gradients - no animations for performance */}
       <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
-        <motion.div
-          animate={{
-            x: [0, 40, 0],
-            y: [0, -30, 0],
-            scale: [1, 1.15, 1]
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-primary/5 blur-[120px] rounded-full"
-        />
-        <motion.div
-          animate={{
-            x: [0, -30, 0],
-            y: [0, 50, 0],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut", delay: 5 }}
-          className="absolute bottom-[10%] right-[-5%] w-[40vw] h-[40vw] bg-accent/5 blur-[100px] rounded-full"
-        />
-        <motion.div
-          animate={{
-            opacity: [0.02, 0.05, 0.02],
-            scale: [0.8, 1, 0.8]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[30%] left-[25%] w-[40vw] h-[40vw] bg-primary/3 blur-[140px] rounded-full"
-        />
+        <div className="absolute top-[-15%] left-[-15%] w-[70vw] h-[70vw] max-w-[600px] max-h-[600px] bg-gradient-to-br from-primary/8 to-violet-500/5 blur-[100px] rounded-full" />
+        <div className="absolute bottom-[5%] right-[-10%] w-[60vw] h-[60vw] max-w-[500px] max-h-[500px] bg-gradient-to-tl from-violet-500/6 to-primary/4 blur-[80px] rounded-full" />
+        <div className="absolute top-[35%] left-[30%] w-[50vw] h-[50vw] max-w-[400px] max-h-[400px] bg-primary/4 blur-[120px] rounded-full opacity-[0.04]" />
       </div>
 
       <Header />

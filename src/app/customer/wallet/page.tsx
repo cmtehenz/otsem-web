@@ -244,7 +244,7 @@ export default function WalletPage() {
     if (loadingWallets) {
         return (
             <div className="flex h-[80vh] flex-col items-center justify-center">
-                <Loader2 className="h-10 w-10 animate-spin text-violet-500 dark:text-violet-400" />
+                <Loader2 className="h-10 w-10 animate-spin text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                 <p className="text-sm text-muted-foreground mt-4">Carregando carteiras...</p>
             </div>
         );
@@ -270,7 +270,7 @@ export default function WalletPage() {
                     </Button>
                     <Button
                         onClick={openAddModal}
-                        className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
+                        className="bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold"
                     >
                         <Plus className="w-4 h-4 mr-2" />
                         Nova Carteira
@@ -280,8 +280,8 @@ export default function WalletPage() {
 
             {wallets.length === 0 ? (
                 <div className="bg-card border border-border rounded-2xl p-12 text-center">
-                    <div className="p-4 rounded-full bg-violet-500/20 inline-block mb-4">
-                        <Wallet className="w-8 h-8 text-violet-500 dark:text-violet-400" />
+                    <div className="p-4 rounded-full bg-[#6F00FF]/50/20 inline-block mb-4">
+                        <Wallet className="w-8 h-8 text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                     </div>
                     <h2 className="text-xl font-semibold text-foreground mb-2">
                         Nenhuma carteira encontrada
@@ -291,7 +291,7 @@ export default function WalletPage() {
                     </p>
                     <Button
                         onClick={openAddModal}
-                        className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold px-8"
+                        className="bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold px-8"
                     >
                         <Plus className="w-4 h-4 mr-2" />
                         Adicionar Carteira
@@ -305,17 +305,17 @@ export default function WalletPage() {
                             <div
                                 key={wallet.id}
                                 className={`bg-card border rounded-2xl p-5 transition ${wallet.isMain
-                                    ? "border-violet-500/50 shadow-lg shadow-violet-500/10"
-                                    : "border-border hover:border-violet-500/30"
+                                    ? "border-[#6F00FF]/50/50 shadow-lg shadow-[#6F00FF]/50/10"
+                                    : "border-border hover:border-[#6F00FF]/50/30"
                                     }`}
                             >
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="flex items-center gap-4">
                                         <div className={`p-3 rounded-xl ${wallet.isMain
-                                            ? "bg-linear-to-br from-violet-500/30 to-purple-500/30"
-                                            : "bg-linear-to-br from-violet-500/20 to-purple-500/20"
+                                            ? "bg-linear-to-br from-[#6F00FF]/50/30 to-[#6F00FF]/30"
+                                            : "bg-linear-to-br from-[#6F00FF]/50/20 to-[#6F00FF]/20"
                                             }`}>
-                                            <Wallet className="w-6 h-6 text-violet-500 dark:text-violet-400" />
+                                            <Wallet className="w-6 h-6 text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -323,7 +323,7 @@ export default function WalletPage() {
                                                     {wallet.label || `Carteira ${index + 1}`}
                                                 </span>
                                                 {wallet.isMain && (
-                                                    <span className="px-2 py-0.5 text-xs font-medium bg-violet-500/20 text-violet-600 dark:text-violet-400 rounded-full flex items-center gap-1">
+                                                    <span className="px-2 py-0.5 text-xs font-medium bg-[#6F00FF]/50/20 text-[#6F00FF] dark:text-[#6F00FF] rounded-full flex items-center gap-1">
                                                         <Star className="w-3 h-3" />
                                                         Principal
                                                     </span>
@@ -454,14 +454,14 @@ export default function WalletPage() {
                                         key={network.id}
                                         onClick={() => setSelectedNetwork(network.id)}
                                         className={`flex items-center justify-center gap-2 p-4 rounded-xl border transition ${selectedNetwork === network.id
-                                            ? "border-violet-500 bg-violet-500/20"
+                                            ? "border-[#6F00FF]/50 bg-[#6F00FF]/50/20"
                                             : "border-border bg-muted hover:border-border"
                                             }`}
                                     >
                                         <span className="text-xl">{network.icon}</span>
                                         <span className="text-foreground font-medium">{network.name}</span>
                                         {selectedNetwork === network.id && (
-                                            <Check className="w-4 h-4 text-violet-500 dark:text-violet-400" />
+                                            <Check className="w-4 h-4 text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                                         )}
                                     </button>
                                 ))}
@@ -474,7 +474,7 @@ export default function WalletPage() {
                                 <button
                                     onClick={() => setAddMode("create")}
                                     className={`p-4 rounded-xl border transition text-left ${addMode === "create"
-                                        ? "border-violet-500 bg-violet-500/20"
+                                        ? "border-[#6F00FF]/50 bg-[#6F00FF]/50/20"
                                         : "border-border bg-muted hover:border-border"
                                         }`}
                                 >
@@ -484,7 +484,7 @@ export default function WalletPage() {
                                 <button
                                     onClick={() => setAddMode("import")}
                                     className={`p-4 rounded-xl border transition text-left ${addMode === "import"
-                                        ? "border-violet-500 bg-violet-500/20"
+                                        ? "border-[#6F00FF]/50 bg-[#6F00FF]/50/20"
                                         : "border-border bg-muted hover:border-border"
                                         }`}
                                 >
@@ -529,7 +529,7 @@ export default function WalletPage() {
                                 <Button
                                     onClick={handleCreateWallet}
                                     disabled={creating}
-                                    className="flex-1 bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
+                                    className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold"
                                 >
                                     {creating ? (
                                         <>
@@ -544,7 +544,7 @@ export default function WalletPage() {
                                 <Button
                                     onClick={handleImportWallet}
                                     disabled={importing || !importAddress.trim()}
-                                    className="flex-1 bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
+                                    className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold"
                                 >
                                     {importing ? (
                                         <>
@@ -614,7 +614,7 @@ export default function WalletPage() {
 
                         <Button
                             onClick={() => setWalletKeys(null)}
-                            className="w-full bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold mt-2"
+                            className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold mt-2"
                         >
                             Já salvei minha chave privada
                         </Button>
@@ -657,7 +657,7 @@ export default function WalletPage() {
                             </Button>
                             <Button
                                 onClick={handleSaveLabel}
-                                className="flex-1 bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
+                                className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold"
                             >
                                 Salvar
                             </Button>

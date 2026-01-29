@@ -8,11 +8,11 @@ export default function Logo() {
     return (
         <Link href="/dashboard" className="flex items-center gap-2 group">
             {/* exemplo com texto; troque pelo <Image> se tiver logo.png */}
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm group-hover:scale-[1.03] transition">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-white shadow-sm group-hover:scale-[1.03] transition">
                 OB
             </div>
             <span className="text-sm font-semibold tracking-tight">
-                Otsem <span className="text-indigo-600">Bank</span>
+                Otsem <span className="text-primary">Bank</span>
             </span>
         </Link>
     );

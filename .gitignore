@@ -31,7 +31,9 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-# .env* # Removed by Orchids to allow .env files
+# .env # Removed by Orchids to allow .env files
+# .env*.local # Removed by Orchids to allow .env files
+# !.env.example # Removed by Orchids to allow .env files
 
 # vercel
 .vercel

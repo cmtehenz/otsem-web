@@ -148,7 +148,7 @@ export default function AffiliatesPage() {
                     <CardContent className="flex flex-col items-center justify-center py-12">
                         {activating ? (
                             <>
-                                <Loader2 className="h-16 w-16 text-violet-600 mb-4 animate-spin" />
+                                <Loader2 className="h-16 w-16 text-[#6F00FF] mb-4 animate-spin" />
                                 <h3 className="text-lg font-semibold mb-2">Ativando seu programa de indicações...</h3>
                                 <p className="text-muted-foreground text-center max-w-md">
                                     Aguarde enquanto criamos seu código de indicação.
@@ -162,7 +162,7 @@ export default function AffiliatesPage() {
                                     Não foi possível ativar seu programa de indicações. Tente novamente.
                                 </p>
                                 <Button 
-                                    className="bg-gradient-to-r from-violet-600 to-purple-600"
+                                    className="bg-gradient-to-r from-[#6F00FF] to-[#6F00FF]"
                                     onClick={activateAffiliate}
                                     disabled={activating}
                                 >
@@ -183,7 +183,7 @@ export default function AffiliatesPage() {
                 <p className="text-muted-foreground mt-1">Indique amigos e ganhe comissões em cada transação</p>
             </div>
 
-            <Card className="bg-gradient-to-r from-violet-600 to-purple-600 text-white border-0">
+            <Card className="bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] text-white border-0">
                 <CardContent className="p-6">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
@@ -283,10 +283,10 @@ export default function AffiliatesPage() {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Já Recebido</CardTitle>
-                        <TrendingUp className="h-4 w-4 text-violet-600" />
+                        <TrendingUp className="h-4 w-4 text-[#6F00FF]" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-violet-600">
+                        <div className="text-2xl font-bold text-[#6F00FF]">
                             {formatCurrency(stats.paidEarnings)}
                         </div>
                         <p className="text-xs text-muted-foreground">
@@ -338,8 +338,8 @@ export default function AffiliatesPage() {
                                         className="flex items-center justify-between p-4 rounded-lg border"
                                     >
                                         <div className="flex items-center gap-4">
-                                            <div className="h-10 w-10 rounded-full bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center">
-                                                <span className="text-violet-600 font-semibold">
+                                            <div className="h-10 w-10 rounded-full bg-[#6F00FF]/10 dark:bg-[#330080]/30 flex items-center justify-center">
+                                                <span className="text-[#6F00FF] font-semibold">
                                                     {referral.name.charAt(0).toUpperCase()}
                                                 </span>
                                             </div>

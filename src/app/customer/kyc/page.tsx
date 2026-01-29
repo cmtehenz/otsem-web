@@ -237,7 +237,6 @@ export default function CustomerKycPage(): React.JSX.Element {
                     http.get<{ data: CustomerResponse } | CustomerResponse>("/customers/me"),
                     http.get<LimitsResponse>("/customers/me/limits").catch(() => null),
                     http.get<{ data: UpgradeRequest[] } | UpgradeRequest[]>("/customers/me/kyc-upgrade-requests").catch((err) => {
-                        console.log("Erro ao buscar upgrade requests:", err?.response?.status);
                         return null;
                     }),
                 ]);
@@ -255,17 +254,15 @@ export default function CustomerKycPage(): React.JSX.Element {
                 }
 
                 if (upgradeRes?.data) {
-                    console.log("Upgrade requests response:", upgradeRes.data);
                     let requests: UpgradeRequest[] = [];
                     const resData = upgradeRes.data as { data?: UpgradeRequest[] } | UpgradeRequest[];
-                    
+
                     if (Array.isArray(resData)) {
                         requests = resData;
                     } else if (resData && typeof resData === 'object' && 'data' in resData && Array.isArray(resData.data)) {
                         requests = resData.data;
                     }
-                    
-                    console.log("Parsed upgrade requests:", requests);
+
                     setUpgradeRequests(requests);
                 }
             } catch (err) {
@@ -338,7 +335,7 @@ export default function CustomerKycPage(): React.JSX.Element {
     if (loading) {
         return (
             <div className="flex h-[80vh] flex-col items-center justify-center">
-                <Loader2 className="h-10 w-10 animate-spin text-violet-400" />
+                <Loader2 className="h-10 w-10 animate-spin text-[#6F00FF]" />
                 <p className="text-sm text-white/60 mt-4">Carregando...</p>
             </div>
         );
@@ -437,7 +434,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                         <Button
                             onClick={startVerification}
                             disabled={startingVerification}
-                            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold w-full h-12 rounded-xl"
+                            className="bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold w-full h-12 rounded-xl"
                         >
                             {startingVerification ? (
                                 <>

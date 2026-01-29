@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useCallback } from "react";
-import { motion } from "framer-motion";
-import { Check, ArrowRight, Sparkles } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
 import haptic from "@/lib/haptics";
 import Link from "next/link";
 
@@ -12,107 +11,63 @@ const CTABanner = () => {
   }, []);
 
   const benefits = [
-    "Cadastro gratis",
+    "Cadastro grátis",
     "Sem mensalidade",
     "Cancelar quando quiser"
   ];
 
   return (
-    <section className="relative z-10 py-16 sm:py-24 px-5 sm:px-6">
-      <div className="mx-auto max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ type: "spring", stiffness: 80, damping: 20 }}
-          className="relative overflow-hidden rounded-[3rem] shadow-2xl shadow-primary/20"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-[#7c3aed]" />
+    <section className="relative z-10 section-padding container-mobile">
+      <div className="mx-auto max-w-4xl">
+        <div className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] shadow-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary via-[#8B2FFF] to-primary animate-gradient-shift" />
 
-          <div className="absolute -top-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-accent/20 rounded-full blur-3xl" />
+          <div className="absolute -top-16 -left-16 w-40 h-40 bg-white/8 rounded-full blur-2xl" />
+          <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-[#6F00FF]/12 rounded-full blur-2xl" />
 
-          <div className="relative z-10 p-10 sm:p-16 md:p-20 text-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
-              className="inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full bg-white/10 border border-white/15 backdrop-blur-md"
-            >
-              <Sparkles className="h-4 w-4 text-white" strokeWidth={2.5} />
-              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white">Oferta limitada</span>
-            </motion.div>
+          <div className="relative z-10 p-6 sm:p-10 md:p-12 text-center">
+            <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-white/12 border border-white/15">
+                <span className="text-[11px] sm:text-[12px] font-bold tracking-tight text-white">Otsem Pay</span>
+              </div>
 
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.15 }}
-              className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tightest text-white mb-8 leading-tight"
-            >
-              Pronto para mover seu <br /> capital com liberdade?
-            </motion.h2>
+<h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tightest text-white mb-4 leading-tight">
+                Pronto para mover seu<br />capital com liberdade?
+              </h2>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
-              className="max-w-xl mx-auto text-base sm:text-lg text-white/80 leading-relaxed font-semibold mb-12"
-            >
+            <p className="max-w-md mx-auto text-[13px] sm:text-[14px] text-white/75 leading-relaxed font-medium mb-6">
               Crie sua conta gratuitamente e comece a transacionar BRL e USDT em minutos.
-              Sem taxas de adesao, sem complicacoes.
-            </motion.p>
+            </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.25 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12"
-            >
-              <motion.div
-                whileHover={{ y: -4, scale: 1.02 }}
-                whileTap={{ scale: 0.96 }}
-              >
-                <Link href="/register" onClick={handleButtonClick}>
-                  <button className="h-16 px-12 rounded-2xl bg-white text-primary font-black text-[15px] flex items-center gap-3 shadow-2xl shadow-black/10 hover:shadow-white/20 transition-all uppercase tracking-tight">
-                    Criar conta gratis
-                    <ArrowRight className="w-5 h-5" strokeWidth={3} />
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 mb-6">
+              <div className="w-full sm:w-auto">
+                <Link href="/register" onClick={handleButtonClick} className="block">
+                    <button className="w-full sm:w-auto h-11 px-6 rounded-xl bg-white text-primary font-semibold text-[13px] flex items-center justify-center gap-2 shadow-lg ios-touch-effect active:scale-[0.97] transition-transform">
+                      Crie sua conta
+                    <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
                   </button>
                 </Link>
-              </motion.div>
-              <motion.div
-                whileHover={{ y: -4, scale: 1.02 }}
-                whileTap={{ scale: 0.96 }}
-              >
-                <Link href="/login" onClick={() => haptic.light()}>
-                  <button className="h-16 px-12 rounded-2xl border border-white/20 bg-white/5 text-white font-black text-[15px] backdrop-blur-sm hover:bg-white/10 transition-all uppercase tracking-tight">
-                    Ja tenho conta
+              </div>
+              <div className="w-full sm:w-auto">
+                <Link href="/login" onClick={() => haptic.light()} className="block">
+                  <button className="w-full sm:w-auto h-11 px-6 rounded-xl border border-white/20 bg-white/8 text-white font-semibold text-[13px] ios-touch-effect active:scale-[0.97] transition-transform">
+                    Já tenho conta
                   </button>
                 </Link>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 }}
-              className="flex flex-wrap justify-center gap-8 sm:gap-12"
-            >
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-5">
               {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center gap-3 text-[12px] font-black text-white/70">
-                  <div className="flex items-center justify-center w-6 h-6 rounded-full bg-white/20 border border-white/30">
-                    <Check className="w-3.5 h-3.5 text-white" strokeWidth={4} />
+                <div key={index} className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-white/65">
+                  <div className="flex items-center justify-center w-4 h-4 rounded-full bg-white/15">
+                    <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
                   </div>
-                  <span className="uppercase tracking-widest">{benefit}</span>
+                  <span>{benefit}</span>
                 </div>
               ))}
-            </motion.div>
+            </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -8,7 +8,7 @@ export default function CookiesPolicyPage() {
   return (
     <main className="min-h-screen bg-[#0a0118] text-white">
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-1/2 left-1/2 h-[1000px] w-[1000px] -translate-x-1/2 rounded-full bg-gradient-to-b from-violet-600/20 via-purple-600/10 to-transparent blur-3xl" />
+        <div className="absolute -top-1/2 left-1/2 h-[1000px] w-[1000px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#6F00FF]/20 via-[#6F00FF]/10 to-transparent blur-3xl" />
       </div>
 
       <header className="border-b border-white/5 bg-[#0a0118]/80 backdrop-blur-xl">
@@ -17,7 +17,7 @@ export default function CookiesPolicyPage() {
             <img src="/images/logo.png" alt="OtsemPay" className="h-10 w-10 object-contain" />
             <span className="text-xl font-bold tracking-tight">
               <span className="text-amber-400">Otsem</span>
-              <span className="text-violet-400">Pay</span>
+              <span className="text-[#6F00FF]">Pay</span>
             </span>
           </Link>
           <Link href="/">
@@ -31,9 +31,9 @@ export default function CookiesPolicyPage() {
 
       <div className="mx-auto max-w-4xl px-6 py-16">
         <div className="mb-12 text-center">
-          <div className="mb-4 inline-flex items-center justify-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-2">
-            <Cookie className="h-5 w-5 text-violet-400" />
-            <span className="text-sm font-medium text-violet-200">Política de Cookies</span>
+          <div className="mb-4 inline-flex items-center justify-center gap-2 rounded-full border border-[#6F00FF]/50/30 bg-[#6F00FF]/50/10 px-4 py-2">
+            <Cookie className="h-5 w-5 text-[#6F00FF]" />
+            <span className="text-sm font-medium text-[#6F00FF]/20">Política de Cookies</span>
           </div>
           <h1 className="text-3xl font-bold sm:text-4xl lg:text-5xl">
             Política de Cookies
@@ -59,19 +59,19 @@ Os cookies permitem que nosso site reconheça seu dispositivo e lembre-se de sua
           >
             <ul className="mt-4 space-y-3 text-white/70">
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-violet-500" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
                 <span><strong className="text-white">Cookies Essenciais:</strong> Necessários para o funcionamento básico do site, como autenticação e segurança. Sem eles, o site não funcionaria corretamente.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-violet-500" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
                 <span><strong className="text-white">Cookies de Desempenho:</strong> Coletam informações sobre como você usa nosso site, como quais páginas você visita com mais frequência. Esses dados nos ajudam a melhorar o funcionamento do site.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-violet-500" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
                 <span><strong className="text-white">Cookies de Funcionalidade:</strong> Permitem que o site lembre suas escolhas (como seu nome de usuário ou idioma) e forneça recursos personalizados.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-violet-500" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
                 <span><strong className="text-white">Cookies de Análise:</strong> Utilizamos serviços de análise como Google Analytics para entender como os visitantes interagem com nosso site e melhorar continuamente nossa plataforma.</span>
               </li>
             </ul>
@@ -149,11 +149,11 @@ Se você optar por desativar os cookies, algumas funcionalidades do nosso site p
           >
             <ul className="mt-4 space-y-3 text-white/70">
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-violet-500" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
                 <span><strong className="text-white">Google Analytics:</strong> Para análise de tráfego e comportamento do usuário.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-violet-500" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
                 <span><strong className="text-white">Vercel Analytics:</strong> Para monitoramento de performance e métricas do site.</span>
               </li>
             </ul>
@@ -184,7 +184,7 @@ A data da última atualização será sempre indicada no topo desta página.`}
 
         <div className="mt-16 flex justify-center">
           <Link href="/">
-            <Button className="h-12 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-8 font-semibold">
+            <Button className="h-12 rounded-full bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] px-8 font-semibold">
               Voltar para o início
             </Button>
           </Link>
@@ -216,7 +216,7 @@ function Section({
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-8">
       <div className="mb-4 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/20 text-violet-400">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#6F00FF]/50/20 text-[#6F00FF]">
           {icon}
         </div>
         <h2 className="text-xl font-bold">{title}</h2>

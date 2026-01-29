@@ -1,8 +1,9 @@
 // src/lib/http.ts
 import axios, { type AxiosInstance, type AxiosRequestConfig, type InternalAxiosRequestConfig } from 'axios';
 import { getAccessToken, clearTokens } from './token';
+import { ENV } from './env';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
+const BASE_URL = ENV.API_URL;
 
 interface CustomAxiosConfig extends AxiosRequestConfig {
     anonymous?: boolean;
@@ -38,7 +39,7 @@ httpClient.interceptors.request.use(
     }
 );
 
-// Interceptor para tratar erros de autenticação
+// Interceptor para tratar erros de autenticação e rede
 httpClient.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -52,6 +53,12 @@ httpClient.interceptors.response.use(
                 !window.location.pathname.includes('/register')) {
                 window.location.href = '/login';
             }
+        }
+
+        // Trata erro de rede (quando a API está offline ou o URL está errado)
+        if (!error.response && error.request) {
+            console.error('Erro de rede: Sem resposta do servidor', error.config?.url);
+            error.message = 'Não foi possível conectar ao servidor. Verifique sua conexão ou tente novamente mais tarde.';
         }
 
         return Promise.reject(error);

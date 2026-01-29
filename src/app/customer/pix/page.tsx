@@ -9,16 +9,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/auth-context";
 
 type PixKey = {
     id: string;
     keyType: string;
     keyValue: string;
     status: string;
-    validated: boolean;
-    validatedAt: string | null;
-    validationAttempted: boolean;
-    validationError: string | null;
+    validated?: boolean;
+    validatedAt?: string | null;
+    validationAttempted?: boolean;
+    validationError?: string | null;
     createdAt: string;
 };
 
@@ -67,6 +68,8 @@ function getKeyTypeIcon(type: string) {
 }
 
 export default function CustomerPixPage() {
+    const { user } = useAuth();
+    const customerId = user?.customerId;
     const [loading, setLoading] = React.useState(true);
     const [pixKeys, setPixKeys] = React.useState<PixKey[]>([]);
     const [showModal, setShowModal] = React.useState(false);
@@ -79,10 +82,11 @@ export default function CustomerPixPage() {
     const [validating, setValidating] = React.useState<string | null>(null);
 
     async function loadPixKeys() {
+        if (!customerId) return;
         try {
             setLoading(true);
-            const res = await http.get<PixKey[]>("/pix-keys");
-            setPixKeys(res.data || []);
+            const res = await http.get<{ keys: PixKey[] }>(`/pix/keys/account-holders/${customerId}`);
+            setPixKeys(res.data.keys || []);
         } catch {
             setPixKeys([]);
         } finally {
@@ -92,15 +96,16 @@ export default function CustomerPixPage() {
 
     React.useEffect(() => {
         loadPixKeys();
-    }, []);
+    }, [customerId]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+        if (!customerId) return;
         setSubmitting(true);
         try {
-            await http.post("/pix-keys", {
+            await http.post(`/pix/keys/account-holders/${customerId}`, {
                 keyType: newType,
-                keyValue: newType === "RANDOM" ? undefined : newValue,
+                keyValue: newType === "EVP" ? undefined : newValue,
             });
             toast.success("Chave Pix cadastrada com sucesso!");
             setShowModal(false);
@@ -115,10 +120,10 @@ export default function CustomerPixPage() {
     }
 
     async function handleDelete() {
-        if (!keyToDelete) return;
+        if (!keyToDelete || !customerId) return;
         setDeleting(true);
         try {
-            await http.delete(`/pix-keys/${keyToDelete.id}`);
+            await http.delete(`/pix/keys/account-holders/${customerId}/key/${keyToDelete.keyValue}`);
             toast.success("Chave Pix removida com sucesso!");
             setShowDeleteModal(false);
             setKeyToDelete(null);
@@ -156,7 +161,7 @@ export default function CustomerPixPage() {
     if (loading) {
         return (
             <div className="flex h-[80vh] flex-col items-center justify-center">
-                <Loader2 className="h-10 w-10 animate-spin text-violet-500 dark:text-violet-400" />
+                <Loader2 className="h-10 w-10 animate-spin text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                 <p className="text-sm text-muted-foreground mt-4">Carregando chaves Pix...</p>
             </div>
         );
@@ -182,7 +187,7 @@ export default function CustomerPixPage() {
                     </Button>
                     <Button
                         onClick={() => setShowModal(true)}
-                        className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold"
+                        className="bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold"
                     >
                         <Plus className="w-4 h-4 mr-2" />
                         Nova Chave Pix
@@ -190,10 +195,10 @@ export default function CustomerPixPage() {
                 </div>
             </div>
 
-            <div className="bg-card border border-violet-500/20 rounded-xl p-4">
+            <div className="bg-card border border-[#6F00FF]/50/20 rounded-xl p-4">
                 <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-violet-500/20">
-                        <ShieldCheck className="w-5 h-5 text-violet-500 dark:text-violet-400" />
+                    <div className="p-2 rounded-lg bg-[#6F00FF]/50/20">
+                        <ShieldCheck className="w-5 h-5 text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                     </div>
                     <div>
                         <p className="text-foreground font-medium text-sm">Validação de Chaves</p>
@@ -207,8 +212,8 @@ export default function CustomerPixPage() {
 
             {pixKeys.length === 0 ? (
                 <div className="bg-card border border-border rounded-2xl p-12 text-center">
-                    <div className="p-4 rounded-full bg-violet-500/20 inline-block mb-4">
-                        <KeyRound className="w-8 h-8 text-violet-500 dark:text-violet-400" />
+                    <div className="p-4 rounded-full bg-[#6F00FF]/50/20 inline-block mb-4">
+                        <KeyRound className="w-8 h-8 text-[#6F00FF]/50 dark:text-[#6F00FF]" />
                     </div>
                     <h2 className="text-xl font-semibold text-foreground mb-2">
                         Nenhuma chave Pix encontrada
@@ -218,7 +223,7 @@ export default function CustomerPixPage() {
                     </p>
                     <Button
                         onClick={() => setShowModal(true)}
-                        className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold px-8"
+                        className="bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold px-8"
                     >
                         <Plus className="w-4 h-4 mr-2" />
                         Cadastrar Chave Pix
@@ -229,11 +234,11 @@ export default function CustomerPixPage() {
                     {pixKeys.map((pix) => (
                         <div
                             key={pix.id}
-                            className="bg-card border border-border rounded-2xl p-5 hover:border-violet-500/30 transition"
+                            className="bg-card border border-border rounded-2xl p-5 hover:border-[#6F00FF]/50/30 transition"
                         >
                             <div className="flex items-center justify-between gap-4">
                                 <div className="flex items-center gap-4">
-                                    <div className="p-3 rounded-xl bg-linear-to-br from-violet-500/20 to-purple-500/20 text-2xl">
+                                    <div className="p-3 rounded-xl bg-linear-to-br from-[#6F00FF]/50/20 to-[#6F00FF]/20 text-2xl">
                                         {getKeyTypeIcon(pix.keyType)}
                                     </div>
                                     <div>
@@ -293,7 +298,7 @@ export default function CustomerPixPage() {
                                         <button
                                             onClick={() => handleValidate(pix.id)}
                                             disabled={validating === pix.id}
-                                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-violet-500/20 text-violet-600 dark:text-violet-300 hover:bg-violet-500/30 border border-violet-500/30 transition flex items-center gap-1.5 disabled:opacity-50"
+                                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-[#6F00FF]/50/20 text-[#6F00FF] dark:text-[#6F00FF]/30 hover:bg-[#6F00FF]/50/30 border border-[#6F00FF]/50/30 transition flex items-center gap-1.5 disabled:opacity-50"
                                             title="Validar chave (R$ 0,01)"
                                         >
                                             {validating === pix.id ? (
@@ -319,7 +324,7 @@ export default function CustomerPixPage() {
             )}
 
             <Dialog open={showModal} onOpenChange={setShowModal}>
-                <DialogContent className="bg-card border border-violet-500/20">
+                <DialogContent className="bg-card border border-[#6F00FF]/50/20">
                     <DialogHeader>
                         <DialogTitle className="text-foreground text-xl">Nova Chave Pix</DialogTitle>
                     </DialogHeader>
@@ -353,7 +358,7 @@ export default function CustomerPixPage() {
                                     onChange={e => setNewValue(e.target.value)}
                                     placeholder={
                                         newType === "CPF" ? "000.000.000-00" :
-                                            newType === "CNPJ" ? "00.000.000/0000-00" :
+                                            newType === "CNPJ" ? "000.000.000/0000-00" :
                                                 newType === "EMAIL" ? "seu@email.com" :
                                                     "+55 11 99999-9999"
                                     }
@@ -394,7 +399,7 @@ export default function CustomerPixPage() {
                             <Button
                                 type="submit"
                                 disabled={submitting || (newType !== "RANDOM" && !newValue)}
-                                className="flex-1 bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold disabled:opacity-50"
+                                className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold disabled:opacity-50"
                             >
                                 {submitting ? (
                                     <>
