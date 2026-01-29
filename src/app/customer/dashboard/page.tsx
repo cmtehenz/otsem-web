@@ -177,7 +177,7 @@ export default function Dashboard() {
         }
     }, [wallets]);
 
-    const saldoBRL = account?.balance ?? 0;
+    const saldoBRL = account?.availableBalance ?? 0;
     const saldoUSDT = usdtBalance ?? 0;
     const saldoTotal = saldoBRL + (saldoUSDT * usdtRateWithSpread);
 
@@ -336,7 +336,7 @@ export default function Dashboard() {
                                 const txAmount = Number(tx.amount);
                                 
                                 const hasMatchingConversion = allTx.some((other) => {
-                                    if (other.id === tx.id) return false;
+                                    if (other.transactionId === tx.transactionId) return false;
                                     if (other.type !== "CONVERSION") return false;
                                     
                                     const otherTime = new Date(other.createdAt).getTime();
@@ -353,7 +353,7 @@ export default function Dashboard() {
                             .map((tx) => {
                             const amount = Number(tx.amount);
                             const isIncoming = tx.type === "PIX_IN";
-                            const isPending = tx.status === "PENDING";
+                            const isPending = tx.status === "PENDING" || tx.status === "PROCESSING";
                             const isCompleted = tx.status === "COMPLETED";
                             const isConversion = tx.type === "CONVERSION";
                             
@@ -401,14 +401,12 @@ export default function Dashboard() {
                                 }
                             } else if (tx.description && !isUUID(tx.description)) {
                                 displayName = tx.description;
-                            } else if (isIncoming && tx.payerName) {
-                                displayName = `Depósito de ${tx.payerName}`;
+                            } else if (isIncoming && tx.senderName) {
+                                displayName = `Depósito de ${tx.senderName}`;
                             } else if (isIncoming && tx.externalData?.pagador?.nome) {
                                 displayName = `Depósito de ${tx.externalData.pagador.nome}`;
-                            } else if (!isIncoming && tx.receiverPixKey) {
-                                displayName = `Transferência PIX para ${tx.receiverPixKey}`;
-                            } else if (!isIncoming && tx.receiverName) {
-                                displayName = `Transferência para ${tx.receiverName}`;
+                            } else if (!isIncoming && tx.recipientName) {
+                                displayName = `Transferência para ${tx.recipientName}`;
                             } else {
                                 displayName = isIncoming ? "Depósito PIX" : "Transferência PIX";
                             }
@@ -445,7 +443,7 @@ export default function Dashboard() {
                                         : "text-red-500 dark:text-red-400";
 
                             return (
-                                <div key={tx.id} className="flex items-center gap-4 p-4 hover:bg-accent/50 transition">
+                                <div key={tx.transactionId} className="flex items-center gap-4 p-4 hover:bg-accent/50 transition">
                                     <div className={`p-2.5 rounded-full ${iconBgColor}`}>
                                         {isConversionTx ? (
                                             <ArrowRightLeft className={`w-4 h-4 ${iconColor}`} />
@@ -491,7 +489,7 @@ export default function Dashboard() {
                                         </div>
                                     ) : (
                                         <span className={`font-bold ${amountColor}`}>
-                                            {isIncoming ? "+" : "-"}{formatCurrency(amount)}
+                                            {isIncoming ? "+" : "-"}{formatCurrency(Math.abs(amount))}
                                         </span>
                                     )}
                                 </div>
