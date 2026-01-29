@@ -9,16 +9,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/auth-context";
 
 type PixKey = {
     id: string;
     keyType: string;
     keyValue: string;
     status: string;
-    validated: boolean;
-    validatedAt: string | null;
-    validationAttempted: boolean;
-    validationError: string | null;
     createdAt: string;
 };
 
