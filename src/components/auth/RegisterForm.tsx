@@ -172,11 +172,14 @@ function RegisterPageInner(): React.JSX.Element {
         try {
             setLoading(true);
 
+            const cleanDocument = v.document.replace(/\D/g, ""); // Send only numbers
+            const documentField = v.type === "PF" ? { cpf: cleanDocument } : { cnpj: cleanDocument };
+
             const res = await http.post<{ access_token: string; role?: string }>(
                 "/auth/register",
                 {
                     type: v.type,
-                    document: v.document.replace(/\D/g, ""), // Send only numbers
+                    ...documentField,
                     name: v.name,
                     email: v.email,
                     password: v.password,
