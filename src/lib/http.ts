@@ -1,8 +1,9 @@
 // src/lib/http.ts
 import axios, { type AxiosInstance, type AxiosRequestConfig, type InternalAxiosRequestConfig } from 'axios';
 import { getAccessToken, clearTokens } from './token';
+import { ENV } from './env';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
+const BASE_URL = ENV.API_URL;
 
 interface CustomAxiosConfig extends AxiosRequestConfig {
     anonymous?: boolean;
