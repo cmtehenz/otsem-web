@@ -168,9 +168,6 @@ export default function AdminUserDetailPage() {
     const [kycLevelModalOpen, setKycLevelModalOpen] = React.useState(false);
     const [selectedKycLevel, setSelectedKycLevel] = React.useState<"LEVEL_1" | "LEVEL_2" | "LEVEL_3">("LEVEL_1");
     const [savingKycLevel, setSavingKycLevel] = React.useState(false);
-    const [roleModalOpen, setRoleModalOpen] = React.useState(false);
-    const [selectedRole, setSelectedRole] = React.useState<"ADMIN" | "CUSTOMER">("CUSTOMER");
-    const [savingRole, setSavingRole] = React.useState(false);
     const [userLimits, setUserLimits] = React.useState<UserLimits | null>(null);
     const [loadingLimits, setLoadingLimits] = React.useState(false);
 
@@ -315,36 +312,6 @@ export default function AdminUserDetailPage() {
             toast.error(errorMsg);
         } finally {
             setSavingKycLevel(false);
-        }
-    };
-
-    const openRoleModal = () => {
-        setSelectedRole(user?.role || "CUSTOMER");
-        setRoleModalOpen(true);
-    };
-
-    const handleSaveRole = async () => {
-        try {
-            setSavingRole(true);
-            await http.patch(`/admin/users/${userId}/role`, {
-                role: selectedRole,
-            });
-            
-            if (user) {
-                setUser({
-                    ...user,
-                    role: selectedRole,
-                });
-            }
-            
-            toast.success(`Cargo atualizado para ${selectedRole}`);
-            setRoleModalOpen(false);
-        } catch (err: any) {
-            console.error("Role update error:", err.response?.data || err.message);
-            const errorMsg = err.response?.data?.message || "Falha ao atualizar cargo";
-            toast.error(errorMsg);
-        } finally {
-            setSavingRole(false);
         }
     };
 
@@ -508,32 +475,6 @@ export default function AdminUserDetailPage() {
                                     )}
                                 </div>
                             )}
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle className="flex items-center gap-2">
-                                <Shield className="h-5 w-5" />
-                                Cargo e Permissões
-                            </CardTitle>
-                            <Button variant="outline" size="sm" onClick={openRoleModal}>
-                                <Edit className="mr-2 h-4 w-4" />
-                                Alterar Cargo
-                            </Button>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="flex items-center justify-between">
-                                <span className="text-muted-foreground">Cargo atual</span>
-                                <Badge variant={user.role === "ADMIN" ? "default" : "secondary"} className="font-bold">
-                                    {user.role}
-                                </Badge>
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-2">
-                                {user.role === "ADMIN" 
-                                    ? "Este usuário tem acesso total ao painel administrativo." 
-                                    : "Este usuário tem acesso apenas às funcionalidades de cliente."}
-                            </p>
                         </CardContent>
                     </Card>
 
@@ -831,58 +772,6 @@ export default function AdminUserDetailPage() {
                                 <Save className="h-4 w-4 mr-2" />
                             )}
                             Salvar
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-
-            <Dialog open={roleModalOpen} onOpenChange={setRoleModalOpen}>
-                <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                        <DialogTitle>Alterar Cargo do Usuário</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                        <p className="text-sm text-muted-foreground">
-                            Selecione o cargo para este usuário. Administradores têm acesso total ao sistema.
-                        </p>
-                        <div className="space-y-3">
-                            {(["ADMIN", "CUSTOMER"] as const).map((role) => {
-                                return (
-                                    <button
-                                        key={role}
-                                        type="button"
-                                        onClick={() => setSelectedRole(role)}
-                                        className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                                            selectedRole === role
-                                                ? "border-primary bg-primary/5"
-                                                : "border-border hover:border-primary/50"
-                                        }`}
-                                    >
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <div className={`w-3 h-3 rounded-full ${selectedRole === role ? "bg-primary" : "bg-slate-200"}`} />
-                                                <span className="font-bold">{role === "ADMIN" ? "Administrador" : "Cliente"}</span>
-                                            </div>
-                                            <Badge variant={role === "ADMIN" ? "default" : "secondary"}>
-                                                {role}
-                                            </Badge>
-                                        </div>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setRoleModalOpen(false)}>
-                            Cancelar
-                        </Button>
-                        <Button onClick={handleSaveRole} disabled={savingRole}>
-                            {savingRole ? (
-                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                            ) : (
-                                <Save className="h-4 w-4 mr-2" />
-                            )}
-                            Salvar Alteração
                         </Button>
                     </DialogFooter>
                 </DialogContent>

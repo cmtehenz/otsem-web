@@ -3,7 +3,7 @@ import axios, { type AxiosInstance, type AxiosRequestConfig, type InternalAxiosR
 import { getAccessToken, clearTokens } from './token';
 import { ENV } from './env';
 
-const BASE_URL = typeof window !== 'undefined' ? '' : ENV.API_URL;
+const BASE_URL = ENV.API_URL;
 
 interface CustomAxiosConfig extends AxiosRequestConfig {
     anonymous?: boolean;

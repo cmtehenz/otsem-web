@@ -100,7 +100,6 @@ export default function AdminUsersPage() {
     const [debouncedSearch] = useDebounce(search, 500);
     const [kycFilter, setKycFilter] = React.useState(searchParams?.get("kyc") || "all");
     const [statusFilter, setStatusFilter] = React.useState(searchParams?.get("status") || "all");
-    const [roleFilter, setRoleFilter] = React.useState(searchParams?.get("role") || "all");
 
     const [emailModalOpen, setEmailModalOpen] = React.useState(false);
     const [selectedUserForEmail, setSelectedUserForEmail] = React.useState<User | null>(null);
@@ -119,7 +118,6 @@ export default function AdminUsersPage() {
             if (debouncedSearch) params.set("search", debouncedSearch);
             if (kycFilter !== "all") params.set("kycStatus", kycFilter);
             if (statusFilter !== "all") params.set("accountStatus", statusFilter);
-            if (roleFilter !== "all") params.set("role", roleFilter);
 
             const response = await http.get<UsersResponse>(`/admin/users?${params.toString()}`);
             setUsers(response.data.data);
@@ -171,16 +169,6 @@ export default function AdminUsersPage() {
                             />
                         </div>
                         <div className="flex items-center gap-2">
-                            <Select value={roleFilter} onValueChange={setRoleFilter}>
-                                <SelectTrigger className="w-[130px]">
-                                    <SelectValue placeholder="Cargo" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">Todos Cargos</SelectItem>
-                                    <SelectItem value="ADMIN">Admin</SelectItem>
-                                    <SelectItem value="CUSTOMER">Cliente</SelectItem>
-                                </SelectContent>
-                            </Select>
                             <Select value={kycFilter} onValueChange={setKycFilter}>
                                 <SelectTrigger className="w-[140px]">
                                     <SelectValue placeholder="Status KYC" />
@@ -215,14 +203,13 @@ export default function AdminUsersPage() {
                     ) : users.length === 0 ? (
                         <div className="flex h-64 flex-col items-center justify-center text-center">
                             <p className="text-muted-foreground">Nenhum usuário encontrado</p>
-                            {(search || kycFilter !== "all" || statusFilter !== "all" || roleFilter !== "all") && (
+                            {(search || kycFilter !== "all" || statusFilter !== "all") && (
                                 <Button
                                     variant="link"
                                     onClick={() => {
                                         setSearch("");
                                         setKycFilter("all");
                                         setStatusFilter("all");
-                                        setRoleFilter("all");
                                     }}
                                 >
                                     Limpar filtros
@@ -237,7 +224,6 @@ export default function AdminUsersPage() {
                                         <TableRow>
                                             <TableHead>Usuário</TableHead>
                                             <TableHead>CPF/CNPJ</TableHead>
-                                            <TableHead>Cargo</TableHead>
                                             <TableHead>KYC</TableHead>
                                             <TableHead>Status</TableHead>
                                             <TableHead className="text-right">Saldo</TableHead>
@@ -260,11 +246,6 @@ export default function AdminUsersPage() {
                                                     </TableCell>
                                                     <TableCell>
                                                         <span className="font-mono text-sm">{maskCpfCnpj(user.cpfCnpj)}</span>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Badge variant={user.role === "ADMIN" ? "default" : "secondary"} className="text-[10px] font-bold">
-                                                            {user.role}
-                                                        </Badge>
                                                     </TableCell>
                                                     <TableCell>
                                                         <Badge variant={kycInfo.variant} className="text-xs">
