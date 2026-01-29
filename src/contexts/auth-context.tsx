@@ -140,7 +140,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             );
 
             const { access_token: accessToken, user: userData } = loginResponse.data;
-            const role = userData.role;
 
             if (!accessToken) {
                 throw new Error("Token de acesso não recebido da API");
@@ -151,9 +150,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 throw new Error("Token inválido");
             }
 
+            const role = payload.role || userData?.role;
+            if (!role) {
+                throw new Error("Cargo do usuário não identificado");
+            }
+
             setTokens(accessToken, "");
 
-            let customerId = payload.customerId || userData.customerId;
+            let customerId = payload.customerId || userData?.customerId;
 
             // Se for CUSTOMER e não tiver customerId, busca na API
             if (role === "CUSTOMER" && !customerId) {
