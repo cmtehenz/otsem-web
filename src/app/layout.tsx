@@ -19,6 +19,12 @@ export const metadata: Metadata = {
 
 import type { ReactNode } from "react";
 
+import { ConnectionStatus } from "@/components/connection-status";
+import { validateEnv } from "@/lib/env";
+
+// Validate env on server or client load
+validateEnv();
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,6 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+        <ConnectionStatus />
         <Script
           id="orchids-browser-logs"
           src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts/orchids-browser-logs.js"
