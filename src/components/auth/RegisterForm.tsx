@@ -53,6 +53,11 @@ function getHttpStatus(e: unknown): number {
 
 function getHttpMessage(e: unknown, fallback = "Falha no cadastro"): string {
     if (e && typeof e === "object") {
+        // Primeiro verifica se o axios já processou e colocou uma mensagem amigável no interceptor
+        if ("message" in e && typeof (e as any).message === "string" && (e as any).message.includes("conectar ao servidor")) {
+            return (e as any).message;
+        }
+
         const obj = e as {
             message?: string | string[];
             response?: { data?: { message?: string | string[] } };
