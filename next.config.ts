@@ -32,14 +32,11 @@ const nextConfig: NextConfig = {
       const base = (
         process.env.NEXT_PUBLIC_API_URL || 
         process.env.NEXT_PUBLIC_API_BASE_URL || 
-        ""
+        "https://api.otsembank.com"
       ).trim().replace(/\/+$/, "");
 
-      if (!base) {
-        console.warn(
-          "[next.config.js] API base ausente — rewrites desativados."
-        );
-        return [];
+      if (!base || base === "https://api.otsembank.com") {
+        console.log("[next.config.js] Usando base API default: " + base);
       }
 
     return [
