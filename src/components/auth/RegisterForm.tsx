@@ -135,7 +135,6 @@ function RegisterPageInner(): React.JSX.Element {
             const res = await http.post<{ access_token: string; role?: string }>(
                 "/auth/register",
                 { 
-                    name: v.name, 
                     email: v.email, 
                     password: v.password,
                     ...(v.affiliateCode && codeValid ? { affiliateCode: v.affiliateCode } : {})
@@ -143,7 +142,7 @@ function RegisterPageInner(): React.JSX.Element {
                 {}
             );
 
-            localStorage.setItem("accessToken", res.data.access_token);
+            setTokens(res.data.access_token, "");
 
             document.cookie = [
                 `access_token=${encodeURIComponent(res.data.access_token)}`,
