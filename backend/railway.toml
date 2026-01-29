@@ -1,0 +1,14 @@
+[build]
+install = "npm install --legacy-peer-deps"
+command = "npx prisma generate && npm run build"
+
+[deploy]
+start = "npx prisma migrate deploy && npm run start:prod"
+
+[env]
+NODE_ENV = "production"
+DATABASE_URL = "{{POSTGRESQL_URL}}"
+
+[plugins.postgresql]
+plan = "starter"
+name = "postgres-db"

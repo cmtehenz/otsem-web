@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebSocket Otsem</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>Cliente WebSocket Otsem</h1>
+  <button onclick="enviar()">Enviar notificação</button>
+
+  <script>
+    const socket = io("http://localhost:3000", {
+      transports: ["websocket"],
+    });
+
+    socket.on("connect", () => {
+      console.log("✅ Conectado ao WebSocket!");
+    });
+
+    socket.on("mensagem", (data) => {
+      console.log("🔔 Mensagem recebida:", data);
+      alert("Notificação: " + data);
+    });
+
+    function enviar() {
+      socket.emit("mensagem", "Mensagem enviada do navegador");
+    }
+  </script>
+</body>
+</html>

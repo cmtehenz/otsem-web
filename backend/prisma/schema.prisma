@@ -1,0 +1,263 @@
+// ====== DATASOURCE + GENERATOR ======
+datasource db {
+  provider = "sqlite"            // usamos sqlite para rodar AGORA sem depender de Postgres
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ====== SEUS MODELOS EXISTENTES ======
+
+model User {
+  id           String  @id @default(uuid())
+  name         String
+  email        String  @unique
+  password     String
+  refreshToken String?
+  role         Role    @default(CLIENT)
+
+  transactions Transaction[]
+  addresses    Address[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user")
+}
+
+model Client {
+  id               String     @id @default(uuid())
+  type             ClientType
+  name             String
+  document         String     @unique
+  email            String     @unique
+  phone            String?
+  password         String
+  enderecoEthereum String?
+  enderecoBitcoin  String?
+  enderecoTron     String?
+  enderecoSolana   String?
+  fileName         String?
+  filePath         String?
+  refreshToken     String?
+  role             Role       @default(CLIENT)
+
+  // KYC fields
+  kycLevel         KycLevel   @default(PENDING)
+  kycStatus        KycStatus  @default(PENDING)
+
+  exchange     Exchange[]
+  addresses    Address[]
+  transactions Transaction[]
+  pixCharges   PixCharge[]
+  pixWebhooks  PixWebhook[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("client")
+}
+
+model Wallet {
+  id        String    @id @default(uuid())
+  ownerId   String
+  ownerType OwnerType
+  asset     String
+  balance   Decimal   @default(0)
+  address   String?
+
+  fromTransactions Transaction[] @relation("from_wallet")
+  toTransactions   Transaction[] @relation("to_wallet")
+
+  @@unique([ownerId, ownerType, asset])
+  @@map("wallet")
+}
+
+model Transaction {
+  id              String   @id @default(uuid())
+  txid            String?  @unique
+  userId          String?
+  clientId        String?
+  fromWalletId    String?
+  toWalletId      String?
+  type            String
+  amount          Decimal
+  convertedAmount Decimal?
+  exchangeRate    Decimal?
+  asset           String
+  description     String?
+  createdAt       DateTime @default(now())
+
+  user       User?   @relation(fields: [userId], references: [id])
+  client     Client? @relation(fields: [clientId], references: [id])
+  fromWallet Wallet? @relation("from_wallet", fields: [fromWalletId], references: [id])
+  toWallet   Wallet? @relation("to_wallet", fields: [toWalletId], references: [id])
+
+  @@map("transaction")
+}
+
+model Address {
+  id           String  @id @default(uuid())
+  street       String
+  number       String
+  complement   String?
+  neighborhood String
+  city         String
+  state        String
+  zipcode      String
+  country      String
+  userId       String?
+  clientId     String?
+
+  client Client? @relation(fields: [clientId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id])
+
+  @@map("address")
+}
+
+model PixCharge {
+  id          String   @id @default(uuid())
+  txid        String   @unique
+  status      String
+  valor       Decimal
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id])
+  solicitacao String?
+  location    String
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+
+  @@map("pix_charge")
+}
+
+model PixWebhook {
+  id               String    @id @default(uuid())
+  txid             String    @unique
+  status           String
+  valor            Decimal
+  horarioCriacao   DateTime
+  horarioConclusao DateTime?
+  endToEndId       String?
+  payload          Json
+
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("pix_web_hook")
+}
+
+model Exchange {
+  id              String   @id @default(uuid())
+  amount_brl      Float
+  target_currency String
+  target_amount   Float
+  market_rate     Float
+  used_rate       Float
+  profit_brl      Float?
+  createdAt       DateTime @default(now())
+
+  Client   Client? @relation(fields: [clientId], references: [id])
+  clientId String?
+}
+
+enum ClientType {
+  pf
+  pj
+}
+
+enum Currency {
+  BRL
+  USDT
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+  OPERATOR
+}
+
+enum OwnerType {
+  USER
+  CLIENT
+}
+
+enum KycLevel {
+  PENDING
+  LEVEL_1
+  LEVEL_2
+  LEVEL_3
+}
+
+enum KycStatus {
+  PENDING
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+// ====== MODELOS NOVOS (CHECKOUT) — ADIÇÃO ======
+
+model Merchant {
+  id              String          @id @default(uuid())
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  legalName       String
+  document        String          // CNPJ ou CPF
+  email           String
+  phone           String?
+  website         String?
+  instagram       String?
+  bankHolderName  String?
+  bankDoc         String?         // CPF/CNPJ do titular
+  bank            String?
+  bankAgency      String?
+  bankAccount     String?
+  status          String          @default("ACTIVE") // ACTIVE, PENDING, BLOCKED
+  monthlyLimitBRL Int             @default(30000)
+
+  payments        PaymentIntent[]
+
+  @@map("merchant")
+}
+
+model PaymentIntent {
+  id                String         @id @default(uuid())
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  merchantId        String
+  merchant          Merchant       @relation(fields: [merchantId], references: [id])
+
+  description       String
+  amountBRL         Int            // em centavos
+  installmentsMax   Int            // 1..10
+  interestMode      InterestMode   // MERCHANT | CUSTOMER
+  provider          String         // ex.: MERCADOPAGO
+  providerPaymentId String?
+  checkoutUrl       String?
+  status            String         @default("PENDING") // PENDING, APPROVED, PAID, REFUNDED, CANCELED, FAILED
+
+  @@map("payment_intent")
+}
+
+model WebhookEvent {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  provider   String
+  eventType  String
+  rawBody    Json
+  signature  String?
+  relatedId  String?
+
+  @@map("webhook_event")
+}
+
+enum InterestMode {
+  MERCHANT
+  CUSTOMER
+}

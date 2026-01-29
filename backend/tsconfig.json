@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    /* ✅ Básico */
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+
+    /* ✅ Suporte a decorators (NestJS exige) */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    /* ✅ Segurança e qualidade do código */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* ✅ Performance e compatibilidade */
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+
+    /* ✅ Organização de paths */
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": ["src/*"],
+      "@modules/*": ["src/modules/*"],
+      "@config/*": ["src/config/*"],
+      "@common/*": ["src/common/*"]
+    },
+
+    /* ✅ Garante limpeza */
+    "removeComments": true,
+    "noEmitOnError": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "test", "**/*.spec.ts"]
+}
