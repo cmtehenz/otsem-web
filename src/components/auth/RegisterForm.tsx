@@ -100,7 +100,10 @@ function formatCNPJ(value: string): string {
 const schema = z
     .object({
         name: z.string().min(3, "Informe seu nome").transform((v) => v.trim()),
-        age: z.coerce.number().min(18, "Você deve ter pelo menos 18 anos").max(120, "Idade inválida"),
+        age: z.preprocess(
+            (val) => (val === "" || val === undefined || val === null ? undefined : Number(val)),
+            z.number({ message: "Informe sua idade" }).min(18, "Você deve ter pelo menos 18 anos").max(120, "Idade inválida")
+        ),
         email: z.string().email("E-mail inválido").transform((v) => v.trim().toLowerCase()),
         password: z.string().min(8, "Mínimo 8 caracteres"),
         confirm: z.string().min(8, "Confirme sua senha"),
@@ -115,6 +118,15 @@ const schema = z
         path: ["confirm"],
     })
     .refine((v) => {
+        if (v.customerType === "PF") {
+            return !!v.cpf && v.cpf.replace(/\D/g, '').length > 0;
+        }
+        return true;
+    }, {
+        message: "CPF é obrigatório para Pessoa Física",
+        path: ["cpf"],
+    })
+    .refine((v) => {
         if (v.customerType === "PF" && v.cpf) {
             return validateCPF(v.cpf);
         }
@@ -122,6 +134,15 @@ const schema = z
     }, {
         message: "CPF inválido",
         path: ["cpf"],
+    })
+    .refine((v) => {
+        if (v.customerType === "PJ") {
+            return !!v.cnpj && v.cnpj.replace(/\D/g, '').length > 0;
+        }
+        return true;
+    }, {
+        message: "CNPJ é obrigatório para Pessoa Jurídica",
+        path: ["cnpj"],
     })
     .refine((v) => {
         if (v.customerType === "PJ" && v.cnpj) {
