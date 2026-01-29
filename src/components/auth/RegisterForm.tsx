@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, Mail, User, Lock, CheckCircle2, Shield, Zap, Globe2, UserPlus, Gift, Loader2, ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
 import http from "@/lib/http";
+import { setTokens } from "@/lib/token";
 import { toast } from "sonner";
 
 const schema = z
