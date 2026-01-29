@@ -169,22 +169,7 @@ export default function AdminKycDetailPage(): React.JSX.Element {
             setActionLoading(true);
 
             if (actionType === "approve") {
-                await trySequence([
-                    // Tente as variações mais prováveis primeiro
-                    { method: "patch", url: `/customers/${data.id}/approve-kyc` },
-                    { method: "patch", url: `/customers/${data.id}/kyc/approve` },
-                    { method: "patch", url: `/customers/${data.id}/approve` },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/status`,
-                        body: { accountStatus: "approved" as KycStatus },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}`,
-                        body: { accountStatus: "approved" as KycStatus },
-                    },
-                ]);
+                await http.patch(`/customers/${data.id}/approve`);
                 toast.success("KYC aprovado com sucesso!");
             }
 
@@ -193,76 +178,16 @@ export default function AdminKycDetailPage(): React.JSX.Element {
                     toast.error("Informe o motivo da rejeição");
                     return;
                 }
-                await trySequence([
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/reject-kyc`,
-                        body: { reason: rejectionReason },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/kyc/reject`,
-                        body: { reason: rejectionReason },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/reject`,
-                        body: { reason: rejectionReason },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/status`,
-                        body: {
-                            accountStatus: "rejected" as KycStatus,
-                            rejectionReason,
-                        },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}`,
-                        body: {
-                            accountStatus: "rejected" as KycStatus,
-                            rejectionReason,
-                        },
-                    },
-                ]);
+                await http.patch(`/customers/${data.id}/reject`, {
+                    reason: rejectionReason,
+                });
                 toast.success("KYC rejeitado");
             }
 
             if (actionType === "review") {
-                await trySequence([
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/request-review`,
-                        body: { notes: reviewNotes || undefined },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/kyc/review`,
-                        body: { notes: reviewNotes || undefined },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/review`,
-                        body: { notes: reviewNotes || undefined },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}/status`,
-                        body: {
-                            accountStatus: "in_review" as KycStatus,
-                            reviewNotes: reviewNotes || undefined,
-                        },
-                    },
-                    {
-                        method: "patch",
-                        url: `/customers/${data.id}`,
-                        body: {
-                            accountStatus: "in_review" as KycStatus,
-                            reviewNotes: reviewNotes || undefined,
-                        },
-                    },
-                ]);
+                await http.patch(`/customers/${data.id}/review`, {
+                    notes: reviewNotes || undefined,
+                });
                 toast.success("Solicitação de revisão enviada");
             }
 
