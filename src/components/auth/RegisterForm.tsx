@@ -312,12 +312,18 @@ function RegisterPageInner(): React.JSX.Element {
             } else if (status === 400) {
                 const msg = getHttpMessage(e);
                 console.log("Backend error:", msg, e);
-                if (msg.includes("cpf")) {
-                    form.setError("cpf", { message: "CPF inválido ou já cadastrado" });
-                    toast.error("CPF inválido ou já cadastrado");
-                } else if (msg.includes("cnpj")) {
-                    form.setError("cnpj", { message: "CNPJ inválido ou já cadastrado" });
-                    toast.error("CNPJ inválido ou já cadastrado");
+                if (msg.includes("cpf_already_registered")) {
+                    form.setError("cpf", { message: "Este CPF já está cadastrado" });
+                    toast.error("Este CPF já está cadastrado");
+                } else if (msg.includes("invalid_cpf")) {
+                    form.setError("cpf", { message: "CPF inválido" });
+                    toast.error("CPF inválido");
+                } else if (msg.includes("cnpj_already_registered")) {
+                    form.setError("cnpj", { message: "Este CNPJ já está cadastrado" });
+                    toast.error("Este CNPJ já está cadastrado");
+                } else if (msg.includes("invalid_cnpj")) {
+                    form.setError("cnpj", { message: "CNPJ inválido" });
+                    toast.error("CNPJ inválido");
                 } else {
                     toast.error(`Dados inválidos: ${msg}`);
                 }
