@@ -85,8 +85,8 @@ export default function CustomerPixPage() {
         if (!customerId) return;
         try {
             setLoading(true);
-            const res = await http.get<{ keys: PixKey[] }>(`/pix/keys/account-holders/${customerId}`);
-            setPixKeys(res.data.keys || []);
+            const res = await http.get<PixKey[]>(`/pix-keys`);
+            setPixKeys(res.data || []);
         } catch {
             setPixKeys([]);
         } finally {
@@ -103,9 +103,9 @@ export default function CustomerPixPage() {
         if (!customerId) return;
         setSubmitting(true);
         try {
-            await http.post(`/pix/keys/account-holders/${customerId}`, {
+            await http.post(`/pix-keys`, {
                 keyType: newType,
-                keyValue: newType === "EVP" ? undefined : newValue,
+                keyValue: newType === "RANDOM" ? crypto.randomUUID() : newValue,
             });
             toast.success("Chave Pix cadastrada com sucesso!");
             setShowModal(false);
@@ -120,10 +120,10 @@ export default function CustomerPixPage() {
     }
 
     async function handleDelete() {
-        if (!keyToDelete || !customerId) return;
+        if (!keyToDelete) return;
         setDeleting(true);
         try {
-            await http.delete(`/pix/keys/account-holders/${customerId}/key/${keyToDelete.keyValue}`);
+            await http.delete(`/pix-keys/${keyToDelete.id}`);
             toast.success("Chave Pix removida com sucesso!");
             setShowDeleteModal(false);
             setKeyToDelete(null);
