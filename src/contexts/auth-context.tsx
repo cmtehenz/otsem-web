@@ -191,6 +191,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
         } catch (error) {
             console.error("Erro no login:", error);
+            
+            // Se for erro de rede já tratado pelo interceptor, propaga a mensagem
+            if (error && typeof error === "object" && "message" in (error as any)) {
+                const msg = (error as any).message;
+                if (typeof msg === "string" && msg.includes("conectar ao servidor")) {
+                    throw new Error(msg);
+                }
+            }
+
             clearTokens();
 
             if (error instanceof Error) {
