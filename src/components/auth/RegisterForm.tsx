@@ -12,13 +12,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Eye, EyeOff, Mail, User, Lock, CheckCircle2, Shield, Zap, Globe2, UserPlus, Gift, Loader2, ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
+import { Eye, EyeOff, Mail, User, Lock, CheckCircle2, Shield, Zap, Globe2, UserPlus, Gift, Loader2, ArrowRight, ArrowLeft, Sparkles, Building2, FileText } from "lucide-react";
 import http from "@/lib/http";
 import { toast } from "sonner";
 
 const schema = z
     .object({
+        type: z.enum(["PF", "PJ"], { message: "Selecione o tipo de conta" }),
         name: z.string().min(3, "Informe seu nome").transform((v) => v.trim()),
+        document: z.string().min(11, "CPF/CNPJ inválido"),
         email: z.string().email("E-mail inválido").transform((v) => v.trim().toLowerCase()),
         password: z.string().min(8, "Mínimo 8 caracteres"),
         confirm: z.string().min(8, "Confirme sua senha"),
@@ -28,7 +30,19 @@ const schema = z
     .refine((v) => v.password === v.confirm, {
         message: "As senhas não conferem",
         path: ["confirm"],
-    });
+    })
+    .refine(
+        (v) => {
+            const cleanDoc = v.document.replace(/\D/g, "");
+            if (v.type === "PF") return cleanDoc.length === 11;
+            if (v.type === "PJ") return cleanDoc.length === 14;
+            return false;
+        },
+        {
+            message: "CPF deve ter 11 dígitos ou CNPJ deve ter 14 dígitos",
+            path: ["document"],
+        }
+    );
 
 type FormValues = z.infer<typeof schema>;
 const resolver = zodResolver(schema) as unknown as Resolver<FormValues>;
@@ -88,13 +102,40 @@ function RegisterPageInner(): React.JSX.Element {
 
     const form = useForm<FormValues>({
         resolver,
-        defaultValues: { name: "", email: "", password: "", confirm: "", affiliateCode: "", accept: true },
+        defaultValues: { type: "PF", name: "", document: "", email: "", password: "", confirm: "", affiliateCode: "", accept: true },
     });
 
     const [showAffiliateField, setShowAffiliateField] = React.useState(false);
     const [validatingCode, setValidatingCode] = React.useState(false);
     const [codeValid, setCodeValid] = React.useState<boolean | null>(null);
     const affiliateCode = form.watch("affiliateCode") || "";
+    const userType = form.watch("type") || "PF";
+    const document = form.watch("document") || "";
+
+    // Format CPF: 000.000.000-00
+    const formatCPF = (value: string) => {
+        const numbers = value.replace(/\D/g, "").slice(0, 11);
+        return numbers
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    };
+
+    // Format CNPJ: 00.000.000/0000-00
+    const formatCNPJ = (value: string) => {
+        const numbers = value.replace(/\D/g, "").slice(0, 14);
+        return numbers
+            .replace(/(\d{2})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d)/, "$1/$2")
+            .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
+    };
+
+    const handleDocumentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const formatted = userType === "PF" ? formatCPF(value) : formatCNPJ(value);
+        form.setValue("document", formatted);
+    };
 
     const validateAffiliateCode = React.useCallback(async (code: string) => {
         if (!code || code.length < 3) {
@@ -133,9 +174,11 @@ function RegisterPageInner(): React.JSX.Element {
 
             const res = await http.post<{ access_token: string; role?: string }>(
                 "/auth/register",
-                { 
-                    name: v.name, 
-                    email: v.email, 
+                {
+                    type: v.type,
+                    document: v.document.replace(/\D/g, ""), // Send only numbers
+                    name: v.name,
+                    email: v.email,
                     password: v.password,
                     ...(v.affiliateCode && codeValid ? { affiliateCode: v.affiliateCode } : {})
                 },
@@ -157,10 +200,17 @@ function RegisterPageInner(): React.JSX.Element {
             const status = getHttpStatus(e);
 
             if (status === 409) {
-                form.setError("email", { message: "Este e-mail já está em uso" });
-                toast.error("Este e-mail já está em uso.");
+                const errorMsg = getHttpMessage(e, "Este e-mail já está em uso");
+                if (errorMsg.toLowerCase().includes("cpf") || errorMsg.toLowerCase().includes("cnpj") || errorMsg.toLowerCase().includes("document")) {
+                    form.setError("document", { message: "Este CPF/CNPJ já está cadastrado" });
+                    toast.error("Este CPF/CNPJ já está cadastrado.");
+                } else {
+                    form.setError("email", { message: "Este e-mail já está em uso" });
+                    toast.error("Este e-mail já está em uso.");
+                }
             } else if (status === 400) {
-                toast.error("Dados inválidos. Verifique as informações.");
+                const errorMsg = getHttpMessage(e, "Dados inválidos");
+                toast.error(errorMsg);
             } else {
                 toast.error(getHttpMessage(e, "Falha no cadastro"));
             }
@@ -252,6 +302,75 @@ function RegisterPageInner(): React.JSX.Element {
 
                             <CardContent className="p-6 sm:p-8">
                                 <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4" noValidate>
+                                    {/* User Type Selector */}
+                                    <div className="grid gap-2">
+                                        <Label className="text-sm font-black text-slate-900">
+                                            Tipo de conta
+                                        </Label>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    form.setValue("type", "PF");
+                                                    form.setValue("document", "");
+                                                }}
+                                                className={`h-16 rounded-2xl border-2 transition-all flex items-center justify-center gap-2 ${
+                                                    userType === "PF"
+                                                        ? "border-primary bg-primary/10 text-primary font-bold"
+                                                        : "border-black/[0.05] bg-white/60 text-slate-500 hover:border-primary/30"
+                                                }`}
+                                            >
+                                                <User className="w-5 h-5" />
+                                                <div className="text-left">
+                                                    <div className="text-sm font-bold">Pessoa Física</div>
+                                                    <div className="text-xs opacity-70">CPF</div>
+                                                </div>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    form.setValue("type", "PJ");
+                                                    form.setValue("document", "");
+                                                }}
+                                                className={`h-16 rounded-2xl border-2 transition-all flex items-center justify-center gap-2 ${
+                                                    userType === "PJ"
+                                                        ? "border-primary bg-primary/10 text-primary font-bold"
+                                                        : "border-black/[0.05] bg-white/60 text-slate-500 hover:border-primary/30"
+                                                }`}
+                                            >
+                                                <Building2 className="w-5 h-5" />
+                                                <div className="text-left">
+                                                    <div className="text-sm font-bold">Pessoa Jurídica</div>
+                                                    <div className="text-xs opacity-70">CNPJ</div>
+                                                </div>
+                                            </button>
+                                        </div>
+                                        {form.formState.errors.type && (
+                                            <p className="text-xs text-red-500 font-medium">{form.formState.errors.type.message}</p>
+                                        )}
+                                    </div>
+
+                                    {/* CPF/CNPJ Field */}
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="document" className="text-sm font-black text-slate-900">
+                                            {userType === "PF" ? "CPF" : "CNPJ"}
+                                        </Label>
+                                        <div className="relative">
+                                            <FileText className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                            <Input
+                                                id="document"
+                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                placeholder={userType === "PF" ? "000.000.000-00" : "00.000.000/0000-00"}
+                                                value={document}
+                                                onChange={handleDocumentChange}
+                                                maxLength={userType === "PF" ? 14 : 18}
+                                            />
+                                        </div>
+                                        {form.formState.errors.document && (
+                                            <p className="text-xs text-red-500 font-medium">{form.formState.errors.document.message}</p>
+                                        )}
+                                    </div>
+
                                     <div className="grid gap-2">
                                         <Label htmlFor="name" className="text-sm font-black text-slate-900">
                                             Nome completo
