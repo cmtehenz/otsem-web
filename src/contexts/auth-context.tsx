@@ -55,41 +55,70 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     return;
                 }
 
-                const payload = decodeJwt(token);
+                // Tenta buscar o usuário atual via API conforme spec (/auth/me)
+                try {
+                    const authMeResponse = await httpClient.get("/auth/me");
+                    const userData = authMeResponse.data;
+                    
+                    let customerId = userData.customerId;
 
-                if (!payload) {
-                    clearTokens();
-                    setLoading(false);
-                    return;
-                }
-
-                const now = Math.floor(Date.now() / 1000);
-                if (payload.exp < now) {
-                    clearTokens();
-                    setLoading(false);
-                    return;
-                }
-
-                let customerId = payload.customerId;
-
-                // Se for CUSTOMER e não tiver customerId no JWT, tenta buscar na API
-                if (payload.role === "CUSTOMER" && !customerId) {
-                    try {
-                        const response = await httpClient.get("/customers/me");
-                        if (response.data && response.data.id) {
-                            customerId = response.data.id;
+                    // Se for CUSTOMER e não tiver customerId, tenta buscar na API de customers
+                    if (userData.role === "CUSTOMER" && !customerId) {
+                        try {
+                            const customerResponse = await httpClient.get("/customers/me");
+                            if (customerResponse.data && customerResponse.data.id) {
+                                customerId = customerResponse.data.id;
+                            }
+                        } catch (error) {
+                            console.warn("Não foi possível buscar dados do customer:", error);
                         }
-                    } catch (error) {
-                        console.warn("Não foi possível buscar dados do customer:", error);
                     }
-                }
 
-                setUser({
-                    id: payload.sub,
-                    customerId: customerId,
-                    email: payload.email,
-                    role: payload.role,
-                });
+                    setUser({
+                        id: userData.id,
+                        customerId: customerId,
+                        email: userData.email,
+                        role: userData.role,
+                        name: userData.name,
+                    });
+                } catch (apiError) {
+                    // Fallback para decode local se a API falhar
+                    console.warn("API /auth/me falhou, usando decode local:", apiError);
+                    const payload = decodeJwt(token);
+
+                    if (!payload) {
+                        clearTokens();
+                        setLoading(false);
+                        return;
+                    }
+
+                    const now = Math.floor(Date.now() / 1000);
+                    if (payload.exp < now) {
+                        clearTokens();
+                        setLoading(false);
+                        return;
+                    }
+
+                    let customerId = payload.customerId;
+
+                    if (payload.role === "CUSTOMER" && !customerId) {
+                        try {
+                            const response = await httpClient.get("/customers/me");
+                            if (response.data && response.data.id) {
+                                customerId = response.data.id;
+                            }
+                        } catch (error) {
+                            console.warn("Não foi possível buscar dados do customer no fallback:", error);
+                        }
+                    }
+
+                    setUser({
+                        id: payload.sub,
+                        customerId: customerId,
+                        email: payload.email,
+                        role: payload.role,
+                    });
+                }
             } catch (error) {
                 console.error("Erro ao carregar usuário:", error);
                 clearTokens();
