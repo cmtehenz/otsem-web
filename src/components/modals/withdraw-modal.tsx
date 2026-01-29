@@ -114,24 +114,35 @@ export function WithdrawModal() {
             setLoading(false);
         }
     }
-    }, [open.withdraw]);
 
-    async function loadPixKeys() {
+    function handleGoToPixPage() {
+        closeModal("withdraw");
+        router.push("/customer/pix");
+    }
+
+    function handleClose() {
+        closeModal("withdraw");
+        resetState();
+    }
+
+    function resetState() {
         setStep("loading");
-        try {
-            const res = await http.get<PixKey[]>("/pix-keys");
-            const keys = res.data || [];
-            setPixKeys(keys);
+        setSelectedKey(null);
+        setCents(0);
+        setError(null);
+        setTxResult(null);
+        setPixKeys([]);
+    }
 
-            if (keys.length === 0) {
-                setStep("nokeys");
-            } else {
-                setStep("select");
-            }
-        } catch {
-            setPixKeys([]);
-            setStep("nokeys");
+    function handleBack() {
+        if (step === "amount") {
+            setStep("select");
+            setCents(0);
+            setSelectedKey(null);
+        } else if (step === "confirm") {
+            setStep("amount");
         }
+        setError(null);
     }
 
     function formatDisplayValue(centValue: number): string {
@@ -170,69 +181,6 @@ export function WithdrawModal() {
             return;
         }
         setStep("confirm");
-    }
-
-    async function handleSendPix() {
-        if (!selectedKey) return;
-
-        setLoading(true);
-        setError(null);
-
-        try {
-            const valorDecimal = Number((cents / 100).toFixed(2));
-
-            const res = await http.post<SendPixResponse>("/inter/pix/send-pix", {
-                chaveDestino: selectedKey.keyValue,
-                valor: valorDecimal,
-                tipoChave: "CHAVE",
-                descricao: `Transferência PIX para ${selectedKey.keyValue}`,
-            });
-
-            setTxResult(res.data);
-            setStep("success");
-            triggerRefresh();
-            toast.success("PIX enviado com sucesso!");
-        } catch (err: unknown) {
-            console.error("Send PIX error:", err);
-            const message = isAxiosError(err) ? err.response?.data?.message : undefined;
-            const fallbackMessage = message || "Erro ao enviar PIX";
-            setError(fallbackMessage);
-            if (!isLimitExceededError(message)) {
-                toast.error(fallbackMessage);
-            }
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    function handleGoToPixPage() {
-        closeModal("withdraw");
-        router.push("/customer/pix");
-    }
-
-    function handleClose() {
-        closeModal("withdraw");
-        resetState();
-    }
-
-    function resetState() {
-        setStep("loading");
-        setSelectedKey(null);
-        setCents(0);
-        setError(null);
-        setTxResult(null);
-        setPixKeys([]);
-    }
-
-    function handleBack() {
-        if (step === "amount") {
-            setStep("select");
-            setCents(0);
-            setSelectedKey(null);
-        } else if (step === "confirm") {
-            setStep("amount");
-        }
-        setError(null);
     }
 
     const displayAmount = formatCurrency(cents);
