@@ -18,15 +18,15 @@ const ExchangeWidgetMobile = () => {
   const router = useRouter();
   const { user } = useAuth();
 
-  // Fetch rate from OKX API
+  // Fetch rate from CoinGecko API
   useEffect(() => {
     const fetchRate = async () => {
       try {
-        const response = await fetch("https://www.okx.com/api/v5/market/ticker?instId=USDT-BRL");
+        const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=brl");
         const data = await response.json();
-        if (data.code === "0" && data.data?.[0]?.last) {
-          const baseRate = parseFloat(data.data[0].last);
-          const newRate = baseRate * 1.0098; // Apply spread
+        if (data.tether?.brl) {
+          const baseRate = data.tether.brl;
+          const newRate = baseRate * 1.0098; // Apply 0.98% spread
           if (Math.abs(newRate - prevRateRef.current) > 0.01) {
             setShowRateUpdate(true);
             setTimeout(() => setShowRateUpdate(false), 2000);
@@ -36,7 +36,7 @@ const ExchangeWidgetMobile = () => {
           setCountdown(30); // Reset countdown when rate updates
         }
       } catch (error) {
-        console.error("Failed to fetch OKX rate:", error);
+        console.error("Failed to fetch CoinGecko rate:", error);
       } finally {
         setIsLoading(false);
       }
