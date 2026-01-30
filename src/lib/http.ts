@@ -50,6 +50,7 @@ httpClient.interceptors.response.use(
             // Apenas redireciona se não estiver em rotas públicas
             if (typeof window !== 'undefined' &&
                 !window.location.pathname.includes('/login') &&
+                !window.location.pathname.includes('/admin-login') &&
                 !window.location.pathname.includes('/register')) {
                 window.location.href = '/login';
             }
