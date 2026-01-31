@@ -2,7 +2,7 @@
 FROM node:20-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install --ignore-scripts --prefer-offline
 
 # Stage 2: Build the Next.js app
 FROM node:20-slim AS builder
