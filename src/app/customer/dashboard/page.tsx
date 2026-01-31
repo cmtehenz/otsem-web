@@ -15,12 +15,39 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 
 type AccountSummary = {
-    accountHolderId: string;
-    availableBalance: number;
-    blockedBalance: number;
-    totalBalance: number;
-    currency: string;
+    id: string;
+    balance: number;
+    status: string;
+    pixKey: string;
+    pixKeyType: string;
+    dailyLimit: number;
+    monthlyLimit: number;
+    blockedAmount: number;
+    createdAt: string;
     updatedAt: string;
+};
+
+type Payment = {
+    id: string;
+    paymentValue: number;
+    paymentDate: string;
+    receiverPixKey: string;
+    endToEnd: string;
+    bankPayload: {
+        valor: string;
+        titulo: string;
+        descricao: string;
+        detalhes: {
+            nomePagador: string;
+            cpfCnpjPagador: string;
+            nomeEmpresaPagador: string;
+            endToEndId: string;
+            txId?: string;
+            descricaoPix?: string;
+        };
+        dataTransacao: string;
+        tipoTransacao: string;
+    };
 };
 
 type Transaction = {
@@ -137,16 +164,33 @@ export default function Dashboard() {
                     return;
                 }
 
-                const [accountRes, statementRes] = await Promise.all([
-                    http.get<AccountSummary>(`/customers/${customerId}/balance`),
-                    http.get<{ statements: Transaction[] }>(`/customers/${customerId}/statement?limit=10`)
-                ]);
-                
+                const accountRes = await http.get<AccountSummary & { payments: Payment[] }>(`/accounts/${customerId}/summary`);
+
                 if (!cancelled) {
-                    setAccount(accountRes.data);
-                    const txData = statementRes.data;
-                    if (txData && Array.isArray(txData.statements)) {
-                        setTransactions(txData.statements);
+                    // Garantir que os valores sejam números
+                    const accountData = accountRes.data;
+                    if (accountData) {
+                        setAccount({
+                            ...accountData,
+                            balance: Number(accountData.balance ?? 0),
+                            blockedAmount: Number(accountData.blockedAmount ?? 0),
+                        });
+
+                        // Converter payments para transactions
+                        const payments = accountData.payments || [];
+
+                        const convertedTransactions: Transaction[] = payments.map((payment) => ({
+                            transactionId: payment.id,
+                            type: "PIX_IN" as const,
+                            status: "COMPLETED" as const,
+                            amount: payment.paymentValue / 100, // Converter centavos para reais
+                            description: payment.bankPayload.descricao,
+                            senderName: payment.bankPayload.detalhes.nomePagador,
+                            senderCpf: payment.bankPayload.detalhes.cpfCnpjPagador,
+                            createdAt: payment.paymentDate,
+                        }));
+
+                        setTransactions(convertedTransactions);
                     } else {
                         setTransactions([]);
                     }
@@ -154,7 +198,7 @@ export default function Dashboard() {
 
             } catch (error: unknown) {
                 if (!cancelled) {
-                    console.error(error);
+                    console.error('Error loading dashboard:', error);
                 }
             } finally {
                 if (!cancelled) setLoading(false);
@@ -192,8 +236,8 @@ export default function Dashboard() {
         }
     }, [wallets]);
 
-    const saldoBRL = account?.availableBalance ?? 0;
-    const saldoUSDT = usdtBalance ?? 0;
+    const saldoBRL = Number(account?.balance ?? 0);
+    const saldoUSDT = Number(usdtBalance ?? 0);
     const saldoTotal = saldoBRL + (saldoUSDT * usdtRateWithSpread);
 
     const [showConvertModal, setShowConvertModal] = React.useState(false);
@@ -247,7 +291,9 @@ export default function Dashboard() {
                 <div className="grid grid-cols-2 gap-4">
                     <div className="bg-white/10 backdrop-blur rounded-xl p-4">
                         <p className="text-white/60 text-xs mb-1">BRL</p>
-                        <p className="text-white font-bold text-xl">{formatCurrency(saldoBRL)}</p>
+                        <p className="text-white font-bold text-xl">
+                            {loading ? "..." : formatCurrency(saldoBRL)}
+                        </p>
                     </div>
                     <div className="bg-white/10 backdrop-blur rounded-xl p-4">
                         <p className="text-white/60 text-xs mb-1">USDT</p>
@@ -316,8 +362,8 @@ export default function Dashboard() {
                     {transactions.length > 0 ? (
                         (() => {
                             const seenConversions: Array<{ time: number; amount: number; usdtAmt: number; subType: string; txHash?: string }> = [];
-                            
-                            return transactions.filter((tx, _index, allTx) => {
+
+                            const filteredTransactions = transactions.filter((tx, _index, allTx) => {
                                 if (tx.type === "CONVERSION") {
                                     const txHash = tx.externalData?.txHash;
                                     const txTime = new Date(tx.createdAt).getTime();
@@ -360,12 +406,13 @@ export default function Dashboard() {
                                     
                                     return Math.abs(txAmount - otherAmount) < 1 && timeDiff < 300000;
                                 });
-                                
+
                                 return !hasMatchingConversion;
                             });
-                        })()
-                            .slice(0, 5)
-                            .map((tx) => {
+
+                            return filteredTransactions
+                                .slice(0, 5)
+                                .map((tx) => {
                             const amount = Number(tx.amount);
                             const isIncoming = tx.type === "PIX_IN";
                             const isPending = tx.status === "PENDING" || tx.status === "PROCESSING";
@@ -509,7 +556,8 @@ export default function Dashboard() {
                                     )}
                                 </div>
                             );
-                        })
+                        });
+                        })()
                     ) : (
                         <div className="text-center py-12">
                             <div className="p-4 rounded-full bg-muted inline-block mb-3">
