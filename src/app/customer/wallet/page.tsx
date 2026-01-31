@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import { isAxiosError } from "axios";
 import http from "@/lib/http";
 import { toast } from "sonner";
-import { Copy, Shield, Wallet, RefreshCw, Plus, ExternalLink, Loader2, Star, Trash2, MoreVertical, Check } from "lucide-react";
+import { Copy, Shield, Wallet, RefreshCw, Plus, ExternalLink, Loader2, Star, Trash2, MoreVertical, Check, Send } from "lucide-react";
+import { useUiModals } from "@/stores/ui-modals";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -67,6 +68,7 @@ export default function WalletPage() {
     const [deleteWallet, setDeleteWallet] = useState<WalletType | null>(null);
     const [deleting, setDeleting] = useState(false);
 
+    const { openModal } = useUiModals();
     const [showAddModal, setShowAddModal] = useState(false);
     const [addMode, setAddMode] = useState<"create" | "import">("create");
     const [selectedNetwork, setSelectedNetwork] = useState<NetworkType>("SOLANA");
@@ -371,6 +373,15 @@ export default function WalletPage() {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end" className="bg-card border-border">
+                                                {Number(wallet.balance) > 0 && (
+                                                    <DropdownMenuItem
+                                                        onClick={() => openModal("sendUsdt")}
+                                                        className="text-foreground/70 hover:text-foreground hover:bg-accent cursor-pointer"
+                                                    >
+                                                        <Send className="w-4 h-4 mr-2" />
+                                                        Enviar USDT
+                                                    </DropdownMenuItem>
+                                                )}
                                                 <DropdownMenuItem
                                                     onClick={() => syncWallet(wallet.id)}
                                                     className="text-foreground/70 hover:text-foreground hover:bg-accent cursor-pointer"

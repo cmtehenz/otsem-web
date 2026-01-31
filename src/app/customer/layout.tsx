@@ -51,6 +51,7 @@ import { Separator } from "@/components/ui/separator";
 import { DepositModal } from "@/components/modals/deposit-modal";
 import { WithdrawModal } from "@/components/modals/withdraw-modal";
 import { SellUsdtModal } from "@/components/modals/sell-usdt-modal";
+import SendUsdtModal from "@/components/modals/send-usdt-modal";
 import { useUiModals } from "@/stores/ui-modals";
 
 type CustomerAddress = {
@@ -352,7 +353,8 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
         <Protected>
             <DepositModal />
             <WithdrawModal />
-            <SellUsdtModal 
+            <SendUsdtModal />
+            <SellUsdtModal
                 open={open.sellUsdt} 
                 onClose={() => closeModal("sellUsdt")} 
                 onSuccess={triggerRefresh}
