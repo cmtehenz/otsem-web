@@ -1,11 +1,11 @@
 # Stage 1: Install dependencies
-FROM oven/bun:1.3 AS deps
+FROM node:20-slim AS deps
 WORKDIR /app
-COPY package.json bun.lock ./
-RUN bun install --frozen-lockfile
+COPY package.json package-lock.json ./
+RUN npm ci
 
 # Stage 2: Build the Next.js app
-FROM oven/bun:1.3 AS builder
+FROM node:20-slim AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -17,7 +17,7 @@ ARG NEXT_PUBLIC_GATEWAY_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_GATEWAY_URL=$NEXT_PUBLIC_GATEWAY_URL
 
-RUN bun run build
+RUN npm run build
 
 # Stage 3: Production runtime
 FROM node:20-slim AS runner
