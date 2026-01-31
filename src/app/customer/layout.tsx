@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useSelectedLayoutSegments } from "next/navigation";
+import { usePathname, useRouter, useSelectedLayoutSegments } from "next/navigation";
 import {
     LayoutDashboard,
     KeyRound,
@@ -314,9 +314,12 @@ function HeaderLogout() {
 
 export default function CustomerLayout({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
+    const router = useRouter();
+    const pathname = usePathname();
     const { open, closeModal, triggerRefresh } = useUiModals();
     const [kycStatus, setKycStatus] = React.useState<string>("not_requested");
     const [isAffiliate, setIsAffiliate] = React.useState(false);
+    const [onboardingCompleted, setOnboardingCompleted] = React.useState<boolean | null>(null);
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
@@ -330,8 +333,12 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 if ((customer as CustomerResponse)?.accountStatus) {
                     setKycStatus((customer as CustomerResponse).accountStatus);
                 }
+
+                const c = customer as CustomerResponse & { onboardingCompleted?: boolean };
+                setOnboardingCompleted(c.onboardingCompleted ?? true);
             } catch (err) {
                 console.error("Erro ao buscar dados do cliente:", err);
+                setOnboardingCompleted(true);
             }
 
             try {
@@ -348,6 +355,33 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
             loadData();
         }
     }, [user]);
+
+    // Redirect to onboarding if not completed
+    React.useEffect(() => {
+        if (loading || onboardingCompleted === null) return;
+        if (
+            onboardingCompleted === false &&
+            !pathname?.startsWith("/customer/onboarding") &&
+            pathname !== "/customer/logout"
+        ) {
+            router.replace("/customer/onboarding");
+        }
+    }, [loading, onboardingCompleted, pathname, router]);
+
+    // Render clean layout (no sidebar) for onboarding page
+    if (pathname?.startsWith("/customer/onboarding")) {
+        return (
+            <Protected>
+                {loading ? (
+                    <div className="flex min-h-screen items-center justify-center">
+                        <div className="text-muted-foreground">Carregando...</div>
+                    </div>
+                ) : (
+                    children
+                )}
+            </Protected>
+        );
+    }
 
     return (
         <Protected>

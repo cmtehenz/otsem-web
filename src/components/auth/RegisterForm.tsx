@@ -172,8 +172,9 @@ function getHttpStatus(e: unknown): number {
 
 function getHttpMessage(e: unknown, fallback = "Falha no cadastro"): string {
     if (e && typeof e === "object") {
-        if ("message" in e && typeof (e as any).message === "string" && (e as any).message.includes("conectar ao servidor")) {
-            return (e as any).message;
+        const raw = e as Record<string, unknown>;
+        if ("message" in e && typeof raw.message === "string" && raw.message.includes("conectar ao servidor")) {
+            return raw.message;
         }
 
         const obj = e as {
@@ -268,7 +269,7 @@ function RegisterPageInner(): React.JSX.Element {
         try {
             setLoading(true);
 
-            const payload: any = {
+            const payload: Record<string, string> = {
                 email: v.email,
                 password: v.password,
                 name: v.name,
@@ -302,7 +303,7 @@ function RegisterPageInner(): React.JSX.Element {
             ].join("; ");
 
             toast.success("Conta criada! Bem-vindo(a).");
-            router.replace("/customer/dashboard");
+            router.replace("/customer/onboarding");
         } catch (e: unknown) {
             const status = getHttpStatus(e);
 
@@ -311,7 +312,7 @@ function RegisterPageInner(): React.JSX.Element {
                 toast.error("Este e-mail já está em uso.");
             } else if (status === 400) {
                 const msg = getHttpMessage(e);
-                console.log("Backend error:", msg, e);
+                console.error("Backend error:", msg, e);
                 if (msg.includes("cpf_already_registered")) {
                     form.setError("cpf", { message: "Este CPF já está cadastrado" });
                     toast.error("Este CPF já está cadastrado");
@@ -398,6 +399,7 @@ function RegisterPageInner(): React.JSX.Element {
                         <Card className="overflow-hidden rounded-3xl sm:rounded-[2.5rem] border-white/40 rich-glass">
                             <CardHeader className="space-y-2 border-b border-black/[0.03] pb-3.5 sm:pb-4 pt-4 sm:pt-5">
                                 <div className="mx-auto flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center overflow-hidden">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
                                         src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/8dca9fc2-17fe-42a1-b323-5e4a298d9904/Untitled-1769589355434.png?width=8000&height=8000&resize=contain"
                                         alt="Otsem Pay"
