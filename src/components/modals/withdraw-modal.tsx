@@ -67,8 +67,8 @@ export function WithdrawModal() {
         if (!customerId) return;
         setStep("loading");
         try {
-            const res = await http.get<{ keys: PixKey[] }>(`/pix/keys/account-holders/${customerId}`);
-            const keys = res.data.keys || [];
+            const res = await http.get<PixKey[]>(`/pix-keys`);
+            const keys = res.data || [];
             setPixKeys(keys);
 
             if (keys.length === 0) {

@@ -261,40 +261,62 @@ export default function CustomerKycPage(): React.JSX.Element {
                     </motion.div>
                 )}
 
-                {upgradeRequests.filter(r => r.status === "REJECTED").map((request) => {
-                    const targetLevelData = KYC_LEVELS[customerType].find(l => l.level === request.targetLevel);
-                    return (
-                        <motion.div
-                            key={request.id}
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="rounded-2xl p-5 border-2 border-red-300 bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-950/30 dark:to-rose-950/30 dark:border-red-800"
-                        >
-                            <div className="flex items-start gap-4">
-                                <div className="p-3 rounded-xl bg-red-500/20 border border-red-500/30">
-                                    <XCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="text-lg font-black text-red-900 dark:text-red-300">
-                                        Solicitação Rejeitada - {targetLevelData?.name || request.targetLevel}
-                                    </h3>
-                                    {request.adminNotes && (
-                                        <div className="mt-3 p-4 rounded-xl bg-white/60 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
-                                            <p className="text-xs text-red-600 dark:text-red-400 font-bold mb-1">
-                                                Motivo da rejeição:
-                                            </p>
-                                            <p className="text-sm text-red-900 dark:text-red-300">{request.adminNotes}</p>
+                {(() => {
+                    // Mostra apenas a solicitação rejeitada mais recente, e apenas se ainda não foi superada
+                    const rejectedRequests = upgradeRequests
+                        .filter(r => r.status === "REJECTED")
+                        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+                    // Pega apenas a mais recente
+                    const latestRejected = rejectedRequests[0];
+
+                    // Verifica se há uma solicitação aprovada posterior para o mesmo nível ou superior
+                    if (latestRejected) {
+                        const hasLaterApproval = upgradeRequests.some(r => {
+                            if (r.status !== "APPROVED") return false;
+                            const rejectedDate = new Date(latestRejected.createdAt).getTime();
+                            const approvedDate = new Date(r.createdAt).getTime();
+                            return approvedDate > rejectedDate;
+                        });
+
+                        // Se não há aprovação posterior, mostra a rejeição
+                        if (!hasLaterApproval) {
+                            const targetLevelData = KYC_LEVELS[customerType].find(l => l.level === latestRejected.targetLevel);
+                            return (
+                                <motion.div
+                                    key={latestRejected.id}
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: "auto" }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="rounded-2xl p-5 border-2 border-red-300 bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-950/30 dark:to-rose-950/30 dark:border-red-800"
+                                >
+                                    <div className="flex items-start gap-4">
+                                        <div className="p-3 rounded-xl bg-red-500/20 border border-red-500/30">
+                                            <XCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
                                         </div>
-                                    )}
-                                    <p className="text-sm text-red-700 dark:text-red-400 mt-2">
-                                        Você pode enviar uma nova solicitação com os documentos corretos.
-                                    </p>
-                                </div>
-                            </div>
-                        </motion.div>
-                    );
-                })}
+                                        <div className="flex-1">
+                                            <h3 className="text-lg font-black text-red-900 dark:text-red-300">
+                                                Solicitação Rejeitada - {targetLevelData?.name || latestRejected.targetLevel}
+                                            </h3>
+                                            {latestRejected.adminNotes && (
+                                                <div className="mt-3 p-4 rounded-xl bg-white/60 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
+                                                    <p className="text-xs text-red-600 dark:text-red-400 font-bold mb-1">
+                                                        Motivo da rejeição:
+                                                    </p>
+                                                    <p className="text-sm text-red-900 dark:text-red-300">{latestRejected.adminNotes}</p>
+                                                </div>
+                                            )}
+                                            <p className="text-sm text-red-700 dark:text-red-400 mt-2">
+                                                Você pode enviar uma nova solicitação com os documentos corretos.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            );
+                        }
+                    }
+                    return null;
+                })()}
             </AnimatePresence>
 
             {/* KYC Levels Visualization */}

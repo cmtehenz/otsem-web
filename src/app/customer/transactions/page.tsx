@@ -63,16 +63,166 @@ export default function TransactionsPage() {
         if (!customerId) return;
         setLoading(true);
         try {
-            const res = await http.get<{
-                statements: Transaction[];
-                total: number;
-                page: number;
-                limit: number;
-            }>(`/customers/${customerId}/statement?page=${page}&limit=${ITEMS_PER_PAGE}`);
-            
-            setTransactions(res.data.statements || []);
-            setTotal(res.data.total || 0);
-            setTotalPages(Math.ceil((res.data.total || 0) / ITEMS_PER_PAGE));
+            // Tentar buscar do endpoint statement primeiro
+            try {
+                const res = await http.get<{
+                    statements: Transaction[];
+                    total: number;
+                    page: number;
+                    limit: number;
+                }>(`/customers/${customerId}/statement?page=${page}&limit=${ITEMS_PER_PAGE}`);
+
+                if (res.data.statements && res.data.statements.length > 0) {
+                    setTransactions(res.data.statements || []);
+                    setTotal(res.data.total || 0);
+                    setTotalPages(Math.ceil((res.data.total || 0) / ITEMS_PER_PAGE));
+                    setLoading(false);
+                    return;
+                }
+            } catch (statementErr) {
+                console.log("Endpoint statement não disponível, usando fontes alternativas");
+            }
+
+            // TODO: Backend - Implement missing endpoints (see TODO.md)
+            // - GET /pix/transactions/account-holders/:id (PIX_OUT transactions)
+            // - GET /wallet/conversions (USDT conversions history)
+            // Alternative: Implement unified GET /customers/:id/statement endpoint
+
+            // Fallback: buscar de múltiplas fontes
+            const [accountRes, pixRes, conversionsRes] = await Promise.allSettled([
+                http.get<{ payments: Array<{
+                    id: string;
+                    paymentValue: number;
+                    paymentDate: string;
+                    receiverPixKey: string;
+                    endToEnd: string;
+                    bankPayload: {
+                        valor: string;
+                        titulo: string;
+                        descricao: string;
+                        detalhes: {
+                            nomePagador: string;
+                            cpfCnpjPagador: string;
+                            nomeEmpresaPagador: string;
+                            endToEndId: string;
+                            txId?: string;
+                            descricaoPix?: string;
+                        };
+                        dataTransacao: string;
+                        tipoTransacao: string;
+                    };
+                }> }>(`/accounts/${customerId}/summary`),
+                http.get<{ transactions: Transaction[] }>(`/pix/transactions/account-holders/${customerId}`),
+                http.get<{ data: Array<{
+                    id: string;
+                    status: string;
+                    subType: "BUY" | "SELL";
+                    brlAmount: number;
+                    usdtAmount: number;
+                    network: string;
+                    walletAddress?: string;
+                    txHash?: string;
+                    createdAt: string;
+                    completedAt?: string;
+                }> }>(`/wallet/conversions`).catch(() => ({ status: 'rejected' as const })),
+            ]);
+
+            const allTransactions: Transaction[] = [];
+
+            // Adicionar payments (PIX_IN)
+            if (accountRes.status === 'fulfilled' && accountRes.value.data.payments) {
+                const payments = accountRes.value.data.payments.map((payment) => ({
+                    transactionId: payment.id,
+                    type: "PIX_IN" as const,
+                    status: "COMPLETED" as const,
+                    amount: payment.paymentValue / 100,
+                    description: payment.bankPayload.descricao,
+                    senderName: payment.bankPayload.detalhes.nomePagador,
+                    senderCpf: payment.bankPayload.detalhes.cpfCnpjPagador,
+                    createdAt: payment.paymentDate,
+                }));
+                console.log('✅ Depósitos (PIX_IN) encontrados:', payments.length);
+                allTransactions.push(...payments);
+            } else {
+                console.log('❌ Nenhum depósito encontrado ou erro ao buscar:',
+                    accountRes.status === 'rejected' ? 'Endpoint falhou' : 'Sem dados');
+            }
+
+            // Adicionar transações PIX (PIX_OUT)
+            if (pixRes.status === 'fulfilled' && pixRes.value.data.transactions) {
+                const pixOuts = pixRes.value.data.transactions;
+                console.log('✅ Transferências (PIX_OUT) encontradas:', pixOuts.length);
+                allTransactions.push(...pixOuts);
+            } else {
+                console.log('❌ Nenhuma transferência encontrada ou erro ao buscar:',
+                    pixRes.status === 'rejected' ? 'Endpoint falhou' : 'Sem dados');
+            }
+
+            // Adicionar conversões (USDT <-> BRL)
+            if (conversionsRes.status === 'fulfilled' && 'data' in conversionsRes.value) {
+                const convData = conversionsRes.value.data;
+                if (convData && 'data' in convData && Array.isArray(convData.data)) {
+                    const conversions = convData.data.map((conv: {
+                        id: string;
+                        status: string;
+                        subType: "BUY" | "SELL";
+                        brlAmount: number;
+                        usdtAmount: number;
+                        network: string;
+                        walletAddress?: string;
+                        txHash?: string;
+                        createdAt: string;
+                        completedAt?: string;
+                    }) => ({
+                        transactionId: conv.id,
+                        type: "CONVERSION" as const,
+                        status: (conv.status === "COMPLETED" ? "COMPLETED" :
+                                 conv.status === "FAILED" ? "FAILED" : "PENDING") as Transaction["status"],
+                        amount: conv.brlAmount,
+                        description: conv.subType === "SELL" ? "Venda de USDT" : "Compra de USDT",
+                        createdAt: conv.completedAt || conv.createdAt,
+                        usdtAmount: conv.usdtAmount,
+                        subType: conv.subType,
+                        externalData: {
+                            walletAddress: conv.walletAddress,
+                            network: conv.network,
+                            txHash: conv.txHash,
+                            usdtAmount: conv.usdtAmount,
+                        },
+                    }));
+                    console.log('✅ Conversões (USDT) encontradas:', conversions.length);
+                    allTransactions.push(...conversions);
+                } else {
+                    console.log('❌ Endpoint de conversões retornou formato inesperado:', convData);
+                }
+            } else {
+                console.log('❌ Nenhuma conversão encontrada ou erro ao buscar:',
+                    conversionsRes.status === 'rejected' ? 'Endpoint falhou' : 'Sem dados');
+            }
+
+            // Ordenar por data (mais recente primeiro)
+            allTransactions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+            // IMPORTANTE: Aplicar filtro de deduplicação ANTES da paginação
+            const filteredAll = filterTransactions(allTransactions);
+
+            // Aplicar paginação manual no array filtrado
+            const startIndex = (page - 1) * ITEMS_PER_PAGE;
+            const endIndex = startIndex + ITEMS_PER_PAGE;
+            const paginatedTransactions = filteredAll.slice(startIndex, endIndex);
+
+            console.log('📊 Transações carregadas:', {
+                total: allTransactions.length,
+                afterFilter: filteredAll.length,
+                paginated: paginatedTransactions.length,
+                deposits: allTransactions.filter(t => t.type === 'PIX_IN').length,
+                withdrawals: allTransactions.filter(t => t.type === 'PIX_OUT').length,
+                conversions: allTransactions.filter(t => t.type === 'CONVERSION').length,
+            });
+
+            setTransactions(paginatedTransactions);
+            setTotal(filteredAll.length);
+            setTotalPages(Math.ceil(filteredAll.length / ITEMS_PER_PAGE));
         } catch (err) {
             console.error("Erro ao carregar transações:", err);
             setTransactions([]);
@@ -135,8 +285,6 @@ export default function TransactionsPage() {
             return !hasMatchingConversion;
         });
     }
-
-    const filteredTransactions = filterTransactions(transactions);
 
     function renderTransaction(tx: Transaction) {
         const amount = Number(tx.amount);
@@ -324,16 +472,16 @@ export default function TransactionsPage() {
                     <div className="flex items-center justify-center py-12">
                         <Loader2 className="h-6 w-6 animate-spin text-[#6F00FF]/50" />
                     </div>
-                ) : filteredTransactions.length > 0 ? (
+                ) : transactions.length > 0 ? (
                     <>
                         <div className="divide-y divide-border">
-                            {filteredTransactions.map(renderTransaction)}
+                            {transactions.map(renderTransaction)}
                         </div>
                         
                         {totalPages > 1 && (
                             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border">
                                 <p className="text-sm text-muted-foreground">
-                                    Mostrando {filteredTransactions.length} de {total} transações
+                                    Mostrando {transactions.length} de {total} transações
                                 </p>
                                 <div className="flex items-center gap-1">
                                     <Button
