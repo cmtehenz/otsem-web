@@ -83,12 +83,7 @@ export default function TransactionsPage() {
                 console.log("Endpoint statement não disponível, usando fontes alternativas");
             }
 
-            // TODO: Backend - Implement missing endpoints (see TODO.md)
-            // - GET /pix/transactions/account-holders/:id (PIX_OUT transactions)
-            // - GET /wallet/conversions (USDT conversions history)
-            // Alternative: Implement unified GET /customers/:id/statement endpoint
-
-            // Fallback: buscar de múltiplas fontes
+            // Fallback: buscar de múltiplas fontes (para compatibilidade)
             const [accountRes, pixRes, conversionsRes] = await Promise.allSettled([
                 http.get<{ payments: Array<{
                     id: string;
