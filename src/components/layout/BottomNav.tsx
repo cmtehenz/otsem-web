@@ -162,13 +162,13 @@ export function BottomNav() {
                                 <Link
                                     key={tab.id}
                                     href={tab.href}
-                                    className="relative flex flex-col items-center justify-center min-w-[56px] py-1 outline-none"
+                                    className="relative flex flex-col items-center justify-center px-3 py-1 outline-none"
                                 >
                                     {/* Active pill — Liquid Glass highlight behind icon */}
                                     {isActive && (
                                         <motion.div
                                             layoutId="navActivePill"
-                                            className="absolute inset-0 mx-1 rounded-[18px]"
+                                            className="absolute inset-0 rounded-[18px]"
                                             style={{
                                                 background:
                                                     "linear-gradient(135deg, rgba(111,0,255,0.12) 0%, rgba(139,47,255,0.08) 100%)",

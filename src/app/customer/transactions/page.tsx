@@ -888,7 +888,7 @@ export default function TransactionsPage() {
                     variants={fadeUp}
                     className="text-center text-[11px] text-muted-foreground/50 pb-4"
                 >
-                    Mostrando {(page - 1) * ITEMS_PER_PAGE + 1}\u2013
+                    Mostrando {(page - 1) * ITEMS_PER_PAGE + 1}–
                     {Math.min(page * ITEMS_PER_PAGE, filtered.length)} de{" "}
                     {filtered.length}
                 </motion.p>
