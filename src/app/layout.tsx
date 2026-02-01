@@ -8,7 +8,7 @@ export const viewport: Viewport = {
     viewportFit: "cover",
     themeColor: "#6F00FF",
 };
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/auth-context";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
@@ -78,7 +78,7 @@ export default async function RootLayout({
         >
             <AuthProvider>
                 {children}
-                <Toaster position="top-right" richColors />
+                <Toaster />
             </AuthProvider>
             <CookieConsent />
         </ThemeProvider>

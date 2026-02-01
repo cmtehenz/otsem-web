@@ -583,3 +583,86 @@
         transform: scale(0.95);
     }
 }
+
+/* ── Toast notifications (sonner) ──────────────── */
+
+[data-sonner-toaster] {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif !important;
+}
+
+[data-sonner-toaster][data-y-position="top"] {
+    top: calc(env(safe-area-inset-top, 0px) + 64px) !important;
+}
+
+[data-sonner-toast] {
+    border-radius: 16px !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.5) !important;
+    box-shadow:
+        0 8px 32px -8px rgba(0, 0, 0, 0.1),
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.4) !important;
+    background: rgba(255, 255, 255, 0.88) !important;
+    color: var(--foreground) !important;
+}
+
+.dark [data-sonner-toast] {
+    background: rgba(26, 16, 37, 0.88) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow:
+        0 8px 32px -8px rgba(0, 0, 0, 0.3),
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.06) !important;
+}
+
+[data-sonner-toast][data-type="success"] {
+    background: rgba(236, 253, 245, 0.9) !important;
+    border-color: rgba(134, 239, 172, 0.35) !important;
+    color: #166534 !important;
+}
+
+.dark [data-sonner-toast][data-type="success"] {
+    background: rgba(5, 46, 22, 0.85) !important;
+    border-color: rgba(34, 197, 94, 0.2) !important;
+    color: #86efac !important;
+}
+
+[data-sonner-toast][data-type="error"] {
+    background: rgba(254, 242, 242, 0.9) !important;
+    border-color: rgba(252, 165, 165, 0.35) !important;
+    color: #991b1b !important;
+}
+
+.dark [data-sonner-toast][data-type="error"] {
+    background: rgba(69, 10, 10, 0.85) !important;
+    border-color: rgba(239, 68, 68, 0.2) !important;
+    color: #fca5a5 !important;
+}
+
+[data-sonner-toast][data-type="warning"] {
+    background: rgba(255, 251, 235, 0.9) !important;
+    border-color: rgba(252, 211, 77, 0.35) !important;
+    color: #92400e !important;
+}
+
+.dark [data-sonner-toast][data-type="warning"] {
+    background: rgba(69, 26, 3, 0.85) !important;
+    border-color: rgba(245, 158, 11, 0.2) !important;
+    color: #fde68a !important;
+}
+
+[data-sonner-toast][data-type="info"] {
+    background: rgba(245, 240, 255, 0.9) !important;
+    border-color: rgba(167, 139, 250, 0.3) !important;
+    color: #5b21b6 !important;
+}
+
+.dark [data-sonner-toast][data-type="info"] {
+    background: rgba(46, 16, 101, 0.85) !important;
+    border-color: rgba(139, 92, 246, 0.2) !important;
+    color: #c4b5fd !important;
+}
+
+[data-sonner-toast] [data-description] {
+    color: inherit !important;
+    opacity: 0.7;
+}
