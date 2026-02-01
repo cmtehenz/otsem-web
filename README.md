@@ -55,12 +55,14 @@ Built with modern web technologies, OtsemPay delivers a seamless banking experie
 
 ### Key Highlights
 
+- ✅ **Progressive Web App (PWA)** — Installable on iOS/Android with native app feel
+- ✅ **Mobile-first design** — Liquid Glass bottom nav, spring animations, safe area handling
 - ✅ Full KYC verification workflow for individuals and companies
 - ✅ PIX payment system with QR code generation
 - ✅ Multi-currency wallet (BRL, USDT)
 - ✅ Admin panel with real-time analytics
-- ✅ Responsive design for mobile and desktop
-- ✅ Dark/Light theme support
+- ✅ iOS keyboard-aware bottom sheet modals
+- ✅ Dark/Light theme support (light default)
 - ✅ Professional-grade code architecture
 
 ---
@@ -127,6 +129,16 @@ Built with modern web technologies, OtsemPay delivers a seamless banking experie
 - **Account Settings** - Profile and preference management
 - **Support Center** - Help and customer support
 - **Affiliate Program** - Earn rewards through referrals
+
+### 📱 Progressive Web App (PWA)
+
+- **Installable** - Add to Home Screen on iOS/Android with custom app icon
+- **Liquid Glass Navigation** - Floating bottom nav with glassmorphism, shimmer animation
+- **Spring Animations** - Framer Motion spring physics for page transitions and interactions
+- **iOS Keyboard Handling** - Bottom sheet modals resize dynamically via `visualViewport` API
+- **Safe Area Support** - Proper insets for notch, status bar, and home indicator
+- **PWA Install Prompt** - Detects iOS Safari and guides users to install, with "don't show again"
+- **Standalone Mode** - Cookie consent hidden in PWA, optimized header/nav for standalone
 
 ### 🌐 Additional Features
 
@@ -311,6 +323,11 @@ npm run lint
 ```
 otsem-web/
 ├── public/                          # Static assets
+│   ├── manifest.json                # PWA manifest
+│   ├── apple-touch-icon.png         # iOS home screen icon (180x180)
+│   ├── icon-192.png                 # PWA icon (192x192)
+│   ├── icon-512.png                 # PWA icon (512x512)
+│   ├── favicon-32.png               # Browser tab icon
 │   ├── fonts/                       # Custom fonts
 │   └── images/                      # Images, logos
 │
@@ -385,6 +402,10 @@ otsem-web/
 │   │   │   └── footer.tsx
 │   │   │
 │   │   ├── layout/                # Layout components
+│   │   │   ├── MobileHeader.tsx   # Fixed glass header (PWA safe areas)
+│   │   │   ├── BottomNav.tsx      # Liquid Glass floating bottom nav
+│   │   │   ├── ActionSheet.tsx    # Quick actions sheet (deposit, etc.)
+│   │   │   ├── PwaInstallPrompt.tsx # iOS "Add to Home Screen" prompt
 │   │   │   ├── Header.tsx
 │   │   │   ├── AuthenticatedAppShell.tsx
 │   │   │   ├── ClientAuthGate.tsx
@@ -400,7 +421,13 @@ otsem-web/
 │   │   ├── kyc/                   # KYC components
 │   │   │   └── limits-card.tsx
 │   │   │
-│   │   ├── modals/                # Modal dialogs
+│   │   ├── modals/                # Bottom sheet modals
+│   │   │   ├── deposit-modal.tsx  # PIX deposit with QR code
+│   │   │   ├── withdraw-modal.tsx # PIX withdrawal
+│   │   │   ├── convert-modal.tsx  # BRL → USDT conversion
+│   │   │   ├── sell-usdt-modal.tsx # USDT → BRL sale
+│   │   │   ├── send-usdt-modal.tsx # USDT external transfer
+│   │   │   ├── kyc-upgrade-modal.tsx # KYC document upload
 │   │   │   ├── ReceiveUsdtModal.tsx
 │   │   │   └── send-email-modal.tsx
 │   │   │
@@ -858,10 +885,14 @@ Please report security vulnerabilities to: **security@otsembank.com**
 - [x] Two-factor authentication
 - [x] Cryptocurrency payouts
 - [x] Dark/Light theme
+- [x] Progressive Web App (PWA) with iOS optimization
+- [x] Mobile-first customer UI redesign
+- [x] Liquid Glass bottom navigation
+- [x] Bottom sheet modals with keyboard handling
+- [x] Spring page transitions
 
 ### 🚧 In Progress
 
-- [ ] Mobile app (React Native)
 - [ ] Webhook notifications
 - [ ] Advanced analytics dashboard
 - [ ] Automated document verification (OCR)
