@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Loader2, Search, Filter, ChevronLeft, ChevronRight, Eye, MoreHorizontal, UserCheck, UserX, Mail } from "lucide-react";
+import { Loader2, Search, Filter, ChevronLeft, ChevronRight, Eye, MoreHorizontal, UserCheck, UserX, Mail, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import http from "@/lib/http";
@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useDebounce } from "use-debounce";
 import { SendEmailModal } from "@/components/modals/send-email-modal";
 
@@ -104,9 +106,84 @@ export default function AdminUsersPage() {
     const [emailModalOpen, setEmailModalOpen] = React.useState(false);
     const [selectedUserForEmail, setSelectedUserForEmail] = React.useState<User | null>(null);
 
+    const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
+    const [deleting, setDeleting] = React.useState(false);
+    const [deleteAllDialogOpen, setDeleteAllDialogOpen] = React.useState(false);
+    const [deleteBatchDialogOpen, setDeleteBatchDialogOpen] = React.useState(false);
+    const [deleteSingleDialogUser, setDeleteSingleDialogUser] = React.useState<User | null>(null);
+
     const openEmailModal = (user: User) => {
         setSelectedUserForEmail(user);
         setEmailModalOpen(true);
+    };
+
+    const toggleSelect = (id: string) => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.size === users.length) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(users.map((u) => u.id)));
+        }
+    };
+
+    const handleDeleteSingle = async (userId: string) => {
+        try {
+            setDeleting(true);
+            await http.delete(`/admin/users/${userId}`);
+            toast.success("Usuário excluído com sucesso");
+            setSelectedIds((prev) => {
+                const next = new Set(prev);
+                next.delete(userId);
+                return next;
+            });
+            loadUsers(pagination.page);
+        } catch (err) {
+            console.error(err);
+            toast.error("Falha ao excluir usuário");
+        } finally {
+            setDeleting(false);
+            setDeleteSingleDialogUser(null);
+        }
+    };
+
+    const handleDeleteBatch = async () => {
+        try {
+            setDeleting(true);
+            await http.post("/admin/users/delete-batch", { ids: Array.from(selectedIds) });
+            toast.success(`${selectedIds.size} usuário(s) excluído(s) com sucesso`);
+            setSelectedIds(new Set());
+            loadUsers(pagination.page);
+        } catch (err) {
+            console.error(err);
+            toast.error("Falha ao excluir usuários selecionados");
+        } finally {
+            setDeleting(false);
+            setDeleteBatchDialogOpen(false);
+        }
+    };
+
+    const handleDeleteAll = async () => {
+        try {
+            setDeleting(true);
+            await http.delete("/admin/users/all");
+            toast.success("Todos os clientes foram excluídos");
+            setSelectedIds(new Set());
+            loadUsers(1);
+        } catch (err) {
+            console.error(err);
+            toast.error("Falha ao excluir todos os clientes");
+        } finally {
+            setDeleting(false);
+            setDeleteAllDialogOpen(false);
+        }
     };
 
     const loadUsers = React.useCallback(async (page = 1) => {
@@ -154,6 +231,15 @@ export default function AdminUsersPage() {
                         {pagination.total} usuários cadastrados
                     </p>
                 </div>
+                <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => setDeleteAllDialogOpen(true)}
+                    disabled={deleting || pagination.total === 0}
+                >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Excluir todos
+                </Button>
             </div>
 
             <Card>
@@ -218,10 +304,42 @@ export default function AdminUsersPage() {
                         </div>
                     ) : (
                         <>
+                            {selectedIds.size > 0 && (
+                                <div className="mb-4 flex items-center justify-between rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-900/50 dark:bg-red-950/30">
+                                    <p className="text-sm font-medium text-red-700 dark:text-red-400">
+                                        {selectedIds.size} usuário(s) selecionado(s)
+                                    </p>
+                                    <div className="flex items-center gap-2">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => setSelectedIds(new Set())}
+                                        >
+                                            Limpar seleção
+                                        </Button>
+                                        <Button
+                                            variant="destructive"
+                                            size="sm"
+                                            onClick={() => setDeleteBatchDialogOpen(true)}
+                                            disabled={deleting}
+                                        >
+                                            <Trash2 className="mr-2 h-4 w-4" />
+                                            Excluir selecionados
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
                             <div className="overflow-x-auto">
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
+                                            <TableHead className="w-[40px]">
+                                                <Checkbox
+                                                    checked={users.length > 0 && selectedIds.size === users.length}
+                                                    onCheckedChange={toggleSelectAll}
+                                                    aria-label="Selecionar todos"
+                                                />
+                                            </TableHead>
                                             <TableHead>Usuário</TableHead>
                                             <TableHead>CPF/CNPJ</TableHead>
                                             <TableHead>KYC</TableHead>
@@ -238,6 +356,13 @@ export default function AdminUsersPage() {
 
                                             return (
                                                 <TableRow key={user.id} className="hover:bg-muted/50">
+                                                    <TableCell>
+                                                        <Checkbox
+                                                            checked={selectedIds.has(user.id)}
+                                                            onCheckedChange={() => toggleSelect(user.id)}
+                                                            aria-label={`Selecionar ${user.name || user.email}`}
+                                                        />
+                                                    </TableCell>
                                                     <TableCell>
                                                         <div>
                                                             <p className="font-medium">{user.name || "—"}</p>
@@ -297,6 +422,14 @@ export default function AdminUsersPage() {
                                                                         Desbloquear usuário
                                                                     </DropdownMenuItem>
                                                                 )}
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem
+                                                                    className="text-red-600"
+                                                                    onClick={() => setDeleteSingleDialogUser(user)}
+                                                                >
+                                                                    <Trash2 className="mr-2 h-4 w-4" />
+                                                                    Excluir usuário
+                                                                </DropdownMenuItem>
                                                             </DropdownMenuContent>
                                                         </DropdownMenu>
                                                     </TableCell>
@@ -349,6 +482,81 @@ export default function AdminUsersPage() {
                     userEmail={selectedUserForEmail.email}
                 />
             )}
+
+            {/* Delete single user confirmation */}
+            <AlertDialog open={!!deleteSingleDialogUser} onOpenChange={(open) => { if (!open) setDeleteSingleDialogUser(null); }}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Excluir usuário?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Tem certeza que deseja excluir <strong>{deleteSingleDialogUser?.name || deleteSingleDialogUser?.email}</strong>?
+                            Todos os dados relacionados (contas, carteiras, transações, conversões, comissões) serão removidos permanentemente.
+                            Essa ação não pode ser desfeita.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={deleting}>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction
+                            className="bg-red-600 hover:bg-red-700"
+                            onClick={() => deleteSingleDialogUser && handleDeleteSingle(deleteSingleDialogUser.id)}
+                            disabled={deleting}
+                        >
+                            {deleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                            Excluir
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Delete batch confirmation */}
+            <AlertDialog open={deleteBatchDialogOpen} onOpenChange={setDeleteBatchDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Excluir usuários selecionados?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Tem certeza que deseja excluir <strong>{selectedIds.size}</strong> usuário(s)?
+                            Todos os dados relacionados (contas, carteiras, transações, conversões, comissões) serão removidos permanentemente.
+                            Essa ação não pode ser desfeita.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={deleting}>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction
+                            className="bg-red-600 hover:bg-red-700"
+                            onClick={handleDeleteBatch}
+                            disabled={deleting}
+                        >
+                            {deleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                            Excluir {selectedIds.size} usuário(s)
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Delete all confirmation */}
+            <AlertDialog open={deleteAllDialogOpen} onOpenChange={setDeleteAllDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Excluir TODOS os clientes?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Tem certeza que deseja excluir <strong>todos os {pagination.total} clientes</strong> do sistema?
+                            Todos os dados relacionados (contas, carteiras, transações, conversões, comissões) serão removidos permanentemente.
+                            Essa ação é irreversível e não pode ser desfeita.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={deleting}>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction
+                            className="bg-red-600 hover:bg-red-700"
+                            onClick={handleDeleteAll}
+                            disabled={deleting}
+                        >
+                            {deleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                            Excluir todos
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

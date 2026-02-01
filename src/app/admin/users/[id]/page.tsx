@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, ArrowLeft, Mail, Phone, MapPin, Calendar, Clock, Shield, Wallet, ArrowUpDown, BadgeCheck, UserX, UserCheck, Edit, RefreshCw, Percent, Save } from "lucide-react";
+import { Loader2, ArrowLeft, Mail, Phone, MapPin, Calendar, Clock, Shield, Wallet, ArrowUpDown, BadgeCheck, UserX, UserCheck, Edit, RefreshCw, Percent, Save, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -170,6 +170,7 @@ export default function AdminUserDetailPage() {
     const [savingKycLevel, setSavingKycLevel] = React.useState(false);
     const [userLimits, setUserLimits] = React.useState<UserLimits | null>(null);
     const [loadingLimits, setLoadingLimits] = React.useState(false);
+    const [deleteLoading, setDeleteLoading] = React.useState(false);
 
     const loadUser = React.useCallback(async () => {
         try {
@@ -256,9 +257,10 @@ export default function AdminUserDetailPage() {
             
             toast.success(`Spread atualizado para ${spreadNum}%`);
             setSpreadModalOpen(false);
-        } catch (err: any) {
-            console.error("Spread update error:", err.response?.data || err.message);
-            const errorMsg = err.response?.data?.message || "Falha ao atualizar spread";
+        } catch (err: unknown) {
+            const axiosErr = err as { response?: { data?: { message?: string } }; message?: string };
+            console.error("Spread update error:", axiosErr.response?.data || axiosErr.message);
+            const errorMsg = axiosErr.response?.data?.message || "Falha ao atualizar spread";
             toast.error(errorMsg);
         } finally {
             setSavingSpread(false);
@@ -305,12 +307,27 @@ export default function AdminUserDetailPage() {
             loadUserLimits();
             toast.success(`Nível KYC atualizado para ${KYC_LEVEL_CONFIG[selectedKycLevel]?.label || selectedKycLevel}`);
             setKycLevelModalOpen(false);
-        } catch (err: any) {
-            console.error("KYC level update error:", err.response?.data || err.message);
-            const errorMsg = err.response?.data?.message || "Falha ao atualizar nível KYC";
+        } catch (err: unknown) {
+            const axiosErr = err as { response?: { data?: { message?: string } }; message?: string };
+            console.error("KYC level update error:", axiosErr.response?.data || axiosErr.message);
+            const errorMsg = axiosErr.response?.data?.message || "Falha ao atualizar nível KYC";
             toast.error(errorMsg);
         } finally {
             setSavingKycLevel(false);
+        }
+    };
+
+    const handleDeleteUser = async () => {
+        try {
+            setDeleteLoading(true);
+            await http.delete(`/admin/users/${userId}`);
+            toast.success("Usuário excluído com sucesso");
+            router.push("/admin/users");
+        } catch (err) {
+            console.error(err);
+            toast.error("Falha ao excluir usuário");
+        } finally {
+            setDeleteLoading(false);
         }
     };
 
@@ -382,6 +399,35 @@ export default function AdminUserDetailPage() {
                             Desbloquear
                         </Button>
                     )}
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="outline" size="sm" className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900 dark:hover:bg-red-950" disabled={deleteLoading}>
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Excluir
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Excluir usuário?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Tem certeza que deseja excluir <strong>{user.name || user.email}</strong>?
+                                    Todos os dados relacionados (contas, carteiras, transações, conversões, comissões) serão removidos permanentemente.
+                                    Essa ação não pode ser desfeita.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel disabled={deleteLoading}>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction
+                                    className="bg-red-600 hover:bg-red-700"
+                                    onClick={handleDeleteUser}
+                                    disabled={deleteLoading}
+                                >
+                                    {deleteLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                                    Excluir permanentemente
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
             </div>
 
