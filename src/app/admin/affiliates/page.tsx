@@ -15,6 +15,7 @@ import {
   DollarSign,
   Users,
   TrendingUp,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -47,6 +48,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type Affiliate = {
   id: string;
@@ -54,10 +65,13 @@ type Affiliate = {
   name: string;
   email: string;
   spreadRate: number;
+  commissionRate: number;
   isActive: boolean;
   totalClients: number;
   totalCommission: number;
   pendingCommission: number;
+  totalEarningsUsdt: number;
+  pendingEarningsUsdt: number;
   createdAt: string;
 };
 
@@ -84,6 +98,10 @@ function formatDate(dateStr: string): string {
   });
 }
 
+function formatUsdt(value: number): string {
+  return `$ ${value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
 function formatPercent(value: number): string {
   return `${(value * 100).toFixed(2)}%`;
 }
@@ -101,6 +119,9 @@ export default function AdminAffiliatesPage() {
     code: "",
     spreadRate: "0.35",
   });
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [deletingAffiliate, setDeletingAffiliate] = React.useState<Affiliate | null>(null);
+  const [deleting, setDeleting] = React.useState(false);
 
   const [stats, setStats] = React.useState({
     totalAffiliates: 0,
@@ -195,6 +216,22 @@ export default function AdminAffiliatesPage() {
       toast.error("Falha ao criar afiliado");
     } finally {
       setCreating(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deletingAffiliate) return;
+    try {
+      setDeleting(true);
+      await http.delete(`/admin/affiliates/${deletingAffiliate.id}`);
+      toast.success("Afiliado removido com sucesso!");
+      setShowDeleteModal(false);
+      setDeletingAffiliate(null);
+      loadAffiliates();
+    } catch {
+      toast.error("Falha ao remover afiliado");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -316,7 +353,8 @@ export default function AdminAffiliatesPage() {
                   <TableHead>Código</TableHead>
                   <TableHead className="text-center">Taxa</TableHead>
                   <TableHead className="text-center">Clientes</TableHead>
-                  <TableHead className="text-right">Comissão Total</TableHead>
+                  <TableHead className="text-right">Comissão BRL</TableHead>
+                  <TableHead className="text-right">Comissão USDT</TableHead>
                   <TableHead className="text-right">Pendente</TableHead>
                   <TableHead className="text-center">Status</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
@@ -348,6 +386,11 @@ export default function AdminAffiliatesPage() {
                       {formatCurrency(affiliate.totalCommission)}
                     </TableCell>
                     <TableCell className="text-right">
+                      {affiliate.totalEarningsUsdt > 0
+                        ? formatUsdt(affiliate.totalEarningsUsdt)
+                        : "-"}
+                    </TableCell>
+                    <TableCell className="text-right">
                       <span
                         className={
                           affiliate.pendingCommission > 0
@@ -357,6 +400,11 @@ export default function AdminAffiliatesPage() {
                       >
                         {formatCurrency(affiliate.pendingCommission)}
                       </span>
+                      {affiliate.pendingEarningsUsdt > 0 && (
+                        <span className="block text-xs text-amber-500">
+                          {formatUsdt(affiliate.pendingEarningsUsdt)}
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell className="text-center">
                       {affiliate.isActive ? (
@@ -408,6 +456,17 @@ export default function AdminAffiliatesPage() {
                                 Ativar
                               </>
                             )}
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-red-600 focus:text-red-600"
+                            onClick={() => {
+                              setDeletingAffiliate(affiliate);
+                              setShowDeleteModal(true);
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Excluir
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -512,6 +571,32 @@ export default function AdminAffiliatesPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir Afiliado</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir o afiliado{" "}
+              <strong>{deletingAffiliate?.name}</strong> ({deletingAffiliate?.code})?
+              <br />
+              <br />
+              Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={deleting}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {deleting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

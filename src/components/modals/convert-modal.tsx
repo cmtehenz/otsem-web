@@ -39,6 +39,10 @@ type BuyResponse = {
     conversionId?: string;
     status?: string;
     message?: string;
+    usdtEstimate?: number;
+    networkFee?: number;
+    usdtNet?: number;
+    networkFeePaidBy?: string;
 };
 
 type ConversionStatus = "PENDING" | "PIX_SENT" | "USDT_BOUGHT" | "USDT_WITHDRAWN" | "COMPLETED" | "FAILED";
@@ -81,6 +85,8 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
     const [conversionStatus, setConversionStatus] = React.useState<ConversionStatus>("PENDING");
     const [conversionDetail, setConversionDetail] = React.useState<ConversionDetail | null>(null);
     const [limitError, setLimitError] = React.useState<string | null>(null);
+    const [networkFee, setNetworkFee] = React.useState<number>(0);
+    const [usdtNet, setUsdtNet] = React.useState<number>(0);
     const pollingRef = React.useRef<NodeJS.Timeout | null>(null);
 
     const customerSpread = user?.spreadValue ?? 0.95;
@@ -222,8 +228,11 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                 walletId: selectedWalletId,
             });
             
-            const { conversionId: id, status } = res.data;
-            
+            const { conversionId: id, status, networkFee: nf, usdtNet: uNet } = res.data;
+
+            if (nf !== undefined) setNetworkFee(nf);
+            if (uNet !== undefined) setUsdtNet(uNet);
+
             if (id) {
                 setConversionId(id);
                 const mappedStatus = mapBackendStatus(status || "PENDING");
@@ -272,6 +281,8 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
             setConversionStatus("PENDING");
             setConversionDetail(null);
             setLimitError(null);
+            setNetworkFee(0);
+            setUsdtNet(0);
         }, 200);
     }
 
@@ -523,11 +534,21 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                         <span className="text-foreground">{selectedWallet?.network || "SOLANA"}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">Taxa de rede</span>
+                                        <span className="text-foreground">~1 USDT (paga pelo comprador)</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Carteira</span>
                                         <span className="text-foreground text-xs truncate max-w-[180px]">
                                             {selectedWallet?.externalAddress?.slice(0, 8)}...{selectedWallet?.externalAddress?.slice(-6)}
                                         </span>
                                     </div>
+                                </div>
+
+                                <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-3">
+                                    <p className="text-amber-800 dark:text-amber-200 text-xs">
+                                        Você receberá {formatUSDT(convertedAmount > 1 ? convertedAmount - 1 : 0)} USDT (taxa de rede: ~1 USDT)
+                                    </p>
                                 </div>
                             </div>
 
@@ -633,9 +654,15 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">USDT a receber</span>
                                     <span className="text-green-600 dark:text-green-400 font-medium">
-                                        {formatUSDT(conversionDetail?.usdtAmount || convertedAmount)}
+                                        {formatUSDT(usdtNet || conversionDetail?.usdtAmount || convertedAmount)}
                                     </span>
                                 </div>
+                                {networkFee > 0 && (
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">Taxa de rede</span>
+                                        <span className="text-foreground">{formatUSDT(networkFee)}</span>
+                                    </div>
+                                )}
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">Carteira</span>
                                     <span className="text-foreground text-xs truncate max-w-[180px]">
@@ -669,13 +696,18 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                             </div>
 
                             <div className="text-center">
-                                <p className="text-muted-foreground text-sm mb-1">Você comprou</p>
+                                <p className="text-muted-foreground text-sm mb-1">Você recebeu</p>
                                 <p className="text-3xl font-bold bg-linear-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
-                                    {formatUSDT(conversionDetail?.usdtAmount || convertedAmount)}
+                                    {formatUSDT(usdtNet || conversionDetail?.usdtAmount || convertedAmount)}
                                 </p>
                                 <p className="text-muted-foreground text-sm mt-2">
                                     por {formatBRL(numAmount)}
                                 </p>
+                                {networkFee > 0 && (
+                                    <p className="text-muted-foreground text-xs mt-1">
+                                        Taxa de rede: {formatUSDT(networkFee)} USDT
+                                    </p>
+                                )}
                             </div>
 
                             <div className="bg-muted border border-border rounded-xl p-4 text-center">

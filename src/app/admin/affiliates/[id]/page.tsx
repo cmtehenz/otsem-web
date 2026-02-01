@@ -18,6 +18,7 @@ import {
   RefreshCw,
   CreditCard,
   Clock,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -61,10 +62,13 @@ type Affiliate = {
   name: string;
   email: string;
   spreadRate: number;
+  commissionRate: number;
   isActive: boolean;
   totalClients: number;
   totalCommission: number;
   pendingCommission: number;
+  totalEarningsUsdt: number;
+  pendingEarningsUsdt: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -82,8 +86,12 @@ type Client = {
 type Commission = {
   id: string;
   amount: number;
+  commissionUsdt: number;
+  exchangeRate: number;
   conversionId: string;
   conversionAmount: number;
+  conversionType: "BUY" | "SELL";
+  settlementTxId?: string;
   status: "PENDING" | "PAID";
   paidAt: string | null;
   createdAt: string;
@@ -115,6 +123,10 @@ function formatDateTime(dateStr: string): string {
   });
 }
 
+function formatUsdt(value: number): string {
+  return `$ ${value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
 function formatPercent(value: number): string {
   return `${(value * 100).toFixed(2)}%`;
 }
@@ -132,8 +144,10 @@ export default function AffiliateDetailPage() {
 
   const [showEditModal, setShowEditModal] = React.useState(false);
   const [showPayModal, setShowPayModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [updating, setUpdating] = React.useState(false);
   const [paying, setPaying] = React.useState(false);
+  const [deletingAff, setDeletingAff] = React.useState(false);
 
   const [editForm, setEditForm] = React.useState({
     name: "",
@@ -242,6 +256,20 @@ export default function AffiliateDetailPage() {
     }
   };
 
+  const handleDeleteAffiliate = async () => {
+    if (!affiliate) return;
+    try {
+      setDeletingAff(true);
+      await http.delete(`/admin/affiliates/${affiliate.id}`);
+      toast.success("Afiliado removido com sucesso!");
+      router.push("/admin/affiliates");
+    } catch {
+      toast.error("Falha ao remover afiliado");
+    } finally {
+      setDeletingAff(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
@@ -288,6 +316,14 @@ export default function AffiliateDetailPage() {
           >
             {updating && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
             {affiliate.isActive ? "Desativar" : "Ativar"}
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+            onClick={() => setShowDeleteModal(true)}
+          >
+            <Trash2 className="h-4 w-4" />
           </Button>
         </div>
       </div>
@@ -339,6 +375,11 @@ export default function AffiliateDetailPage() {
             <div className="text-2xl font-bold">
               {formatCurrency(affiliate.totalCommission)}
             </div>
+            {affiliate.totalEarningsUsdt > 0 && (
+              <p className="text-sm text-muted-foreground mt-1">
+                {formatUsdt(affiliate.totalEarningsUsdt)} USDT
+              </p>
+            )}
           </CardContent>
         </Card>
 
@@ -353,6 +394,11 @@ export default function AffiliateDetailPage() {
             <div className="text-2xl font-bold text-amber-500">
               {formatCurrency(affiliate.pendingCommission)}
             </div>
+            {affiliate.pendingEarningsUsdt > 0 && (
+              <p className="text-sm text-amber-500 mt-1">
+                {formatUsdt(affiliate.pendingEarningsUsdt)} USDT
+              </p>
+            )}
             {affiliate.pendingCommission > 0 && (
               <Button
                 size="sm"
@@ -525,10 +571,13 @@ export default function AffiliateDetailPage() {
                     <TableRow>
                       <TableHead>Data</TableHead>
                       <TableHead>Cliente</TableHead>
+                      <TableHead className="text-center">Tipo</TableHead>
                       <TableHead className="text-right">
                         Valor Conversão
                       </TableHead>
-                      <TableHead className="text-right">Comissão</TableHead>
+                      <TableHead className="text-right">Comissão BRL</TableHead>
+                      <TableHead className="text-right">Comissão USDT</TableHead>
+                      <TableHead className="text-right">Câmbio</TableHead>
                       <TableHead className="text-center">Status</TableHead>
                       <TableHead className="text-right">Pago em</TableHead>
                     </TableRow>
@@ -540,11 +589,37 @@ export default function AffiliateDetailPage() {
                           {formatDateTime(commission.createdAt)}
                         </TableCell>
                         <TableCell>{commission.clientName}</TableCell>
+                        <TableCell className="text-center">
+                          {commission.conversionType ? (
+                            <Badge
+                              variant="outline"
+                              className={
+                                commission.conversionType === "BUY"
+                                  ? "text-blue-600 border-blue-300"
+                                  : "text-orange-600 border-orange-300"
+                              }
+                            >
+                              {commission.conversionType === "BUY" ? "Compra" : "Venda"}
+                            </Badge>
+                          ) : (
+                            "-"
+                          )}
+                        </TableCell>
                         <TableCell className="text-right">
                           {formatCurrency(commission.conversionAmount)}
                         </TableCell>
                         <TableCell className="text-right font-medium">
                           {formatCurrency(commission.amount)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {commission.commissionUsdt > 0
+                            ? formatUsdt(commission.commissionUsdt)
+                            : "-"}
+                        </TableCell>
+                        <TableCell className="text-right text-sm text-muted-foreground">
+                          {commission.exchangeRate > 0
+                            ? commission.exchangeRate.toFixed(2)
+                            : "-"}
                         </TableCell>
                         <TableCell className="text-center">
                           {commission.status === "PAID" ? (
@@ -661,6 +736,37 @@ export default function AffiliateDetailPage() {
             <AlertDialogAction onClick={handlePayCommissions} disabled={paying}>
               {paying && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               Confirmar Pagamento
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir Afiliado</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir o afiliado{" "}
+              <strong>{affiliate.name}</strong> ({affiliate.code})?
+              <br />
+              <br />
+              Esta ação não pode ser desfeita. Todos os dados do afiliado serão
+              removidos permanentemente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deletingAff}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAffiliate}
+              disabled={deletingAff}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {deletingAff && (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              )}
+              Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

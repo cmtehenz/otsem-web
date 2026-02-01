@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Suspense } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -206,6 +206,8 @@ export default function RegisterForm(): React.JSX.Element {
 
 function RegisterPageInner(): React.JSX.Element {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const refCode = searchParams.get("ref") || "";
 
     const [showPw, setShowPw] = React.useState(false);
     const [showConfirm, setShowConfirm] = React.useState(false);
@@ -221,12 +223,12 @@ function RegisterPageInner(): React.JSX.Element {
             customerType: "PF",
             cpf: "",
             cnpj: "",
-            affiliateCode: "",
+            affiliateCode: refCode.toUpperCase(),
             accept: true
         },
     });
 
-    const [showAffiliateField, setShowAffiliateField] = React.useState(false);
+    const [showAffiliateField, setShowAffiliateField] = React.useState(!!refCode);
     const [validatingCode, setValidatingCode] = React.useState(false);
     const [codeValid, setCodeValid] = React.useState<boolean | null>(null);
     const affiliateCode = form.watch("affiliateCode") || "";

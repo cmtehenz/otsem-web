@@ -26,6 +26,8 @@ type AffiliateStats = {
     pendingEarnings: number;
     paidEarnings: number;
     commissionRate: number;
+    totalEarningsUsdt: number;
+    pendingEarningsUsdt: number;
 };
 
 type Commission = {
@@ -33,7 +35,10 @@ type Commission = {
     referralId: string;
     referralName: string;
     amount: number;
+    amountUsdt: number;
     transactionAmount: number;
+    conversionType: "BUY" | "SELL";
+    settlementTxId?: string;
     status: "pending" | "paid";
     createdAt: string;
     paidAt?: string;
@@ -48,6 +53,10 @@ function formatCurrency(value: number): string {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
     });
+}
+
+function formatUsdt(value: number): string {
+    return `$ ${value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function formatDate(dateString: string): string {
@@ -268,6 +277,11 @@ export default function AffiliatesPage() {
                     <p className="text-[20px] font-bold text-emerald-600 dark:text-emerald-400">
                         {formatCurrency(stats.totalEarnings)}
                     </p>
+                    {stats.totalEarningsUsdt > 0 && (
+                        <p className="text-[12px] text-emerald-600 dark:text-emerald-400 font-medium">
+                            {formatUsdt(stats.totalEarningsUsdt)} USDT
+                        </p>
+                    )}
                     <p className="text-[11px] text-muted-foreground mt-0.5">Total ganho</p>
                     <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">
                         {stats.commissionRate}% comissão
@@ -284,6 +298,11 @@ export default function AffiliatesPage() {
                     <p className="text-[20px] font-bold text-amber-600 dark:text-amber-400">
                         {formatCurrency(stats.pendingEarnings)}
                     </p>
+                    {stats.pendingEarningsUsdt > 0 && (
+                        <p className="text-[12px] text-amber-600 dark:text-amber-400 font-medium">
+                            {formatUsdt(stats.pendingEarningsUsdt)} USDT
+                        </p>
+                    )}
                     <p className="text-[11px] text-muted-foreground mt-0.5">Pendente</p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">Aguardando pgto</p>
                 </div>
@@ -380,7 +399,18 @@ export default function AffiliatesPage() {
                         {commissions.map((commission) => (
                             <div key={commission.id} className="flex items-center justify-between py-3.5 first:pt-0 last:pb-0">
                                 <div className="min-w-0">
-                                    <p className="text-[14px] font-semibold text-foreground truncate">{commission.referralName}</p>
+                                    <div className="flex items-center gap-1.5">
+                                        <p className="text-[14px] font-semibold text-foreground truncate">{commission.referralName}</p>
+                                        {commission.conversionType && (
+                                            <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                                                commission.conversionType === "BUY"
+                                                    ? "bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400"
+                                                    : "bg-orange-500/10 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400"
+                                            }`}>
+                                                {commission.conversionType === "BUY" ? "Compra" : "Venda"}
+                                            </span>
+                                        )}
+                                    </div>
                                     <p className="text-[12px] text-muted-foreground">
                                         Transação {formatCurrency(commission.transactionAmount)}
                                     </p>
@@ -396,9 +426,16 @@ export default function AffiliatesPage() {
                                     >
                                         {commission.status === "paid" ? "Pago" : "Pendente"}
                                     </span>
-                                    <span className="text-[14px] font-semibold text-emerald-600 dark:text-emerald-400">
-                                        {formatCurrency(commission.amount)}
-                                    </span>
+                                    <div className="text-right">
+                                        <span className="text-[14px] font-semibold text-emerald-600 dark:text-emerald-400 block">
+                                            {formatCurrency(commission.amount)}
+                                        </span>
+                                        {commission.amountUsdt > 0 && (
+                                            <span className="text-[11px] text-muted-foreground">
+                                                {formatUsdt(commission.amountUsdt)} USDT
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         ))}
