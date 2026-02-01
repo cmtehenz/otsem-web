@@ -13,6 +13,12 @@ import {
   Check,
   Sun,
   Moon,
+  KeyRound,
+  ShieldCheck,
+  HelpCircle,
+  Users,
+  LogOut,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +27,7 @@ import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import http from "@/lib/http";
 import { useAuth } from "@/contexts/auth-context";
+import Link from "next/link";
 
 // ─── Animation variants ────────────────────────────────────────────
 const stagger = {
@@ -198,6 +205,43 @@ export default function SettingsPage() {
         <p className="text-[13px] text-muted-foreground mt-0.5">
           Gerencie seu perfil e preferências
         </p>
+      </motion.div>
+
+      {/* ── Quick Links ─────────────────────────── */}
+      <motion.div variants={fadeUp} className="premium-card !p-2">
+        {[
+          { href: "/customer/pix", icon: KeyRound, label: "Chaves PIX", sublabel: "Gerenciar suas chaves", color: "text-green-600 dark:text-green-400", bg: "bg-green-500/10 dark:bg-green-500/20" },
+          { href: "/customer/kyc", icon: ShieldCheck, label: "Verificação", sublabel: "Limites e documentos", color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/10 dark:bg-blue-500/20" },
+          { href: "/customer/affiliates", icon: Users, label: "Indicações", sublabel: "Convide amigos e ganhe", color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-500/10 dark:bg-purple-500/20" },
+          { href: "/customer/support", icon: HelpCircle, label: "Suporte", sublabel: "Ajuda e contato", color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-500/10 dark:bg-orange-500/20" },
+        ].map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl active:bg-muted/50 transition-colors"
+          >
+            <div className={`flex h-10 w-10 items-center justify-center rounded-full ${item.bg} shrink-0`}>
+              <item.icon className={`h-5 w-5 ${item.color}`} strokeWidth={1.8} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-semibold text-foreground">{item.label}</p>
+              <p className="text-[12px] text-muted-foreground">{item.sublabel}</p>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground/50 shrink-0" />
+          </Link>
+        ))}
+
+        <div className="mx-4 border-t border-border/50" />
+
+        <Link
+          href="/customer/logout"
+          className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl active:bg-red-500/10 transition-colors"
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/10 dark:bg-red-500/20 shrink-0">
+            <LogOut className="h-5 w-5 text-red-600 dark:text-red-400" strokeWidth={1.8} />
+          </div>
+          <p className="text-[14px] font-semibold text-red-600 dark:text-red-400">Sair</p>
+        </Link>
       </motion.div>
 
       {/* ── Section 1: Profile ──────────────────── */}
