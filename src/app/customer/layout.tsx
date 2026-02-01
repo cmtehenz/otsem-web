@@ -94,7 +94,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 onSuccess={triggerRefresh}
             />
 
-            <div className="relative h-dvh bg-background overflow-hidden">
+            <div className="relative h-dvh overflow-hidden">
                 {/* Full-bleed scroll area — content scrolls behind glass header & nav */}
                 <div ref={scrollRef} className="h-full overflow-y-auto overflow-x-hidden overscroll-y-contain">
                     <AnimatePresence mode="wait">

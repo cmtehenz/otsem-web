@@ -480,11 +480,12 @@
     }
 
     .pwa-nav-bottom {
-        bottom: 2px;
+        bottom: 0;
+        padding-bottom: 2px;
     }
 
     .pwa-scroll-pad-bottom {
-        padding-bottom: 5.5rem;
+        padding-bottom: 4.5rem;
     }
 
     .pwa-sheet-safe-bottom {

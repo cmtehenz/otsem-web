@@ -48,8 +48,11 @@ export function BottomNav() {
                 onClose={() => setActionSheetOpen(false)}
             />
 
-            {/* Floating bar wrapper — pinned to bottom, no spacer so content scrolls behind */}
+            {/* Floating bar wrapper — extends to screen edge, pill floats inside via padding */}
             <div className="fixed z-50 left-0 right-0 flex justify-center pointer-events-none pwa-nav-bottom">
+                {/* Soft gradient veil — replaces the hard solid background strip */}
+                <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent pointer-events-none" />
+
                 <nav className="pointer-events-auto relative mx-4 w-full max-w-[400px] rounded-[28px] overflow-hidden liquid-glass-nav">
 
                     {/* Specular highlight — top edge refraction line */}
