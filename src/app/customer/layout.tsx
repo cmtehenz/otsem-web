@@ -94,15 +94,13 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 onSuccess={triggerRefresh}
             />
 
-            <div className="flex h-dvh flex-col bg-background overflow-hidden">
-                <MobileHeader customerName={customerName} />
-
-                {/* Scrollable content area — internal scrolling keeps bottom nav stable on iOS PWA */}
-                <div ref={scrollRef} className="flex-1 relative overflow-y-auto overflow-x-hidden overscroll-y-contain">
+            <div className="relative h-dvh bg-background overflow-hidden">
+                {/* Full-bleed scroll area — content scrolls behind glass header & nav */}
+                <div ref={scrollRef} className="h-full overflow-y-auto overflow-x-hidden overscroll-y-contain">
                     <AnimatePresence mode="wait">
                         <motion.main
                             key={pathname}
-                            className="px-5 pt-1 pwa-scroll-pad-bottom"
+                            className="px-5 pwa-content-top pwa-scroll-pad-bottom"
                             initial={{ opacity: 0, y: 6, scale: 0.97 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.97 }}
@@ -124,6 +122,8 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                     </AnimatePresence>
                 </div>
 
+                {/* Glass overlays — float above scrollable content */}
+                <MobileHeader customerName={customerName} />
                 <BottomNav />
                 <PwaInstallPrompt />
             </div>
