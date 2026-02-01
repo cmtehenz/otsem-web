@@ -48,10 +48,7 @@ export function BottomNav() {
                 onClose={() => setActionSheetOpen(false)}
             />
 
-            {/* Spacer — CSS class handles env(safe-area-inset-bottom) */}
-            <div className="shrink-0 pwa-nav-spacer" />
-
-            {/* Floating bar wrapper — pinned to bottom */}
+            {/* Floating bar wrapper — pinned to bottom, no spacer so content scrolls behind */}
             <div className="fixed z-50 left-0 right-0 flex justify-center pointer-events-none pwa-nav-bottom">
                 <nav className="pointer-events-auto relative mx-4 w-full max-w-[400px] rounded-[28px] overflow-hidden liquid-glass-nav">
 
