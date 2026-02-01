@@ -48,60 +48,21 @@ export function BottomNav() {
                 onClose={() => setActionSheetOpen(false)}
             />
 
-            {/* Spacer */}
-            <div
-                className="shrink-0"
-                style={{
-                    height: "calc(5.5rem + env(safe-area-inset-bottom, 0px))",
-                }}
-            />
+            {/* Spacer — CSS class handles env(safe-area-inset-bottom) */}
+            <div className="shrink-0 pwa-nav-spacer" />
 
-            {/* Floating bar wrapper — pinned to bottom with side margins */}
-            <div
-                className="fixed z-50 left-0 right-0 flex justify-center pointer-events-none"
-                style={{
-                    bottom: "max(env(safe-area-inset-bottom, 0px), 12px)",
-                }}
-            >
-                <nav
-                    className="pointer-events-auto relative mx-4 w-full max-w-[400px] rounded-[28px] overflow-hidden"
-                    style={{
-                        /* Liquid Glass material */
-                        background:
-                            "linear-gradient(135deg, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.55) 100%)",
-                        WebkitBackdropFilter: "blur(50px) saturate(200%)",
-                        backdropFilter: "blur(50px) saturate(200%)",
-                        boxShadow: [
-                            /* outer shadow for depth */
-                            "0 8px 40px -8px rgba(0,0,0,0.12)",
-                            "0 2px 12px -2px rgba(0,0,0,0.06)",
-                            /* inner highlight — light refraction edge */
-                            "inset 0 1px 0 0 rgba(255,255,255,0.8)",
-                            "inset 0 -0.5px 0 0 rgba(0,0,0,0.04)",
-                            /* subtle inner glow */
-                            "inset 0 0 0 0.5px rgba(255,255,255,0.6)",
-                        ].join(", "),
-                    }}
-                >
-                    {/* Dark mode override */}
-                    <div
-                        className="hidden dark:block absolute inset-0 pointer-events-none"
-                        style={{
-                            background:
-                                "linear-gradient(135deg, rgba(26,16,37,0.82) 0%, rgba(10,1,24,0.75) 100%)",
-                            boxShadow: [
-                                "inset 0 1px 0 0 rgba(255,255,255,0.1)",
-                                "inset 0 -0.5px 0 0 rgba(0,0,0,0.3)",
-                                "inset 0 0 0 0.5px rgba(255,255,255,0.06)",
-                            ].join(", "),
-                        }}
-                    />
+            {/* Floating bar wrapper — pinned to bottom */}
+            <div className="fixed z-50 left-0 right-0 flex justify-center pointer-events-none pwa-nav-bottom">
+                <nav className="pointer-events-auto relative mx-4 w-full max-w-[400px] rounded-[28px] overflow-hidden liquid-glass-nav">
 
-                    {/* Specular highlight — top edge refraction */}
-                    <div className="absolute inset-x-4 top-0 h-[0.5px] bg-gradient-to-r from-transparent via-white/70 dark:via-white/15 to-transparent pointer-events-none" />
+                    {/* Specular highlight — top edge refraction line */}
+                    <div className="absolute inset-x-4 top-0 h-[0.5px] bg-gradient-to-r from-transparent via-white/80 dark:via-white/15 to-transparent pointer-events-none z-10" />
+
+                    {/* Bottom edge subtle light */}
+                    <div className="absolute inset-x-6 bottom-0 h-[0.5px] bg-gradient-to-r from-transparent via-white/40 dark:via-white/5 to-transparent pointer-events-none z-10" />
 
                     {/* Tab items */}
-                    <div className="relative flex items-center justify-around px-1 py-2.5">
+                    <div className="relative flex items-center justify-around px-1 py-2.5 z-10">
                         {tabs.map((tab) => {
                             const isActive = tab.id === activeTab;
                             const isAction = tab.id === "action";
@@ -171,14 +132,15 @@ export function BottomNav() {
                                             className="absolute inset-0 rounded-[18px]"
                                             style={{
                                                 background:
-                                                    "linear-gradient(135deg, rgba(111,0,255,0.12) 0%, rgba(139,47,255,0.08) 100%)",
+                                                    "linear-gradient(135deg, rgba(111,0,255,0.14) 0%, rgba(139,47,255,0.08) 100%)",
                                                 boxShadow:
-                                                    "inset 0 0 0 0.5px rgba(111,0,255,0.15), 0 0 12px rgba(111,0,255,0.06)",
+                                                    "inset 0 0 0 0.5px rgba(111,0,255,0.18), 0 0 16px rgba(111,0,255,0.08)",
                                             }}
                                             transition={{
                                                 type: "spring",
-                                                stiffness: 400,
-                                                damping: 30,
+                                                stiffness: 500,
+                                                damping: 32,
+                                                mass: 0.8,
                                             }}
                                         />
                                     )}

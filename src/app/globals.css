@@ -198,6 +198,16 @@
     100% { background-position: 200% 0; }
 }
 
+@keyframes liquid-shimmer {
+    0% { transform: translateX(-100%) skewX(-15deg); }
+    100% { transform: translateX(200%) skewX(-15deg); }
+}
+
+@keyframes liquid-breathe {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
 @keyframes ios-glow {
   0%, 100% { box-shadow: 0 0 20px rgba(111, 0, 255, 0.3); }
   50% { box-shadow: 0 0 40px rgba(111, 0, 255, 0.5); }
@@ -450,6 +460,107 @@
 
     .mobile-safe-area {
         padding-bottom: env(safe-area-inset-bottom, 20px);
+    }
+
+    /* ── PWA safe area utilities ─────────────────────── */
+    /* These MUST be in CSS, not inline styles — Safari ignores env() in style="" */
+
+    .pwa-header-content {
+        padding-top: calc(env(safe-area-inset-top, 0px) + 14px);
+        padding-bottom: 12px;
+    }
+
+    .pwa-header-glass {
+        top: calc(-1 * env(safe-area-inset-top, 0px));
+    }
+
+    .pwa-header-spacer {
+        height: calc(env(safe-area-inset-top, 0px) + 60px);
+    }
+
+    .pwa-nav-bottom {
+        bottom: max(env(safe-area-inset-bottom, 0px), 12px);
+    }
+
+    .pwa-nav-spacer {
+        height: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* ── Liquid Glass nav material ───────────────────── */
+
+    .liquid-glass-nav {
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.82) 0%,
+            rgba(240, 235, 255, 0.72) 50%,
+            rgba(255, 255, 255, 0.68) 100%
+        );
+        -webkit-backdrop-filter: blur(60px) saturate(220%);
+        backdrop-filter: blur(60px) saturate(220%);
+        box-shadow:
+            /* outer depth */
+            0 8px 48px -8px rgba(111, 0, 255, 0.08),
+            0 2px 16px -2px rgba(0, 0, 0, 0.08),
+            /* inner refraction edges */
+            inset 0 1.5px 0 0 rgba(255, 255, 255, 0.9),
+            inset 0 -0.5px 0 0 rgba(0, 0, 0, 0.03),
+            /* inner glow ring */
+            inset 0 0 0 0.5px rgba(255, 255, 255, 0.7);
+        border: 0.5px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .dark .liquid-glass-nav {
+        background: linear-gradient(
+            135deg,
+            rgba(26, 16, 37, 0.85) 0%,
+            rgba(18, 8, 32, 0.80) 50%,
+            rgba(26, 16, 37, 0.78) 100%
+        );
+        box-shadow:
+            0 8px 48px -8px rgba(0, 0, 0, 0.4),
+            0 2px 16px -2px rgba(0, 0, 0, 0.3),
+            inset 0 1.5px 0 0 rgba(255, 255, 255, 0.12),
+            inset 0 -0.5px 0 0 rgba(0, 0, 0, 0.4),
+            inset 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+        border: 0.5px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* Shimmer sweep — the "liquid" refraction */
+    .liquid-glass-nav::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .liquid-glass-nav::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 40%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.25) 50%,
+            transparent 100%
+        );
+        border-radius: inherit;
+        pointer-events: none;
+        animation: liquid-shimmer 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        animation-delay: 1s;
+    }
+
+    .dark .liquid-glass-nav::before {
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.06) 50%,
+            transparent 100%
+        );
     }
 
     .social-icon-hover {
