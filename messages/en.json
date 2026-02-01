@@ -36,6 +36,7 @@
     "kycUpgrades": "KYC Upgrades",
     "system": "System",
     "settings": "Settings",
+    "bankSettings": "Bank Settings",
     "webhooks": "Webhooks",
     "featureFlags": "Feature Flags",
     "logs": "Logs"

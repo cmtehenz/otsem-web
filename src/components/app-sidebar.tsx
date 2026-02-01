@@ -18,6 +18,7 @@ import {
   UserPlus,
   ArrowRightLeft,
   ArrowUpCircle,
+  Building2,
 } from "lucide-react";
 
 import {
@@ -73,6 +74,7 @@ function useNav(): Item[] {
       url: "/admin",
       items: [
         { title: t("settings"), url: "/admin/settings", icon: Settings },
+        { title: t("bankSettings"), url: "/admin/settings/bank", icon: Building2 },
         { title: t("webhooks"), url: "/admin/webhooks", icon: Webhook },
         { title: t("featureFlags"), url: "/admin/flags", icon: Flag },
         { title: t("logs"), url: "/admin/logs", icon: Bug },
