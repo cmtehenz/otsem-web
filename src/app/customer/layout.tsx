@@ -11,6 +11,7 @@ import type { CustomerResponse } from "@/types/customer";
 
 import { BottomNav } from "@/components/layout/BottomNav";
 import { MobileHeader } from "@/components/layout/MobileHeader";
+import { PwaInstallPrompt } from "@/components/layout/PwaInstallPrompt";
 import { DepositModal } from "@/components/modals/deposit-modal";
 import { WithdrawModal } from "@/components/modals/withdraw-modal";
 import { SellUsdtModal } from "@/components/modals/sell-usdt-modal";
@@ -113,6 +114,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 </AnimatePresence>
 
                 <BottomNav />
+                <PwaInstallPrompt />
             </div>
         </Protected>
     );
