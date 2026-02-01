@@ -1,4 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+
+export const viewport: Viewport = {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: "cover",
+    themeColor: "#6F00FF",
+};
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/contexts/auth-context";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -12,9 +21,15 @@ import { getLocale, getMessages } from "next-intl/server";
 export const metadata: Metadata = {
     title: "OtsemPay • BRL ↔ USDT",
     description: "Pagamentos e conversão BRL ↔ USDT com transparência.",
+    manifest: "/manifest.json",
     icons: {
         icon: "/favicon-32.png",
-        apple: "/logo-otsempay.png",
+        apple: "/apple-touch-icon.png",
+    },
+    appleWebApp: {
+        capable: true,
+        title: "Otsem Pay",
+        statusBarStyle: "black-translucent",
     },
 };
 

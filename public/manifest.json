@@ -1,0 +1,27 @@
+{
+  "name": "Otsem Pay",
+  "short_name": "Otsem Pay",
+  "description": "Pagamentos e conversão BRL ↔ USDT com transparência.",
+  "start_url": "/customer/dashboard",
+  "display": "standalone",
+  "background_color": "#0a0118",
+  "theme_color": "#6F00FF",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
