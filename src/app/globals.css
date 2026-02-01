@@ -479,7 +479,7 @@
     }
 
     .pwa-nav-bottom {
-        bottom: 0;
+        bottom: 8px;
     }
 
     .pwa-scroll-pad-bottom {
