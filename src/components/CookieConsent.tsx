@@ -10,6 +10,12 @@ export function CookieConsent() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    // Don't show in PWA standalone mode
+    const isStandalone =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      ('standalone' in navigator && (navigator as unknown as { standalone: boolean }).standalone);
+    if (isStandalone) return;
+
     // Check if user has already made a choice
     const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
     if (!consent) {
@@ -48,7 +54,7 @@ export function CookieConsent() {
               <p className="font-medium mb-1">Utilizamos cookies</p>
               <p className="text-muted-foreground">
                 Utilizamos cookies para melhorar sua experiência de navegação, fornecer conteúdo
-                personalizado e analisar nosso tráfego. Ao clicar em "Aceitar", você concorda com
+                personalizado e analisar nosso tráfego. Ao clicar em &ldquo;Aceitar&rdquo;, você concorda com
                 o uso de cookies.
               </p>
             </div>
