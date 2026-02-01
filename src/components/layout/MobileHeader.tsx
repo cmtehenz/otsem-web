@@ -19,8 +19,9 @@ function getFirstName(name?: string | null): string {
     return name.split(" ")[0];
 }
 
-export function MobileHeader() {
+export function MobileHeader({ customerName }: { customerName?: string }) {
     const { user } = useAuth();
+    const displayName = getFirstName(customerName) || getFirstName(user?.name);
 
     return (
         <motion.header
@@ -58,7 +59,7 @@ export function MobileHeader() {
                             {getGreeting()}
                         </span>
                         <span className="text-sm font-semibold text-foreground leading-tight">
-                            {getFirstName(user?.name)}
+                            {displayName}
                         </span>
                     </div>
                 </div>

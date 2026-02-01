@@ -24,6 +24,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
     const { open, closeModal, triggerRefresh } = useUiModals();
     const [onboardingCompleted, setOnboardingCompleted] = React.useState<boolean | null>(null);
     const [loading, setLoading] = React.useState(true);
+    const [customerName, setCustomerName] = React.useState<string | undefined>();
 
     React.useEffect(() => {
         async function loadData() {
@@ -34,6 +35,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 const customer = "data" in customerRes.data && customerRes.data.data ? customerRes.data.data : customerRes.data;
                 const c = customer as CustomerResponse;
                 setOnboardingCompleted(c.onboardingCompleted ?? true);
+                setCustomerName(c.name);
             } catch (err) {
                 console.error("Erro ao buscar dados do cliente:", err);
                 setOnboardingCompleted(true);
@@ -86,7 +88,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
             />
 
             <div className="flex min-h-dvh flex-col bg-background">
-                <MobileHeader />
+                <MobileHeader customerName={customerName} />
 
                 <AnimatePresence mode="wait">
                     <motion.main

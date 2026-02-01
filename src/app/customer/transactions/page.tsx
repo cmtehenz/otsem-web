@@ -883,14 +883,12 @@ export default function TransactionsPage() {
             )}
 
             {/* ── Summary footer ─────────────────────── */}
-            {paginated.length > 0 && (
+            {totalPages > 1 && paginated.length > 0 && (
                 <motion.p
                     variants={fadeUp}
                     className="text-center text-[11px] text-muted-foreground/50 pb-4"
                 >
-                    Mostrando {(page - 1) * ITEMS_PER_PAGE + 1}–
-                    {Math.min(page * ITEMS_PER_PAGE, filtered.length)} de{" "}
-                    {filtered.length}
+                    Página {page} de {totalPages}
                 </motion.p>
             )}
         </motion.div>
