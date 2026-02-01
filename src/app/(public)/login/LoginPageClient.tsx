@@ -71,7 +71,7 @@ function LoginPageInner(): React.JSX.Element {
     const [requires2FA, setRequires2FA] = React.useState(false);
     const [tempToken, setTempToken] = React.useState('');
     const [userEmail, setUserEmail] = React.useState('');
-    const [pendingUser, setPendingUser] = React.useState<any>(null);
+    const [_pendingUser, setPendingUser] = React.useState<unknown>(null);
 
     const onSubmit: SubmitHandler<LoginForm> = async (values) => {
         try {
@@ -85,8 +85,6 @@ function LoginPageInner(): React.JSX.Element {
                 setPendingUser(result.user);
                 return;
             }
-
-            toast.success(t('auth.welcomeBackToast'));
 
             // Redirect based on role if no 'next' parameter
             if (sp && sp.get('next')) {

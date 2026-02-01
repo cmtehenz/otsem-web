@@ -44,6 +44,34 @@ function BottomSheet({ open = false, onOpenChange, children }: BottomSheetProps)
 }
 
 /* ------------------------------------------------------------------ */
+/*  Visual Viewport hook — tracks keyboard open/close on iOS          */
+/* ------------------------------------------------------------------ */
+
+function useVisualViewportHeight(enabled: boolean) {
+  const [height, setHeight] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    if (!enabled) {
+      setHeight(null);
+      return;
+    }
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const update = () => setHeight(vv.height);
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
+  }, [enabled]);
+
+  return height;
+}
+
+/* ------------------------------------------------------------------ */
 /*  Content                                                            */
 /* ------------------------------------------------------------------ */
 
@@ -65,6 +93,8 @@ function BottomSheetContent({
 }: BottomSheetContentProps) {
   const { open, onOpenChange } = React.useContext(BottomSheetContext);
   const [mounted, setMounted] = React.useState(false);
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const vvHeight = useVisualViewportHeight(open);
 
   React.useEffect(() => {
     setMounted(true);
@@ -81,6 +111,28 @@ function BottomSheetContent({
     }
   }, [open]);
 
+  // Auto-scroll focused input into view when keyboard opens
+  React.useEffect(() => {
+    if (!open) return;
+
+    const handleFocusIn = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.tagName === "SELECT"
+      ) {
+        // Small delay to let the keyboard animate open
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 300);
+      }
+    };
+
+    document.addEventListener("focusin", handleFocusIn);
+    return () => document.removeEventListener("focusin", handleFocusIn);
+  }, [open]);
+
   const handleDragEnd = React.useCallback(
     (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
       if (
@@ -94,6 +146,11 @@ function BottomSheetContent({
   );
 
   if (!mounted) return null;
+
+  // When keyboard is open, vvHeight shrinks. Use it for maxHeight.
+  const maxHeightStyle: React.CSSProperties = vvHeight
+    ? { maxHeight: `${vvHeight * 0.94}px` }
+    : {};
 
   return createPortal(
     <AnimatePresence>
@@ -113,42 +170,41 @@ function BottomSheetContent({
           {/* Sheet */}
           <motion.div
             key="bs-sheet"
+            ref={contentRef}
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{
               type: "spring",
-              stiffness: 400,
-              damping: 34,
+              stiffness: 420,
+              damping: 36,
               mass: 0.8,
             }}
             drag="y"
             dragConstraints={{ top: 0 }}
-            dragElastic={0.2}
+            dragElastic={0.15}
             onDragEnd={handleDragEnd}
             className={cn(
               "fixed inset-x-0 bottom-0 z-50 flex flex-col",
-              "max-h-[92vh]",
+              "max-h-[92dvh]",
               "bg-background/95 dark:bg-[#1a1025]/95",
               "backdrop-blur-xl",
               "border-t border-white/[0.08]",
-              "rounded-t-[20px]",
-              "shadow-[0_-8px_32px_rgba(0,0,0,0.2)]",
-              side === "center" && "sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:max-w-lg sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:rounded-[20px] sm:border",
+              "rounded-t-[24px]",
+              "shadow-[0_-8px_32px_rgba(0,0,0,0.15)]",
+              "pwa-sheet-safe-bottom",
+              side === "center" && "sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:max-w-lg sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:rounded-[24px] sm:border",
               className
             )}
-            style={{
-              paddingBottom:
-                "max(env(safe-area-inset-bottom, 0px), 16px)",
-            }}
+            style={maxHeightStyle}
           >
             {/* Drag handle */}
             <div className="flex justify-center pt-3 pb-2 shrink-0 cursor-grab active:cursor-grabbing">
-              <div className="h-1 w-9 rounded-full bg-muted-foreground/30" />
+              <div className="h-1 w-9 rounded-full bg-muted-foreground/25" />
             </div>
 
             {/* Inner content — scrollable */}
-            <div className="flex-1 overflow-y-auto overscroll-contain px-5 pb-4">
+            <div className="flex-1 overflow-y-auto overscroll-contain px-5 pb-4 scrollbar-hide">
               {children}
             </div>
 

@@ -49,8 +49,7 @@ export function PwaInstallPrompt() {
         <AnimatePresence>
             {visible && (
                 <motion.div
-                    className="fixed left-4 right-4 z-[55]"
-                    style={{ bottom: "calc(6.5rem + env(safe-area-inset-bottom, 0px))" }}
+                    className="fixed left-4 right-4 z-[55] pwa-install-prompt-bottom"
                     initial={{ opacity: 0, y: 40, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 40, scale: 0.95 }}

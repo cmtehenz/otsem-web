@@ -486,6 +486,14 @@
         height: calc(5.5rem + env(safe-area-inset-bottom, 0px));
     }
 
+    .pwa-sheet-safe-bottom {
+        padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
+    }
+
+    .pwa-install-prompt-bottom {
+        bottom: calc(6.5rem + env(safe-area-inset-bottom, 0px));
+    }
+
     /* ── Liquid Glass nav material ───────────────────── */
 
     .liquid-glass-nav {

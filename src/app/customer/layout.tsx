@@ -95,12 +95,14 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                     <motion.main
                         key={pathname}
                         className="flex-1 px-5 pt-3 pb-4"
-                        initial={{ opacity: 0, scale: 0.985 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
+                        initial={{ opacity: 0, y: 6, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.97 }}
                         transition={{
-                            duration: 0.18,
-                            ease: [0.32, 0.72, 0, 1],
+                            type: "spring",
+                            stiffness: 380,
+                            damping: 30,
+                            mass: 0.8,
                         }}
                     >
                         {loading ? (
