@@ -176,36 +176,13 @@ export function WithdrawModal() {
         setStep("amount");
     }
 
-    async function handleContinueToConfirm() {
+    function handleContinueToConfirm() {
         if (cents < 100) {
             toast.error("Valor mínimo: R$ 1,00");
             return;
         }
-
-        setLoading(true);
         setError(null);
-        try {
-            // Realiza o precheck conforme API spec
-            const res = await http.get(`/pix/transactions/account-holders/${customerId}/precheck`, {
-                params: {
-                    keyType: selectedKey?.keyType,
-                    keyValue: selectedKey?.keyValue
-                }
-            });
-            
-            if (res.data && res.data.valid) {
-                // Se desejar, pode salvar o recipientName retornado no precheck para exibir no confirm
-                // setRecipientName(res.data.recipientName);
-                setStep("confirm");
-            } else {
-                setError("Chave Pix inválida ou não encontrada");
-            }
-        } catch (err) {
-            console.error("Precheck error:", err);
-            setError("Não foi possível validar o destinatário. Tente novamente.");
-        } finally {
-            setLoading(false);
-        }
+        setStep("confirm");
     }
 
     const displayAmount = formatCurrency(cents);
