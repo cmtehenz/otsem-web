@@ -83,11 +83,11 @@ type AffiliatesResponse = {
   totalPages: number;
 };
 
-function formatCurrency(value: number): string {
+function formatCurrency(value: number | undefined | null): string {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
-  }).format(value);
+  }).format(value ?? 0);
 }
 
 function formatDate(dateStr: string): string {
@@ -98,12 +98,13 @@ function formatDate(dateStr: string): string {
   });
 }
 
-function formatUsdt(value: number): string {
-  return `$ ${value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+function formatUsdt(value: number | undefined | null): string {
+  const v = value ?? 0;
+  return `$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-function formatPercent(value: number): string {
-  return `${(value * 100).toFixed(2)}%`;
+function formatPercent(value: number | undefined | null): string {
+  return `${((value ?? 0) * 100).toFixed(2)}%`;
 }
 
 export default function AdminAffiliatesPage() {
@@ -143,9 +144,9 @@ export default function AdminAffiliatesPage() {
         (acc, a) => ({
           totalAffiliates: acc.totalAffiliates + 1,
           activeAffiliates: acc.activeAffiliates + (a.isActive ? 1 : 0),
-          totalClients: acc.totalClients + a.totalClients,
-          totalCommission: acc.totalCommission + a.totalCommission,
-          pendingCommission: acc.pendingCommission + a.pendingCommission,
+          totalClients: acc.totalClients + (a.totalClients ?? 0),
+          totalCommission: acc.totalCommission + (a.totalCommission ?? 0),
+          pendingCommission: acc.pendingCommission + (a.pendingCommission ?? 0),
         }),
         {
           totalAffiliates: 0,
@@ -380,27 +381,27 @@ export default function AdminAffiliatesPage() {
                       {formatPercent(affiliate.spreadRate)}
                     </TableCell>
                     <TableCell className="text-center">
-                      {affiliate.totalClients}
+                      {affiliate.totalClients ?? 0}
                     </TableCell>
                     <TableCell className="text-right">
                       {formatCurrency(affiliate.totalCommission)}
                     </TableCell>
                     <TableCell className="text-right">
-                      {affiliate.totalEarningsUsdt > 0
+                      {(affiliate.totalEarningsUsdt ?? 0) > 0
                         ? formatUsdt(affiliate.totalEarningsUsdt)
                         : "-"}
                     </TableCell>
                     <TableCell className="text-right">
                       <span
                         className={
-                          affiliate.pendingCommission > 0
+                          (affiliate.pendingCommission ?? 0) > 0
                             ? "text-amber-500 font-medium"
                             : ""
                         }
                       >
                         {formatCurrency(affiliate.pendingCommission)}
                       </span>
-                      {affiliate.pendingEarningsUsdt > 0 && (
+                      {(affiliate.pendingEarningsUsdt ?? 0) > 0 && (
                         <span className="block text-xs text-amber-500">
                           {formatUsdt(affiliate.pendingEarningsUsdt)}
                         </span>

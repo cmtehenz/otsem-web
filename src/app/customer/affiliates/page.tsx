@@ -46,8 +46,8 @@ type Commission = {
 
 // ─── Helpers ─────────────────────────────────────────────
 
-function formatCurrency(value: number): string {
-    return value.toLocaleString("pt-BR", {
+function formatCurrency(value: number | undefined | null): string {
+    return (value ?? 0).toLocaleString("pt-BR", {
         style: "currency",
         currency: "BRL",
         minimumFractionDigits: 2,
@@ -55,8 +55,9 @@ function formatCurrency(value: number): string {
     });
 }
 
-function formatUsdt(value: number): string {
-    return `$ ${value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+function formatUsdt(value: number | undefined | null): string {
+    const v = value ?? 0;
+    return `$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function formatDate(dateString: string): string {
@@ -260,10 +261,10 @@ export default function AffiliatesPage() {
                             <Users className="w-4 h-4 text-[#6F00FF]" strokeWidth={2} />
                         </div>
                     </div>
-                    <p className="text-[20px] font-bold text-foreground">{stats.totalReferrals}</p>
+                    <p className="text-[20px] font-bold text-foreground">{stats.totalReferrals ?? 0}</p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">Total indicados</p>
                     <p className="text-[11px] text-[#6F00FF] dark:text-[#8B2FFF] font-medium mt-0.5">
-                        {stats.activeReferrals} ativos
+                        {stats.activeReferrals ?? 0} ativos
                     </p>
                 </div>
 
@@ -277,14 +278,14 @@ export default function AffiliatesPage() {
                     <p className="text-[20px] font-bold text-emerald-600 dark:text-emerald-400">
                         {formatCurrency(stats.totalEarnings)}
                     </p>
-                    {stats.totalEarningsUsdt > 0 && (
+                    {(stats.totalEarningsUsdt ?? 0) > 0 && (
                         <p className="text-[12px] text-emerald-600 dark:text-emerald-400 font-medium">
                             {formatUsdt(stats.totalEarningsUsdt)} USDT
                         </p>
                     )}
                     <p className="text-[11px] text-muted-foreground mt-0.5">Total ganho</p>
                     <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">
-                        {stats.commissionRate}% comissão
+                        {stats.commissionRate ?? 0}% comissão
                     </p>
                 </div>
 
@@ -298,7 +299,7 @@ export default function AffiliatesPage() {
                     <p className="text-[20px] font-bold text-amber-600 dark:text-amber-400">
                         {formatCurrency(stats.pendingEarnings)}
                     </p>
-                    {stats.pendingEarningsUsdt > 0 && (
+                    {(stats.pendingEarningsUsdt ?? 0) > 0 && (
                         <p className="text-[12px] text-amber-600 dark:text-amber-400 font-medium">
                             {formatUsdt(stats.pendingEarningsUsdt)} USDT
                         </p>
@@ -430,7 +431,7 @@ export default function AffiliatesPage() {
                                         <span className="text-[14px] font-semibold text-emerald-600 dark:text-emerald-400 block">
                                             {formatCurrency(commission.amount)}
                                         </span>
-                                        {commission.amountUsdt > 0 && (
+                                        {(commission.amountUsdt ?? 0) > 0 && (
                                             <span className="text-[11px] text-muted-foreground">
                                                 {formatUsdt(commission.amountUsdt)} USDT
                                             </span>

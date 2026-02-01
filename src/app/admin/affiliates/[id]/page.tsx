@@ -98,11 +98,11 @@ type Commission = {
   clientName: string;
 };
 
-function formatCurrency(value: number): string {
+function formatCurrency(value: number | undefined | null): string {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
-  }).format(value);
+  }).format(value ?? 0);
 }
 
 function formatDate(dateStr: string): string {
@@ -123,12 +123,13 @@ function formatDateTime(dateStr: string): string {
   });
 }
 
-function formatUsdt(value: number): string {
-  return `$ ${value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+function formatUsdt(value: number | undefined | null): string {
+  const v = value ?? 0;
+  return `$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-function formatPercent(value: number): string {
-  return `${(value * 100).toFixed(2)}%`;
+function formatPercent(value: number | undefined | null): string {
+  return `${((value ?? 0) * 100).toFixed(2)}%`;
 }
 
 export default function AffiliateDetailPage() {
@@ -360,7 +361,7 @@ export default function AffiliateDetailPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{affiliate.totalClients}</div>
+            <div className="text-2xl font-bold">{affiliate.totalClients ?? 0}</div>
           </CardContent>
         </Card>
 
@@ -375,7 +376,7 @@ export default function AffiliateDetailPage() {
             <div className="text-2xl font-bold">
               {formatCurrency(affiliate.totalCommission)}
             </div>
-            {affiliate.totalEarningsUsdt > 0 && (
+            {(affiliate.totalEarningsUsdt ?? 0) > 0 && (
               <p className="text-sm text-muted-foreground mt-1">
                 {formatUsdt(affiliate.totalEarningsUsdt)} USDT
               </p>
@@ -394,12 +395,12 @@ export default function AffiliateDetailPage() {
             <div className="text-2xl font-bold text-amber-500">
               {formatCurrency(affiliate.pendingCommission)}
             </div>
-            {affiliate.pendingEarningsUsdt > 0 && (
+            {(affiliate.pendingEarningsUsdt ?? 0) > 0 && (
               <p className="text-sm text-amber-500 mt-1">
                 {formatUsdt(affiliate.pendingEarningsUsdt)} USDT
               </p>
             )}
-            {affiliate.pendingCommission > 0 && (
+            {(affiliate.pendingCommission ?? 0) > 0 && (
               <Button
                 size="sm"
                 className="mt-2"
@@ -612,13 +613,13 @@ export default function AffiliateDetailPage() {
                           {formatCurrency(commission.amount)}
                         </TableCell>
                         <TableCell className="text-right">
-                          {commission.commissionUsdt > 0
+                          {(commission.commissionUsdt ?? 0) > 0
                             ? formatUsdt(commission.commissionUsdt)
                             : "-"}
                         </TableCell>
                         <TableCell className="text-right text-sm text-muted-foreground">
-                          {commission.exchangeRate > 0
-                            ? commission.exchangeRate.toFixed(2)
+                          {(commission.exchangeRate ?? 0) > 0
+                            ? (commission.exchangeRate ?? 0).toFixed(2)
                             : "-"}
                         </TableCell>
                         <TableCell className="text-center">
