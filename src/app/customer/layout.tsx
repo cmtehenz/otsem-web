@@ -91,29 +91,32 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
             <div className="flex min-h-dvh flex-col bg-background">
                 <MobileHeader customerName={customerName} />
 
-                <AnimatePresence mode="wait">
-                    <motion.main
-                        key={pathname}
-                        className="flex-1 px-5 pt-3 pb-4"
-                        initial={{ opacity: 0, y: 6, scale: 0.97 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.97 }}
-                        transition={{
-                            type: "spring",
-                            stiffness: 380,
-                            damping: 30,
-                            mass: 0.8,
-                        }}
-                    >
-                        {loading ? (
-                            <div className="flex items-center justify-center h-[60vh]">
-                                <LoadingSpinner />
-                            </div>
-                        ) : (
-                            children
-                        )}
-                    </motion.main>
-                </AnimatePresence>
+                {/* Stable flex-1 wrapper prevents layout collapse during AnimatePresence swap */}
+                <div className="flex-1 relative min-h-0">
+                    <AnimatePresence mode="wait">
+                        <motion.main
+                            key={pathname}
+                            className="px-5 pt-3 pb-4"
+                            initial={{ opacity: 0, y: 6, scale: 0.97 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.97 }}
+                            transition={{
+                                type: "spring",
+                                stiffness: 380,
+                                damping: 30,
+                                mass: 0.8,
+                            }}
+                        >
+                            {loading ? (
+                                <div className="flex items-center justify-center h-[60vh]">
+                                    <LoadingSpinner />
+                                </div>
+                            ) : (
+                                children
+                            )}
+                        </motion.main>
+                    </AnimatePresence>
+                </div>
 
                 <BottomNav />
                 <PwaInstallPrompt />

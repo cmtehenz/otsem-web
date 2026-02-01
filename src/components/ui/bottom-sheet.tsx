@@ -48,13 +48,13 @@ function BottomSheet({ open = false, onOpenChange, children }: BottomSheetProps)
 /* ------------------------------------------------------------------ */
 
 function useVisualViewportHeight(enabled: boolean) {
-  const [height, setHeight] = React.useState<number | null>(null);
+  // Initialize with the current viewport height to avoid a null→number jump on first render
+  const [height, setHeight] = React.useState<number>(
+    () => (typeof window !== "undefined" ? (window.visualViewport?.height ?? window.innerHeight) : 800)
+  );
 
   React.useEffect(() => {
-    if (!enabled) {
-      setHeight(null);
-      return;
-    }
+    if (!enabled) return;
     const vv = window.visualViewport;
     if (!vv) return;
 
@@ -111,9 +111,11 @@ function BottomSheetContent({
     }
   }, [open]);
 
-  // Auto-scroll focused input into view when keyboard opens
+  // Auto-scroll focused input into view when keyboard opens — scoped to sheet
   React.useEffect(() => {
     if (!open) return;
+    const el = contentRef.current;
+    if (!el) return;
 
     const handleFocusIn = (e: FocusEvent) => {
       const target = e.target as HTMLElement;
@@ -122,15 +124,15 @@ function BottomSheetContent({
         target.tagName === "TEXTAREA" ||
         target.tagName === "SELECT"
       ) {
-        // Small delay to let the keyboard animate open
+        // Wait for keyboard animation to complete on iOS (~300ms)
         setTimeout(() => {
           target.scrollIntoView({ behavior: "smooth", block: "center" });
-        }, 300);
+        }, 350);
       }
     };
 
-    document.addEventListener("focusin", handleFocusIn);
-    return () => document.removeEventListener("focusin", handleFocusIn);
+    el.addEventListener("focusin", handleFocusIn);
+    return () => el.removeEventListener("focusin", handleFocusIn);
   }, [open]);
 
   const handleDragEnd = React.useCallback(
@@ -147,10 +149,11 @@ function BottomSheetContent({
 
   if (!mounted) return null;
 
-  // When keyboard is open, vvHeight shrinks. Use it for maxHeight.
-  const maxHeightStyle: React.CSSProperties = vvHeight
-    ? { maxHeight: `${vvHeight * 0.94}px` }
-    : {};
+  // Cap sheet height to 94% of visual viewport — shrinks when iOS keyboard opens
+  const maxHeightStyle: React.CSSProperties = {
+    maxHeight: `${vvHeight * 0.94}px`,
+    transition: "max-height 0.25s cubic-bezier(0.32, 0.72, 0, 1)",
+  };
 
   return createPortal(
     <AnimatePresence>

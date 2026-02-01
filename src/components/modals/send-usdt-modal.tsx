@@ -153,7 +153,7 @@ export default function SendUsdtModal() {
 
                         <Button
                             onClick={handleClose}
-                            className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold"
+                            className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold"
                         >
                             Fechar
                         </Button>
@@ -256,7 +256,7 @@ export default function SendUsdtModal() {
                             <Button
                                 onClick={handleSend}
                                 disabled={sending || !selectedWalletId || !toAddress.trim() || !amount.trim()}
-                                className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#6F00FF]/50 hover:to-[#6F00FF] text-white font-semibold"
+                                className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold"
                             >
                                 {sending ? (
                                     <>
