@@ -122,20 +122,9 @@ export function ActionSheet({
                             }
                         }}
                     >
-                        <div
-                            className="relative rounded-t-[28px] overflow-hidden"
-                            style={{
-                                paddingBottom: "max(env(safe-area-inset-bottom, 0px), 16px)",
-                            }}
-                        >
+                        <div className="relative rounded-t-[28px] overflow-hidden pwa-sheet-safe-bottom">
                             {/* Glass background */}
-                            <div
-                                className="absolute inset-0 bg-white/80 dark:bg-[#1a1025]/90 border-t border-white/40 dark:border-white/[0.08]"
-                                style={{
-                                    WebkitBackdropFilter: "blur(40px) saturate(180%)",
-                                    backdropFilter: "blur(40px) saturate(180%)",
-                                }}
-                            />
+                            <div className="absolute inset-0 bg-white/80 dark:bg-[#1a1025]/90 border-t border-white/40 dark:border-white/[0.08] backdrop-blur-[40px] saturate-[180%]" />
 
                             <div className="relative px-6 pt-3 pb-4">
                                 {/* Drag handle */}
