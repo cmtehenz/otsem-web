@@ -84,7 +84,7 @@ export function WithdrawModal() {
     }
 
     async function handleSendPix() {
-        if (!selectedKey || !customerId) return;
+        if (!selectedKey) return;
 
         setLoading(true);
         setError(null);
@@ -92,11 +92,11 @@ export function WithdrawModal() {
         try {
             const valorDecimal = Number((cents / 100).toFixed(2));
 
-            const res = await http.post<SendPixResponse>(`/pix/transactions/account-holders/${customerId}/send`, {
-                amount: valorDecimal,
-                description: `Transferência PIX para ${selectedKey.keyValue}`,
-                recipientKeyType: selectedKey.keyType,
-                recipientKeyValue: selectedKey.keyValue
+            const res = await http.post<SendPixResponse>(`/inter/pix/send-pix`, {
+                valor: valorDecimal,
+                chaveDestino: selectedKey.keyValue,
+                tipoChave: selectedKey.keyType,
+                descricao: `Transferência PIX para ${selectedKey.keyValue}`,
             });
 
             setTxResult(res.data);
