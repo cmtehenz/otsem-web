@@ -26,6 +26,12 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
     const [onboardingCompleted, setOnboardingCompleted] = React.useState<boolean | null>(null);
     const [loading, setLoading] = React.useState(true);
     const [customerName, setCustomerName] = React.useState<string | undefined>();
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+
+    // Reset scroll position on page navigation
+    React.useEffect(() => {
+        scrollRef.current?.scrollTo(0, 0);
+    }, [pathname]);
 
     React.useEffect(() => {
         async function loadData() {
@@ -88,11 +94,11 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 onSuccess={triggerRefresh}
             />
 
-            <div className="flex min-h-dvh flex-col bg-background">
+            <div className="flex h-dvh flex-col bg-background overflow-hidden">
                 <MobileHeader customerName={customerName} />
 
-                {/* Stable flex-1 wrapper prevents layout collapse during AnimatePresence swap */}
-                <div className="flex-1 relative min-h-0">
+                {/* Scrollable content area — internal scrolling keeps bottom nav stable on iOS PWA */}
+                <div ref={scrollRef} className="flex-1 relative overflow-y-auto overflow-x-hidden overscroll-y-contain">
                     <AnimatePresence mode="wait">
                         <motion.main
                             key={pathname}
