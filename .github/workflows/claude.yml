@@ -1,17 +1,121 @@
-name: Claude Integration
-on: [push, pull_request]
+name: Claude Code Agent
+
+on:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created]
 
 jobs:
-  claude-task:
+  claude-agent:
+    if: contains(github.event.issue.labels.*.name, 'claude') || contains(github.event.comment.body, '@claude')
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Get issue or comment content
+        id: get-content
+        run: |
+          if [ "${{ github.event_name }}" == "issue_comment" ]; then
+            echo "prompt<<EOF" >> $GITHUB_OUTPUT
+            echo "${{ github.event.comment.body }}" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "prompt<<EOF" >> $GITHUB_OUTPUT
+            echo "${{ github.event.issue.title }}: ${{ github.event.issue.body }}" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
+
       - name: Call Claude API
+        id: claude
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          curl https://api.anthropic.com/v1/messages \
+          PROMPT=$(cat << 'PROMPT_END'
+          ${{ steps.get-content.outputs.prompt }}
+          PROMPT_END
+          )
+          
+          RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
             -H "x-api-key: $ANTHROPIC_API_KEY" \
             -H "anthropic-version: 2023-06-01" \
             -H "content-type: application/json" \
-            -d '{"model": "claude-opus-4-5-20251101", "max_tokens": 1024, "messages": [{"role": "user", "content": "Hello"}]}'
+            -d "$(jq -n \
+              --arg prompt "$PROMPT" \
+              '{
+                model: "claude-opus-4-5-20251101",
+                max_tokens: 4096,
+                system: "You are a senior developer working on OtsemPay, a Next.js/TypeScript digital banking platform. When asked to make changes, respond with the exact file paths and complete code. Format code changes as: FILE: path/to/file\n```language\ncode here\n```",
+                messages: [{role: "user", content: $prompt}]
+              }')")
+          
+          echo "response<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESPONSE" | jq -r '.content[0].text' >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Parse and apply code changes
+        id: apply-changes
+        run: |
+          RESPONSE='${{ steps.claude.outputs.response }}'
+          
+          # Extract file changes using pattern FILE: path
+          echo "$RESPONSE" | awk '
+            /^FILE: / { 
+              if (file) close(file)
+              file = substr($0, 7)
+              getline
+              if ($0 ~ /^```/) getline
+              next
+            }
+            /^```$/ { file = ""; next }
+            file { print > file }
+          '
+          
+          # Check if any files were changed
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.apply-changes.outputs.changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="claude/issue-${{ github.event.issue.number }}"
+          git config user.name "claude[bot]"
+          git config user.email "claude[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add -A
+          git commit -m "feat: implement changes from issue #${{ github.event.issue.number }}"
+          git push -u origin "$BRANCH"
+          
+          gh pr create \
+            --title "Claude: ${{ github.event.issue.title }}" \
+            --body "Automated PR from Claude based on issue #${{ github.event.issue.number }}\n\n## Changes\n${{ steps.claude.outputs.response }}" \
+            --base main \
+            --head "$BRANCH"
+
+      - name: Comment on issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ steps.apply-changes.outputs.changes }}" == "true" ]; then
+            gh issue comment ${{ github.event.issue.number }} --body "✅ I've created a PR with the requested changes. Please review!"
+          else
+            gh issue comment ${{ github.event.issue.number }} --body "${{ steps.claude.outputs.response }}"
+          fi
