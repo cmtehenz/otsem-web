@@ -2,7 +2,6 @@
 
 import { useAuth } from "@/contexts/auth-context";
 import { motion } from "framer-motion";
-import { Bell } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -58,12 +57,6 @@ export function MobileHeader({ customerName }: { customerName?: string }) {
                                 {displayName}
                             </span>
                         </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <button className="relative flex items-center justify-center w-10 h-10 rounded-full bg-white/50 dark:bg-white/[0.06] border border-white/60 dark:border-white/[0.08] active:scale-95 transition-transform">
-                            <Bell className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.8} />
-                        </button>
                     </div>
                 </div>
             </motion.header>
