@@ -37,6 +37,7 @@ export const metadata: Metadata = {
 // import { ConnectionStatus } from "@/components/connection-status";
 // import { validateEnv } from "@/lib/env";
 import { CookieConsent } from "@/components/CookieConsent";
+import { ServiceWorkerRegistrar } from "@/components/ServiceWorkerRegistrar";
 
 export default async function RootLayout({
   children,
@@ -84,6 +85,7 @@ export default async function RootLayout({
         </ThemeProvider>
         </NextIntlClientProvider>
         <VisualEditsMessenger />
+        <ServiceWorkerRegistrar />
       </body>
     </html>
   );
