@@ -22,6 +22,7 @@ const config = [
       "build/**",
       "next-env.d.ts",
       "**/*.d.ts",
+      "public/sw.js",
     ],
   },
 
