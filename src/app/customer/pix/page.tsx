@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { isAxiosError } from "axios";
-import http, { proxyClient } from "@/lib/http";
+import http from "@/lib/http";
+import { pixPost } from "@/lib/pix";
 import { motion } from "framer-motion";
 import {
   Loader2,
@@ -247,7 +248,7 @@ export default function CustomerPixPage() {
   async function handleValidate(pixKeyId: string) {
     setValidating(pixKeyId);
     try {
-      await proxyClient.post("/api/pix/validar-chave/" + pixKeyId);
+      await pixPost("validar-chave/" + pixKeyId);
       toast.success("Chave validada com sucesso!");
       loadPixKeys();
     } catch (err: unknown) {

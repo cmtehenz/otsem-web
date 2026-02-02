@@ -68,44 +68,6 @@ httpClient.interceptors.response.use(
 
 export default httpClient;
 
-// Same-origin axios instance for requests that go through Next.js API routes
-// (no baseURL → relative URLs resolve to the app's own origin).
-const proxyClient: AxiosInstance = axios.create({
-    timeout: 30000,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
-
-proxyClient.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
-        const token = getAccessToken();
-        if (token && config.headers) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
-
-proxyClient.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response?.status === 401) {
-            clearTokens();
-            if (typeof window !== 'undefined' &&
-                !window.location.pathname.includes('/login') &&
-                !window.location.pathname.includes('/admin-login') &&
-                !window.location.pathname.includes('/register')) {
-                window.location.href = '/login';
-            }
-        }
-        return Promise.reject(error);
-    }
-);
-
-export { proxyClient };
-
 // Método helper para requisições autenticadas
 function withAnonymous(config?: CustomAxiosConfig): AxiosRequestConfig {
     if (!config) return {};

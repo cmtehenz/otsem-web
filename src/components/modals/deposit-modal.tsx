@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useUiModals } from "@/stores/ui-modals";
 import { Copy, Check, QrCode, Loader2, ArrowLeft, Clock } from "lucide-react";
 import { toast } from "sonner";
-import { proxyClient } from "@/lib/http";
+import { pixPost } from "@/lib/pix";
 import QRCode from "qrcode";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -69,7 +69,7 @@ export function DepositModal() {
         try {
             const valorDecimal = Number((cents / 100).toFixed(2));
 
-            const res = await proxyClient.post<{ pixCopiaECola: string }>("/api/pix/cobrancas", {
+            const res = await pixPost<{ pixCopiaECola: string }>("cobrancas", {
                 customerId: customerId,
                 valor: valorDecimal,
                 descricao: `Depósito via PIX - ${formatCurrency(cents)}`,

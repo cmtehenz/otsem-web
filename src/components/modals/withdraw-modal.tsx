@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { useUiModals } from "@/stores/ui-modals";
 import { Loader2, ArrowLeft, Send, AlertCircle, CheckCircle2, KeyRound, Plus, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
-import http, { proxyClient } from "@/lib/http";
+import http from "@/lib/http";
+import { pixPost } from "@/lib/pix";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -92,7 +93,7 @@ export function WithdrawModal() {
         try {
             const valorDecimal = Number((cents / 100).toFixed(2));
 
-            const res = await proxyClient.post<SendPixResponse>(`/api/pix/send-pix`, {
+            const res = await pixPost<SendPixResponse>("send-pix", {
                 valor: valorDecimal,
                 chaveDestino: selectedKey.keyValue,
                 tipoChave: selectedKey.keyType,
