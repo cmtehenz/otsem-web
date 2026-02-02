@@ -38,20 +38,6 @@ const BANK_LABELS: Record<BankProvider, string> = {
   FDBANK: "FDBank",
 };
 
-/** Sync the active bank to the Next.js server-side cache so the PIX proxy
- *  routes customer requests to the correct bank endpoint. */
-async function syncBankCache(provider: string) {
-  try {
-    await fetch("/api/bank-provider", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ provider }),
-    });
-  } catch {
-    // Non-critical – the proxy will lazily initialise from the backend.
-  }
-}
-
 export default function BankSettingsPage() {
   const [settings, setSettings] = React.useState<BankSettings | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -63,8 +49,6 @@ export default function BankSettingsPage() {
     try {
       const res = await http.get<BankSettings>("/admin/settings/bank");
       setSettings(res.data);
-      // Keep the server-side PIX proxy cache in sync.
-      syncBankCache(res.data.activeBankProvider);
     } catch {
       toast.error("Failed to load bank settings");
     } finally {
@@ -89,8 +73,6 @@ export default function BankSettingsPage() {
           ? { ...prev, activeBankProvider: res.data.activeBankProvider }
           : prev
       );
-      // Update the server-side PIX proxy cache immediately.
-      syncBankCache(res.data.activeBankProvider);
       toast.success(res.data.message);
     } catch {
       toast.error("Failed to switch active bank");
