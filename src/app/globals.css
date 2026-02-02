@@ -481,11 +481,11 @@
 
     .pwa-nav-bottom {
         bottom: 0;
-        padding-bottom: 2px;
+        padding-bottom: max(env(safe-area-inset-bottom, 0px), 2px);
     }
 
     .pwa-scroll-pad-bottom {
-        padding-bottom: 4.5rem;
+        padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
     }
 
     .pwa-sheet-safe-bottom {
