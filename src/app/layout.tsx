@@ -6,7 +6,10 @@ export const viewport: Viewport = {
     maximumScale: 1,
     userScalable: false,
     viewportFit: "cover",
-    themeColor: "#6F00FF",
+    themeColor: [
+        { color: "#6F00FF", media: "(prefers-color-scheme: light)" },
+        { color: "#0a0118", media: "(prefers-color-scheme: dark)" },
+    ],
 };
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/auth-context";
