@@ -105,6 +105,50 @@ self.addEventListener("fetch", (event) => {
   }
 });
 
+// ── Push notifications ───────────────────────────────────────────────────────
+self.addEventListener("push", (event) => {
+  if (!event.data) return;
+
+  let payload;
+  try {
+    payload = event.data.json();
+  } catch {
+    payload = { title: "Otsem Pay", body: event.data.text() };
+  }
+
+  const { title = "Otsem Pay", body = "", icon, url, ...rest } = payload;
+
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body,
+      icon: icon || "/icon-192.png",
+      badge: "/favicon-32.png",
+      data: { url: url || "/customer/dashboard" },
+      ...rest,
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const targetUrl = event.notification.data?.url || "/customer/dashboard";
+
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+      // Focus an existing tab if one is open
+      for (const client of clients) {
+        if (new URL(client.url).origin === self.location.origin) {
+          client.focus();
+          client.navigate(targetUrl);
+          return;
+        }
+      }
+      // Otherwise open a new window
+      return self.clients.openWindow(targetUrl);
+    })
+  );
+});
+
 // ── Message handler (for skip-waiting from app update prompt) ────────────────
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
