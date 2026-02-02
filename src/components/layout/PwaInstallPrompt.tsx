@@ -2,9 +2,14 @@
 
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Share, Plus } from "lucide-react";
+import { X, Share, Plus, Download } from "lucide-react";
 
 const STORAGE_KEY = "pwa-install-dismissed";
+
+interface BeforeInstallPromptEvent extends Event {
+    prompt(): Promise<void>;
+    userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
 
 function isIosSafari(): boolean {
     if (typeof window === "undefined") return false;
@@ -24,18 +29,53 @@ function isStandalone(): boolean {
     return false;
 }
 
+type PromptPlatform = "ios" | "android" | null;
+
 export function PwaInstallPrompt() {
     const [visible, setVisible] = React.useState(false);
     const [dontRemind, setDontRemind] = React.useState(false);
+    const [platform, setPlatform] = React.useState<PromptPlatform>(null);
+    const deferredPromptRef = React.useRef<BeforeInstallPromptEvent | null>(null);
 
     React.useEffect(() => {
-        // Only show on iOS Safari, not already in standalone, and not previously dismissed
-        if (!isIosSafari()) return;
         if (isStandalone()) return;
         if (localStorage.getItem(STORAGE_KEY) === "true") return;
 
-        const timer = setTimeout(() => setVisible(true), 2500);
-        return () => clearTimeout(timer);
+        // ── Android / Chrome: capture beforeinstallprompt ────────────────
+        const handleBeforeInstall = (e: Event) => {
+            e.preventDefault();
+            deferredPromptRef.current = e as BeforeInstallPromptEvent;
+            setPlatform("android");
+            setVisible(true);
+        };
+        window.addEventListener("beforeinstallprompt", handleBeforeInstall);
+
+        // ── iOS Safari: show manual instructions after delay ─────────────
+        if (isIosSafari()) {
+            const timer = setTimeout(() => {
+                // Only show iOS prompt if Android prompt hasn't fired
+                if (!deferredPromptRef.current) {
+                    setPlatform("ios");
+                    setVisible(true);
+                }
+            }, 2500);
+            return () => {
+                clearTimeout(timer);
+                window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+            };
+        }
+
+        // ── Dismiss if user installs via browser UI ─────────────────────
+        const handleInstalled = () => {
+            setVisible(false);
+            deferredPromptRef.current = null;
+        };
+        window.addEventListener("appinstalled", handleInstalled);
+
+        return () => {
+            window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+            window.removeEventListener("appinstalled", handleInstalled);
+        };
     }, []);
 
     function dismiss() {
@@ -45,9 +85,21 @@ export function PwaInstallPrompt() {
         }
     }
 
+    async function handleAndroidInstall() {
+        const prompt = deferredPromptRef.current;
+        if (!prompt) return;
+
+        await prompt.prompt();
+        const { outcome } = await prompt.userChoice;
+        if (outcome === "accepted") {
+            setVisible(false);
+        }
+        deferredPromptRef.current = null;
+    }
+
     return (
         <AnimatePresence>
-            {visible && (
+            {visible && platform && (
                 <motion.div
                     className="fixed left-4 right-4 z-[55] pwa-install-prompt-bottom"
                     initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -74,10 +126,14 @@ export function PwaInstallPrompt() {
                                 <X className="w-4 h-4 text-muted-foreground" strokeWidth={2} />
                             </button>
 
-                            {/* Icon */}
+                            {/* Icon + title */}
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-br from-[#6F00FF] to-[#8B2FFF] shadow-lg shadow-[#6F00FF]/25">
-                                    <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
+                                    {platform === "ios" ? (
+                                        <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
+                                    ) : (
+                                        <Download className="w-5 h-5 text-white" strokeWidth={2.5} />
+                                    )}
                                 </div>
                                 <div>
                                     <h3 className="text-[15px] font-bold text-foreground leading-tight">
@@ -89,28 +145,40 @@ export function PwaInstallPrompt() {
                                 </div>
                             </div>
 
-                            {/* Steps */}
-                            <div className="space-y-2.5 mb-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#007AFF]/10 dark:bg-[#007AFF]/20 shrink-0">
-                                        <Share className="w-3.5 h-3.5 text-[#007AFF]" strokeWidth={2} />
+                            {/* Platform-specific content */}
+                            {platform === "ios" ? (
+                                /* iOS: manual instructions */
+                                <div className="space-y-2.5 mb-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#007AFF]/10 dark:bg-[#007AFF]/20 shrink-0">
+                                            <Share className="w-3.5 h-3.5 text-[#007AFF]" strokeWidth={2} />
+                                        </div>
+                                        <p className="text-[13px] text-foreground">
+                                            Toque no botão{" "}
+                                            <span className="font-semibold">Compartilhar</span>
+                                            {" "}na barra do Safari
+                                        </p>
                                     </div>
-                                    <p className="text-[13px] text-foreground">
-                                        Toque no botão{" "}
-                                        <span className="font-semibold">Compartilhar</span>
-                                        {" "}na barra do Safari
-                                    </p>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#007AFF]/10 dark:bg-[#007AFF]/20 shrink-0">
-                                        <Plus className="w-3.5 h-3.5 text-[#007AFF]" strokeWidth={2} />
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#007AFF]/10 dark:bg-[#007AFF]/20 shrink-0">
+                                            <Plus className="w-3.5 h-3.5 text-[#007AFF]" strokeWidth={2} />
+                                        </div>
+                                        <p className="text-[13px] text-foreground">
+                                            Selecione{" "}
+                                            <span className="font-semibold">&ldquo;Adicionar à Tela de Início&rdquo;</span>
+                                        </p>
                                     </div>
-                                    <p className="text-[13px] text-foreground">
-                                        Selecione{" "}
-                                        <span className="font-semibold">&ldquo;Adicionar à Tela de Início&rdquo;</span>
-                                    </p>
                                 </div>
-                            </div>
+                            ) : (
+                                /* Android: direct install button */
+                                <button
+                                    onClick={handleAndroidInstall}
+                                    className="w-full mb-4 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold text-[15px] py-3 px-4 active:scale-[0.97] transition-transform"
+                                >
+                                    <Download className="w-4.5 h-4.5" strokeWidth={2} />
+                                    Instalar aplicativo
+                                </button>
+                            )}
 
                             {/* Don't remind toggle */}
                             <button
