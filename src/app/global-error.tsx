@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 export default function GlobalError({
   error,
   reset,
@@ -7,44 +9,72 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    console.error("[GlobalError]", error);
+  }, [error]);
+
   return (
     <html>
-      <body className="min-h-screen bg-background text-foreground flex items-center justify-center p-4">
-        <div className="max-w-md w-full text-center space-y-6">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-destructive">
-              Something went wrong!
-            </h1>
-            <p className="text-muted-foreground">
-              An unexpected error occurred. Please try again.
-            </p>
-          </div>
+      <body
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 16,
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          background: "#fafafa",
+          color: "#111",
+        }}
+      >
+        <div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#dc2626", marginBottom: 8 }}>
+            Something went wrong!
+          </h1>
+          <p style={{ fontSize: 14, color: "#666", marginBottom: 24 }}>
+            An unexpected error occurred. Please try again.
+          </p>
           <button
             onClick={reset}
-            className="inline-flex items-center justify-center rounded-md bg-[#6F00FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#5800CC] transition-colors"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 8,
+              background: "#6F00FF",
+              padding: "10px 20px",
+              fontSize: 14,
+              fontWeight: 500,
+              color: "#fff",
+              border: "none",
+              cursor: "pointer",
+              marginBottom: 24,
+            }}
           >
             Try again
           </button>
-          {process.env.NODE_ENV === "development" && (
-            <details className="mt-4 text-left">
-              <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
-                Error details
-              </summary>
-              <pre className="mt-2 text-xs bg-muted p-2 rounded overflow-auto">
-                {error.message}
-                {error.stack && (
-                  <div className="mt-2 text-muted-foreground">
-                    {error.stack}
-                  </div>
-                )}
-                {error.digest && (
-                  <div className="mt-2 text-muted-foreground">
-                    Digest: {error.digest}
-                  </div>
-                )}
-              </pre>
-            </details>
-          )}
+          <details style={{ textAlign: "left" }}>
+            <summary style={{ cursor: "pointer", fontSize: 13, color: "#888" }}>
+              Error details
+            </summary>
+            <pre
+              style={{
+                marginTop: 8,
+                fontSize: 11,
+                background: "#f0f0f0",
+                padding: 12,
+                borderRadius: 8,
+                overflow: "auto",
+                maxHeight: 300,
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
+            >
+              {error.message}
+              {error.digest && `\nDigest: ${error.digest}`}
+              {error.stack && `\n\n${error.stack}`}
+            </pre>
+          </details>
         </div>
       </body>
     </html>
