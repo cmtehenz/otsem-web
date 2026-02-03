@@ -307,29 +307,62 @@ export default function Dashboard() {
                 }
             }
 
-            // 2. Transactions: prefer statement (has real statuses) with
-            //    fallback to payments from summary (hardcoded COMPLETED)
-            if (statementRes.status === "fulfilled" && statementRes.value.data.statements?.length > 0) {
-                const sorted = [...statementRes.value.data.statements].sort(
-                    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                );
-                setTransactions(sorted);
-            } else if (accountRes.status === "fulfilled") {
+            // 2. Build transaction list by merging both sources.
+            //    - summary.payments are bank-confirmed (always COMPLETED)
+            //    - statement may include pending charges that haven't been
+            //      confirmed yet, but also other tx types (PIX_OUT, CONVERSION)
+            //    We merge and deduplicate so confirmed payments override any
+            //    stale PENDING records from the statement.
+            const merged: Transaction[] = [];
+            const seenIds = new Set<string>();
+
+            // Confirmed payments first (source of truth for completed PIX_IN)
+            if (accountRes.status === "fulfilled") {
                 const payments = accountRes.value.data.payments || [];
-                const convertedTransactions: Transaction[] = payments.map((payment) => ({
-                    transactionId: payment.id,
-                    type: "PIX_IN" as const,
-                    status: "COMPLETED" as const,
-                    amount: payment.paymentValue / 100,
-                    description: payment.bankPayload.descricao,
-                    senderName: payment.bankPayload.detalhes.nomePagador,
-                    senderCpf: payment.bankPayload.detalhes.cpfCnpjPagador,
-                    createdAt: payment.paymentDate,
-                }));
-                setTransactions(convertedTransactions);
-            } else {
-                setTransactions([]);
+                for (const payment of payments) {
+                    seenIds.add(payment.id);
+                    merged.push({
+                        transactionId: payment.id,
+                        type: "PIX_IN" as const,
+                        status: "COMPLETED" as const,
+                        amount: payment.paymentValue / 100,
+                        description: payment.bankPayload.descricao,
+                        senderName: payment.bankPayload.detalhes.nomePagador,
+                        senderCpf: payment.bankPayload.detalhes.cpfCnpjPagador,
+                        createdAt: payment.paymentDate,
+                    });
+                }
             }
+
+            // Add statement transactions that aren't already covered by
+            // confirmed payments (avoids duplicating a tx that shows as
+            // PENDING in statement but COMPLETED in payments)
+            if (statementRes.status === "fulfilled" && statementRes.value.data.statements?.length > 0) {
+                for (const tx of statementRes.value.data.statements) {
+                    if (seenIds.has(tx.transactionId)) continue;
+
+                    // Skip PENDING PIX_IN that match a confirmed payment by
+                    // amount + time proximity (IDs may differ between sources)
+                    if (tx.type === "PIX_IN" && (tx.status === "PENDING" || tx.status === "PROCESSING")) {
+                        const txTime = new Date(tx.createdAt).getTime();
+                        const txAmount = Number(tx.amount);
+                        const alreadyConfirmed = merged.some(
+                            (m) =>
+                                m.type === "PIX_IN" &&
+                                m.status === "COMPLETED" &&
+                                Math.abs(Number(m.amount) - txAmount) < 0.01 &&
+                                Math.abs(new Date(m.createdAt).getTime() - txTime) < 300_000
+                        );
+                        if (alreadyConfirmed) continue;
+                    }
+
+                    seenIds.add(tx.transactionId);
+                    merged.push(tx);
+                }
+            }
+
+            merged.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            setTransactions(merged);
         } catch (error: unknown) {
             console.error("Error loading dashboard:", error);
         } finally {
