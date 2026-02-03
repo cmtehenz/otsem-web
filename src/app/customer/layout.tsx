@@ -28,6 +28,11 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
     const [customerName, setCustomerName] = React.useState<string | undefined>();
     const scrollRef = React.useRef<HTMLDivElement>(null);
 
+    // Reset body scroll on mount (clears stale scroll from login page)
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     // Reset scroll position on page navigation
     React.useEffect(() => {
         scrollRef.current?.scrollTo(0, 0);
