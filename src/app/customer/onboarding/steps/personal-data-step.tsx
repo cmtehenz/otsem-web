@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import axios from "axios";
 import http from "@/lib/http";
 import { formatDate, parseDateBR } from "@/lib/formatters";
 import { formatCep } from "@/lib/formatters";
@@ -104,8 +105,12 @@ export function PersonalDataStep({ customer, onComplete }: PersonalDataStepProps
             });
             toast.success("Dados salvos!");
             onComplete();
-        } catch {
-            toast.error("Erro ao salvar dados. Tente novamente.");
+        } catch (err) {
+            const msg =
+                axios.isAxiosError(err) && err.response?.data?.message
+                    ? String(err.response.data.message)
+                    : "Erro ao salvar dados. Tente novamente.";
+            toast.error(msg);
         } finally {
             setSubmitting(false);
         }
