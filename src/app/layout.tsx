@@ -7,15 +7,15 @@ export const viewport: Viewport = {
     maximumScale: 1,
     userScalable: false,
     viewportFit: "cover",
-    themeColor: "#6F00FF",
+    themeColor: [
+        { color: "#6F00FF", media: "(prefers-color-scheme: light)" },
+        { color: "#0a0118", media: "(prefers-color-scheme: dark)" },
+    ],
 };
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/auth-context";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
-import { VisualEditsMessenger } from "orchids-visual-edits";
-import ErrorReporter from "@/components/ErrorReporter";
-import Script from "next/script";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 
@@ -38,6 +38,8 @@ export const metadata: Metadata = {
 // import { ConnectionStatus } from "@/components/connection-status";
 // import { validateEnv } from "@/lib/env";
 import { CookieConsent } from "@/components/CookieConsent";
+import { ServiceWorkerRegistrar } from "@/components/ServiceWorkerRegistrar";
+import { SplashDismiss } from "@/components/SplashDismiss";
 
 export default async function RootLayout({
   children,
@@ -49,27 +51,46 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        {/* iOS splash screens */}
+        <link rel="apple-touch-startup-image" href="/splash/apple-splash-640x1136.png"  media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
+        <link rel="apple-touch-startup-image" href="/splash/apple-splash-750x1334.png"  media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
+        <link rel="apple-touch-startup-image" href="/splash/apple-splash-828x1792.png"  media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" />
+        <link rel="apple-touch-startup-image" href="/splash/apple-splash-1080x2340.png" media="(device-width: 360px) and (device-height: 780px) and (-webkit-device-pixel-ratio: 3)" />
+        <link rel="apple-touch-startup-image" href="/splash/apple-splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
+        <link rel="apple-touch-startup-image" href="/splash/apple-splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" />
+        <link rel="apple-touch-startup-image" href="/splash/apple-splash-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
+        <link rel="apple-touch-startup-image" href="/splash/apple-splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" />
+        <link rel="apple-touch-startup-image" href="/splash/apple-splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
+        <link rel="apple-touch-startup-image" href="/splash/apple-splash-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
+        <link rel="apple-touch-startup-image" href="/splash/apple-splash-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
+      </head>
       <body className="antialiased">
+        {/* Inline splash overlay — visible before React hydrates, removed on mount */}
+        <div
+          id="splash-screen"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "linear-gradient(180deg, #7B22FF 0%, #5500D0 16%, #4200A8 25%, #320080 34%, #180040 54%, #000000 100%)",
+            transition: "opacity 0.4s ease-out",
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/icon-192.png"
+            alt=""
+            width={80}
+            height={80}
+            style={{ borderRadius: 20 }}
+          />
+        </div>
         {/* TODO: Re-enable ConnectionStatus after creating a /health endpoint */}
         {/* <ConnectionStatus /> */}
-        <Script
-          id="orchids-browser-logs"
-          src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts/orchids-browser-logs.js"
-          strategy="afterInteractive"
-          data-orchids-project-id="8dca9fc2-17fe-42a1-b323-5e4a298d9904"
-        />
-        <ErrorReporter />
-        <Script
-          src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts//route-messenger.js"
-          strategy="afterInteractive"
-          data-target-origin="*"
-          data-message-type="ROUTE_CHANGE"
-          data-include-search-params="true"
-          data-only-in-iframe="true"
-          data-debug="true"
-          data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
-        />
-
         <NextIntlClientProvider locale={locale} messages={messages}>
         <ThemeProvider
             attribute="class"
@@ -84,7 +105,8 @@ export default async function RootLayout({
             <CookieConsent />
         </ThemeProvider>
         </NextIntlClientProvider>
-        <VisualEditsMessenger />
+        <ServiceWorkerRegistrar />
+        <SplashDismiss />
       </body>
     </html>
   );

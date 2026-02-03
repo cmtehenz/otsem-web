@@ -1,27 +1,65 @@
 {
+  "id": "/customer/dashboard",
   "name": "Otsem Pay",
   "short_name": "Otsem Pay",
   "description": "Pagamentos e conversão BRL ↔ USDT com transparência.",
   "start_url": "/customer/dashboard",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#0a0118",
   "theme_color": "#6F00FF",
   "orientation": "portrait",
+  "categories": ["finance", "business"],
   "icons": [
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/apple-touch-icon.png",
       "sizes": "180x180",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Depositar via PIX",
+      "short_name": "Depositar",
+      "url": "/customer/dashboard?action=deposit",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Ver Transações",
+      "short_name": "Transações",
+      "url": "/customer/transactions",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Carteira USDT",
+      "short_name": "Carteira",
+      "url": "/customer/wallet",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }

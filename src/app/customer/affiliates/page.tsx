@@ -149,7 +149,7 @@ export default function AffiliatesPage() {
             <div className="flex items-center justify-center h-[50vh]">
                 <div className="flex flex-col items-center gap-3">
                     <div className="w-8 h-8 rounded-full border-2 border-[#6F00FF]/30 border-t-[#6F00FF] animate-spin" />
-                    <span className="text-[13px] text-muted-foreground">Carregando...</span>
+                    <span className="text-[13px] text-white/60">Carregando...</span>
                 </div>
             </div>
         );
@@ -166,16 +166,16 @@ export default function AffiliatesPage() {
                 variants={{ show: { transition: { staggerChildren: 0.06 } } }}
             >
                 <motion.div variants={fadeUp}>
-                    <h1 className="text-[22px] font-bold text-foreground">Afiliados</h1>
-                    <p className="text-[13px] text-muted-foreground mt-0.5">Indique amigos e ganhe comissões</p>
+                    <h1 className="text-[22px] font-bold text-white">Afiliados</h1>
+                    <p className="text-[13px] text-white/60 mt-0.5">Indique amigos e ganhe comissões</p>
                 </motion.div>
 
-                <motion.div variants={fadeUp} className="premium-card !p-8 text-center">
+                <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5 !p-8 text-center">
                     <div className="w-16 h-16 rounded-full bg-[#6F00FF]/10 dark:bg-[#6F00FF]/20 flex items-center justify-center mx-auto mb-4">
                         <Users className="w-7 h-7 text-[#6F00FF]" strokeWidth={1.8} />
                     </div>
-                    <h3 className="text-[15px] font-semibold text-foreground mb-1">Recurso não disponível</h3>
-                    <p className="text-[13px] text-muted-foreground leading-relaxed max-w-[280px] mx-auto">
+                    <h3 className="text-[15px] font-semibold text-white mb-1">Recurso não disponível</h3>
+                    <p className="text-[13px] text-white/60 leading-relaxed max-w-[280px] mx-auto">
                         O programa de afiliados não está habilitado para a sua conta. Entre em contato com o suporte para solicitar acesso.
                     </p>
                 </motion.div>
@@ -194,8 +194,8 @@ export default function AffiliatesPage() {
         >
             {/* Header */}
             <motion.div variants={fadeUp}>
-                <h1 className="text-[22px] font-bold text-foreground">Afiliados</h1>
-                <p className="text-[13px] text-muted-foreground mt-0.5">
+                <h1 className="text-[22px] font-bold text-white">Afiliados</h1>
+                <p className="text-[13px] text-white/60 mt-0.5">
                     Indique amigos e ganhe comissões em cada transação
                 </p>
             </motion.div>
@@ -255,21 +255,21 @@ export default function AffiliatesPage() {
             {/* Stats grid (2x2) */}
             <motion.div variants={fadeUp} className="grid grid-cols-2 gap-3">
                 {/* Total referrals */}
-                <div className="premium-card !p-4 !rounded-[20px]">
+                <div className="fintech-glass-card rounded-[20px] p-5 !p-4 !rounded-[20px]">
                     <div className="flex items-center justify-between mb-2">
                         <div className="w-8 h-8 rounded-full bg-[#6F00FF]/10 dark:bg-[#6F00FF]/20 flex items-center justify-center">
                             <Users className="w-4 h-4 text-[#6F00FF]" strokeWidth={2} />
                         </div>
                     </div>
-                    <p className="text-[20px] font-bold text-foreground">{stats.totalReferrals ?? 0}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">Total indicados</p>
+                    <p className="text-[20px] font-bold text-white">{stats.totalReferrals ?? 0}</p>
+                    <p className="text-[11px] text-white/60 mt-0.5">Total indicados</p>
                     <p className="text-[11px] text-[#6F00FF] dark:text-[#8B2FFF] font-medium mt-0.5">
                         {stats.activeReferrals ?? 0} ativos
                     </p>
                 </div>
 
                 {/* Total earnings */}
-                <div className="premium-card !p-4 !rounded-[20px]">
+                <div className="fintech-glass-card rounded-[20px] p-5 !p-4 !rounded-[20px]">
                     <div className="flex items-center justify-between mb-2">
                         <div className="w-8 h-8 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center">
                             <DollarSign className="w-4 h-4 text-emerald-600 dark:text-emerald-400" strokeWidth={2} />
@@ -283,14 +283,14 @@ export default function AffiliatesPage() {
                             {formatUsdt(stats.totalEarningsUsdt)} USDT
                         </p>
                     )}
-                    <p className="text-[11px] text-muted-foreground mt-0.5">Total ganho</p>
+                    <p className="text-[11px] text-white/60 mt-0.5">Total ganho</p>
                     <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">
                         {stats.commissionRate ?? 0}% comissão
                     </p>
                 </div>
 
                 {/* Pending */}
-                <div className="premium-card !p-4 !rounded-[20px]">
+                <div className="fintech-glass-card rounded-[20px] p-5 !p-4 !rounded-[20px]">
                     <div className="flex items-center justify-between mb-2">
                         <div className="w-8 h-8 rounded-full bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center">
                             <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400" strokeWidth={2} />
@@ -304,12 +304,12 @@ export default function AffiliatesPage() {
                             {formatUsdt(stats.pendingEarningsUsdt)} USDT
                         </p>
                     )}
-                    <p className="text-[11px] text-muted-foreground mt-0.5">Pendente</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">Aguardando pgto</p>
+                    <p className="text-[11px] text-white/60 mt-0.5">Pendente</p>
+                    <p className="text-[11px] text-white/60 mt-0.5">Aguardando pgto</p>
                 </div>
 
                 {/* Paid */}
-                <div className="premium-card !p-4 !rounded-[20px]">
+                <div className="fintech-glass-card rounded-[20px] p-5 !p-4 !rounded-[20px]">
                     <div className="flex items-center justify-between mb-2">
                         <div className="w-8 h-8 rounded-full bg-purple-500/10 dark:bg-purple-500/20 flex items-center justify-center">
                             <TrendingUp className="w-4 h-4 text-purple-600 dark:text-purple-400" strokeWidth={2} />
@@ -318,8 +318,8 @@ export default function AffiliatesPage() {
                     <p className="text-[20px] font-bold text-purple-600 dark:text-purple-400">
                         {formatCurrency(stats.paidEarnings)}
                     </p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">Já recebido</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">Total pago</p>
+                    <p className="text-[11px] text-white/60 mt-0.5">Já recebido</p>
+                    <p className="text-[11px] text-white/60 mt-0.5">Total pago</p>
                 </div>
             </motion.div>
 
@@ -330,7 +330,7 @@ export default function AffiliatesPage() {
                     className={`px-4 py-2 rounded-full text-[13px] font-semibold active:scale-95 transition-all ${
                         activeTab === "referrals"
                             ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
-                            : "bg-white/60 dark:bg-white/[0.06] text-muted-foreground border border-white/60 dark:border-white/[0.08]"
+                            : "bg-white/60 dark:bg-white/[0.06] text-white/60 border border-white/60 dark:border-white/[0.08]"
                     }`}
                 >
                     Indicações
@@ -340,7 +340,7 @@ export default function AffiliatesPage() {
                     className={`px-4 py-2 rounded-full text-[13px] font-semibold active:scale-95 transition-all ${
                         activeTab === "commissions"
                             ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
-                            : "bg-white/60 dark:bg-white/[0.06] text-muted-foreground border border-white/60 dark:border-white/[0.08]"
+                            : "bg-white/60 dark:bg-white/[0.06] text-white/60 border border-white/60 dark:border-white/[0.08]"
                     }`}
                 >
                     Comissões
@@ -348,15 +348,15 @@ export default function AffiliatesPage() {
             </motion.div>
 
             {/* List content */}
-            <motion.div variants={fadeUp} className="premium-card !p-5 !rounded-[20px]">
+            <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5 !p-5 !rounded-[20px]">
                 {activeTab === "referrals" ? (
                     referrals.length === 0 ? (
                         <div className="py-10 text-center">
                             <div className="w-14 h-14 rounded-full bg-[#6F00FF]/10 dark:bg-[#6F00FF]/20 flex items-center justify-center mx-auto mb-3">
                                 <Users className="w-6 h-6 text-[#6F00FF]" strokeWidth={1.8} />
                             </div>
-                            <p className="text-[14px] font-medium text-foreground mb-1">Nenhum indicado ainda</p>
-                            <p className="text-[13px] text-muted-foreground">Compartilhe seu link para começar!</p>
+                            <p className="text-[14px] font-medium text-white mb-1">Nenhum indicado ainda</p>
+                            <p className="text-[13px] text-white/60">Compartilhe seu link para começar!</p>
                         </div>
                     ) : (
                         <div className="divide-y divide-border/50">
@@ -369,8 +369,8 @@ export default function AffiliatesPage() {
                                             </span>
                                         </div>
                                         <div className="min-w-0">
-                                            <p className="text-[14px] font-semibold text-foreground truncate">{referral.name}</p>
-                                            <p className="text-[12px] text-muted-foreground">
+                                            <p className="text-[14px] font-semibold text-white truncate">{referral.name}</p>
+                                            <p className="text-[12px] text-white/60">
                                                 Desde {formatDate(referral.registeredAt)}
                                             </p>
                                         </div>
@@ -379,7 +379,7 @@ export default function AffiliatesPage() {
                                         <p className="text-[14px] font-semibold text-emerald-600 dark:text-emerald-400">
                                             {formatCurrency(referral.commissionEarned)}
                                         </p>
-                                        <p className="text-[11px] text-muted-foreground">
+                                        <p className="text-[11px] text-white/60">
                                             Vol: {formatCurrency(referral.totalVolume)}
                                         </p>
                                     </div>
@@ -392,8 +392,8 @@ export default function AffiliatesPage() {
                         <div className="w-14 h-14 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center mx-auto mb-3">
                             <DollarSign className="w-6 h-6 text-emerald-600 dark:text-emerald-400" strokeWidth={1.8} />
                         </div>
-                        <p className="text-[14px] font-medium text-foreground mb-1">Nenhuma comissão ainda</p>
-                        <p className="text-[13px] text-muted-foreground">Suas comissões aparecerão aqui.</p>
+                        <p className="text-[14px] font-medium text-white mb-1">Nenhuma comissão ainda</p>
+                        <p className="text-[13px] text-white/60">Suas comissões aparecerão aqui.</p>
                     </div>
                 ) : (
                     <div className="divide-y divide-border/50">
@@ -401,7 +401,7 @@ export default function AffiliatesPage() {
                             <div key={commission.id} className="flex items-center justify-between py-3.5 first:pt-0 last:pb-0">
                                 <div className="min-w-0">
                                     <div className="flex items-center gap-1.5">
-                                        <p className="text-[14px] font-semibold text-foreground truncate">{commission.referralName}</p>
+                                        <p className="text-[14px] font-semibold text-white truncate">{commission.referralName}</p>
                                         {commission.conversionType && (
                                             <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold ${
                                                 commission.conversionType === "BUY"
@@ -412,10 +412,10 @@ export default function AffiliatesPage() {
                                             </span>
                                         )}
                                     </div>
-                                    <p className="text-[12px] text-muted-foreground">
+                                    <p className="text-[12px] text-white/60">
                                         Transação {formatCurrency(commission.transactionAmount)}
                                     </p>
-                                    <p className="text-[11px] text-muted-foreground">{formatDate(commission.createdAt)}</p>
+                                    <p className="text-[11px] text-white/60">{formatDate(commission.createdAt)}</p>
                                 </div>
                                 <div className="flex items-center gap-2.5 shrink-0 pl-3">
                                     <span
@@ -432,7 +432,7 @@ export default function AffiliatesPage() {
                                             {formatCurrency(commission.amount)}
                                         </span>
                                         {(commission.amountUsdt ?? 0) > 0 && (
-                                            <span className="text-[11px] text-muted-foreground">
+                                            <span className="text-[11px] text-white/60">
                                                 {formatUsdt(commission.amountUsdt)} USDT
                                             </span>
                                         )}

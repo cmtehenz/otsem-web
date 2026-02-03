@@ -11,11 +11,9 @@ import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, ArrowLeft, Zap, Globe2, Shield, CheckCircle2, Sparkles } from 'lucide-react';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 
 import { useAuth } from '@/contexts/auth-context';
 import { TwoFactorVerify } from '@/components/auth/TwoFactorVerify';
@@ -42,7 +40,7 @@ function safeNext(nextParam: string | null | undefined, fallback = '/customer/da
 export default function LoginPageClient(): React.JSX.Element {
     return (
         <Suspense fallback={
-            <div className="grid min-h-screen place-items-center bg-white text-sm text-slate-900/50">
+            <div className="fixed inset-0 grid place-items-center overflow-hidden fintech-bg-container text-sm text-white/50" style={{ overscrollBehavior: 'none' }}>
                 ...
             </div>
         }>
@@ -72,6 +70,20 @@ function LoginPageInner(): React.JSX.Element {
     const [tempToken, setTempToken] = React.useState('');
     const [userEmail, setUserEmail] = React.useState('');
     const [_pendingUser, setPendingUser] = React.useState<unknown>(null);
+
+    // Lock body scroll while login page is mounted — prevents iOS scroll
+    // state from carrying over to the dashboard after navigation.
+    React.useEffect(() => {
+        const html = document.documentElement;
+        const body = document.body;
+        html.style.overflow = 'hidden';
+        body.style.overflow = 'hidden';
+        window.scrollTo(0, 0);
+        return () => {
+            html.style.overflow = '';
+            body.style.overflow = '';
+        };
+    }, []);
 
     const onSubmit: SubmitHandler<LoginForm> = async (values) => {
         try {
@@ -126,28 +138,20 @@ function LoginPageInner(): React.JSX.Element {
     // Show 2FA verification if required
     if (requires2FA) {
         return (
-            <div className="relative min-h-screen w-full overflow-hidden bg-white">
-                <div className="pointer-events-none absolute inset-0 -z-10">
-                    <motion.div
-                        animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.15, 1] }}
-                        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-primary/5 blur-[120px] rounded-full"
-                    />
-                </div>
-
+            <div className="fixed inset-0 overflow-hidden fintech-bg-container" style={{ overscrollBehavior: 'none', touchAction: 'pan-x' }}>
                 <div className="fixed top-6 left-6 z-50">
                     <motion.button
                         onClick={handleCancel2FA}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl liquid-glass text-slate-900/70 hover:text-slate-900 font-bold text-sm transition-colors"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl fintech-glass-card text-white/70 hover:text-white font-bold text-sm transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4" />
                         {t('common.back')}
                     </motion.button>
                 </div>
 
-                <div className="flex min-h-screen w-full items-center justify-center px-4 py-24">
+                <div className="flex min-h-full w-full items-center justify-center px-4 py-24">
                     <TwoFactorVerify
                         onVerify={handle2FAVerify}
                         onCancel={handleCancel2FA}
@@ -159,26 +163,13 @@ function LoginPageInner(): React.JSX.Element {
     }
 
     return (
-        <div className="relative min-h-screen w-full overflow-hidden bg-white">
-            <div className="pointer-events-none absolute inset-0 -z-10">
-                <motion.div
-                    animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.15, 1] }}
-                    transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-primary/5 blur-[120px] rounded-full"
-                />
-                <motion.div
-                    animate={{ x: [0, -30, 0], y: [0, 50, 0], scale: [1, 1.1, 1] }}
-                    transition={{ duration: 30, repeat: Infinity, ease: "easeInOut", delay: 5 }}
-                    className="absolute bottom-[10%] right-[-5%] w-[40vw] h-[40vw] bg-accent/5 blur-[100px] rounded-full"
-                />
-            </div>
-
+        <div className="fixed inset-0 overflow-hidden fintech-bg-container" style={{ overscrollBehavior: 'none', touchAction: 'pan-x' }}>
             <div className="fixed top-6 left-6 z-50">
                 <Link href="/">
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl liquid-glass text-slate-900/70 hover:text-slate-900 font-bold text-sm transition-colors"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl fintech-glass-card text-white/70 hover:text-white font-bold text-sm transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4" />
                         {t('common.back')}
@@ -187,44 +178,44 @@ function LoginPageInner(): React.JSX.Element {
             </div>
 
             <div className="fixed top-6 right-6 z-50">
-                <div className="rounded-2xl liquid-glass">
-                    <LanguageSwitcher className="text-slate-900/70 hover:text-slate-900" />
+                <div className="rounded-2xl fintech-glass-card px-1 py-1">
+                    <LanguageSwitcher className="text-white/70 hover:text-white" />
                 </div>
             </div>
 
-            <div className="flex min-h-screen w-full items-center justify-center px-4 py-24 lg:px-8 xl:px-16">
+            <div className="flex h-full w-full items-center justify-center px-4 py-24 lg:px-8 xl:px-16">
                 <div className="flex w-full max-w-6xl items-center gap-16">
                     <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:gap-8">
                         <div>
-                            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/5 border border-primary/10 px-4 py-1.5 text-sm font-black text-primary">
+                            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-4 py-1.5 text-sm font-black text-white">
                                 <Sparkles className="h-4 w-4" />
                                 {t('auth.welcomeBack')}
                             </div>
-                            <h1 className="text-4xl font-black text-slate-900 xl:text-5xl tracking-tightest">
+                            <h1 className="text-4xl font-black text-white xl:text-5xl tracking-tightest">
                                 {t('auth.accessYourAccount')}
                                 <br />
-                                <span className="text-primary">
+                                <span className="text-[#9B4DFF]">
                                     OtsemPay
                                 </span>
                             </h1>
-                            <p className="mt-4 text-lg text-slate-500 font-medium">
+                            <p className="mt-4 text-lg text-white/60 font-medium whitespace-pre-line">
                                 {t('auth.accountDescription')}
                             </p>
                         </div>
 
                         <div className="space-y-4">
                             <FeatureItem
-                                icon={<Zap className="h-5 w-5 text-yellow-500" />}
+                                icon={<Zap className="h-5 w-5 text-yellow-400" />}
                                 title={t('auth.fastSettlement')}
                                 desc={t('auth.fastSettlementDesc')}
                             />
                             <FeatureItem
-                                icon={<Shield className="h-5 w-5 text-primary" />}
+                                icon={<Shield className="h-5 w-5 text-[#9B4DFF]" />}
                                 title={t('auth.totalSecurity')}
                                 desc={t('auth.totalSecurityDesc')}
                             />
                             <FeatureItem
-                                icon={<Globe2 className="h-5 w-5 text-emerald-500" />}
+                                icon={<Globe2 className="h-5 w-5 text-emerald-400" />}
                                 title={t('auth.noBorders')}
                                 desc={t('auth.noBordersDesc')}
                             />
@@ -232,88 +223,88 @@ function LoginPageInner(): React.JSX.Element {
                     </div>
 
                     <div className="w-full lg:flex-1 lg:max-w-md">
-                        <Card className="overflow-hidden rounded-[2.5rem] border-white/40 rich-glass">
-                            <CardHeader className="space-y-3 border-b border-black/[0.03] pb-6">
+                        <div className="overflow-hidden rounded-[2.5rem] fintech-glass-card p-0">
+                            <div className="space-y-3 border-b border-white/[0.08] px-6 pt-8 pb-6 sm:px-8">
                                 <div className="mx-auto flex h-14 w-14 items-center justify-center overflow-hidden">
-                                    <img 
-                                        src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/8dca9fc2-17fe-42a1-b323-5e4a298d9904/Untitled-1769589355434.png?width=8000&height=8000&resize=contain" 
+                                    <img
+                                        src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/8dca9fc2-17fe-42a1-b323-5e4a298d9904/Untitled-1769589355434.png?width=8000&height=8000&resize=contain"
                                         alt="Otsem Pay"
                                         className="h-full w-full object-contain"
                                     />
                                 </div>
-                                <CardTitle className="text-center text-2xl font-black text-slate-900">
+                                <h2 className="text-center text-2xl font-black text-white">
                                     {t('auth.loginTitle')}
-                                </CardTitle>
-                                <p className="text-center text-sm text-slate-500 font-medium">
+                                </h2>
+                                <p className="text-center text-sm text-white/60 font-medium">
                                     {t('auth.loginSubtitle')}
                                 </p>
-                            </CardHeader>
+                            </div>
 
-                            <CardContent className="p-6 sm:p-8">
+                            <div className="p-6 sm:p-8">
                                 <form onSubmit={handleSubmit(onSubmit)} className="grid gap-5" noValidate>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="email" className="text-sm font-black text-slate-900">
+                                        <Label htmlFor="email" className="text-sm font-black text-white">
                                             {t('common.email')}
                                         </Label>
                                         <div className="relative">
-                                            <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                            <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                             <Input
                                                 id="email"
                                                 type="email"
                                                 autoComplete="email"
                                                 inputMode="email"
                                                 placeholder="voce@exemplo.com"
-                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                className="h-12 rounded-2xl border-white/15 bg-white/10 pl-10 text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                                 aria-invalid={!!errors.email || undefined}
                                                 {...register('email')}
                                             />
                                         </div>
                                         {errors.email && (
-                                            <p className="text-xs text-red-500 font-medium">{errors.email.message}</p>
+                                            <p className="text-xs text-rose-400 font-medium">{errors.email.message}</p>
                                         )}
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="password" className="text-sm font-black text-slate-900">
+                                        <Label htmlFor="password" className="text-sm font-black text-white">
                                             {t('common.password')}
                                         </Label>
                                         <div className="relative">
-                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                             <Input
                                                 id="password"
                                                 type={showPw ? 'text' : 'password'}
                                                 autoComplete="current-password"
                                                 placeholder="••••••••"
-                                                className="h-12 rounded-2xl border-black/[0.05] bg-white/60 pl-10 pr-10 text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                className="h-12 rounded-2xl border-white/15 bg-white/10 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                                 aria-invalid={!!errors.password || undefined}
                                                 {...register('password')}
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPw((v) => !v)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-900"
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white"
                                                 aria-label={showPw ? t('auth.hidePassword') : t('auth.showPassword')}
                                             >
                                                 {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                             </button>
                                         </div>
                                         {errors.password && (
-                                            <p className="text-xs text-red-500 font-medium">{errors.password.message}</p>
+                                            <p className="text-xs text-rose-400 font-medium">{errors.password.message}</p>
                                         )}
                                     </div>
 
                                     <div className="flex items-center justify-between text-sm">
-                                        <label className="inline-flex items-center gap-2 text-slate-500 font-medium">
+                                        <label className="inline-flex items-center gap-2 text-white/60 font-medium">
                                             <input
                                                 type="checkbox"
-                                                className="h-4 w-4 rounded border-black/10 bg-white/60 text-primary focus:ring-2 focus:ring-primary/20"
+                                                className="h-4 w-4 rounded border-white/20 bg-white/10 text-[#6F00FF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                                 {...register('remember')}
                                             />
                                             {t('auth.rememberMe')}
                                         </label>
                                         <Link
                                             href="/forgot"
-                                            className="font-bold text-primary transition hover:text-primary/80"
+                                            className="font-bold text-[#9B4DFF] transition hover:text-[#8B2FFF]"
                                         >
                                             {t('auth.forgotPassword')}
                                         </Link>
@@ -331,28 +322,28 @@ function LoginPageInner(): React.JSX.Element {
                                         {!isSubmitting && <ArrowRight className="ml-2 h-4 w-4" />}
                                     </motion.button>
 
-                                    <Separator className="my-2 bg-black/[0.03]" />
+                                    <div className="my-2 h-px bg-white/[0.08]" />
 
-                                    <p className="text-center text-sm text-slate-500 font-medium">
+                                    <p className="text-center text-sm text-white/60 font-medium">
                                         {t('auth.noAccount')}{' '}
                                         <Link
                                             href="/register"
-                                            className="font-bold text-primary transition hover:text-primary/80"
+                                            className="font-bold text-[#9B4DFF] transition hover:text-[#8B2FFF]"
                                         >
                                             {t('auth.createAccount')}
                                         </Link>
                                     </p>
                                 </form>
-                            </CardContent>
-                        </Card>
+                            </div>
+                        </div>
 
-                        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500 font-medium">
+                        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-white/50 font-medium">
                             <div className="flex items-center gap-1.5">
-                                <Shield className="h-3.5 w-3.5 text-emerald-500" />
+                                <Shield className="h-3.5 w-3.5 text-emerald-400" />
                                 {t('common.secureConnection')}
                             </div>
                             <div className="flex items-center gap-1.5">
-                                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                                <CheckCircle2 className="h-3.5 w-3.5 text-[#9B4DFF]" />
                                 SSL/TLS
                             </div>
                         </div>
@@ -366,12 +357,12 @@ function LoginPageInner(): React.JSX.Element {
 function FeatureItem({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
     return (
         <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/60 border border-black/[0.05] shadow-sm">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/10 border border-white/15">
                 {icon}
             </div>
             <div>
-                <h3 className="text-sm font-black text-slate-900">{title}</h3>
-                <p className="text-sm text-slate-500 font-medium">{desc}</p>
+                <h3 className="text-sm font-black text-white">{title}</h3>
+                <p className="text-sm text-white/60 font-medium">{desc}</p>
             </div>
         </div>
     );

@@ -209,15 +209,15 @@ export default function WalletPage() {
             {/* Header */}
             <motion.div variants={fadeUp} className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-[22px] font-bold text-foreground">Carteiras</h1>
-                    <p className="text-[13px] text-muted-foreground mt-0.5">Gerencie suas carteiras USDT</p>
+                    <h1 className="text-[22px] font-bold text-white">Carteiras</h1>
+                    <p className="text-[13px] text-white/60 mt-0.5">Gerencie suas carteiras USDT</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <button
                         onClick={syncAllWallets}
-                        className="flex items-center justify-center w-10 h-10 rounded-full bg-white/50 dark:bg-white/[0.06] border border-white/60 dark:border-white/[0.08] active:scale-95 transition-transform"
+                        className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 border border-white/15 active:scale-95 transition-transform"
                     >
-                        <RefreshCw className="w-4.5 h-4.5 text-muted-foreground" strokeWidth={2} />
+                        <RefreshCw className="w-4.5 h-4.5 text-white/60" strokeWidth={2} />
                     </button>
                     <button
                         onClick={openAddModal}
@@ -249,12 +249,12 @@ export default function WalletPage() {
 
             {/* Wallets list */}
             {wallets.length === 0 ? (
-                <motion.div variants={fadeUp} className="premium-card !p-8 text-center">
+                <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5 !p-8 text-center">
                     <div className="w-16 h-16 rounded-full bg-[#6F00FF]/10 flex items-center justify-center mx-auto mb-4">
                         <Wallet className="w-7 h-7 text-[#6F00FF]" />
                     </div>
-                    <h2 className="text-lg font-bold text-foreground mb-1">Nenhuma carteira</h2>
-                    <p className="text-[13px] text-muted-foreground mb-5 max-w-xs mx-auto">
+                    <h2 className="text-lg font-bold text-white mb-1">Nenhuma carteira</h2>
+                    <p className="text-[13px] text-white/60 mb-5 max-w-xs mx-auto">
                         Adicione sua primeira carteira para receber e enviar USDT.
                     </p>
                     <motion.button
@@ -274,7 +274,7 @@ export default function WalletPage() {
                             <motion.div
                                 key={wallet.id}
                                 variants={fadeUp}
-                                className="premium-card !p-4"
+                                className="fintech-glass-card rounded-[20px] p-5 !p-4"
                             >
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -283,7 +283,7 @@ export default function WalletPage() {
                                         </div>
                                         <div className="min-w-0">
                                             <div className="flex items-center gap-2 flex-wrap">
-                                                <span className="text-[15px] font-semibold text-foreground truncate">
+                                                <span className="text-[15px] font-semibold text-white truncate">
                                                     {wallet.label || `Carteira ${index + 1}`}
                                                 </span>
                                                 {wallet.isMain && (
@@ -297,11 +297,11 @@ export default function WalletPage() {
                                                 <span className={`text-[11px] font-medium ${networkInfo.badge} px-1.5 py-0.5 rounded-full`}>
                                                     {wallet.network || "SOLANA"}
                                                 </span>
-                                                <code className="text-[12px] text-muted-foreground font-mono">
+                                                <code className="text-[12px] text-white/60 font-mono">
                                                     {formatAddress(wallet.externalAddress)}
                                                 </code>
                                                 <button onClick={() => onCopy(wallet.externalAddress)} className="p-0.5 active:scale-90 transition-transform">
-                                                    <Copy className="w-3 h-3 text-muted-foreground" />
+                                                    <Copy className="w-3 h-3 text-white/60" />
                                                 </button>
                                             </div>
                                         </div>
@@ -309,39 +309,39 @@ export default function WalletPage() {
 
                                     <div className="flex items-center gap-2 shrink-0">
                                         <div className="text-right">
-                                            <p className="text-[16px] font-bold text-foreground">
+                                            <p className="text-[16px] font-bold text-white">
                                                 {Number(wallet.balance).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
                                             </p>
-                                            <p className="text-[11px] text-muted-foreground">USDT</p>
+                                            <p className="text-[11px] text-white/60">USDT</p>
                                         </div>
 
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <button className="flex items-center justify-center w-8 h-8 rounded-full active:bg-white/10 transition-colors">
-                                                    <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                                                    <MoreVertical className="w-4 h-4 text-white/60" />
                                                 </button>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end" className="bg-card border-border min-w-[180px]">
+                                            <DropdownMenuContent align="end" className="bg-black/60 backdrop-blur-xl border-white/15 min-w-[180px]">
                                                 {Number(wallet.balance) > 0 && (
-                                                    <DropdownMenuItem onClick={() => openModal("sendUsdt")} className="text-foreground/70 hover:text-foreground cursor-pointer">
+                                                    <DropdownMenuItem onClick={() => openModal("sendUsdt")} className="text-white/70 hover:text-white cursor-pointer">
                                                         <Send className="w-4 h-4 mr-2" /> Enviar USDT
                                                     </DropdownMenuItem>
                                                 )}
-                                                <DropdownMenuItem onClick={() => syncWallet(wallet.id)} className="text-foreground/70 hover:text-foreground cursor-pointer">
+                                                <DropdownMenuItem onClick={() => syncWallet(wallet.id)} className="text-white/70 hover:text-white cursor-pointer">
                                                     <RefreshCw className="w-4 h-4 mr-2" /> Sincronizar
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => onCopy(wallet.externalAddress)} className="text-foreground/70 hover:text-foreground cursor-pointer">
+                                                <DropdownMenuItem onClick={() => onCopy(wallet.externalAddress)} className="text-white/70 hover:text-white cursor-pointer">
                                                     <Copy className="w-4 h-4 mr-2" /> Copiar Endereço
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => handleEdit(wallet)} className="text-foreground/70 hover:text-foreground cursor-pointer">
+                                                <DropdownMenuItem onClick={() => handleEdit(wallet)} className="text-white/70 hover:text-white cursor-pointer">
                                                     Renomear
                                                 </DropdownMenuItem>
                                                 {!wallet.isMain && (
-                                                    <DropdownMenuItem onClick={() => handleSetMain(wallet)} className="text-foreground/70 hover:text-foreground cursor-pointer">
+                                                    <DropdownMenuItem onClick={() => handleSetMain(wallet)} className="text-white/70 hover:text-white cursor-pointer">
                                                         <Star className="w-4 h-4 mr-2" /> Definir Principal
                                                     </DropdownMenuItem>
                                                 )}
-                                                <DropdownMenuItem onClick={() => window.open(getExplorerUrl(wallet), "_blank")} className="text-foreground/70 hover:text-foreground cursor-pointer">
+                                                <DropdownMenuItem onClick={() => window.open(getExplorerUrl(wallet), "_blank")} className="text-white/70 hover:text-white cursor-pointer">
                                                     <ExternalLink className="w-4 h-4 mr-2" /> {getExplorerName(wallet)}
                                                 </DropdownMenuItem>
                                                 {!wallet.isMain && wallets.length > 1 && (
@@ -365,8 +365,8 @@ export default function WalletPage() {
                     <Shield className="w-4.5 h-4.5 text-amber-500 shrink-0 mt-0.5" strokeWidth={2} />
                     <div>
                         <p className="text-amber-600 dark:text-amber-400 font-semibold text-[13px]">Importante</p>
-                        <p className="text-muted-foreground text-[12px] mt-0.5 leading-relaxed">
-                            Envie <strong className="text-foreground">apenas USDT</strong> na rede correta. Envios em redes diferentes serão perdidos.
+                        <p className="text-white/60 text-[12px] mt-0.5 leading-relaxed">
+                            Envie <strong className="text-white">apenas USDT</strong> na rede correta. Envios em redes diferentes serão perdidos.
                         </p>
                     </div>
                 </div>
@@ -376,14 +376,14 @@ export default function WalletPage() {
             <BottomSheet open={showAddModal} onOpenChange={setShowAddModal}>
                 <BottomSheetContent>
                     <BottomSheetHeader>
-                        <BottomSheetTitle className="text-foreground text-lg">Adicionar Carteira</BottomSheetTitle>
-                        <BottomSheetDescription className="text-muted-foreground text-[13px]">
+                        <BottomSheetTitle className="text-white text-lg">Adicionar Carteira</BottomSheetTitle>
+                        <BottomSheetDescription className="text-white/60 text-[13px]">
                             Escolha a rede e como adicionar
                         </BottomSheetDescription>
                     </BottomSheetHeader>
                     <div className="space-y-5">
                         <div>
-                            <Label className="text-muted-foreground text-[13px] mb-2 block">Rede</Label>
+                            <Label className="text-white/60 text-[13px] mb-2 block">Rede</Label>
                             <div className="grid grid-cols-2 gap-2">
                                 {NETWORKS.map((network) => (
                                     <button
@@ -392,11 +392,11 @@ export default function WalletPage() {
                                         className={`flex items-center justify-center gap-2 p-3.5 rounded-2xl border transition-all active:scale-[0.97] ${
                                             selectedNetwork === network.id
                                                 ? "border-[#6F00FF]/50 bg-[#6F00FF]/10"
-                                                : "border-border bg-muted hover:border-muted-foreground/30"
+                                                : "border-white/15 bg-white/10 hover:border-white/25"
                                         }`}
                                     >
                                         <span className="text-lg">{network.icon}</span>
-                                        <span className="text-[14px] font-medium text-foreground">{network.name}</span>
+                                        <span className="text-[14px] font-medium text-white">{network.name}</span>
                                         {selectedNetwork === network.id && (
                                             <Check className="w-4 h-4 text-[#6F00FF]" />
                                         )}
@@ -406,29 +406,29 @@ export default function WalletPage() {
                         </div>
 
                         <div>
-                            <Label className="text-muted-foreground text-[13px] mb-2 block">Tipo</Label>
+                            <Label className="text-white/60 text-[13px] mb-2 block">Tipo</Label>
                             <div className="grid grid-cols-2 gap-2">
                                 <button
                                     onClick={() => setAddMode("create")}
                                     className={`p-3.5 rounded-2xl border transition-all text-left active:scale-[0.97] ${
                                         addMode === "create"
                                             ? "border-[#6F00FF]/50 bg-[#6F00FF]/10"
-                                            : "border-border bg-muted hover:border-muted-foreground/30"
+                                            : "border-white/15 bg-white/10 hover:border-white/25"
                                     }`}
                                 >
-                                    <p className="text-[14px] font-medium text-foreground">Criar Nova</p>
-                                    <p className="text-muted-foreground text-[11px] mt-0.5">Gerar automaticamente</p>
+                                    <p className="text-[14px] font-medium text-white">Criar Nova</p>
+                                    <p className="text-white/60 text-[11px] mt-0.5">Gerar automaticamente</p>
                                 </button>
                                 <button
                                     onClick={() => setAddMode("import")}
                                     className={`p-3.5 rounded-2xl border transition-all text-left active:scale-[0.97] ${
                                         addMode === "import"
                                             ? "border-[#6F00FF]/50 bg-[#6F00FF]/10"
-                                            : "border-border bg-muted hover:border-muted-foreground/30"
+                                            : "border-white/15 bg-white/10 hover:border-white/25"
                                     }`}
                                 >
-                                    <p className="text-[14px] font-medium text-foreground">Importar</p>
-                                    <p className="text-muted-foreground text-[11px] mt-0.5">Carteira existente</p>
+                                    <p className="text-[14px] font-medium text-white">Importar</p>
+                                    <p className="text-white/60 text-[11px] mt-0.5">Carteira existente</p>
                                 </button>
                             </div>
                         </div>
@@ -436,21 +436,21 @@ export default function WalletPage() {
                         {addMode === "import" && (
                             <div className="space-y-3">
                                 <div>
-                                    <Label className="text-muted-foreground text-[13px]">Endereço</Label>
+                                    <Label className="text-white/60 text-[13px]">Endereço</Label>
                                     <Input
                                         value={importAddress}
                                         onChange={(e) => setImportAddress(e.target.value)}
                                         placeholder={selectedNetwork === "SOLANA" ? "Ex: 7xKXt..." : "Ex: TJYs..."}
-                                        className="border-border bg-background text-foreground mt-1 font-mono text-[13px]"
+                                        className="border-white/15 bg-white/10 text-white mt-1 font-mono text-[13px]"
                                     />
                                 </div>
                                 <div>
-                                    <Label className="text-muted-foreground text-[13px]">Nome (opcional)</Label>
+                                    <Label className="text-white/60 text-[13px]">Nome (opcional)</Label>
                                     <Input
                                         value={importLabel}
                                         onChange={(e) => setImportLabel(e.target.value)}
                                         placeholder="Ex: Minha Carteira Binance"
-                                        className="border-border bg-background text-foreground mt-1 text-[13px]"
+                                        className="border-white/15 bg-white/10 text-white mt-1 text-[13px]"
                                     />
                                 </div>
                             </div>
@@ -460,7 +460,7 @@ export default function WalletPage() {
                             <Button
                                 variant="ghost"
                                 onClick={() => setShowAddModal(false)}
-                                className="flex-1 bg-muted border border-border text-foreground hover:bg-accent rounded-2xl h-12"
+                                className="flex-1 bg-white/10 border border-white/15 text-white hover:bg-white/15 rounded-2xl h-12"
                             >
                                 Cancelar
                             </Button>
@@ -490,28 +490,28 @@ export default function WalletPage() {
             <BottomSheet open={!!walletKeys} onOpenChange={() => setWalletKeys(null)}>
                 <BottomSheetContent>
                     <BottomSheetHeader>
-                        <BottomSheetTitle className="text-foreground text-lg">Carteira Criada!</BottomSheetTitle>
+                        <BottomSheetTitle className="text-white text-lg">Carteira Criada!</BottomSheetTitle>
                     </BottomSheetHeader>
                     <div className="space-y-4">
                         <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl">
                             <p className="text-amber-600 dark:text-amber-400 text-[13px] font-semibold mb-0.5">Atenção!</p>
-                            <p className="text-muted-foreground text-[12px]">
-                                Salve sua chave privada. Ela <strong className="text-foreground">não será armazenada</strong>.
+                            <p className="text-white/60 text-[12px]">
+                                Salve sua chave privada. Ela <strong className="text-white">não será armazenada</strong>.
                             </p>
                         </div>
                         <div>
-                            <Label className="text-muted-foreground text-[12px]">Chave Pública</Label>
+                            <Label className="text-white/60 text-[12px]">Chave Pública</Label>
                             <div className="flex gap-2 mt-1">
-                                <Input readOnly value={walletKeys?.publicKey || ""} className="border-border bg-muted text-foreground font-mono text-[12px]" />
+                                <Input readOnly value={walletKeys?.publicKey || ""} className="border-white/15 bg-white/10 text-white font-mono text-[12px]" />
                                 <Button variant="ghost" size="icon" onClick={() => onCopy(walletKeys?.publicKey)} className="shrink-0">
                                     <Copy className="w-4 h-4" />
                                 </Button>
                             </div>
                         </div>
                         <div>
-                            <Label className="text-muted-foreground text-[12px]">Chave Privada</Label>
+                            <Label className="text-white/60 text-[12px]">Chave Privada</Label>
                             <div className="flex gap-2 mt-1">
-                                <Input readOnly value={walletKeys?.secretKey || ""} className="border-border bg-muted text-foreground font-mono text-[12px]" />
+                                <Input readOnly value={walletKeys?.secretKey || ""} className="border-white/15 bg-white/10 text-white font-mono text-[12px]" />
                                 <Button variant="ghost" size="icon" onClick={() => onCopy(walletKeys?.secretKey)} className="shrink-0">
                                     <Copy className="w-4 h-4" />
                                 </Button>
@@ -528,19 +528,19 @@ export default function WalletPage() {
             <BottomSheet open={!!editWallet} onOpenChange={() => setEditWallet(null)}>
                 <BottomSheetContent>
                     <BottomSheetHeader>
-                        <BottomSheetTitle className="text-foreground text-lg">Renomear</BottomSheetTitle>
+                        <BottomSheetTitle className="text-white text-lg">Renomear</BottomSheetTitle>
                     </BottomSheetHeader>
                     <div className="space-y-4">
                         <div>
-                            <Label className="text-muted-foreground text-[12px]">Endereço</Label>
-                            <Input readOnly value={editWallet?.externalAddress || ""} className="border-border bg-muted text-muted-foreground font-mono text-[12px] mt-1" />
+                            <Label className="text-white/60 text-[12px]">Endereço</Label>
+                            <Input readOnly value={editWallet?.externalAddress || ""} className="border-white/15 bg-white/10 text-white/60 font-mono text-[12px] mt-1" />
                         </div>
                         <div>
-                            <Label className="text-muted-foreground text-[12px]">Nome</Label>
-                            <Input value={editLabel} onChange={(e) => setEditLabel(e.target.value)} placeholder="Ex: Carteira Principal" className="border-border bg-background text-foreground mt-1 text-[13px]" />
+                            <Label className="text-white/60 text-[12px]">Nome</Label>
+                            <Input value={editLabel} onChange={(e) => setEditLabel(e.target.value)} placeholder="Ex: Carteira Principal" className="border-white/15 bg-white/10 text-white mt-1 text-[13px]" />
                         </div>
                         <div className="flex gap-3">
-                            <Button variant="ghost" onClick={() => setEditWallet(null)} className="flex-1 bg-muted border border-border text-foreground rounded-2xl h-12">Cancelar</Button>
+                            <Button variant="ghost" onClick={() => setEditWallet(null)} className="flex-1 bg-white/10 border border-white/15 text-white rounded-2xl h-12">Cancelar</Button>
                             <Button onClick={handleSaveLabel} className="flex-1 bg-[#6F00FF] hover:bg-[#6F00FF]/80 text-white font-semibold rounded-2xl h-12">Salvar</Button>
                         </div>
                     </div>
@@ -549,18 +549,18 @@ export default function WalletPage() {
 
             {/* ── Delete Dialog ── */}
             <AlertDialog open={!!deleteWallet} onOpenChange={() => setDeleteWallet(null)}>
-                <AlertDialogContent className="bg-card border border-border max-w-sm mx-auto">
+                <AlertDialogContent className="bg-black/60 backdrop-blur-xl border border-white/15 max-w-sm mx-auto">
                     <AlertDialogHeader>
-                        <AlertDialogTitle className="text-foreground">Excluir Carteira</AlertDialogTitle>
-                        <AlertDialogDescription className="text-muted-foreground text-[13px]">
+                        <AlertDialogTitle className="text-white">Excluir Carteira</AlertDialogTitle>
+                        <AlertDialogDescription className="text-white/60 text-[13px]">
                             Esta ação não pode ser desfeita.
-                            <div className="mt-2 p-3 bg-muted rounded-xl">
-                                <code className="text-muted-foreground text-[12px] font-mono break-all">{deleteWallet?.externalAddress}</code>
+                            <div className="mt-2 p-3 bg-white/10 rounded-xl">
+                                <code className="text-white/60 text-[12px] font-mono break-all">{deleteWallet?.externalAddress}</code>
                             </div>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel className="bg-muted border border-border text-foreground rounded-2xl">Cancelar</AlertDialogCancel>
+                        <AlertDialogCancel className="bg-white/10 border border-white/15 text-white rounded-2xl">Cancelar</AlertDialogCancel>
                         <AlertDialogAction onClick={handleDeleteWallet} disabled={deleting} className="bg-red-500 hover:bg-red-600 text-white rounded-2xl">
                             {deleting ? "Excluindo..." : "Excluir"}
                         </AlertDialogAction>

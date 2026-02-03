@@ -3,32 +3,24 @@
 
 import * as React from "react";
 import { Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { z } from "zod";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 import Link from "next/link";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
+import { Lock, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { motion } from "framer-motion";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// import { apiPost } from "@/lib/api"; // ❌ não usamos mais
-import http from "@/lib/http"; // ✅ novo client
+import http from "@/lib/http";
 
-// Evita cache estático nessa página sensível
-export const dynamic = "force-dynamic";
-
-// Validação: mínimo 8, e confirmação igual
 const schema = z
     .object({
-        password: z
-            .string()
-            .min(8, "Mínimo 8 caracteres")
-            .refine((s) => /\S/.test(s), "Não use apenas espaços"),
-        confirm: z.string().min(8, "Confirme sua senha"),
+        password: z.string().min(8, "Mínimo de 8 caracteres"),
+        confirm: z.string().min(1, "Confirme a senha"),
     })
     .refine((v) => v.password === v.confirm, {
         message: "As senhas não conferem",
@@ -36,149 +28,179 @@ const schema = z
     });
 
 type FormValues = z.infer<typeof schema>;
-// Padrão que você prefere: cast no resolver
 const resolver = zodResolver(schema) as unknown as Resolver<FormValues>;
 
 export default function ResetPage(): React.JSX.Element {
     return (
-        <Suspense fallback={<div className="min-h-dvh grid place-items-center text-sm text-muted-foreground">Carregando…</div>}>
-            <ResetPageInner />
+        <Suspense
+            fallback={
+                <div className="min-h-dvh fintech-bg-container grid place-items-center text-sm text-white/50">
+                    Carregando...
+                </div>
+            }
+        >
+            <ResetInner />
         </Suspense>
     );
 }
 
-function ResetPageInner(): React.JSX.Element {
+function ResetInner(): React.JSX.Element {
+    const searchParams = useSearchParams();
+    const token = searchParams.get("token") ?? "";
     const router = useRouter();
-    const sp = useSearchParams();
-    const rawToken = sp ? sp.get("token") ?? "" : "";
-    const token = rawToken.trim();
 
     const {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
-    } = useForm<FormValues>({ resolver, defaultValues: { password: "", confirm: "" } });
+    } = useForm<FormValues>({ resolver });
 
-    const [showPwd, setShowPwd] = React.useState(false);
+    const [showPw, setShowPw] = React.useState(false);
     const [showConfirm, setShowConfirm] = React.useState(false);
+
+    if (!token) {
+        return (
+            <div className="min-h-dvh fintech-bg-container grid place-items-center px-4">
+                <div className="fintech-glass-card rounded-[2rem] p-8 max-w-sm w-full text-center space-y-4">
+                    <h2 className="text-lg font-black text-white">Link inválido</h2>
+                    <p className="text-sm text-white/60">
+                        O link de redefinição é inválido ou já expirou.
+                    </p>
+                    <Link
+                        href="/forgot"
+                        className="inline-block text-sm font-bold text-[#9B4DFF] hover:underline"
+                    >
+                        Solicitar novo link
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     async function onSubmit(v: FormValues): Promise<void> {
         try {
-            // chama sua API NestJS diretamente
-            await http.post("/auth/reset", { token, password: v.password });
-
-            toast.success("Senha alterada. Faça login para continuar.");
-            router.replace("/login");
+            await http.post("/auth/reset", {
+                token,
+                newPassword: v.password,
+            });
+            toast.success("Senha redefinida! Faça login com a nova senha.");
+            router.push("/login");
         } catch (e: unknown) {
-            let status = 0;
-            let message = "Falha ao redefinir senha";
-
             if (e && typeof e === "object" && "response" in e) {
-                const err = e as { response?: { status?: number }; message?: string };
-                status = err.response?.status ?? 0;
-                message = err.message ?? message;
+                const axiosErr = e as { response?: { status?: number }; message?: string };
+                const status = axiosErr.response?.status ?? 0;
+                if (status === 400) {
+                    toast.error("Token inválido ou expirado.");
+                } else {
+                    toast.error(axiosErr.message ?? "Falha ao redefinir senha");
+                }
             } else if (e instanceof Error) {
-                message = e.message;
-            }
-
-            if (status === 400) {
-                toast.error("Link inválido ou já utilizado.");
-            } else if (status === 401) {
-                toast.error("Token não autorizado ou expirado.");
-            } else if (status === 410) {
-                toast.error("Este link expirou. Solicite um novo.");
+                toast.error(e.message);
             } else {
-                toast.error(message);
+                toast.error("Falha ao redefinir senha.");
             }
         }
-
     }
 
-    const tokenMissing = !token;
-
     return (
-        <div className="min-h-dvh bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-indigo-50 via-white to-white dark:from-indigo-950/30 dark:via-background dark:to-background">
+        <div className="min-h-dvh fintech-bg-container">
             <div className="mx-auto flex min-h-dvh max-w-5xl items-center justify-center px-4">
-                <Card className="w-full max-w-md rounded-2xl shadow-lg shadow-indigo-100/70 dark:shadow-indigo-900/10">
-                    <CardHeader className="space-y-1 text-center">
-                        <div className="mx-auto h-10 w-10 rounded-2xl bg-indigo-600/10 ring-1 ring-indigo-600/20 flex items-center justify-center">
-                            <Lock className="h-5 w-5 text-indigo-600" />
+                <div className="w-full max-w-md">
+                    <div className="fintech-glass-card rounded-[2rem] overflow-hidden">
+                        <div className="p-6 space-y-1 border-b border-white/[0.08]">
+                            <div className="flex items-center gap-2">
+                                <motion.button
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => router.push("/login")}
+                                    className="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 border border-white/15 text-white/70 hover:text-white transition-colors"
+                                    aria-label="Voltar"
+                                >
+                                    <ArrowLeft className="h-4 w-4" />
+                                </motion.button>
+                                <h1 className="text-xl font-black text-white">Nova senha</h1>
+                            </div>
+                            <p className="px-2 text-sm text-white/60">
+                                Escolha uma nova senha para sua conta.
+                            </p>
                         </div>
-                        <CardTitle className="text-2xl">Definir nova senha</CardTitle>
-                    </CardHeader>
 
-                    <CardContent>
-                        {!tokenMissing ? (
+                        <div className="p-6">
                             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
                                 <div className="space-y-2">
-                                    <Label htmlFor="password">Nova senha</Label>
+                                    <Label htmlFor="password" className="text-sm font-bold text-white">
+                                        Nova senha
+                                    </Label>
                                     <div className="relative">
+                                        <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                         <Input
                                             id="password"
-                                            type={showPwd ? "text" : "password"}
+                                            type={showPw ? "text" : "password"}
                                             autoComplete="new-password"
+                                            placeholder="Mínimo 8 caracteres"
+                                            className="h-12 rounded-2xl border-white/15 bg-white/10 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                             aria-invalid={!!errors.password || undefined}
                                             {...register("password")}
                                         />
                                         <button
                                             type="button"
-                                            onClick={() => setShowPwd((s) => !s)}
-                                            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
-                                            aria-label={showPwd ? "Ocultar senha" : "Mostrar senha"}
+                                            onClick={() => setShowPw((v) => !v)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white"
                                         >
-                                            {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                         </button>
                                     </div>
                                     {errors.password && (
-                                        <p className="text-xs text-rose-500 mt-1">{errors.password.message}</p>
+                                        <p className="mt-1 text-xs text-rose-400">{errors.password.message}</p>
                                     )}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="confirm">Confirmar senha</Label>
+                                    <Label htmlFor="confirm" className="text-sm font-bold text-white">
+                                        Confirmar senha
+                                    </Label>
                                     <div className="relative">
+                                        <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                         <Input
                                             id="confirm"
                                             type={showConfirm ? "text" : "password"}
                                             autoComplete="new-password"
+                                            placeholder="Repita a senha"
+                                            className="h-12 rounded-2xl border-white/15 bg-white/10 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                             aria-invalid={!!errors.confirm || undefined}
                                             {...register("confirm")}
                                         />
                                         <button
                                             type="button"
-                                            onClick={() => setShowConfirm((s) => !s)}
-                                            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
-                                            aria-label={showConfirm ? "Ocultar confirmação" : "Mostrar confirmação"}
+                                            onClick={() => setShowConfirm((v) => !v)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white"
                                         >
                                             {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                         </button>
                                     </div>
                                     {errors.confirm && (
-                                        <p className="text-xs text-rose-500 mt-1">{errors.confirm.message}</p>
+                                        <p className="mt-1 text-xs text-rose-400">{errors.confirm.message}</p>
                                     )}
                                 </div>
 
-                                <Button type="submit" className="w-full" disabled={isSubmitting} aria-busy={isSubmitting}>
-                                    {isSubmitting ? "Salvando…" : "Salvar nova senha"}
+                                <Button
+                                    type="submit"
+                                    className="w-full h-12 rounded-2xl bg-[#6F00FF] hover:bg-[#5800CC] text-white font-bold"
+                                    disabled={isSubmitting}
+                                    aria-busy={isSubmitting}
+                                >
+                                    {isSubmitting ? "Redefinindo…" : "Redefinir senha"}
                                 </Button>
 
-                                <p className="text-center text-sm text-muted-foreground">
-                                    Lembrou?{" "}
-                                    <Link href="/login" className="font-medium text-indigo-600 hover:underline">
+                                <p className="text-center text-sm text-white/60">
+                                    Lembrou a senha?{" "}
+                                    <Link href="/login" className="font-bold text-[#9B4DFF] hover:underline">
                                         Entrar
                                     </Link>
                                 </p>
                             </form>
-                        ) : (
-                            <div className="text-center text-sm">
-                                Token ausente ou inválido. Volte para{" "}
-                                <Link href="/forgot" className="font-medium text-indigo-600 hover:underline">
-                                    Recuperar senha
-                                </Link>.
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

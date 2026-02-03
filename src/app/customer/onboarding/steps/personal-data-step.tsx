@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import axios from "axios";
 import http from "@/lib/http";
 import { formatDate, parseDateBR } from "@/lib/formatters";
 import { formatCep } from "@/lib/formatters";
@@ -104,8 +105,12 @@ export function PersonalDataStep({ customer, onComplete }: PersonalDataStepProps
             });
             toast.success("Dados salvos!");
             onComplete();
-        } catch {
-            toast.error("Erro ao salvar dados. Tente novamente.");
+        } catch (err) {
+            const msg =
+                axios.isAxiosError(err) && err.response?.data?.message
+                    ? String(err.response.data.message)
+                    : "Erro ao salvar dados. Tente novamente.";
+            toast.error(msg);
         } finally {
             setSubmitting(false);
         }
@@ -117,10 +122,10 @@ export function PersonalDataStep({ customer, onComplete }: PersonalDataStepProps
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#6F00FF]/10">
                     <UserRound className="h-6 w-6 text-[#6F00FF]" />
                 </div>
-                <h2 className="text-xl font-bold text-foreground">
+                <h2 className="text-xl font-bold text-white">
                     Dados pessoais
                 </h2>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-white/60">
                     Informe sua data de nascimento e endereco.
                 </p>
             </div>
@@ -161,7 +166,7 @@ export function PersonalDataStep({ customer, onComplete }: PersonalDataStepProps
                             className="h-12 rounded-xl"
                         />
                         {loadingCep && (
-                            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-white/60" />
                         )}
                     </div>
                     {form.formState.errors.zipCode && (

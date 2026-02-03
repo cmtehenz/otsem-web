@@ -617,7 +617,7 @@ export default function TransactionsPage() {
             }
             return (
                 <div className="text-right">
-                    <span className="text-[14px] font-semibold text-foreground/80">
+                    <span className="text-[14px] font-semibold text-white/80">
                         -{formatCurrency(amount)}
                     </span>
                     {usdtAmountValue !== null && (
@@ -652,7 +652,7 @@ export default function TransactionsPage() {
                         <Loader2 className="h-10 w-10 animate-spin text-[#6F00FF]" />
                     </div>
                 </div>
-                <p className="text-[13px] text-muted-foreground mt-6">
+                <p className="text-[13px] text-white/60 mt-6">
                     Carregando atividade...
                 </p>
             </div>
@@ -670,10 +670,10 @@ export default function TransactionsPage() {
         >
             {/* ── Header ─────────────────────────────── */}
             <motion.div variants={fadeUp} className="pt-1 pb-4">
-                <h1 className="text-[22px] font-bold text-foreground tracking-tight">
+                <h1 className="text-[22px] font-bold text-white tracking-tight">
                     Atividade
                 </h1>
-                <p className="text-[13px] text-muted-foreground mt-0.5">
+                <p className="text-[13px] text-white/60 mt-0.5">
                     Histórico de movimentações
                 </p>
             </motion.div>
@@ -696,7 +696,7 @@ export default function TransactionsPage() {
                                 ${
                                     isActive
                                         ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
-                                        : "bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08] text-muted-foreground hover:text-foreground"
+                                        : "bg-white/10 border border-white/15 text-white/60 hover:text-white"
                                 }
                             `}
                         >
@@ -708,7 +708,7 @@ export default function TransactionsPage() {
 
             {/* ── Count label ────────────────────────── */}
             <motion.div variants={fadeUp} className="pb-2">
-                <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                <p className="text-[11px] font-medium text-white/60 uppercase tracking-wider">
                     {filtered.length}{" "}
                     {filtered.length === 1 ? "transação" : "transações"}
                     {filter !== "ALL" && " encontradas"}
@@ -728,15 +728,15 @@ export default function TransactionsPage() {
                     {paginated.length === 0 ? (
                         <motion.div
                             variants={fadeUp}
-                            className="premium-card rounded-2xl p-10 flex flex-col items-center justify-center"
+                            className="fintech-glass-card rounded-[20px] p-5 rounded-2xl p-10 flex flex-col items-center justify-center"
                         >
-                            <div className="w-14 h-14 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                                <Inbox className="w-6 h-6 text-muted-foreground/60" />
+                            <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mb-4">
+                                <Inbox className="w-6 h-6 text-white/40" />
                             </div>
-                            <p className="text-[14px] font-medium text-muted-foreground">
+                            <p className="text-[14px] font-medium text-white/60">
                                 Nenhuma transação encontrada
                             </p>
-                            <p className="text-[12px] text-muted-foreground/60 mt-1">
+                            <p className="text-[12px] text-white/40 mt-1">
                                 {filter !== "ALL"
                                     ? "Tente outro filtro"
                                     : "Suas movimentações aparecerão aqui"}
@@ -748,13 +748,13 @@ export default function TransactionsPage() {
                                 <motion.div key={dateLabel} variants={fadeUp}>
                                     {/* Sticky date header */}
                                     <div className="sticky top-0 z-10 py-2">
-                                        <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                                        <span className="text-[11px] font-semibold text-white/60 uppercase tracking-wider">
                                             {dateLabel}
                                         </span>
                                     </div>
 
                                     {/* Group card */}
-                                    <div className="premium-card rounded-2xl overflow-hidden">
+                                    <div className="fintech-glass-card rounded-[20px] p-5 rounded-2xl overflow-hidden">
                                         {txsInGroup.map((tx, idx) => {
                                             const meta = getTransactionMeta(tx);
                                             const isLast =
@@ -778,11 +778,11 @@ export default function TransactionsPage() {
 
                                                     {/* Info */}
                                                     <div className="flex-1 min-w-0">
-                                                        <p className="text-[14px] font-medium text-foreground truncate leading-tight">
+                                                        <p className="text-[14px] font-medium text-white truncate leading-tight">
                                                             {meta.displayName}
                                                         </p>
                                                         <div className="flex items-center gap-1.5 mt-0.5">
-                                                            <span className="text-[12px] text-muted-foreground">
+                                                            <span className="text-[12px] text-white/60">
                                                                 {formatTime(tx.createdAt)}
                                                             </span>
                                                             {meta.isPending && (
@@ -825,12 +825,12 @@ export default function TransactionsPage() {
                         className={`
                             w-10 h-10 rounded-full flex items-center justify-center
                             transition-all duration-200
-                            bg-white/50 dark:bg-white/[0.05]
-                            border border-white/60 dark:border-white/[0.08]
-                            ${page === 1 ? "opacity-30 cursor-not-allowed" : "hover:bg-white/70 dark:hover:bg-white/[0.08]"}
+                            bg-white/10
+                            border border-white/15
+                            ${page === 1 ? "opacity-30 cursor-not-allowed" : "hover:bg-white/15"}
                         `}
                     >
-                        <ChevronLeft className="w-4 h-4 text-foreground/70" />
+                        <ChevronLeft className="w-4 h-4 text-white/70" />
                     </motion.button>
 
                     {/* Page numbers */}
@@ -838,7 +838,7 @@ export default function TransactionsPage() {
                         p === "dots" ? (
                             <span
                                 key={`dots-${idx}`}
-                                className="w-10 h-10 flex items-center justify-center text-[13px] text-muted-foreground"
+                                className="w-10 h-10 flex items-center justify-center text-[13px] text-white/60"
                             >
                                 ...
                             </span>
@@ -853,7 +853,7 @@ export default function TransactionsPage() {
                                     ${
                                         page === p
                                             ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
-                                            : "bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08] text-muted-foreground hover:text-foreground hover:bg-white/70 dark:hover:bg-white/[0.08]"
+                                            : "bg-white/10 border border-white/15 text-white/60 hover:text-white hover:bg-white/15"
                                     }
                                 `}
                             >
@@ -872,12 +872,12 @@ export default function TransactionsPage() {
                         className={`
                             w-10 h-10 rounded-full flex items-center justify-center
                             transition-all duration-200
-                            bg-white/50 dark:bg-white/[0.05]
-                            border border-white/60 dark:border-white/[0.08]
-                            ${page === totalPages ? "opacity-30 cursor-not-allowed" : "hover:bg-white/70 dark:hover:bg-white/[0.08]"}
+                            bg-white/10
+                            border border-white/15
+                            ${page === totalPages ? "opacity-30 cursor-not-allowed" : "hover:bg-white/15"}
                         `}
                     >
-                        <ChevronRight className="w-4 h-4 text-foreground/70" />
+                        <ChevronRight className="w-4 h-4 text-white/70" />
                     </motion.button>
                 </motion.div>
             )}
@@ -886,7 +886,7 @@ export default function TransactionsPage() {
             {totalPages > 1 && paginated.length > 0 && (
                 <motion.p
                     variants={fadeUp}
-                    className="text-center text-[11px] text-muted-foreground/50 pb-4"
+                    className="text-center text-[11px] text-white/40 pb-4"
                 >
                     Página {page} de {totalPages}
                 </motion.p>

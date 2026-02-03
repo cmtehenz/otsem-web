@@ -28,6 +28,11 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
     const [customerName, setCustomerName] = React.useState<string | undefined>();
     const scrollRef = React.useRef<HTMLDivElement>(null);
 
+    // Reset body scroll on mount (clears stale scroll from login page)
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     // Reset scroll position on page navigation
     React.useEffect(() => {
         scrollRef.current?.scrollTo(0, 0);
@@ -94,13 +99,22 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 onSuccess={triggerRefresh}
             />
 
-            <div className="relative h-dvh overflow-hidden">
-                {/* Full-bleed scroll area — content scrolls behind glass header & nav */}
-                <div ref={scrollRef} className="h-full overflow-y-auto overflow-x-hidden overscroll-y-contain">
+            {/* Overscroll protection — extends 120dvh behind rubber-band bounce */}
+            <div className="fintech-bg-layer" aria-hidden="true" />
+
+            {/* Main container carries its own gradient background directly.
+                This is immune to iOS z-index:-1 rendering bugs that can hide
+                the fixed fintech-bg-layer behind the body in certain states. */}
+            <div className="flex flex-col min-h-dvh h-dvh relative fintech-bg-container">
+                {/* Sticky header — safe-area padding on content only */}
+                <MobileHeader customerName={customerName} />
+
+                {/* Single scroll surface */}
+                <div ref={scrollRef} data-scroll-container className="flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain">
                     <AnimatePresence mode="wait">
                         <motion.main
                             key={pathname}
-                            className="px-5 pwa-content-top pwa-scroll-pad-bottom"
+                            className="px-4 page-content"
                             initial={{ opacity: 0, y: 6, scale: 0.97 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.97 }}
@@ -122,8 +136,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                     </AnimatePresence>
                 </div>
 
-                {/* Glass overlays — float above scrollable content */}
-                <MobileHeader customerName={customerName} />
+                {/* Fixed floating dock — sits above content */}
                 <BottomNav />
                 <PwaInstallPrompt />
             </div>
@@ -142,7 +155,7 @@ function LoadingSpinner() {
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 />
             </div>
-            <span className="text-sm text-muted-foreground">Carregando...</span>
+            <span className="text-sm text-white/60">Carregando...</span>
         </div>
     );
 }

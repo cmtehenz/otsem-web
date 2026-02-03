@@ -19,8 +19,6 @@ if (fs.existsSync(envPath)) {
   });
 }
 
-const loaderPath = require.resolve('orchids-visual-edits/loader.js');
-
 const nextConfig: NextConfig = {
     output: 'standalone',
     allowedDevOrigins: [
@@ -28,12 +26,11 @@ const nextConfig: NextConfig = {
       '*.replit.app',
       '*.riker.replit.dev',
       '*.picard.replit.dev',
-      '*.orchids.cloud',
     ],
     async rewrites() {
       const base = (
-        process.env.NEXT_PUBLIC_API_URL || 
-        process.env.NEXT_PUBLIC_API_BASE_URL || 
+        process.env.NEXT_PUBLIC_API_URL ||
+        process.env.NEXT_PUBLIC_API_BASE_URL ||
         "https://api.otsembank.com"
       ).trim().replace(/\/+$/, "");
 
@@ -69,16 +66,8 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  turbopack: {
-    rules: {
-      "*.{jsx,tsx}": {
-        loaders: [loaderPath]
-      }
-    }
-  }
 };
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 export default withNextIntl(nextConfig);
-// Orchids restart: 1738175380000

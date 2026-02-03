@@ -81,10 +81,10 @@ export function PhoneStep({ customer, onComplete }: PhoneStepProps) {
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#6F00FF]/10">
                     <Phone className="h-6 w-6 text-[#6F00FF]" />
                 </div>
-                <h2 className="text-xl font-bold text-foreground">
+                <h2 className="text-xl font-bold text-white">
                     Verifique seu telefone
                 </h2>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-white/60">
                     Enviaremos um codigo SMS para confirmar seu numero.
                 </p>
             </div>
@@ -157,7 +157,7 @@ export function PhoneStep({ customer, onComplete }: PhoneStepProps) {
                                 type="button"
                                 onClick={sendCode}
                                 disabled={countdown > 0 || sending}
-                                className="text-sm text-muted-foreground hover:text-foreground disabled:opacity-50 transition"
+                                className="text-sm text-white/60 hover:text-white disabled:opacity-50 transition"
                             >
                                 {countdown > 0
                                     ? `Reenviar em ${countdown}s`

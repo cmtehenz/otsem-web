@@ -116,13 +116,13 @@ function FAQAccordion({ items }: { items: FAQItem[] }) {
                 <motion.div
                     key={index}
                     variants={fadeUp}
-                    className="premium-card !rounded-[18px] !p-0 overflow-hidden"
+                    className="fintech-glass-card rounded-[20px] p-5 !rounded-[18px] !p-0 overflow-hidden"
                 >
                     <button
                         onClick={() => setOpenIndex(openIndex === index ? null : index)}
                         className="w-full flex items-center justify-between p-4 text-left active:scale-[0.98] transition-transform"
                     >
-                        <span className="text-[14px] font-medium text-foreground pr-4 leading-snug">
+                        <span className="text-[14px] font-medium text-white pr-4 leading-snug">
                             {item.question}
                         </span>
                         <motion.div
@@ -130,7 +130,7 @@ function FAQAccordion({ items }: { items: FAQItem[] }) {
                             transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
                             className="flex-shrink-0"
                         >
-                            <ChevronDown className="w-[18px] h-[18px] text-muted-foreground" />
+                            <ChevronDown className="w-[18px] h-[18px] text-white/60" />
                         </motion.div>
                     </button>
                     <AnimatePresence initial={false}>
@@ -142,7 +142,7 @@ function FAQAccordion({ items }: { items: FAQItem[] }) {
                                 transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
                                 className="overflow-hidden"
                             >
-                                <div className="px-4 pb-4 text-[13px] text-muted-foreground leading-relaxed">
+                                <div className="px-4 pb-4 text-[13px] text-white/60 leading-relaxed">
                                     {item.answer}
                                 </div>
                             </motion.div>
@@ -189,15 +189,15 @@ export default function SupportPage() {
         >
             {/* ── Header ──────────────────────────────────── */}
             <motion.div variants={fadeUp}>
-                <h1 className="text-[22px] font-bold text-foreground">Ajuda</h1>
-                <p className="text-[13px] text-muted-foreground mt-0.5">
+                <h1 className="text-[22px] font-bold text-white">Ajuda</h1>
+                <p className="text-[13px] text-white/60 mt-0.5">
                     Encontre respostas ou fale conosco
                 </p>
             </motion.div>
 
             {/* ── System Status ────────────────────────────── */}
             <motion.div variants={fadeUp}>
-                <div className="premium-card !rounded-[20px] !p-4 bg-gradient-to-br from-[#6F00FF]/10 to-[#6F00FF]/5 dark:from-[#6F00FF]/20 dark:to-[#6F00FF]/5">
+                <div className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 bg-gradient-to-br from-[#6F00FF]/10 to-[#6F00FF]/5 dark:from-[#6F00FF]/20 dark:to-[#6F00FF]/5">
                     <div className="flex items-center gap-3">
                         <div className="relative flex-shrink-0">
                             <div className="w-9 h-9 rounded-full bg-emerald-500/15 flex items-center justify-center">
@@ -206,10 +206,10 @@ export default function SupportPage() {
                             <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-background animate-pulse" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-[14px] font-semibold text-foreground">
+                            <p className="text-[14px] font-semibold text-white">
                                 Sistema Operacional
                             </p>
-                            <p className="text-[12px] text-muted-foreground">
+                            <p className="text-[12px] text-white/60">
                                 Todos os serviços funcionando normalmente
                             </p>
                         </div>
@@ -219,7 +219,7 @@ export default function SupportPage() {
 
             {/* ── Contact Methods (horizontal scroll on mobile) ── */}
             <motion.div variants={fadeUp}>
-                <p className="text-[15px] font-semibold text-foreground mb-3 px-0.5">
+                <p className="text-[15px] font-semibold text-white mb-3 px-0.5">
                     Fale conosco
                 </p>
                 <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide snap-x snap-mandatory">
@@ -228,21 +228,21 @@ export default function SupportPage() {
                         href="https://wa.me/5511999999999"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="premium-card !rounded-[20px] !p-4 min-w-[160px] flex-1 snap-start active:scale-95 transition-transform group"
+                        className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 min-w-[160px] flex-1 snap-start active:scale-95 transition-transform group"
                     >
                         <div className="w-10 h-10 rounded-2xl bg-[#25D366]/15 flex items-center justify-center mb-3">
                             <MessageCircle className="w-5 h-5 text-[#25D366]" />
                         </div>
                         <div className="flex items-center gap-1.5 mb-1">
-                            <span className="text-[14px] font-semibold text-foreground">
+                            <span className="text-[14px] font-semibold text-white">
                                 WhatsApp
                             </span>
-                            <ExternalLink className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <ExternalLink className="w-3 h-3 text-white/60 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
-                        <p className="text-[12px] text-muted-foreground leading-snug">
+                        <p className="text-[12px] text-white/60 leading-snug">
                             Atendimento rápido
                         </p>
-                        <p className="text-[11px] text-muted-foreground/60 mt-1.5">
+                        <p className="text-[11px] text-white/40 mt-1.5">
                             Seg-Sex 9h-18h
                         </p>
                     </a>
@@ -250,37 +250,37 @@ export default function SupportPage() {
                     {/* Email */}
                     <a
                         href="mailto:suporte@otsempay.com"
-                        className="premium-card !rounded-[20px] !p-4 min-w-[160px] flex-1 snap-start active:scale-95 transition-transform group"
+                        className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 min-w-[160px] flex-1 snap-start active:scale-95 transition-transform group"
                     >
                         <div className="w-10 h-10 rounded-2xl bg-[#6F00FF]/12 flex items-center justify-center mb-3">
                             <Mail className="w-5 h-5 text-[#6F00FF]" />
                         </div>
                         <div className="flex items-center gap-1.5 mb-1">
-                            <span className="text-[14px] font-semibold text-foreground">
+                            <span className="text-[14px] font-semibold text-white">
                                 Email
                             </span>
-                            <ExternalLink className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <ExternalLink className="w-3 h-3 text-white/60 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
-                        <p className="text-[12px] text-muted-foreground leading-snug">
+                        <p className="text-[12px] text-white/60 leading-snug">
                             suporte@otsempay.com
                         </p>
-                        <p className="text-[11px] text-muted-foreground/60 mt-1.5">
+                        <p className="text-[11px] text-white/40 mt-1.5">
                             Resposta em até 24h
                         </p>
                     </a>
 
                     {/* Phone */}
-                    <div className="premium-card !rounded-[20px] !p-4 min-w-[160px] flex-1 snap-start">
+                    <div className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 min-w-[160px] flex-1 snap-start">
                         <div className="w-10 h-10 rounded-2xl bg-blue-500/12 flex items-center justify-center mb-3">
                             <Phone className="w-5 h-5 text-blue-500" />
                         </div>
-                        <span className="text-[14px] font-semibold text-foreground block mb-1">
+                        <span className="text-[14px] font-semibold text-white block mb-1">
                             Telefone
                         </span>
-                        <p className="text-[12px] text-muted-foreground leading-snug">
+                        <p className="text-[12px] text-white/60 leading-snug">
                             (11) 3000-0000
                         </p>
-                        <p className="text-[11px] text-muted-foreground/60 mt-1.5">
+                        <p className="text-[11px] text-white/40 mt-1.5">
                             Seg-Sex 9h-18h
                         </p>
                     </div>
@@ -291,7 +291,7 @@ export default function SupportPage() {
             <motion.div variants={fadeUp}>
                 <div className="flex items-center gap-2 mb-3 px-0.5">
                     <BookOpen className="w-[18px] h-[18px] text-[#6F00FF]" />
-                    <p className="text-[15px] font-semibold text-foreground">
+                    <p className="text-[15px] font-semibold text-white">
                         Tutoriais Rápidos
                     </p>
                 </div>
@@ -300,13 +300,13 @@ export default function SupportPage() {
                         <button
                             key={index}
                             onClick={() => toast.info("Tutorial em desenvolvimento")}
-                            className="premium-card !rounded-[20px] !p-4 min-w-[148px] flex-1 text-left snap-start active:scale-95 transition-transform group"
+                            className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 min-w-[148px] flex-1 text-left snap-start active:scale-95 transition-transform group"
                         >
                             <div className="text-[28px] mb-2.5">{tutorial.icon}</div>
-                            <h3 className="text-[13px] font-semibold text-foreground mb-0.5 leading-snug">
+                            <h3 className="text-[13px] font-semibold text-white mb-0.5 leading-snug">
                                 {tutorial.title}
                             </h3>
-                            <p className="text-[11px] text-muted-foreground leading-snug">
+                            <p className="text-[11px] text-white/60 leading-snug">
                                 {tutorial.description}
                             </p>
                             <div className="flex items-center gap-1 text-[#6F00FF] text-[11px] font-medium mt-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -322,7 +322,7 @@ export default function SupportPage() {
             <motion.div variants={fadeUp}>
                 <div className="flex items-center gap-2 mb-3 px-0.5">
                     <HelpCircle className="w-[18px] h-[18px] text-[#6F00FF]" />
-                    <p className="text-[15px] font-semibold text-foreground">
+                    <p className="text-[15px] font-semibold text-white">
                         Perguntas Frequentes
                     </p>
                 </div>
@@ -331,14 +331,14 @@ export default function SupportPage() {
 
             {/* ── Support Ticket Form ─────────────────────── */}
             <motion.div variants={fadeUp}>
-                <div className="premium-card !rounded-[22px]">
+                <div className="fintech-glass-card rounded-[20px] p-5 !rounded-[22px]">
                     <div className="flex items-center gap-2 mb-1">
                         <AlertCircle className="w-[18px] h-[18px] text-[#6F00FF]" />
-                        <h2 className="text-[15px] font-semibold text-foreground">
+                        <h2 className="text-[15px] font-semibold text-white">
                             Abrir Chamado
                         </h2>
                     </div>
-                    <p className="text-[13px] text-muted-foreground mb-5">
+                    <p className="text-[13px] text-white/60 mb-5">
                         Não encontrou o que procurava? Envie sua dúvida ou reporte um problema.
                     </p>
 
@@ -347,7 +347,7 @@ export default function SupportPage() {
                             <div className="space-y-1.5">
                                 <Label
                                     htmlFor="subject"
-                                    className="text-[13px] font-medium text-foreground/80"
+                                    className="text-[13px] font-medium text-white/80"
                                 >
                                     Assunto
                                 </Label>
@@ -356,18 +356,18 @@ export default function SupportPage() {
                                     value={ticketSubject}
                                     onChange={(e) => setTicketSubject(e.target.value)}
                                     placeholder="Ex: Problema com depósito"
-                                    className="h-11 rounded-xl bg-background/60 border-white/20 dark:border-white/10 text-[14px] placeholder:text-muted-foreground/50"
+                                    className="h-11 rounded-xl bg-white/10 border-white/15 text-[14px] placeholder:text-white/40"
                                 />
                             </div>
                             <div className="space-y-1.5">
                                 <Label
                                     htmlFor="category"
-                                    className="text-[13px] font-medium text-foreground/80"
+                                    className="text-[13px] font-medium text-white/80"
                                 >
                                     Categoria
                                 </Label>
                                 <Select value={ticketCategory} onValueChange={setTicketCategory}>
-                                    <SelectTrigger className="h-11 rounded-xl bg-background/60 border-white/20 dark:border-white/10 text-[14px]">
+                                    <SelectTrigger className="h-11 rounded-xl bg-white/10 border-white/15 text-[14px]">
                                         <SelectValue placeholder="Selecione uma categoria" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -385,7 +385,7 @@ export default function SupportPage() {
                         <div className="space-y-1.5">
                             <Label
                                 htmlFor="message"
-                                className="text-[13px] font-medium text-foreground/80"
+                                className="text-[13px] font-medium text-white/80"
                             >
                                 Mensagem
                             </Label>
@@ -395,7 +395,7 @@ export default function SupportPage() {
                                 onChange={(e) => setTicketMessage(e.target.value)}
                                 placeholder="Descreva sua dúvida ou problema com o máximo de detalhes possível..."
                                 rows={5}
-                                className="rounded-xl bg-background/60 border-white/20 dark:border-white/10 text-[14px] placeholder:text-muted-foreground/50 resize-none"
+                                className="rounded-xl bg-white/10 border-white/15 text-[14px] placeholder:text-white/40 resize-none"
                             />
                         </div>
 

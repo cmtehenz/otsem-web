@@ -284,7 +284,7 @@ export default function CustomerKycPage(): React.JSX.Element {
     return (
       <div className="flex h-[80vh] flex-col items-center justify-center gap-3">
         <Loader2 className="h-8 w-8 animate-spin text-[#6F00FF]" />
-        <p className="text-[13px] text-muted-foreground">Carregando...</p>
+        <p className="text-[13px] text-white/60">Carregando...</p>
       </div>
     );
   }
@@ -331,14 +331,14 @@ export default function CustomerKycPage(): React.JSX.Element {
     >
       {/* ---- Page header ---- */}
       <motion.div variants={fadeUp}>
-        <h1 className="text-[22px] font-bold text-foreground">Verificação</h1>
-        <p className="mt-0.5 text-[13px] text-muted-foreground">
+        <h1 className="text-[22px] font-bold text-white">Verificação</h1>
+        <p className="mt-0.5 text-[13px] text-white/60">
           Complete etapas e desbloqueie limites maiores
         </p>
       </motion.div>
 
       {/* ---- Current level badge + progress ---- */}
-      <motion.div variants={fadeUp} className="premium-card space-y-5">
+      <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5 space-y-5">
         {/* top row */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -348,10 +348,10 @@ export default function CustomerKycPage(): React.JSX.Element {
               <currentLevelData.icon className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-white/60">
                 Seu nível
               </p>
-              <p className="text-[15px] font-bold text-foreground">
+              <p className="text-[15px] font-bold text-white">
                 {currentLevelData.name}
               </p>
             </div>
@@ -372,8 +372,8 @@ export default function CustomerKycPage(): React.JSX.Element {
                 key={l.level}
                 className={`text-[11px] font-medium ${
                   i <= currentLevelIndex
-                    ? "text-foreground"
-                    : "text-muted-foreground/50"
+                    ? "text-white"
+                    : "text-white/40"
                 }`}
               >
                 {l.name}
@@ -404,7 +404,7 @@ export default function CustomerKycPage(): React.JSX.Element {
             initial="hidden"
             animate="show"
             exit={{ opacity: 0, y: -8 }}
-            className="premium-card flex items-start gap-3 border-amber-300/60 bg-amber-50/80 dark:border-amber-700/40 dark:bg-amber-950/30"
+            className="fintech-glass-card rounded-[20px] p-5 flex items-start gap-3 border-amber-300/60 bg-amber-50/80 dark:border-amber-700/40 dark:bg-amber-950/30"
           >
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/15">
               <Clock className="h-[18px] w-[18px] text-amber-600 dark:text-amber-400" />
@@ -428,7 +428,7 @@ export default function CustomerKycPage(): React.JSX.Element {
             initial="hidden"
             animate="show"
             exit={{ opacity: 0, y: -8 }}
-            className="premium-card space-y-3 border-red-300/60 bg-red-50/80 dark:border-red-700/40 dark:bg-red-950/30"
+            className="fintech-glass-card rounded-[20px] p-5 space-y-3 border-red-300/60 bg-red-50/80 dark:border-red-700/40 dark:bg-red-950/30"
           >
             <div className="flex items-start gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-500/15">
@@ -462,7 +462,7 @@ export default function CustomerKycPage(): React.JSX.Element {
 
       {/* ---- KYC Level Cards ---- */}
       <motion.div variants={fadeUp}>
-        <p className="mb-3 text-[15px] font-bold text-foreground">
+        <p className="mb-3 text-[15px] font-bold text-white">
           Níveis de Verificação
         </p>
       </motion.div>
@@ -481,7 +481,7 @@ export default function CustomerKycPage(): React.JSX.Element {
           <motion.div
             key={level.level}
             variants={fadeUp}
-            className={`premium-card mb-4 space-y-4 transition-all ${
+            className={`fintech-glass-card rounded-[20px] p-5 mb-4 space-y-4 transition-all ${
               isCurrent ? `ring-2 ${level.ring}` : ""
             } ${isLocked ? "opacity-60" : ""}`}
           >
@@ -498,16 +498,16 @@ export default function CustomerKycPage(): React.JSX.Element {
                   {isCompleted ? (
                     <CheckCircle2 className="h-5 w-5 text-white" />
                   ) : isLocked ? (
-                    <Lock className="h-4 w-4 text-muted-foreground/50" />
+                    <Lock className="h-4 w-4 text-white/40" />
                   ) : (
                     <LevelIcon className="h-5 w-5 text-white" />
                   )}
                 </div>
                 <div>
-                  <p className="text-[15px] font-bold text-foreground">
+                  <p className="text-[15px] font-bold text-white">
                     {level.name}
                   </p>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-[11px] text-white/60">
                     {level.subtitle}
                   </p>
                 </div>
@@ -525,7 +525,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                 </span>
               )}
               {isLocked && (
-                <span className="rounded-full bg-muted-foreground/8 px-2.5 py-0.5 text-[11px] font-semibold text-muted-foreground/60">
+                <span className="rounded-full bg-muted-foreground/8 px-2.5 py-0.5 text-[11px] font-semibold text-white/40">
                   Bloqueado
                 </span>
               )}
@@ -533,22 +533,22 @@ export default function CustomerKycPage(): React.JSX.Element {
 
             {/* Limit */}
             <div className="flex items-baseline gap-1.5">
-              <span className="text-[22px] font-bold text-foreground">
+              <span className="text-[22px] font-bold text-white">
                 {level.limit}
               </span>
-              <span className="text-[12px] text-muted-foreground">/mês</span>
+              <span className="text-[12px] text-white/60">/mês</span>
             </div>
 
             {/* Requirements */}
             <div className="space-y-2">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-white/60">
                 Requisitos
               </p>
               <ul className="space-y-1.5">
                 {level.requirements.map((req, i) => (
                   <li
                     key={i}
-                    className="flex items-center gap-2 text-[13px] text-foreground/80"
+                    className="flex items-center gap-2 text-[13px] text-white/80"
                   >
                     {isCompleted || isCurrent ? (
                       <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
@@ -597,15 +597,15 @@ export default function CustomerKycPage(): React.JSX.Element {
       {!nextLevelData && (
         <motion.div
           variants={fadeUp}
-          className="premium-card flex flex-col items-center py-8 text-center"
+          className="fintech-glass-card rounded-[20px] p-5 flex flex-col items-center py-8 text-center"
         >
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/25">
             <Crown className="h-8 w-8 text-white" />
           </div>
-          <p className="text-[15px] font-bold text-foreground">
+          <p className="text-[15px] font-bold text-white">
             Nível Máximo Atingido
           </p>
-          <p className="mt-1 max-w-[260px] text-[13px] leading-relaxed text-muted-foreground">
+          <p className="mt-1 max-w-[260px] text-[13px] leading-relaxed text-white/60">
             Você tem acesso ilimitado. Não há restrições em suas transações.
           </p>
         </motion.div>

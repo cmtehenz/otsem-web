@@ -76,10 +76,10 @@ export function CpfVerificationStep({ customer, onComplete, onSkip }: CpfVerific
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#6F00FF]/10">
                     <ShieldCheck className="h-6 w-6 text-[#6F00FF]" />
                 </div>
-                <h2 className="text-xl font-bold text-foreground">
+                <h2 className="text-xl font-bold text-white">
                     Verificacao de CPF
                 </h2>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-white/60">
                     Estamos validando seu CPF junto a Receita Federal.
                 </p>
             </div>
@@ -88,7 +88,7 @@ export function CpfVerificationStep({ customer, onComplete, onSkip }: CpfVerific
                 {(status === "pending" || status === "not_started") && (
                     <>
                         <Loader2 className="h-10 w-10 animate-spin text-[#6F00FF]" />
-                        <p className="text-sm text-muted-foreground text-center">
+                        <p className="text-sm text-white/60 text-center">
                             Verificando seus dados...
                             <br />
                             Isso pode levar alguns instantes.
@@ -134,7 +134,7 @@ export function CpfVerificationStep({ customer, onComplete, onSkip }: CpfVerific
                 <Button
                     onClick={onSkip}
                     variant="ghost"
-                    className="w-full rounded-xl text-muted-foreground"
+                    className="w-full rounded-xl text-white/60"
                 >
                     Continuar mesmo assim
                     <ArrowRight className="h-4 w-4 ml-2" />

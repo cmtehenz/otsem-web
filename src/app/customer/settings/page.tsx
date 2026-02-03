@@ -66,10 +66,10 @@ function SectionTitle({
 }) {
   return (
     <div className="flex items-center gap-2.5 mb-5">
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#6F00FF]/10">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#6F00FF]/15">
         <Icon className="h-4 w-4 text-[#6F00FF]" />
       </div>
-      <h2 className="text-[15px] font-semibold text-foreground">{title}</h2>
+      <h2 className="text-[15px] font-semibold text-white">{title}</h2>
     </div>
   );
 }
@@ -180,7 +180,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-muted-foreground text-[14px]">Carregando...</div>
+        <div className="text-white/60 text-[14px]">Carregando...</div>
       </div>
     );
   }
@@ -199,16 +199,16 @@ export default function SettingsPage() {
     >
       {/* ── Page Header ───────────────────────── */}
       <motion.div variants={fadeUp} className="px-1">
-        <h1 className="text-[22px] font-bold text-foreground">
+        <h1 className="text-[22px] font-bold text-white">
           Configurações
         </h1>
-        <p className="text-[13px] text-muted-foreground mt-0.5">
+        <p className="text-[13px] text-white/60 mt-0.5">
           Gerencie seu perfil e preferências
         </p>
       </motion.div>
 
       {/* ── Quick Links ─────────────────────────── */}
-      <motion.div variants={fadeUp} className="premium-card !p-2">
+      <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5 !p-2">
         {[
           { href: "/customer/pix", icon: KeyRound, label: "Chaves PIX", sublabel: "Gerenciar suas chaves", color: "text-green-600 dark:text-green-400", bg: "bg-green-500/10 dark:bg-green-500/20" },
           { href: "/customer/kyc", icon: ShieldCheck, label: "Verificação", sublabel: "Limites e documentos", color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/10 dark:bg-blue-500/20" },
@@ -218,20 +218,20 @@ export default function SettingsPage() {
           <Link
             key={item.href}
             href={item.href}
-            className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl active:bg-muted/50 transition-colors"
+            className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl active:bg-white/10 transition-colors"
           >
             <div className={`flex h-10 w-10 items-center justify-center rounded-full ${item.bg} shrink-0`}>
               <item.icon className={`h-5 w-5 ${item.color}`} strokeWidth={1.8} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-semibold text-foreground">{item.label}</p>
-              <p className="text-[12px] text-muted-foreground">{item.sublabel}</p>
+              <p className="text-[14px] font-semibold text-white">{item.label}</p>
+              <p className="text-[12px] text-white/60">{item.sublabel}</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground/50 shrink-0" />
+            <ChevronRight className="h-4 w-4 text-white/40 shrink-0" />
           </Link>
         ))}
 
-        <div className="mx-4 border-t border-border/50" />
+        <div className="mx-4 border-t border-white/10" />
 
         <Link
           href="/customer/logout"
@@ -245,7 +245,7 @@ export default function SettingsPage() {
       </motion.div>
 
       {/* ── Section 1: Profile ──────────────────── */}
-      <motion.div variants={fadeUp} className="premium-card">
+      <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5">
         <SectionTitle icon={User} title="Dados Pessoais" />
 
         <div className="space-y-4">
@@ -253,7 +253,7 @@ export default function SettingsPage() {
           <div className="space-y-1.5">
             <Label
               htmlFor="name"
-              className="text-[13px] text-muted-foreground"
+              className="text-[13px] text-white/60"
             >
               Nome completo
             </Label>
@@ -262,7 +262,7 @@ export default function SettingsPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Seu nome"
-              className="border-border bg-background rounded-xl h-11 text-[14px]"
+              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px]"
             />
           </div>
 
@@ -270,7 +270,7 @@ export default function SettingsPage() {
           <div className="space-y-1.5">
             <Label
               htmlFor="email"
-              className="text-[13px] text-muted-foreground"
+              className="text-[13px] text-white/60"
             >
               Email
             </Label>
@@ -278,9 +278,9 @@ export default function SettingsPage() {
               id="email"
               value={customer?.email || ""}
               disabled
-              className="border-border bg-muted/50 rounded-xl h-11 text-[14px] opacity-60"
+              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] opacity-60"
             />
-            <p className="text-[12px] text-muted-foreground/70">
+            <p className="text-[12px] text-white/50">
               O email não pode ser alterado
             </p>
           </div>
@@ -289,7 +289,7 @@ export default function SettingsPage() {
           <div className="space-y-1.5">
             <Label
               htmlFor="phone"
-              className="text-[13px] text-muted-foreground"
+              className="text-[13px] text-white/60"
             >
               Telefone
             </Label>
@@ -298,7 +298,7 @@ export default function SettingsPage() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="(00) 00000-0000"
-              className="border-border bg-background rounded-xl h-11 text-[14px]"
+              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px]"
             />
           </div>
 
@@ -307,7 +307,7 @@ export default function SettingsPage() {
             <div className="space-y-1.5">
               <Label
                 htmlFor="cpf"
-                className="text-[13px] text-muted-foreground"
+                className="text-[13px] text-white/60"
               >
                 CPF
               </Label>
@@ -315,7 +315,7 @@ export default function SettingsPage() {
                 id="cpf"
                 value={formattedCpf}
                 disabled
-                className="border-border bg-muted/50 rounded-xl h-11 text-[14px] opacity-60"
+                className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] opacity-60"
               />
             </div>
           )}
@@ -331,7 +331,7 @@ export default function SettingsPage() {
       </motion.div>
 
       {/* ── Section 2: Security ─────────────────── */}
-      <motion.div variants={fadeUp} className="premium-card">
+      <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5">
         <SectionTitle icon={Lock} title="Alterar Senha" />
 
         <div className="space-y-4">
@@ -339,7 +339,7 @@ export default function SettingsPage() {
           <div className="space-y-1.5">
             <Label
               htmlFor="currentPassword"
-              className="text-[13px] text-muted-foreground"
+              className="text-[13px] text-white/60"
             >
               Senha atual
             </Label>
@@ -350,12 +350,12 @@ export default function SettingsPage() {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder="Digite sua senha atual"
-                className="border-border bg-background rounded-xl h-11 text-[14px] pr-11"
+                className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] pr-11"
               />
               <button
                 type="button"
                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground active:scale-95 transition-transform"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white active:scale-95 transition-transform"
               >
                 {showCurrentPassword ? (
                   <EyeOff className="w-4 h-4" />
@@ -370,7 +370,7 @@ export default function SettingsPage() {
           <div className="space-y-1.5">
             <Label
               htmlFor="newPassword"
-              className="text-[13px] text-muted-foreground"
+              className="text-[13px] text-white/60"
             >
               Nova senha
             </Label>
@@ -381,12 +381,12 @@ export default function SettingsPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Digite a nova senha"
-                className="border-border bg-background rounded-xl h-11 text-[14px] pr-11"
+                className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] pr-11"
               />
               <button
                 type="button"
                 onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground active:scale-95 transition-transform"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white active:scale-95 transition-transform"
               >
                 {showNewPassword ? (
                   <EyeOff className="w-4 h-4" />
@@ -401,7 +401,7 @@ export default function SettingsPage() {
           <div className="space-y-1.5">
             <Label
               htmlFor="confirmPassword"
-              className="text-[13px] text-muted-foreground"
+              className="text-[13px] text-white/60"
             >
               Confirmar nova senha
             </Label>
@@ -412,12 +412,12 @@ export default function SettingsPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirme a nova senha"
-                className="border-border bg-background rounded-xl h-11 text-[14px] pr-11"
+                className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] pr-11"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground active:scale-95 transition-transform"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white active:scale-95 transition-transform"
               >
                 {showConfirmPassword ? (
                   <EyeOff className="w-4 h-4" />
@@ -439,25 +439,25 @@ export default function SettingsPage() {
       </motion.div>
 
       {/* ── Section 3: Preferences ──────────────── */}
-      <motion.div variants={fadeUp} className="premium-card">
+      <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5">
         <SectionTitle icon={Palette} title="Preferências" />
 
         {/* Theme toggle */}
         <div className="mb-5">
-          <p className="text-[13px] text-muted-foreground mb-3">Aparência</p>
+          <p className="text-[13px] text-white/60 mb-3">Aparência</p>
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => setTheme("light")}
               className={`relative flex flex-col items-center gap-2.5 p-4 rounded-xl border-2 transition-all active:scale-95 ${
                 theme === "light"
-                  ? "border-[#6F00FF] bg-[#6F00FF]/5"
-                  : "border-border hover:border-muted-foreground/40"
+                  ? "border-[#6F00FF] bg-[#6F00FF]/15"
+                  : "border-white/15 hover:border-white/30"
               }`}
             >
               <div className="flex h-11 w-11 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
                 <Sun className="h-5 w-5 text-amber-500" />
               </div>
-              <span className="text-[13px] font-medium text-foreground">
+              <span className="text-[13px] font-medium text-white">
                 Claro
               </span>
               {theme === "light" && (
@@ -471,14 +471,14 @@ export default function SettingsPage() {
               onClick={() => setTheme("dark")}
               className={`relative flex flex-col items-center gap-2.5 p-4 rounded-xl border-2 transition-all active:scale-95 ${
                 theme === "dark"
-                  ? "border-[#6F00FF] bg-[#6F00FF]/5"
-                  : "border-border hover:border-muted-foreground/40"
+                  ? "border-[#6F00FF] bg-[#6F00FF]/15"
+                  : "border-white/15 hover:border-white/30"
               }`}
             >
               <div className="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/30">
                 <Moon className="h-5 w-5 text-indigo-500" />
               </div>
-              <span className="text-[13px] font-medium text-foreground">
+              <span className="text-[13px] font-medium text-white">
                 Escuro
               </span>
               {theme === "dark" && (
@@ -491,19 +491,19 @@ export default function SettingsPage() {
         </div>
 
         {/* Language placeholder */}
-        <div className="flex items-center justify-between rounded-xl border border-border bg-background/50 px-4 py-3.5">
+        <div className="flex items-center justify-between rounded-xl border border-white/15 bg-white/10 px-4 py-3.5">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-              <Globe className="h-4 w-4 text-muted-foreground" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
+              <Globe className="h-4 w-4 text-white/60" />
             </div>
             <div>
-              <p className="text-[14px] font-medium text-foreground">Idioma</p>
-              <p className="text-[12px] text-muted-foreground">
+              <p className="text-[14px] font-medium text-white">Idioma</p>
+              <p className="text-[12px] text-white/60">
                 Português (Brasil)
               </p>
             </div>
           </div>
-          <span className="text-[12px] font-medium text-muted-foreground/60 bg-muted/80 px-2.5 py-1 rounded-full">
+          <span className="text-[12px] font-medium text-white/40 bg-white/10 px-2.5 py-1 rounded-full">
             Em breve
           </span>
         </div>

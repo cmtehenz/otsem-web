@@ -8,8 +8,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Mail, ArrowLeft } from "lucide-react";
+import { motion } from "framer-motion";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -104,90 +104,92 @@ export default function ForgotPage(): React.JSX.Element {
     }
 
     return (
-        <div className="min-h-dvh bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-indigo-50 via-white to-white dark:from-indigo-950/30 dark:via-background dark:to-background">
+        <div className="min-h-dvh fintech-bg-container">
             <div className="mx-auto flex min-h-dvh max-w-5xl items-center justify-center px-4">
-                <Card className="w-full max-w-md rounded-2xl shadow-lg shadow-indigo-100/70 dark:shadow-indigo-900/10">
-                    <CardHeader className="space-y-1">
-                        <div className="flex items-center gap-2">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => router.back()}
-                                aria-label="Voltar"
-                            >
-                                <ArrowLeft className="h-5 w-5" />
-                            </Button>
-                            <CardTitle className="text-xl">Recuperar senha</CardTitle>
-                        </div>
-                        <p className="px-2 text-sm text-muted-foreground">
-                            Digite seu e-mail para receber o link de redefinição.
-                        </p>
-                    </CardHeader>
-
-                    <CardContent>
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-                            {/* Honeypot oculto */}
-                            <div className="sr-only">
-                                <Label htmlFor="hp">Deixe em branco</Label>
-                                <Input id="hp" tabIndex={-1} autoComplete="off" {...register("hp")} />
+                <div className="w-full max-w-md">
+                    <div className="fintech-glass-card rounded-[2rem] overflow-hidden">
+                        <div className="p-6 space-y-1 border-b border-white/[0.08]">
+                            <div className="flex items-center gap-2">
+                                <motion.button
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => router.back()}
+                                    className="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 border border-white/15 text-white/70 hover:text-white transition-colors"
+                                    aria-label="Voltar"
+                                >
+                                    <ArrowLeft className="h-4 w-4" />
+                                </motion.button>
+                                <h1 className="text-xl font-black text-white">Recuperar senha</h1>
                             </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="email">E-mail</Label>
-                                <div className="relative">
-                                    <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        inputMode="email"
-                                        autoComplete="email"
-                                        placeholder="voce@email.com"
-                                        className="pl-9"
-                                        aria-invalid={!!errors.email || undefined}
-                                        {...register("email")}
-                                    />
-                                </div>
-                                {errors.email && (
-                                    <p className="mt-1 text-xs text-rose-500">{errors.email.message}</p>
-                                )}
-                            </div>
-
-                            <Button
-                                type="submit"
-                                className="w-full"
-                                disabled={isSubmitting || cooldown > 0}
-                                aria-busy={isSubmitting}
-                            >
-                                {isSubmitting
-                                    ? "Enviando…"
-                                    : cooldown > 0
-                                        ? `Aguardar ${cooldown}s`
-                                        : "Enviar link"}
-                            </Button>
-
-                            <p className="text-center text-sm text-muted-foreground">
-                                Lembrou a senha?{" "}
-                                <Link href="/login" className="font-medium text-indigo-600 hover:underline">
-                                    Entrar
-                                </Link>
+                            <p className="px-2 text-sm text-white/60">
+                                Digite seu e-mail para receber o link de redefinição.
                             </p>
+                        </div>
 
-                            {SHOW_RESET_URL && resetUrl && (
-                                <div className="mt-3 rounded-md border bg-muted/30 p-3 text-sm">
-                                    <div className="mb-1 font-medium">Link de redefinição (DEV):</div>
-                                    <button
-                                        type="button"
-                                        onClick={() => (window.location.href = resetUrl)}
-                                        className="truncate font-mono text-indigo-600 underline underline-offset-2"
-                                        title={resetUrl}
-                                    >
-                                        {resetUrl}
-                                    </button>
+                        <div className="p-6">
+                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+                                {/* Honeypot oculto */}
+                                <div className="sr-only">
+                                    <Label htmlFor="hp">Deixe em branco</Label>
+                                    <Input id="hp" tabIndex={-1} autoComplete="off" {...register("hp")} />
                                 </div>
-                            )}
-                        </form>
-                    </CardContent>
-                </Card>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="email" className="text-sm font-bold text-white">E-mail</Label>
+                                    <div className="relative">
+                                        <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            inputMode="email"
+                                            autoComplete="email"
+                                            placeholder="voce@email.com"
+                                            className="h-12 rounded-2xl border-white/15 bg-white/10 pl-10 text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
+                                            aria-invalid={!!errors.email || undefined}
+                                            {...register("email")}
+                                        />
+                                    </div>
+                                    {errors.email && (
+                                        <p className="mt-1 text-xs text-rose-400">{errors.email.message}</p>
+                                    )}
+                                </div>
+
+                                <Button
+                                    type="submit"
+                                    className="w-full h-12 rounded-2xl bg-[#6F00FF] hover:bg-[#5800CC] text-white font-bold"
+                                    disabled={isSubmitting || cooldown > 0}
+                                    aria-busy={isSubmitting}
+                                >
+                                    {isSubmitting
+                                        ? "Enviando…"
+                                        : cooldown > 0
+                                            ? `Aguardar ${cooldown}s`
+                                            : "Enviar link"}
+                                </Button>
+
+                                <p className="text-center text-sm text-white/60">
+                                    Lembrou a senha?{" "}
+                                    <Link href="/login" className="font-bold text-[#9B4DFF] hover:underline">
+                                        Entrar
+                                    </Link>
+                                </p>
+
+                                {SHOW_RESET_URL && resetUrl && (
+                                    <div className="mt-3 rounded-2xl border border-white/15 bg-white/10 p-3 text-sm">
+                                        <div className="mb-1 font-bold text-white">Link de redefinição (DEV):</div>
+                                        <button
+                                            type="button"
+                                            onClick={() => (window.location.href = resetUrl)}
+                                            className="truncate font-mono text-[#9B4DFF] underline underline-offset-2"
+                                            title={resetUrl}
+                                        >
+                                            {resetUrl}
+                                        </button>
+                                    </div>
+                                )}
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

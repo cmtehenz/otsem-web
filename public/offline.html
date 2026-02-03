@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+  <meta name="theme-color" content="#6F00FF" />
+  <title>Otsem Pay - Offline</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Roboto, sans-serif;
+      background: #f8f7fc;
+      color: #1a1025;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      padding: 24px;
+      padding-top: calc(env(safe-area-inset-top, 0px) + 24px);
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+    }
+    @media (prefers-color-scheme: dark) {
+      body { background: #0a0118; color: #f8f7fc; }
+      .card { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+      .subtitle { color: #9b8ab8; }
+    }
+    .container { text-align: center; max-width: 360px; width: 100%; }
+    .icon {
+      width: 80px; height: 80px; margin: 0 auto 24px;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #9B4DFF, #6F00FF);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .icon svg { width: 40px; height: 40px; color: white; }
+    h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .subtitle { font-size: 15px; color: #4a4458; line-height: 1.5; margin-bottom: 32px; }
+    .card {
+      background: rgba(111,0,255,0.04);
+      border: 1px solid rgba(111,0,255,0.1);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .card p { font-size: 14px; line-height: 1.6; color: #4a4458; }
+    @media (prefers-color-scheme: dark) { .card p { color: #9b8ab8; } }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #6F00FF, #6F00FF);
+      color: white; border: none; border-radius: 14px;
+      padding: 14px 32px; font-size: 16px; font-weight: 600;
+      cursor: pointer; transition: transform 0.15s ease, opacity 0.15s ease;
+      width: 100%;
+    }
+    .btn:active { transform: scale(0.97); opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+      </svg>
+    </div>
+    <h1>Sem conexão</h1>
+    <p class="subtitle">Você está offline. Verifique sua conexão com a internet e tente novamente.</p>
+    <div class="card">
+      <p>As transações financeiras exigem uma conexão ativa. Nenhuma operação será processada enquanto estiver offline.</p>
+    </div>
+    <button class="btn" onclick="window.location.reload()">Tentar novamente</button>
+  </div>
+</body>
+</html>

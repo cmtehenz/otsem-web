@@ -274,7 +274,7 @@ export default function CustomerPixPage() {
             <Loader2 className="h-7 w-7 animate-spin text-[#6F00FF]" />
           </div>
         </div>
-        <p className="text-[13px] text-muted-foreground">
+        <p className="text-[13px] text-white/60">
           Carregando chaves Pix...
         </p>
       </div>
@@ -296,10 +296,10 @@ export default function CustomerPixPage() {
           className="flex items-center justify-between mb-8"
         >
           <div>
-            <h1 className="text-[22px] font-bold text-foreground leading-tight">
+            <h1 className="text-[22px] font-bold text-white leading-tight">
               Chaves PIX
             </h1>
-            <p className="text-[13px] text-muted-foreground mt-0.5">
+            <p className="text-[13px] text-white/60 mt-0.5">
               Gerencie suas chaves Pix
             </p>
           </div>
@@ -307,7 +307,7 @@ export default function CustomerPixPage() {
 
         <motion.div
           variants={fadeUp}
-          className="premium-card flex flex-col items-center text-center py-14 px-6"
+          className="fintech-glass-card rounded-[20px] p-5 flex flex-col items-center text-center py-14 px-6"
         >
           <div className="relative mb-5">
             <div className="absolute inset-0 rounded-full bg-[#6F00FF]/15 blur-2xl scale-150" />
@@ -316,10 +316,10 @@ export default function CustomerPixPage() {
             </div>
           </div>
 
-          <h2 className="text-[17px] font-bold text-foreground mb-1.5">
+          <h2 className="text-[17px] font-bold text-white mb-1.5">
             Nenhuma chave Pix
           </h2>
-          <p className="text-[13px] text-muted-foreground max-w-[260px] leading-relaxed mb-7">
+          <p className="text-[13px] text-white/60 max-w-[260px] leading-relaxed mb-7">
             Cadastre sua primeira chave Pix para come&ccedil;ar a receber pagamentos
             instant&acirc;neos.
           </p>
@@ -362,10 +362,10 @@ export default function CustomerPixPage() {
         className="flex items-center justify-between mb-6"
       >
         <div>
-          <h1 className="text-[22px] font-bold text-foreground leading-tight">
+          <h1 className="text-[22px] font-bold text-white leading-tight">
             Chaves PIX
           </h1>
-          <p className="text-[13px] text-muted-foreground mt-0.5">
+          <p className="text-[13px] text-white/60 mt-0.5">
             {pixKeys.length} chave{pixKeys.length !== 1 ? "s" : ""} cadastrada
             {pixKeys.length !== 1 ? "s" : ""}
           </p>
@@ -381,16 +381,16 @@ export default function CustomerPixPage() {
       {/* Info banner */}
       <motion.div
         variants={fadeUp}
-        className="premium-card !p-3.5 mb-4 flex items-start gap-3"
+        className="fintech-glass-card rounded-[20px] p-5 !p-3.5 mb-4 flex items-start gap-3"
       >
         <div className="w-8 h-8 rounded-xl bg-[#6F00FF]/10 flex items-center justify-center shrink-0">
           <ShieldCheck className="w-4 h-4 text-[#6F00FF]" />
         </div>
         <div className="min-w-0">
-          <p className="text-[13px] font-semibold text-foreground leading-tight">
+          <p className="text-[13px] font-semibold text-white leading-tight">
             Valida&ccedil;&atilde;o de Chaves
           </p>
-          <p className="text-[12px] text-muted-foreground mt-0.5 leading-relaxed">
+          <p className="text-[12px] text-white/60 mt-0.5 leading-relaxed">
             Chaves CPF, CNPJ, E-mail e Telefone s&atilde;o validadas automaticamente.
             Para chaves aleat&oacute;rias, clique em &quot;Validar&quot; (R$ 0,01).
           </p>
@@ -403,7 +403,7 @@ export default function CustomerPixPage() {
           <motion.div
             key={pix.id}
             variants={fadeUp}
-            className="premium-card !p-4"
+            className="fintech-glass-card rounded-[20px] p-5 !p-4"
           >
             <div className="flex items-start gap-3">
               {/* Icon */}
@@ -416,7 +416,7 @@ export default function CustomerPixPage() {
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[15px] font-semibold text-foreground">
+                  <span className="text-[15px] font-semibold text-white">
                     {getKeyTypeLabel(pix.keyType)}
                   </span>
                   <StatusBadge pix={pix} />
@@ -427,15 +427,15 @@ export default function CustomerPixPage() {
                   onClick={() => onCopy(pix.keyValue)}
                   className="group flex items-center gap-1.5 mb-1.5 active:scale-95 transition-transform"
                 >
-                  <code className="text-[13px] text-muted-foreground font-mono truncate max-w-[200px] sm:max-w-none">
+                  <code className="text-[13px] text-white/60 font-mono truncate max-w-[200px] sm:max-w-none">
                     {pix.keyValue}
                   </code>
-                  <Copy className="w-3 h-3 text-muted-foreground/50 group-hover:text-[#6F00FF] transition-colors shrink-0" />
+                  <Copy className="w-3 h-3 text-white/40 group-hover:text-[#6F00FF] transition-colors shrink-0" />
                 </button>
 
                 {/* Date & error info */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[11px] text-muted-foreground/70">
+                  <span className="text-[11px] text-white/40">
                     Criada em {formatDate(pix.createdAt)}
                   </span>
                   {pix.validated && pix.validatedAt && (
@@ -455,7 +455,7 @@ export default function CustomerPixPage() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="w-8 h-8 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08] flex items-center justify-center hover:bg-white/80 dark:hover:bg-white/[0.08] active:scale-95 transition-transform shrink-0">
-                    <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                    <MoreVertical className="w-4 h-4 text-white/60" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -545,7 +545,7 @@ function AddKeyModal({
     <BottomSheet open={open} onOpenChange={onOpenChange}>
       <BottomSheetContent>
         <BottomSheetHeader className="p-5 pb-0">
-          <BottomSheetTitle className="text-[18px] font-bold text-foreground">
+          <BottomSheetTitle className="text-[18px] font-bold text-white">
             Nova Chave Pix
           </BottomSheetTitle>
         </BottomSheetHeader>
@@ -553,7 +553,7 @@ function AddKeyModal({
         <form onSubmit={onSubmit} className="p-5 pt-4 space-y-5">
           {/* Key type grid */}
           <div>
-            <label className="block text-[12px] font-semibold text-muted-foreground uppercase tracking-wider mb-2.5">
+            <label className="block text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2.5">
               Tipo de chave
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -566,7 +566,7 @@ function AddKeyModal({
                     "flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl text-[12px] font-medium active:scale-95 transition-all " +
                     (newType === kt.value
                       ? "bg-[#6F00FF]/10 text-[#6F00FF] border-2 border-[#6F00FF]/40 shadow-sm"
-                      : "bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08] text-muted-foreground hover:border-[#6F00FF]/20")
+                      : "bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08] text-white/60 hover:border-[#6F00FF]/20")
                   }
                 >
                   <KeyTypeIconComponent type={kt.value} size="sm" />
@@ -579,7 +579,7 @@ function AddKeyModal({
           {/* Key value input */}
           {newType !== "RANDOM" && (
             <div>
-              <label className="block text-[12px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+              <label className="block text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
                 Valor da chave
               </label>
               <Input
@@ -596,9 +596,9 @@ function AddKeyModal({
                         : "+55 11 99999-9999"
                 }
                 required
-                className="h-11 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08] text-foreground placeholder:text-muted-foreground/40 text-[14px]"
+                className="h-11 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08] text-white placeholder:text-white/40 text-[14px]"
               />
-              <p className="text-[11px] text-muted-foreground/70 mt-1.5">
+              <p className="text-[11px] text-white/40 mt-1.5">
                 Se corresponder aos seus dados, ser&aacute; validada automaticamente.
               </p>
             </div>
@@ -609,10 +609,10 @@ function AddKeyModal({
             <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/15">
               <AlertCircle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
               <div>
-                <p className="text-[13px] font-semibold text-foreground">
+                <p className="text-[13px] font-semibold text-white">
                   Chave Aleat&oacute;ria
                 </p>
-                <p className="text-[12px] text-muted-foreground mt-0.5 leading-relaxed">
+                <p className="text-[12px] text-white/60 mt-0.5 leading-relaxed">
                   Ser&aacute; gerada automaticamente. Requer valida&ccedil;&atilde;o manual via
                   micro-transfer&ecirc;ncia.
                 </p>
@@ -625,7 +625,7 @@ function AddKeyModal({
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="flex-1 h-11 rounded-2xl text-[14px] font-semibold text-foreground bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08] hover:bg-white/80 dark:hover:bg-white/[0.08] active:scale-95 transition-transform"
+              className="flex-1 h-11 rounded-2xl text-[14px] font-semibold text-white bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08] hover:bg-white/80 dark:hover:bg-white/[0.08] active:scale-95 transition-transform"
             >
               Cancelar
             </button>
@@ -669,13 +669,13 @@ function DeleteKeyModal({
     <BottomSheet open={open} onOpenChange={onOpenChange}>
       <BottomSheetContent>
         <BottomSheetHeader className="p-5 pb-0">
-          <BottomSheetTitle className="text-[18px] font-bold text-foreground">
+          <BottomSheetTitle className="text-[18px] font-bold text-white">
             Remover Chave Pix
           </BottomSheetTitle>
         </BottomSheetHeader>
 
         <div className="p-5 pt-3 space-y-4">
-          <p className="text-[14px] text-muted-foreground">
+          <p className="text-[14px] text-white/60">
             Tem certeza que deseja remover esta chave?
           </p>
 
@@ -687,10 +687,10 @@ function DeleteKeyModal({
                 <KeyTypeIconComponent type={keyToDelete.keyType} />
               </div>
               <div className="min-w-0">
-                <p className="text-[14px] font-semibold text-foreground">
+                <p className="text-[14px] font-semibold text-white">
                   {getKeyTypeLabel(keyToDelete.keyType)}
                 </p>
-                <code className="text-[12px] text-muted-foreground font-mono truncate block">
+                <code className="text-[12px] text-white/60 font-mono truncate block">
                   {keyToDelete.keyValue}
                 </code>
               </div>
@@ -701,7 +701,7 @@ function DeleteKeyModal({
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="flex-1 h-11 rounded-2xl text-[14px] font-semibold text-foreground bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08] hover:bg-white/80 dark:hover:bg-white/[0.08] active:scale-95 transition-transform"
+              className="flex-1 h-11 rounded-2xl text-[14px] font-semibold text-white bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08] hover:bg-white/80 dark:hover:bg-white/[0.08] active:scale-95 transition-transform"
             >
               Cancelar
             </button>

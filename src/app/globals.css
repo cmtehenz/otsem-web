@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -7,8 +6,8 @@
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono: "SF Mono", ui-monospace, SFMono-Regular, "Menlo", "Monaco", "Consolas", monospace;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -150,13 +149,18 @@
     html {
         scroll-behavior: smooth;
         -webkit-font-smoothing: antialiased;
-        overscroll-behavior: none;
         -moz-osx-font-smoothing: grayscale;
+        /* Black fallback — matches gradient bottom so bottom safe area is dark */
+        background-color: #000000;
+        min-height: 100dvh;
+        margin: 0;
+        padding: 0;
+        overscroll-behavior: none;
     }
 
     body {
-        @apply bg-background text-foreground;
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+        @apply text-foreground;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
         -webkit-tap-highlight-color: transparent;
         touch-action: pan-x pan-y;
         -webkit-user-select: none;
@@ -170,16 +174,66 @@
         user-select: text;
         -webkit-touch-callout: default;
         touch-action: manipulation;
+        /* Transparent — let the fixed gradient layer be the only background */
+        background-color: transparent;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+        min-height: 100dvh;
+        margin: 0;
+        padding: 0;
+        overscroll-behavior: none;
+        overflow-x: hidden;
     }
-    
+
     h1, h2, h3, h4, h5, h6 {
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
         @apply font-bold tracking-tight;
         line-height: 1.1;
     }
 
     [class*="backdrop-blur"] {
         -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-saturate);
+    }
+}
+
+/* ── PWA safe area insets ────────────────────────── */
+@supports (padding: env(safe-area-inset-top)) {
+    html {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+}
+
+/* ── Prevent white flash in PWA standalone mode ──── */
+@media (display-mode: standalone) {
+    html {
+        /* Must match fintech-bg-layer gradient so safe areas blend seamlessly */
+        background: linear-gradient(
+            180deg,
+            #7B22FF 0%,
+            #6A10F0 8%,
+            #5500D0 16%,
+            #4200A8 25%,
+            #320080 34%,
+            #240060 44%,
+            #180040 54%,
+            #0F0028 65%,
+            #080014 78%,
+            #030008 90%,
+            #000000 100%
+        );
+        height: 100dvh;
+        overflow: hidden;
+    }
+
+    body {
+        /* Keep transparent so fintech-bg-layer (z-index: -1) shows through */
+        background: transparent;
+        overflow: hidden;
+        height: 100dvh;
+        position: fixed;
+        width: 100%;
     }
 }
 
@@ -204,11 +258,6 @@
     50% { opacity: 0.8; transform: scale(0.98); }
 }
 
-@keyframes ios-shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-}
-
 @keyframes liquid-shimmer {
     0% { transform: translateX(-100%) skewX(-15deg); }
     100% { transform: translateX(200%) skewX(-15deg); }
@@ -217,11 +266,6 @@
 @keyframes liquid-breathe {
     0%, 100% { opacity: 0.6; }
     50% { opacity: 1; }
-}
-
-@keyframes ios-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(111, 0, 255, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(111, 0, 255, 0.5); }
 }
 
 @keyframes float {
@@ -255,6 +299,51 @@
   50% { background-position: 100% 50%; }
 }
 
+@keyframes liquid-metal-sweep {
+  0% { left: -100%; }
+  50% { left: 140%; }
+  100% { left: 140%; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes liquidShimmer {
+    0% {
+        transform: translateX(-100%) skewX(-12deg);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateX(200%) skewX(-12deg);
+        opacity: 0;
+    }
+}
+
+@keyframes glassBreath {
+    0%, 100% {
+        backdrop-filter: blur(20px) saturate(150%);
+    }
+    50% {
+        backdrop-filter: blur(24px) saturate(180%);
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 4px 20px rgba(139, 92, 246, 0.5),
+                    0 0 40px rgba(139, 92, 246, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 30px rgba(139, 92, 246, 0.7),
+                    0 0 60px rgba(139, 92, 246, 0.4);
+    }
+}
+
 @layer utilities {
     .animate-fade-in {
         animation: fade-in 0.6s cubic-bezier(0.32, 0.72, 0, 1) forwards;
@@ -273,11 +362,6 @@
         animation: float 6s ease-in-out infinite;
     }
 
-    .perspective {
-        perspective: 1200px;
-        transform-style: preserve-3d;
-    }
-    
     .ios-glass {
         background: rgba(255, 255, 255, 0.72);
         -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -285,20 +369,32 @@
         border: 0.5px solid rgba(255, 255, 255, 0.5);
     }
 
-    .ios-glass-dark {
-        background: rgba(28, 28, 30, 0.72);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        backdrop-filter: blur(20px) saturate(180%);
-        border: 0.5px solid rgba(255, 255, 255, 0.08);
+    .liquid-glass {
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.2) 0%,
+            rgba(255, 255, 255, 0.05) 100%
+        );
+        -webkit-backdrop-filter: blur(20px) saturate(150%);
+        backdrop-filter: blur(20px) saturate(150%);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.12),
+            0 2px 8px rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
-    .liquid-glass {
-        @apply bg-white/60 border border-white/80;
-        -webkit-backdrop-filter: blur(40px) saturate(180%);
-        backdrop-filter: blur(40px) saturate(180%);
+    .dark .liquid-glass {
+        background: linear-gradient(
+            135deg,
+            rgba(15, 15, 20, 0.8) 0%,
+            rgba(15, 15, 20, 0.6) 100%
+        );
+        border-color: rgba(255, 255, 255, 0.1);
         box-shadow:
-            inset 0 0 0 0.5px rgba(255, 255, 255, 0.6),
-            0 25px 50px -12px rgba(0, 0, 0, 0.08);
+            0 8px 32px rgba(0, 0, 0, 0.4),
+            0 2px 8px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
     .rich-glass {
@@ -312,25 +408,30 @@
     }
 
     .premium-card {
-        @apply bg-white/85 border border-white/80 rounded-[28px] p-6 shadow-xl;
+        @apply bg-white/85 rounded-[28px] p-6;
+        border: 0.5px solid rgba(255, 255, 255, 0.35);
         -webkit-backdrop-filter: blur(64px);
         backdrop-filter: blur(64px);
         box-shadow:
-            inset 0 0 0 0.5px rgba(255, 255, 255, 0.5),
-            0 20px 40px -10px rgba(0, 0, 0, 0.06);
+            inset 0 0.5px 0 rgba(255, 255, 255, 0.5),
+            inset 0 0 12px rgba(255, 255, 255, 0.06),
+            0 20px 40px -10px rgba(0, 0, 0, 0.15),
+            0 8px 16px -4px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Apply shimmer animation to premium cards */
+    .premium-card.animate-ios-shimmer::before {
+        border-radius: 28px;
     }
 
     .dark .premium-card {
-        @apply bg-[#1a1025]/90 border-white/10;
+        @apply bg-[#1a1025]/90;
+        border-color: rgba(255, 255, 255, 0.10);
         box-shadow:
-            inset 0 0 0 0.5px rgba(255, 255, 255, 0.05),
-            0 20px 40px -10px rgba(0, 0, 0, 0.3);
-    }
-
-    .glass-nav {
-        @apply bg-white/60 border-b border-white/80 shadow-lg;
-        -webkit-backdrop-filter: blur(24px) saturate(180%);
-        backdrop-filter: blur(24px) saturate(180%);
+            inset 0 0.5px 0 rgba(255, 255, 255, 0.08),
+            inset 0 0 12px rgba(255, 255, 255, 0.02),
+            0 20px 40px -10px rgba(0, 0, 0, 0.4),
+            0 8px 16px -4px rgba(0, 0, 0, 0.25);
     }
 
     .ios-card {
@@ -411,6 +512,14 @@
         transform: scale(0.96);
     }
 
+    .spring-bounce {
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .spring-bounce:active {
+        transform: scale(0.95);
+    }
+
     .text-gradient-primary {
         background: linear-gradient(135deg, #6F00FF 0%, #9B4DFF 100%);
         -webkit-background-clip: text;
@@ -447,6 +556,31 @@
         animation: gradient-shift 8s ease infinite;
     }
 
+    /* ── Liquid Metal shimmer — sweeping light reflection across glass surfaces ── */
+    .animate-ios-shimmer {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .animate-ios-shimmer::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            110deg,
+            rgba(255, 255, 255, 0) 20%,
+            rgba(255, 255, 255, 0.1) 48%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0.1) 52%,
+            rgba(255, 255, 255, 0) 80%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 8s linear infinite;
+        pointer-events: none;
+        z-index: 1;
+        border-radius: inherit;
+    }
+
     .ios-card-premium {
         @apply bg-white rounded-[20px] p-4 sm:p-5;
         box-shadow: 
@@ -476,29 +610,6 @@
     /* ── PWA safe area utilities ─────────────────────── */
     /* These MUST be in CSS, not inline styles — Safari ignores env() in style="" */
 
-    .pwa-header-content {
-        padding-top: calc(env(safe-area-inset-top, 0px) + 8px);
-        padding-bottom: 8px;
-    }
-
-    .pwa-header-glass {
-        top: calc(-1 * env(safe-area-inset-top, 0px));
-    }
-
-    /* Top padding on scroll content — clears the glass header overlay */
-    .pwa-content-top {
-        padding-top: calc(env(safe-area-inset-top, 0px) + 52px);
-    }
-
-    .pwa-nav-bottom {
-        bottom: 0;
-        padding-bottom: 2px;
-    }
-
-    .pwa-scroll-pad-bottom {
-        padding-bottom: 4.5rem;
-    }
-
     .pwa-sheet-safe-bottom {
         padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
     }
@@ -507,108 +618,188 @@
         bottom: calc(6.5rem + env(safe-area-inset-bottom, 0px));
     }
 
-    /* ── Liquid Glass header material ────────────────── */
+    /* ── Safe bottom padding for content above bottom nav ── */
+    .pwa-dock-safe-bottom {
+        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    }
 
-    .liquid-glass-header {
+    /* ── Bottom nav container — floats above safe area ── */
+    .bottom-nav-container {
+        position: fixed;
+        left: 1rem;
+        right: 1rem;
+        bottom: calc(12px + env(safe-area-inset-bottom));
+        z-index: 50;
+    }
+
+    /* ── Page content — clearance for floating nav ── */
+    .page-content {
+        padding-bottom: calc(120px + env(safe-area-inset-bottom));
+    }
+
+    /* ── Nav spacer — static height block matching floating nav ── */
+    .nav-spacer {
+        height: calc(100px + env(safe-area-inset-bottom));
+    }
+
+    /* ── Premium header — airy safe area with extra top breathing room ── */
+    .pwa-header-premium {
+        padding-top: calc(env(safe-area-inset-top, 0px) + 2rem);
+        padding-bottom: 1.5rem;
+    }
+
+    /* ── Fullscreen edge-to-edge gradient background ─── */
+    /* Fixed layer at 120dvh — extra coverage during iOS rubber-band scroll. */
+    .fintech-bg-layer {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        min-height: 120dvh;
         background: linear-gradient(
             180deg,
-            rgba(255, 255, 255, 0.72) 0%,
-            rgba(248, 247, 252, 0.65) 100%
+            #7B22FF 0%,
+            #6A10F0 8%,
+            #5500D0 16%,
+            #4200A8 25%,
+            #320080 34%,
+            #240060 44%,
+            #180040 54%,
+            #0F0028 65%,
+            #080014 78%,
+            #030008 90%,
+            #000000 100%
         );
-        -webkit-backdrop-filter: blur(48px) saturate(200%);
-        backdrop-filter: blur(48px) saturate(200%);
-        box-shadow:
-            inset 0 -0.5px 0 0 rgba(0, 0, 0, 0.04),
-            inset 0 0 0 0.5px rgba(255, 255, 255, 0.5),
-            0 2px 16px -4px rgba(0, 0, 0, 0.06);
+        pointer-events: none;
     }
 
-    .dark .liquid-glass-header {
+    /* ── Container gradient — applied directly as background, no z-index needed ─── */
+    .fintech-bg-container {
         background: linear-gradient(
             180deg,
-            rgba(10, 1, 24, 0.72) 0%,
-            rgba(10, 1, 24, 0.65) 100%
+            #7B22FF 0%,
+            #6A10F0 8%,
+            #5500D0 16%,
+            #4200A8 25%,
+            #320080 34%,
+            #240060 44%,
+            #180040 54%,
+            #0F0028 65%,
+            #080014 78%,
+            #030008 90%,
+            #000000 100%
         );
-        box-shadow:
-            inset 0 -0.5px 0 0 rgba(255, 255, 255, 0.06),
-            inset 0 0 0 0.5px rgba(255, 255, 255, 0.04),
-            0 2px 16px -4px rgba(0, 0, 0, 0.3);
     }
 
-    /* ── Liquid Glass nav material ───────────────────── */
-
-    .liquid-glass-nav {
-        background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.82) 0%,
-            rgba(240, 235, 255, 0.72) 50%,
-            rgba(255, 255, 255, 0.68) 100%
-        );
-        -webkit-backdrop-filter: blur(60px) saturate(220%);
-        backdrop-filter: blur(60px) saturate(220%);
-        box-shadow:
-            /* outer depth */
-            0 8px 48px -8px rgba(111, 0, 255, 0.08),
-            0 2px 16px -2px rgba(0, 0, 0, 0.08),
-            /* inner refraction edges */
-            inset 0 1.5px 0 0 rgba(255, 255, 255, 0.9),
-            inset 0 -0.5px 0 0 rgba(0, 0, 0, 0.03),
-            /* inner glow ring */
-            inset 0 0 0 0.5px rgba(255, 255, 255, 0.7);
-        border: 0.5px solid rgba(255, 255, 255, 0.4);
+    .fintech-bg {
+        position: relative;
     }
 
-    .dark .liquid-glass-nav {
-        background: linear-gradient(
-            135deg,
-            rgba(26, 16, 37, 0.85) 0%,
-            rgba(18, 8, 32, 0.80) 50%,
-            rgba(26, 16, 37, 0.78) 100%
-        );
+    /* ── Liquid Glass dock (Hyper-Premium, no borders) ─── */
+    .liquid-glass-dock {
+        background: rgba(255, 255, 255, 0.05);
+        -webkit-backdrop-filter: blur(64px) saturate(200%);
+        backdrop-filter: blur(64px) saturate(200%);
+        border: none;
+        border-radius: 9999px;
+        position: relative;
+        overflow: hidden;
         box-shadow:
-            0 8px 48px -8px rgba(0, 0, 0, 0.4),
-            0 2px 16px -2px rgba(0, 0, 0, 0.3),
-            inset 0 1.5px 0 0 rgba(255, 255, 255, 0.12),
-            inset 0 -0.5px 0 0 rgba(0, 0, 0, 0.4),
-            inset 0 0 0 0.5px rgba(255, 255, 255, 0.08);
-        border: 0.5px solid rgba(255, 255, 255, 0.06);
+            0 8px 32px -8px rgba(0, 0, 0, 0.25),
+            0 2px 8px rgba(0, 0, 0, 0.1),
+            inset 0 0.5px 0 0 rgba(255, 255, 255, 0.25),
+            inset 0 0 20px 0 rgba(255, 255, 255, 0.04);
     }
 
-    /* Shimmer sweep — the "liquid" refraction */
-    .liquid-glass-nav::after {
+    .liquid-glass-dock::before {
         content: "";
         position: absolute;
         inset: 0;
         border-radius: inherit;
-        overflow: hidden;
-        pointer-events: none;
-    }
-
-    .liquid-glass-nav::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 40%;
-        height: 100%;
-        background: linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.25) 50%,
-            transparent 100%
+        background: radial-gradient(
+            ellipse 80% 50% at 50% 0%,
+            rgba(255, 255, 255, 0.10) 0%,
+            transparent 70%
         );
-        border-radius: inherit;
         pointer-events: none;
-        animation: liquid-shimmer 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        animation-delay: 1s;
+        z-index: 1;
     }
 
-    .dark .liquid-glass-nav::before {
+    .dark .liquid-glass-dock {
+        background: rgba(255, 255, 255, 0.04);
+        box-shadow:
+            0 8px 32px -8px rgba(0, 0, 0, 0.4),
+            0 2px 8px rgba(0, 0, 0, 0.2),
+            inset 0 0.5px 0 0 rgba(255, 255, 255, 0.15),
+            inset 0 0 20px 0 rgba(255, 255, 255, 0.02);
+    }
+
+    /* ── Glassmorphism surface card ──────────────────── */
+    .fintech-glass-card {
+        background: rgba(255, 255, 255, 0.08);
+        -webkit-backdrop-filter: blur(20px) saturate(140%);
+        backdrop-filter: blur(20px) saturate(140%);
+        border: 0.5px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.25);
+    }
+
+    /* ── Glassmorphism action button (outlined circle) ─ */
+    .fintech-glass-btn {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 2px 12px -2px rgba(0, 0, 0, 0.12);
+    }
+
+    /* ── Glassmorphism activity container ────────────── */
+    .fintech-glass-activity {
+        background: rgba(255, 255, 255, 0.04);
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
+        border: 0.5px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.18);
+    }
+
+    /* ── Vivid purple gradient background for customer app ── */
+
+    .customer-app-bg {
+        position: relative;
+    }
+
+    .customer-app-bg-layer {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        min-height: 120dvh;
         background: linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.06) 50%,
-            transparent 100%
+            180deg,
+            #7B22FF 0%,
+            #6A10F0 8%,
+            #5500D0 16%,
+            #4200A8 25%,
+            #320080 34%,
+            #240060 44%,
+            #180040 54%,
+            #0F0028 65%,
+            #080014 78%,
+            #030008 90%,
+            #000000 100%
+        );
+        pointer-events: none;
+    }
+
+    .dark .customer-app-bg-layer {
+        background: linear-gradient(
+            180deg,
+            #7B22FF 0%,
+            #6A10F0 8%,
+            #5500D0 16%,
+            #4200A8 25%,
+            #320080 34%,
+            #240060 44%,
+            #180040 54%,
+            #0F0028 65%,
+            #080014 78%,
+            #030008 90%,
+            #000000 100%
         );
     }
 
@@ -628,7 +819,7 @@
 /* ── Toast notifications (sonner) ──────────────── */
 
 [data-sonner-toaster] {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 
 [data-sonner-toaster][data-y-position="top"] {
