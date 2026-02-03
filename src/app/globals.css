@@ -506,6 +506,11 @@
         bottom: calc(6.5rem + env(safe-area-inset-bottom, 0px));
     }
 
+    /* ── Safe bottom padding for content above floating dock ── */
+    .pwa-dock-safe-bottom {
+        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    }
+
     /* ── Fintech-style status bar safe area ──────────── */
     .pwa-status-bar-safe {
         padding-top: env(safe-area-inset-top, 0px);
@@ -518,8 +523,12 @@
     }
 
     /* ── Unified dark gradient background ────────────── */
-    /* Vivid purple at top → pure black at bottom (matches reference image) */
-    .fintech-bg {
+    /* Fixed 120dvh gradient eliminates black gap during iOS rubber-band scroll */
+    .fintech-bg-layer {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        min-height: 120dvh;
         background: linear-gradient(
             180deg,
             #C4A0FF 0%,
@@ -535,38 +544,57 @@
             #080012 86%,
             #000000 100%
         );
+        pointer-events: none;
     }
 
-    /* ── Floating Liquid Glass dock (iOS 26 style) ──── */
+    .fintech-bg {
+        position: relative;
+    }
+
+    /* ── Floating Liquid Glass dock (Hyper-Premium) ─── */
     .liquid-glass-dock {
-        background: rgba(255, 255, 255, 0.12);
-        -webkit-backdrop-filter: blur(50px) saturate(200%) brightness(1.05);
-        backdrop-filter: blur(50px) saturate(200%) brightness(1.05);
-        border: 0.5px solid rgba(255, 255, 255, 0.25);
-        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.05);
+        -webkit-backdrop-filter: blur(64px) saturate(200%);
+        backdrop-filter: blur(64px) saturate(200%);
+        border: 1px solid transparent;
+        border-radius: 9999px;
         position: relative;
         overflow: hidden;
         box-shadow:
-            0 2px 20px -4px rgba(0, 0, 0, 0.15),
-            inset 0 0.5px 0 0 rgba(255, 255, 255, 0.35),
-            inset 0 0 12px 0 rgba(255, 255, 255, 0.06);
+            0 8px 32px -8px rgba(0, 0, 0, 0.25),
+            0 2px 8px rgba(0, 0, 0, 0.1),
+            inset 0 0.5px 0 0 rgba(255, 255, 255, 0.25),
+            inset 0 0 20px 0 rgba(255, 255, 255, 0.04);
+        /* Gradient border: white/30 top → white/5 bottom */
+        border-image: linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.30) 0%,
+            rgba(255, 255, 255, 0.05) 100%
+        ) 1;
+        /* Fallback for rounded corners (border-image breaks border-radius) */
+        background-clip: padding-box;
+    }
+
+    /* Use a pseudo-element for the gradient border to preserve border-radius */
+    .liquid-glass-dock {
+        border: none;
     }
 
     .liquid-glass-dock::after {
         content: "";
         position: absolute;
-        top: 0;
-        left: 8%;
-        right: 8%;
-        height: 0.5px;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1px;
         background: linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.5) 30%,
-            rgba(255, 255, 255, 0.7) 50%,
-            rgba(255, 255, 255, 0.5) 70%,
-            transparent 100%
+            to bottom,
+            rgba(255, 255, 255, 0.30) 0%,
+            rgba(255, 255, 255, 0.05) 100%
         );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
         pointer-events: none;
         z-index: 3;
     }
@@ -578,7 +606,7 @@
         border-radius: inherit;
         background: radial-gradient(
             ellipse 80% 50% at 50% 0%,
-            rgba(255, 255, 255, 0.08) 0%,
+            rgba(255, 255, 255, 0.10) 0%,
             transparent 70%
         );
         pointer-events: none;
@@ -586,12 +614,12 @@
     }
 
     .dark .liquid-glass-dock {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.04);
         box-shadow:
-            0 2px 20px -4px rgba(0, 0, 0, 0.3),
-            inset 0 0.5px 0 0 rgba(255, 255, 255, 0.2),
-            inset 0 0 12px 0 rgba(255, 255, 255, 0.03);
+            0 8px 32px -8px rgba(0, 0, 0, 0.4),
+            0 2px 8px rgba(0, 0, 0, 0.2),
+            inset 0 0.5px 0 0 rgba(255, 255, 255, 0.15),
+            inset 0 0 20px 0 rgba(255, 255, 255, 0.02);
     }
 
     /* ── Glassmorphism surface card ──────────────────── */
@@ -646,6 +674,14 @@
     /* ── Vivid purple gradient background for customer app ── */
 
     .customer-app-bg {
+        position: relative;
+    }
+
+    .customer-app-bg-layer {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        min-height: 120dvh;
         background: linear-gradient(
             180deg,
             #c9a0ff 0%,
@@ -658,9 +694,10 @@
             #0d0020 78%,
             #000000 100%
         );
+        pointer-events: none;
     }
 
-    .dark .customer-app-bg {
+    .dark .customer-app-bg-layer {
         background: linear-gradient(
             180deg,
             #c9a0ff 0%,

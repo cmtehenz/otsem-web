@@ -416,11 +416,12 @@ export default function Dashboard() {
                 </div>
 
                 <motion.p
-                    className="text-[36px] font-bold text-[#FFFFFF] tracking-tight leading-none"
+                    className="text-[36px] font-bold text-[#FFFFFF] leading-none"
+                    style={{ letterSpacing: "-0.05em" }}
                     key={balanceHidden ? "hidden" : "visible"}
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
                 >
                     {balanceHidden ? "R$ ••••••" : formatCurrency(saldoTotal)}
                 </motion.p>

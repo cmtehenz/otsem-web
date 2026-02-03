@@ -13,6 +13,13 @@ import {
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ActionSheet } from "./ActionSheet";
 
+const iosSpring = {
+    type: "spring" as const,
+    stiffness: 500,
+    damping: 25,
+    mass: 1,
+};
+
 const tabs = [
     { id: "home", label: "Home", icon: Home, href: "/customer/dashboard" },
     { id: "wallet", label: "Carteira", icon: Wallet, href: "/customer/wallet" },
@@ -47,7 +54,6 @@ export function BottomNav() {
     const scrollThreshold = 8;
 
     const handleScroll = useCallback(() => {
-        // Find the scroll container — the flex-1 overflow-y-auto div
         const scrollEl = document.querySelector("[data-scroll-container]") as HTMLElement | null;
         if (!scrollEl) return;
 
@@ -55,10 +61,8 @@ export function BottomNav() {
         const delta = currentY - lastScrollY.current;
 
         if (delta > scrollThreshold && currentY > 60) {
-            // Scrolling down past threshold — hide
             setVisible(false);
         } else if (delta < -scrollThreshold) {
-            // Scrolling up — show
             setVisible(true);
         }
 
@@ -81,11 +85,14 @@ export function BottomNav() {
     // Spring-animated translateY
     const yTarget = useMotionValue(visible ? 0 : 1);
     const ySmooth = useSpring(yTarget, { stiffness: 400, damping: 35, mass: 0.8 });
-    const y = useTransform(ySmooth, [0, 1], [0, 120]);
+    const y = useTransform(ySmooth, [0, 1], [0, 140]);
 
     useEffect(() => {
         yTarget.set(visible ? 0 : 1);
     }, [visible, yTarget]);
+
+    // Get the index of the active tab for glow orb positioning
+    const activeIndex = tabs.findIndex((t) => t.id === activeTab);
 
     return (
         <>
@@ -94,13 +101,27 @@ export function BottomNav() {
                 onClose={() => setActionSheetOpen(false)}
             />
 
-            {/* Floating Liquid Glass dock */}
+            {/* Floating Liquid Glass dock — Hyper-Premium */}
             <motion.nav
-                className="fixed z-50 left-4 right-4 bottom-3 flex justify-center pointer-events-none"
-                style={{ y }}
+                className="fixed z-50 bottom-8 left-1/2 pointer-events-none"
+                style={{ y, x: "-50%" }}
             >
-                <div className="liquid-glass-dock pointer-events-auto w-full max-w-[400px]">
-                    <div className="relative z-10 flex items-center justify-around h-[56px] px-1">
+                <div className="liquid-glass-dock pointer-events-auto w-[92vw] max-w-[400px]">
+                    <div className="relative z-10 flex items-center justify-around h-[72px] px-4">
+                        {/* Animated Glow Orb — slides behind active tab */}
+                        {activeIndex >= 0 && activeIndex !== 2 && (
+                            <motion.div
+                                layoutId="active-pill"
+                                transition={iosSpring}
+                                className="absolute h-12 w-12 rounded-full z-0"
+                                style={{
+                                    background: "radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(139,47,255,0.08) 60%, transparent 100%)",
+                                    filter: "blur(16px)",
+                                    left: `calc(${(activeIndex / tabs.length) * 100}% + ${100 / tabs.length / 2}% - 24px)`,
+                                }}
+                            />
+                        )}
+
                         {tabs.map((tab) => {
                             const isActive = tab.id === activeTab;
                             const isAction = tab.id === "action";
@@ -115,18 +136,14 @@ export function BottomNav() {
                                         className="relative flex items-center justify-center outline-none -mt-3"
                                     >
                                         <motion.div
-                                            className="flex items-center justify-center w-11 h-11 rounded-full"
+                                            className="flex items-center justify-center w-12 h-12 rounded-full"
                                             style={{
                                                 background:
                                                     "linear-gradient(145deg, #a78bfa 0%, #8B5CF6 50%, #7c3aed 100%)",
-                                                boxShadow: "0 2px 16px rgba(139, 92, 246, 0.4)",
+                                                boxShadow: "0 4px 20px rgba(139, 92, 246, 0.45)",
                                             }}
                                             whileTap={{ scale: 0.88 }}
-                                            transition={{
-                                                type: "spring",
-                                                stiffness: 500,
-                                                damping: 25,
-                                            }}
+                                            transition={iosSpring}
                                         >
                                             <AnimatePresence mode="wait">
                                                 <motion.div
@@ -134,14 +151,10 @@ export function BottomNav() {
                                                     initial={{ rotate: actionSheetOpen ? -90 : 90, opacity: 0, scale: 0.5 }}
                                                     animate={{ rotate: 0, opacity: 1, scale: 1 }}
                                                     exit={{ rotate: actionSheetOpen ? 90 : -90, opacity: 0, scale: 0.5 }}
-                                                    transition={{
-                                                        type: "spring",
-                                                        stiffness: 500,
-                                                        damping: 25,
-                                                    }}
+                                                    transition={iosSpring}
                                                 >
                                                     <Plus
-                                                        className={`w-5 h-5 text-white ${actionSheetOpen ? "rotate-45" : ""}`}
+                                                        className={`w-5.5 h-5.5 text-white ${actionSheetOpen ? "rotate-45" : ""}`}
                                                         strokeWidth={2.5}
                                                     />
                                                 </motion.div>
@@ -156,30 +169,26 @@ export function BottomNav() {
                                 <Link
                                     key={tab.id}
                                     href={tab.href}
-                                    className="relative flex flex-col items-center justify-center px-3 py-1 outline-none"
+                                    className="relative flex flex-col items-center justify-center flex-1 py-1 outline-none"
                                 >
                                     <motion.div
-                                        className="relative flex flex-col items-center gap-0.5 z-10"
+                                        className="relative flex flex-col items-center gap-1 z-10"
                                         whileTap={{ scale: 0.82 }}
-                                        transition={{
-                                            type: "spring",
-                                            stiffness: 500,
-                                            damping: 25,
-                                        }}
+                                        transition={iosSpring}
                                     >
                                         <Icon
-                                            className={`w-[20px] h-[20px] transition-colors duration-300 ${
+                                            className={`w-[22px] h-[22px] transition-all duration-300 ${
                                                 isActive
                                                     ? "text-white"
-                                                    : "text-white/40"
+                                                    : "text-white/35"
                                             }`}
                                             strokeWidth={isActive ? 2.2 : 1.6}
                                         />
                                         <span
-                                            className={`text-[10px] leading-tight transition-colors duration-300 ${
+                                            className={`text-[11px] leading-tight tracking-tight transition-all duration-300 ${
                                                 isActive
                                                     ? "text-white font-semibold"
-                                                    : "text-white/40 font-medium"
+                                                    : "text-white/35 font-medium"
                                             }`}
                                         >
                                             {tab.label}

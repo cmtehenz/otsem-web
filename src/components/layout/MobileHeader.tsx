@@ -25,45 +25,50 @@ export function MobileHeader({ customerName }: { customerName?: string }) {
 
     return (
         <motion.header
-            className="sticky top-0 z-40 flex-shrink-0 pwa-status-bar-safe"
+            className="sticky top-0 z-40 flex-shrink-0"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
         >
-            <div className="flex items-center justify-between px-4 py-2">
-                <div className="flex items-center gap-3">
-                    <Link href="/customer/dashboard" className="flex items-center">
-                        <Image
-                            src="/images/logo.png"
-                            alt="OtsemPay"
-                            width={28}
-                            height={28}
-                            className="rounded-lg"
-                        />
-                    </Link>
-                    <div className="flex flex-col">
-                        <span className="text-[11px] text-[#94A3B8] leading-tight font-normal">
-                            {getGreeting()}
-                        </span>
-                        <span className="text-[16px] font-semibold text-[#FFFFFF] leading-tight">
-                            {displayName}
-                        </span>
+            {/* Safe area container — pt handles notch, bg gradient flows through */}
+            <div className="pwa-status-bar-safe">
+                <div className="flex items-center justify-between px-5 h-[88px]">
+                    <div className="flex items-center gap-3.5">
+                        <Link href="/customer/dashboard" className="flex items-center">
+                            <Image
+                                src="/images/logo.png"
+                                alt="OtsemPay"
+                                width={48}
+                                height={48}
+                                className="rounded-2xl"
+                            />
+                        </Link>
+                        <div className="flex flex-col">
+                            <span className="text-[17px] font-semibold text-white/60 leading-tight">
+                                {getGreeting()}
+                            </span>
+                            <span className="text-[22px] font-bold text-white leading-tight tracking-tight">
+                                {displayName}
+                            </span>
+                        </div>
                     </div>
-                </div>
 
-                <div className="flex items-center gap-2">
-                    <button
-                        className="flex items-center justify-center w-9 h-9 rounded-full bg-white/[0.08] border border-white/[0.08] active:bg-white/15 transition-colors relative"
-                        aria-label="Notificações"
-                    >
-                        <Bell className="w-[18px] h-[18px] text-[#94A3B8]" strokeWidth={1.8} />
-                    </button>
-                    <Link
-                        href="/customer/settings"
-                        className="flex items-center justify-center w-9 h-9 rounded-full bg-white/[0.08] border border-white/[0.08] active:bg-white/15 transition-colors"
-                    >
-                        <User className="w-[18px] h-[18px] text-[#94A3B8]" strokeWidth={1.8} />
-                    </Link>
+                    <div className="flex items-center gap-2.5">
+                        <button
+                            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/[0.08] border border-white/[0.08] active:bg-white/15 transition-colors relative"
+                            style={{ transition: "all 0.25s cubic-bezier(0.32, 0.72, 0, 1)" }}
+                            aria-label="Notificações"
+                        >
+                            <Bell className="w-[20px] h-[20px] text-white/50" strokeWidth={1.8} />
+                        </button>
+                        <Link
+                            href="/customer/settings"
+                            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/[0.08] border border-white/[0.08] active:bg-white/15 transition-colors"
+                            style={{ transition: "all 0.25s cubic-bezier(0.32, 0.72, 0, 1)" }}
+                        >
+                            <User className="w-[20px] h-[20px] text-white/50" strokeWidth={1.8} />
+                        </Link>
+                    </div>
                 </div>
             </div>
         </motion.header>
