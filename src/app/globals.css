@@ -496,6 +496,34 @@
         bottom: calc(6.5rem + env(safe-area-inset-bottom, 0px));
     }
 
+    /* ── Fintech-style status bar safe area ──────────── */
+    .pwa-status-bar-safe {
+        padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    /* ── Fintech-style nav safe area (bottom) ────────── */
+    .pwa-nav-safe-bottom {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* ── Unified dark gradient background ────────────── */
+    .fintech-bg {
+        background: linear-gradient(
+            180deg,
+            #1a0533 0%,
+            #0d0119 40%,
+            #050010 100%
+        );
+    }
+
+    /* ── Compact glassmorphism bottom nav ────────────── */
+    .fintech-nav-glass {
+        background: rgba(12, 2, 24, 0.75);
+        -webkit-backdrop-filter: blur(10px) saturate(150%);
+        backdrop-filter: blur(10px) saturate(150%);
+        border-top: 0.5px solid rgba(255, 255, 255, 0.06);
+    }
+
     /* ── Liquid Glass header material ────────────────── */
 
     .liquid-glass-header {

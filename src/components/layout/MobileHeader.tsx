@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { User } from "lucide-react";
 
 function getGreeting(): string {
     const hour = new Date().getHours();
@@ -24,38 +25,38 @@ export function MobileHeader({ customerName }: { customerName?: string }) {
 
     return (
         <motion.header
-            className="fixed top-0 left-0 right-0 z-40"
+            className="sticky top-0 z-40 flex-shrink-0 pwa-status-bar-safe"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
         >
-            {/* Liquid glass background — extends UP into status bar safe area */}
-            <div className="absolute inset-0 pwa-header-glass liquid-glass-header" />
-
-            {/* Specular bottom edge — refraction line instead of hard separator */}
-            <div className="absolute bottom-0 left-0 right-0 h-[0.5px] bg-gradient-to-r from-transparent via-white/50 dark:via-white/8 to-transparent pointer-events-none z-10" />
-
-            {/* Content — padding-top accounts for safe area via CSS class */}
-            <div className="relative flex items-center justify-between px-5 pwa-header-content">
-                <div className="flex items-center gap-3">
-                    <Link href="/customer/dashboard" className="flex items-center gap-2.5">
+            <div className="flex items-center justify-between px-4 py-2">
+                <div className="flex items-center gap-2.5">
+                    <Link href="/customer/dashboard" className="flex items-center">
                         <Image
                             src="/images/logo.png"
                             alt="OtsemPay"
-                            width={32}
-                            height={32}
+                            width={28}
+                            height={28}
                             className="rounded-lg"
                         />
                     </Link>
                     <div className="flex flex-col">
-                        <span className="text-[11px] text-muted-foreground leading-tight">
+                        <span className="text-[10px] text-white/50 leading-tight">
                             {getGreeting()}
                         </span>
-                        <span className="text-[15px] font-semibold text-foreground leading-tight">
+                        <span className="text-[14px] font-semibold text-white leading-tight">
                             {displayName}
                         </span>
                     </div>
                 </div>
+
+                <Link
+                    href="/customer/settings"
+                    className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 active:bg-white/20 transition-colors"
+                >
+                    <User className="w-4 h-4 text-white/70" strokeWidth={2} />
+                </Link>
             </div>
         </motion.header>
     );

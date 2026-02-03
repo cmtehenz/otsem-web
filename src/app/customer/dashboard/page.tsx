@@ -128,74 +128,28 @@ const fadeUp = {
     show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.32, 0.72, 0, 1] } },
 };
 
-// ─── Quick action button ─────────────────────────────────
+// ─── Circular Quick Action Button (fintech style) ───────
 function QuickAction({
     icon: Icon,
     label,
-    color,
-    bgColor,
     onClick,
 }: {
     icon: typeof ArrowDownLeft;
     label: string;
-    color: string;
-    bgColor: string;
     onClick: () => void;
 }) {
     return (
         <motion.button
-            className="flex flex-col items-center gap-1.5 min-w-[68px]"
+            className="flex flex-col items-center gap-1.5"
             onClick={onClick}
             whileTap={{ scale: 0.9 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
         >
-            <div className={`flex items-center justify-center w-14 h-14 rounded-2xl ${bgColor}`}>
-                <Icon className={`w-5 h-5 ${color}`} strokeWidth={2} />
+            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/10 active:bg-white/20 transition-colors">
+                <Icon className="w-5 h-5 text-white" strokeWidth={2} />
             </div>
-            <span className="text-[11px] font-medium text-muted-foreground">{label}</span>
+            <span className="text-[11px] font-medium text-white/60">{label}</span>
         </motion.button>
-    );
-}
-
-// ─── Asset Row ───────────────────────────────────────────
-function AssetRow({
-    flag,
-    symbol,
-    name,
-    balance,
-    equivalent,
-    delay,
-}: {
-    flag: string;
-    symbol: string;
-    name: string;
-    balance: string;
-    equivalent?: string;
-    delay: number;
-}) {
-    return (
-        <motion.div
-            className="flex items-center justify-between py-3.5 active:bg-white/5 dark:active:bg-white/[0.02] -mx-1 px-1 rounded-xl transition-colors"
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay, duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
-        >
-            <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/60 dark:bg-white/[0.06] border border-white/80 dark:border-white/[0.08] text-lg">
-                    {flag}
-                </div>
-                <div>
-                    <p className="text-[15px] font-semibold text-foreground">{symbol}</p>
-                    <p className="text-[12px] text-muted-foreground">{name}</p>
-                </div>
-            </div>
-            <div className="text-right">
-                <p className="text-[15px] font-semibold text-foreground">{balance}</p>
-                {equivalent && (
-                    <p className="text-[12px] text-muted-foreground">{equivalent}</p>
-                )}
-            </div>
-        </motion.div>
     );
 }
 
@@ -242,46 +196,46 @@ function TransactionRow({ tx }: { tx: Transaction }) {
     }
 
     const iconConfig = isPending
-        ? { bg: "bg-amber-500/12", color: "text-amber-500", Icon: ArrowRightLeft }
+        ? { bg: "bg-amber-500/15", color: "text-amber-400", Icon: ArrowRightLeft }
         : isConversionTx
           ? isSellConversion
-              ? { bg: "bg-orange-500/12", color: "text-orange-500", Icon: ArrowRightLeft }
-              : { bg: "bg-blue-500/12", color: "text-blue-500", Icon: ArrowRightLeft }
+              ? { bg: "bg-orange-500/15", color: "text-orange-400", Icon: ArrowRightLeft }
+              : { bg: "bg-blue-500/15", color: "text-blue-400", Icon: ArrowRightLeft }
           : isIncoming
-            ? { bg: "bg-green-500/12", color: "text-green-500", Icon: ArrowDownLeft }
-            : { bg: "bg-red-500/12", color: "text-red-500", Icon: ArrowUpRight };
+            ? { bg: "bg-emerald-500/15", color: "text-emerald-400", Icon: ArrowDownLeft }
+            : { bg: "bg-red-500/15", color: "text-red-400", Icon: ArrowUpRight };
 
     return (
         <motion.div
-            className="flex items-center gap-3 py-3 active:bg-white/5 dark:active:bg-white/[0.02] -mx-1 px-1 rounded-xl transition-colors"
+            className="flex items-center gap-3 py-2.5 active:bg-white/5 -mx-1 px-1 rounded-xl transition-colors"
             whileTap={{ scale: 0.98 }}
         >
-            <div className={`flex items-center justify-center w-10 h-10 rounded-full ${iconConfig.bg}`}>
-                <iconConfig.Icon className={`w-4.5 h-4.5 ${iconConfig.color}`} strokeWidth={2} />
+            <div className={`flex items-center justify-center w-9 h-9 rounded-full ${iconConfig.bg}`}>
+                <iconConfig.Icon className={`w-4 h-4 ${iconConfig.color}`} strokeWidth={2} />
             </div>
 
             <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-medium text-foreground truncate">{displayName}</p>
-                <p className="text-[12px] text-muted-foreground">{formatDate(tx.createdAt)}</p>
+                <p className="text-[13px] font-medium text-white truncate">{displayName}</p>
+                <p className="text-[11px] text-white/40">{formatDate(tx.createdAt)}</p>
             </div>
 
             <div className="text-right">
                 {isConversionTx ? (
                     <>
-                        <p className={`text-[14px] font-semibold ${isSellConversion ? "text-green-500" : "text-foreground"}`}>
+                        <p className={`text-[13px] font-semibold ${isSellConversion ? "text-emerald-400" : "text-white"}`}>
                             {isSellConversion ? "+" : "-"}
                             {formatCurrency(amount)}
                         </p>
                         {usdtAmountValue !== null && (
-                            <p className={`text-[11px] font-medium ${isSellConversion ? "text-red-400" : "text-emerald-500"}`}>
+                            <p className={`text-[10px] font-medium ${isSellConversion ? "text-red-400" : "text-emerald-400"}`}>
                                 {isSellConversion ? "-" : "+"}
                                 {formatUSD(usdtAmountValue)}
                             </p>
                         )}
                     </>
                 ) : (
-                    <p className={`text-[14px] font-semibold ${
-                        isPending ? "text-amber-500" : isIncoming ? "text-green-500" : "text-foreground"
+                    <p className={`text-[13px] font-semibold ${
+                        isPending ? "text-amber-400" : isIncoming ? "text-emerald-400" : "text-white"
                     }`}>
                         {isIncoming ? "+" : "-"}
                         {formatCurrency(Math.abs(amount))}
@@ -426,14 +380,14 @@ export default function Dashboard() {
             <div className="flex h-[60vh] flex-col items-center justify-center">
                 <div className="relative">
                     <div className="absolute inset-0 bg-[#6F00FF]/30 rounded-full blur-xl animate-pulse" />
-                    <Loader2 className="relative h-8 w-8 animate-spin text-[#6F00FF]" />
+                    <Loader2 className="relative h-8 w-8 animate-spin text-[#8B2FFF]" />
                 </div>
             </div>
         );
     }
 
     return (
-        <motion.div className="space-y-6 pb-4" variants={stagger} initial="hidden" animate="show">
+        <motion.div className="space-y-5 pt-2" variants={stagger} initial="hidden" animate="show">
             {/* Convert Modal */}
             <ConvertModal
                 open={showConvertModal}
@@ -443,146 +397,102 @@ export default function Dashboard() {
                 usdtBalance={saldoUSDT}
             />
 
-            {/* ── Balance Card (Glassmorphism) ── */}
-            <motion.div variants={fadeUp}>
-                <div className="relative overflow-hidden rounded-[24px] p-6">
-                    {/* Gradient background */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#6F00FF]/90 via-[#8B2FFF]/80 to-[#6F00FF]/90" />
-                    {/* Decorative orbs */}
-                    <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-white/10 blur-2xl" />
-                    <div className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full bg-white/5 blur-xl" />
+            {/* ── Balance Section (scrollable, part of content) ── */}
+            <motion.div variants={fadeUp} className="text-center pt-2">
+                <div className="flex items-center justify-center gap-2 mb-1">
+                    <p className="text-white/50 text-[13px] font-medium">Saldo total</p>
+                    <button
+                        onClick={() => setBalanceHidden(!balanceHidden)}
+                        className="p-1 -m-1 rounded-full active:bg-white/10 transition-colors"
+                    >
+                        {balanceHidden ? (
+                            <EyeOff className="w-3.5 h-3.5 text-white/40" />
+                        ) : (
+                            <Eye className="w-3.5 h-3.5 text-white/40" />
+                        )}
+                    </button>
+                </div>
 
-                    <div className="relative">
-                        <div className="flex items-center justify-between mb-1">
-                            <p className="text-white/70 text-[13px] font-medium">Saldo total</p>
-                            <button
-                                onClick={() => setBalanceHidden(!balanceHidden)}
-                                className="p-1.5 -m-1.5 rounded-full active:bg-white/10 transition-colors"
-                            >
-                                {balanceHidden ? (
-                                    <EyeOff className="w-4 h-4 text-white/50" />
-                                ) : (
-                                    <Eye className="w-4 h-4 text-white/50" />
-                                )}
-                            </button>
-                        </div>
+                <motion.p
+                    className="text-[38px] font-bold text-white tracking-tight leading-none"
+                    key={balanceHidden ? "hidden" : "visible"}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    {balanceHidden ? "R$ ••••••" : formatCurrency(saldoTotal)}
+                </motion.p>
+            </motion.div>
 
-                        <motion.p
-                            className="text-[36px] font-bold text-white tracking-tight leading-none mb-5"
-                            key={balanceHidden ? "hidden" : "visible"}
-                            initial={{ opacity: 0, y: 4 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            {balanceHidden ? "R$ ••••••" : formatCurrency(saldoTotal)}
-                        </motion.p>
-
-                        {/* Currency breakdown */}
-                        <div className="grid grid-cols-2 gap-3">
-                            <div
-                                className="rounded-2xl bg-white/[0.12] p-3.5"
-                                style={{ WebkitBackdropFilter: "blur(20px)", backdropFilter: "blur(20px)" }}
-                            >
-                                <p className="text-white/50 text-[11px] font-medium mb-0.5">BRL</p>
-                                <p className="text-white font-bold text-[18px] leading-tight">
-                                    {balanceHidden ? "••••" : formatCurrency(saldoBRL)}
-                                </p>
-                            </div>
-                            <div
-                                className="rounded-2xl bg-white/[0.12] p-3.5"
-                                style={{ WebkitBackdropFilter: "blur(20px)", backdropFilter: "blur(20px)" }}
-                            >
-                                <p className="text-white/50 text-[11px] font-medium mb-0.5">USDT</p>
-                                <p className="text-white font-bold text-[18px] leading-tight">
-                                    {balanceHidden ? "••••" : usdtBalanceLoading ? "..." : formatUSD(saldoUSDT)}
-                                </p>
-                            </div>
-                        </div>
+            {/* ── Currency Breakdown (compact inline cards) ── */}
+            <motion.div variants={fadeUp} className="flex gap-3">
+                <div className="flex-1 rounded-2xl bg-white/[0.08] px-3.5 py-3">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="text-sm">🇧🇷</span>
+                        <span className="text-white/40 text-[11px] font-medium">BRL</span>
                     </div>
+                    <p className="text-white font-bold text-[17px] leading-tight">
+                        {balanceHidden ? "••••" : formatCurrency(saldoBRL)}
+                    </p>
+                </div>
+                <div className="flex-1 rounded-2xl bg-white/[0.08] px-3.5 py-3">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="text-sm">💲</span>
+                        <span className="text-white/40 text-[11px] font-medium">USDT</span>
+                    </div>
+                    <p className="text-white font-bold text-[17px] leading-tight">
+                        {balanceHidden ? "••••" : usdtBalanceLoading ? "..." : formatUSD(saldoUSDT)}
+                    </p>
+                    {!balanceHidden && usdtRateWithSpread > 0 && (
+                        <p className="text-white/30 text-[10px] mt-0.5">
+                            ≈ {formatCurrency(saldoUSDT * usdtRateWithSpread)}
+                        </p>
+                    )}
                 </div>
             </motion.div>
 
-            {/* ── Quick Actions ── */}
-            <motion.div variants={fadeUp} className="flex justify-between px-2">
+            {/* ── USDT Rate Pill ── */}
+            <motion.div variants={fadeUp} className="flex justify-center">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.06]">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[12px] font-medium text-white/60">
+                        1 USDT = {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 4)}
+                    </span>
+                </div>
+            </motion.div>
+
+            {/* ── Quick Actions (circular icons, horizontal row) ── */}
+            <motion.div variants={fadeUp} className="flex justify-around px-4">
                 <QuickAction
                     icon={ArrowDownLeft}
                     label="Depositar"
-                    color="text-green-500"
-                    bgColor="bg-green-500/12 dark:bg-green-500/15"
                     onClick={() => openModal("deposit")}
                 />
                 <QuickAction
                     icon={ArrowUpRight}
                     label="Transferir"
-                    color="text-blue-500"
-                    bgColor="bg-blue-500/12 dark:bg-blue-500/15"
                     onClick={() => openModal("withdraw")}
                 />
                 <QuickAction
                     icon={ArrowRightLeft}
                     label="Comprar"
-                    color="text-[#6F00FF] dark:text-[#8B2FFF]"
-                    bgColor="bg-[#6F00FF]/12 dark:bg-[#6F00FF]/15"
                     onClick={() => setShowConvertModal(true)}
                 />
                 <QuickAction
                     icon={TrendingUp}
                     label="Vender"
-                    color="text-orange-500"
-                    bgColor="bg-orange-500/12 dark:bg-orange-500/15"
                     onClick={() => openModal("sellUsdt")}
                 />
             </motion.div>
 
-            {/* ── USDT Rate Pill ── */}
+            {/* ── Recent Activity ── */}
             <motion.div variants={fadeUp}>
-                <div className="flex items-center justify-center">
-                    <div
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 dark:bg-white/[0.05] border border-white/80 dark:border-white/[0.08]"
-                        style={{ WebkitBackdropFilter: "blur(20px) saturate(180%)", backdropFilter: "blur(20px) saturate(180%)" }}
-                    >
-                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                        <span className="text-[13px] font-medium text-foreground">
-                            1 USDT = {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 4)}
-                        </span>
-                    </div>
-                </div>
-            </motion.div>
-
-            {/* ── Assets Section ── */}
-            <motion.div variants={fadeUp}>
-                <div className="premium-card !p-5">
-                    <h3 className="text-[15px] font-bold text-foreground mb-1">Ativos</h3>
-                    <div className="divide-y divide-border/50">
-                        <AssetRow
-                            flag="🇧🇷"
-                            symbol="BRL"
-                            name="Real Brasileiro"
-                            balance={balanceHidden ? "••••" : formatCurrency(saldoBRL)}
-                            delay={0.1}
-                        />
-                        <AssetRow
-                            flag="💲"
-                            symbol="USDT"
-                            name="Tether"
-                            balance={balanceHidden ? "••••" : formatUSD(saldoUSDT)}
-                            equivalent={
-                                balanceHidden ? undefined : usdtRateWithSpread ? `≈ ${formatCurrency(saldoUSDT * usdtRateWithSpread)}` : undefined
-                            }
-                            delay={0.15}
-                        />
-                    </div>
-                </div>
-            </motion.div>
-
-            {/* ── Recent Transactions ── */}
-            <motion.div variants={fadeUp}>
-                <div className="premium-card !p-5">
+                <div className="rounded-2xl bg-white/[0.06] p-4">
                     <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-[15px] font-bold text-foreground">Atividade recente</h3>
+                        <h3 className="text-[14px] font-bold text-white">Atividade recente</h3>
                         <Link
                             href="/customer/transactions"
-                            className="flex items-center gap-0.5 text-[13px] font-medium text-[#6F00FF] dark:text-[#8B2FFF] active:opacity-70"
+                            className="flex items-center gap-0.5 text-[12px] font-medium text-[#8B2FFF] active:opacity-70"
                         >
                             Ver tudo
                             <ChevronRight className="w-3.5 h-3.5" />
@@ -590,17 +500,17 @@ export default function Dashboard() {
                     </div>
 
                     {filteredTransactions.length > 0 ? (
-                        <div className="divide-y divide-border/50">
+                        <div className="divide-y divide-white/[0.06]">
                             {filteredTransactions.slice(0, 5).map((tx) => (
                                 <TransactionRow key={tx.transactionId} tx={tx} />
                             ))}
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center py-10">
-                            <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center mb-3">
-                                <ArrowDownLeft className="w-5 h-5 text-muted-foreground" />
+                        <div className="flex flex-col items-center py-8">
+                            <div className="w-10 h-10 rounded-full bg-white/[0.08] flex items-center justify-center mb-2">
+                                <ArrowDownLeft className="w-4.5 h-4.5 text-white/30" />
                             </div>
-                            <p className="text-sm text-muted-foreground">Nenhuma transação ainda</p>
+                            <p className="text-[13px] text-white/40">Nenhuma transação ainda</p>
                         </div>
                     )}
                 </div>

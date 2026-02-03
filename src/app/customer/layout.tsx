@@ -94,13 +94,16 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 onSuccess={triggerRefresh}
             />
 
-            <div className="relative h-dvh overflow-hidden">
-                {/* Full-bleed scroll area — content scrolls behind glass header & nav */}
-                <div ref={scrollRef} className="h-full overflow-y-auto overflow-x-hidden overscroll-y-contain">
+            <div className="flex flex-col h-dvh fintech-bg">
+                {/* Sticky minimal status bar */}
+                <MobileHeader customerName={customerName} />
+
+                {/* Single scroll surface — everything scrolls as one unit */}
+                <div ref={scrollRef} className="flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain">
                     <AnimatePresence mode="wait">
                         <motion.main
                             key={pathname}
-                            className="px-5 pwa-content-top pwa-scroll-pad-bottom"
+                            className="px-4 pb-[calc(64px+env(safe-area-inset-bottom,0px)+8px)]"
                             initial={{ opacity: 0, y: 6, scale: 0.97 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.97 }}
@@ -122,8 +125,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                     </AnimatePresence>
                 </div>
 
-                {/* Glass overlays — float above scrollable content */}
-                <MobileHeader customerName={customerName} />
+                {/* Fixed bottom nav — floats above content */}
                 <BottomNav />
                 <PwaInstallPrompt />
             </div>
