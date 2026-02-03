@@ -194,7 +194,7 @@ function BottomSheetContent({
               "backdrop-blur-xl",
               "border-t border-white/[0.08]",
               "rounded-t-[24px]",
-              "shadow-[0_-8px_32px_rgba(0,0,0,0.15)]",
+              "shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.5)]",
               "pwa-sheet-safe-bottom",
               side === "center" && "sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:max-w-lg sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:rounded-[24px] sm:border",
               className
