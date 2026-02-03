@@ -151,18 +151,24 @@
         -webkit-font-smoothing: antialiased;
         overscroll-behavior-y: none;
         -moz-osx-font-smoothing: grayscale;
-        background-color: #0B0E17;
+        /* Match gradient top edge — prevents visible borders behind status bar */
+        background-color: #000000;
+        height: 100%;
+        margin: 0;
     }
 
     body {
-        @apply bg-background text-foreground;
+        @apply text-foreground;
         font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
-        background-color: #0B0E17;
+        /* Transparent — let the fixed gradient layer be the only background */
+        background-color: transparent;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+        height: 100%;
+        margin: 0;
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -579,8 +585,9 @@
         padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
-    /* ── Unified dark gradient background ────────────── */
-    /* Fixed 120dvh gradient eliminates black gap during iOS rubber-band scroll */
+    /* ── Fullscreen edge-to-edge gradient background ─── */
+    /* Fixed layer at 120dvh — no gap during iOS rubber-band scroll.
+       Background extends behind status bar + home indicator. */
     .fintech-bg-layer {
         position: fixed;
         inset: 0;
@@ -588,17 +595,17 @@
         min-height: 120dvh;
         background: linear-gradient(
             180deg,
-            #C4A0FF 0%,
-            #B070FF 5%,
-            #9B40FF 10%,
-            #8400EE 18%,
-            #7000D0 25%,
-            #5800A8 33%,
-            #420080 42%,
-            #2E0060 52%,
-            #1C0040 62%,
-            #100025 74%,
-            #080012 86%,
+            #d0b0ff 0%,
+            #b87aff 6%,
+            #a050ff 12%,
+            #8a20f0 20%,
+            #7400d4 28%,
+            #5c00b0 36%,
+            #440088 45%,
+            #300060 55%,
+            #1e0040 65%,
+            #110025 76%,
+            #080012 88%,
             #000000 100%
         );
         pointer-events: none;
@@ -741,14 +748,17 @@
         min-height: 120dvh;
         background: linear-gradient(
             180deg,
-            #c9a0ff 0%,
-            #a855f7 8%,
-            #8b2fff 16%,
-            #7000ff 25%,
-            #5500cc 35%,
-            #3a0088 48%,
-            #1e0044 62%,
-            #0d0020 78%,
+            #d0b0ff 0%,
+            #b87aff 6%,
+            #a050ff 12%,
+            #8a20f0 20%,
+            #7400d4 28%,
+            #5c00b0 36%,
+            #440088 45%,
+            #300060 55%,
+            #1e0040 65%,
+            #110025 76%,
+            #080012 88%,
             #000000 100%
         );
         pointer-events: none;
@@ -757,14 +767,17 @@
     .dark .customer-app-bg-layer {
         background: linear-gradient(
             180deg,
-            #c9a0ff 0%,
-            #a855f7 8%,
-            #8b2fff 16%,
-            #7000ff 25%,
-            #5500cc 35%,
-            #3a0088 48%,
-            #1e0044 62%,
-            #0d0020 78%,
+            #d0b0ff 0%,
+            #b87aff 6%,
+            #a050ff 12%,
+            #8a20f0 20%,
+            #7400d4 28%,
+            #5c00b0 36%,
+            #440088 45%,
+            #300060 55%,
+            #1e0040 65%,
+            #110025 76%,
+            #080012 88%,
             #000000 100%
         );
     }

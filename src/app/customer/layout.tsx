@@ -94,19 +94,20 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 onSuccess={triggerRefresh}
             />
 
-            <div className="flex flex-col min-h-dvh h-dvh fintech-bg">
-                {/* Fixed 120dvh gradient — eliminates black gap on iOS bounce */}
-                <div className="fintech-bg-layer" aria-hidden="true" />
+            {/* True edge-to-edge: gradient layer is the ONLY background.
+                No wrapper backgrounds behind safe areas — seamless fullscreen. */}
+            <div className="fintech-bg-layer" aria-hidden="true" />
 
-                {/* Sticky minimal status bar */}
+            <div className="flex flex-col min-h-dvh h-dvh relative">
+                {/* Sticky header — safe-area padding on content only */}
                 <MobileHeader customerName={customerName} />
 
-                {/* Single scroll surface — everything scrolls as one unit */}
-                <div ref={scrollRef} data-scroll-container className="flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain pwa-dock-safe-bottom">
+                {/* Single scroll surface */}
+                <div ref={scrollRef} data-scroll-container className="flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain">
                     <AnimatePresence mode="wait">
                         <motion.main
                             key={pathname}
-                            className="px-4 pb-28"
+                            className="px-4 pb-32 pwa-dock-safe-bottom"
                             initial={{ opacity: 0, y: 6, scale: 0.97 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.97 }}
@@ -128,7 +129,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                     </AnimatePresence>
                 </div>
 
-                {/* Fixed bottom nav — floats above content */}
+                {/* Fixed floating dock — sits above content */}
                 <BottomNav />
                 <PwaInstallPrompt />
             </div>

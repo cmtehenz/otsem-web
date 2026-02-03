@@ -73,7 +73,7 @@ export default async function RootLayout({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "linear-gradient(145deg, #1a1025 0%, #0a0118 50%, #1a0a30 100%)",
+            background: "linear-gradient(180deg, #440088 0%, #1e0040 40%, #000000 100%)",
             transition: "opacity 0.3s ease-out",
           }}
         >
