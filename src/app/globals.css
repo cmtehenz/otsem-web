@@ -509,13 +509,13 @@
     }
 
     /* ── Unified dark gradient background ────────────── */
-    /* Light indigo at top → deep black at bottom */
+    /* Light indigo at top → indigo → dark navy → black */
     .fintech-bg {
         background: linear-gradient(
-            180deg,
-            #2a1052 0%,
-            #150928 30%,
-            #0a0415 60%,
+            to bottom,
+            #a5b4fc 0%,
+            #6366f1 20%,
+            #1e1b4b 50%,
             #000000 100%
         );
     }

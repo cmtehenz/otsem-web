@@ -462,7 +462,7 @@ export default function Dashboard() {
             </motion.div>
 
             {/* ── Quick Actions (circular icons, horizontal row) ── */}
-            <motion.div variants={fadeUp} className="flex justify-center gap-7">
+            <motion.div variants={fadeUp} className="flex justify-center gap-5">
                 <QuickAction
                     icon={ArrowDownLeft}
                     label="Depositar"
@@ -487,7 +487,7 @@ export default function Dashboard() {
 
             {/* ── Recent Activity ── */}
             <motion.div variants={fadeUp}>
-                <div className="rounded-2xl border border-white/[0.06] p-4">
+                <div className="rounded-2xl bg-white/[0.03] border-[0.5px] border-white/[0.08] p-4">
                     <div className="flex items-center justify-between mb-2">
                         <h3 className="text-[14px] font-bold text-white">Atividade recente</h3>
                         <Link
