@@ -150,14 +150,25 @@
     html {
         scroll-behavior: smooth;
         -webkit-font-smoothing: antialiased;
-        overscroll-behavior-y: none;
+        overscroll-behavior: none;
         -moz-osx-font-smoothing: grayscale;
     }
-    
+
     body {
         @apply bg-background text-foreground;
         font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
         -webkit-tap-highlight-color: transparent;
+        touch-action: pan-x pan-y;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+    }
+
+    /* Allow text selection in form inputs where users need to type/edit */
+    input, textarea, select, [contenteditable="true"] {
+        -webkit-user-select: text;
+        user-select: text;
+        -webkit-touch-callout: default;
         touch-action: manipulation;
     }
     
