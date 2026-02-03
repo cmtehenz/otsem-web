@@ -246,9 +246,10 @@
   50% { background-position: 100% 50%; }
 }
 
-@keyframes liquid-metal-shimmer {
-  0% { background-position: 250% 0; }
-  100% { background-position: -50% 0; }
+@keyframes liquid-metal-sweep {
+  0% { left: -100%; }
+  50% { left: 140%; }
+  100% { left: 140%; }
 }
 
 @layer utilities {
@@ -488,7 +489,7 @@
 
     .pwa-nav-bottom {
         bottom: 0;
-        padding-bottom: max(env(safe-area-inset-bottom, 0px), 2px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     .pwa-scroll-pad-bottom {
@@ -561,127 +562,113 @@
     /* ── Liquid Glass header material ────────────────── */
 
     .liquid-glass-header {
-        background: linear-gradient(
-            180deg,
-            rgba(26, 5, 51, 0.6) 0%,
-            rgba(13, 0, 25, 0.4) 100%
-        );
-        -webkit-backdrop-filter: blur(48px) saturate(200%);
-        backdrop-filter: blur(48px) saturate(200%);
-        box-shadow:
-            inset 0 -0.5px 0 0 rgba(255, 255, 255, 0.06),
-            inset 0 0 0 0.5px rgba(255, 255, 255, 0.04),
-            0 2px 16px -4px rgba(0, 0, 0, 0.2);
+        background: transparent;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        box-shadow: none;
+        border: none;
     }
 
     .dark .liquid-glass-header {
-        background: linear-gradient(
-            180deg,
-            rgba(26, 5, 51, 0.6) 0%,
-            rgba(13, 0, 25, 0.4) 100%
-        );
-        box-shadow:
-            inset 0 -0.5px 0 0 rgba(255, 255, 255, 0.06),
-            inset 0 0 0 0.5px rgba(255, 255, 255, 0.04),
-            0 2px 16px -4px rgba(0, 0, 0, 0.3);
+        background: transparent;
+        box-shadow: none;
+        border: none;
     }
 
     /* ── Liquid Glass nav material ───────────────────── */
 
     .liquid-glass-nav {
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.06);
         -webkit-backdrop-filter: blur(40px) saturate(180%);
         backdrop-filter: blur(40px) saturate(180%);
-        box-shadow:
-            0 8px 32px -8px rgba(0, 0, 0, 0.3),
-            inset 0 0.5px 0 0 rgba(255, 255, 255, 0.15),
-            inset 0 -0.5px 0 0 rgba(255, 255, 255, 0.05);
-        border: 1px solid transparent;
+        border: 1px solid rgba(255, 255, 255, 0.12);
         position: relative;
+        overflow: hidden;
+        box-shadow:
+            0 8px 32px -8px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+            inset 0 -1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
-    /* Liquid metal border via gradient mask */
+    /* Static liquid metal sheen on top edge */
     .liquid-glass-nav::after {
         content: "";
         position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        padding: 1px;
-        background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.3) 0%,
-            rgba(155, 77, 255, 0.25) 25%,
-            rgba(255, 255, 255, 0.1) 50%,
-            rgba(139, 47, 255, 0.2) 75%,
-            rgba(255, 255, 255, 0.3) 100%
-        );
-        -webkit-mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-        mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        pointer-events: none;
-        z-index: 1;
-    }
-
-    /* Liquid metal shimmer sweep across border */
-    .liquid-glass-nav::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        padding: 1.5px;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
         background: linear-gradient(
             90deg,
             transparent 0%,
-            transparent 30%,
-            rgba(255, 255, 255, 0.6) 45%,
-            rgba(200, 170, 255, 0.8) 50%,
-            rgba(255, 255, 255, 0.6) 55%,
-            transparent 70%,
+            rgba(200, 170, 255, 0.3) 20%,
+            rgba(255, 255, 255, 0.5) 50%,
+            rgba(200, 170, 255, 0.3) 80%,
             transparent 100%
         );
-        background-size: 250% 100%;
-        -webkit-mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-        mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
+        pointer-events: none;
+        z-index: 3;
+    }
+
+    /* Animated liquid metal shimmer sweep */
+    .liquid-glass-nav::before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        bottom: -1px;
+        left: -100%;
+        width: 60%;
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.03) 20%,
+            rgba(200, 170, 255, 0.12) 40%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(200, 170, 255, 0.12) 60%,
+            rgba(255, 255, 255, 0.03) 80%,
+            transparent 100%
+        );
         pointer-events: none;
         z-index: 2;
-        animation: liquid-metal-shimmer 4s ease-in-out infinite;
+        animation: liquid-metal-sweep 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        animation-delay: 0.5s;
     }
 
     .dark .liquid-glass-nav {
-        background: rgba(255, 255, 255, 0.06);
-        box-shadow:
-            0 8px 32px -8px rgba(0, 0, 0, 0.5),
-            inset 0 0.5px 0 0 rgba(255, 255, 255, 0.1),
-            inset 0 -0.5px 0 0 rgba(255, 255, 255, 0.03);
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.08);
     }
 
     /* ── Vivid purple gradient background for customer app ── */
 
     .customer-app-bg {
-        background:
-            radial-gradient(ellipse 120% 60% at 50% 0%, rgba(155, 77, 255, 0.35) 0%, transparent 60%),
-            radial-gradient(ellipse 80% 50% at 20% 20%, rgba(111, 0, 255, 0.25) 0%, transparent 50%),
-            radial-gradient(ellipse 80% 50% at 80% 30%, rgba(139, 47, 255, 0.2) 0%, transparent 50%),
-            linear-gradient(180deg, #1a0533 0%, #0d0019 40%, #080012 100%);
+        background: linear-gradient(
+            180deg,
+            #c9a0ff 0%,
+            #a855f7 8%,
+            #8b2fff 16%,
+            #7000ff 25%,
+            #5500cc 35%,
+            #3a0088 48%,
+            #1e0044 62%,
+            #0d0020 78%,
+            #000000 100%
+        );
     }
 
     .dark .customer-app-bg {
-        background:
-            radial-gradient(ellipse 120% 60% at 50% 0%, rgba(155, 77, 255, 0.35) 0%, transparent 60%),
-            radial-gradient(ellipse 80% 50% at 20% 20%, rgba(111, 0, 255, 0.25) 0%, transparent 50%),
-            radial-gradient(ellipse 80% 50% at 80% 30%, rgba(139, 47, 255, 0.2) 0%, transparent 50%),
-            linear-gradient(180deg, #1a0533 0%, #0d0019 40%, #080012 100%);
+        background: linear-gradient(
+            180deg,
+            #c9a0ff 0%,
+            #a855f7 8%,
+            #8b2fff 16%,
+            #7000ff 25%,
+            #5500cc 35%,
+            #3a0088 48%,
+            #1e0044 62%,
+            #0d0020 78%,
+            #000000 100%
+        );
     }
 
     .social-icon-hover {
