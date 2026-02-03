@@ -40,7 +40,7 @@ export function MobileHeader({ customerName }: { customerName?: string }) {
                                 alt="OtsemPay"
                                 width={48}
                                 height={48}
-                                className="rounded-2xl"
+                                className="object-contain"
                             />
                         </Link>
                         <div className="flex flex-col">
