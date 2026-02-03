@@ -42,7 +42,7 @@ function safeNext(nextParam: string | null | undefined, fallback = '/customer/da
 export default function LoginPageClient(): React.JSX.Element {
     return (
         <Suspense fallback={
-            <div className="grid min-h-screen place-items-center bg-white text-sm text-slate-900/50">
+            <div className="fixed inset-0 grid place-items-center bg-white text-sm text-slate-900/50">
                 ...
             </div>
         }>
@@ -126,7 +126,7 @@ function LoginPageInner(): React.JSX.Element {
     // Show 2FA verification if required
     if (requires2FA) {
         return (
-            <div className="relative min-h-screen w-full overflow-hidden bg-white">
+            <div className="fixed inset-0 overflow-y-auto overflow-x-hidden bg-white">
                 <div className="pointer-events-none absolute inset-0 -z-10">
                     <motion.div
                         animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.15, 1] }}
@@ -147,7 +147,7 @@ function LoginPageInner(): React.JSX.Element {
                     </motion.button>
                 </div>
 
-                <div className="flex min-h-screen w-full items-center justify-center px-4 py-24">
+                <div className="flex min-h-full w-full items-center justify-center px-4 py-24">
                     <TwoFactorVerify
                         onVerify={handle2FAVerify}
                         onCancel={handleCancel2FA}
@@ -159,7 +159,7 @@ function LoginPageInner(): React.JSX.Element {
     }
 
     return (
-        <div className="relative min-h-screen w-full overflow-hidden bg-white">
+        <div className="fixed inset-0 overflow-y-auto overflow-x-hidden bg-white">
             <div className="pointer-events-none absolute inset-0 -z-10">
                 <motion.div
                     animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.15, 1] }}
@@ -192,7 +192,7 @@ function LoginPageInner(): React.JSX.Element {
                 </div>
             </div>
 
-            <div className="flex min-h-screen w-full items-center justify-center px-4 py-24 lg:px-8 xl:px-16">
+            <div className="flex min-h-full w-full items-center justify-center px-4 py-24 lg:px-8 xl:px-16">
                 <div className="flex w-full max-w-6xl items-center gap-16">
                     <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:gap-8">
                         <div>
