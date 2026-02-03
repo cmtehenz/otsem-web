@@ -455,7 +455,7 @@ export default function Dashboard() {
     // ─── Loading state ───────────────────────────────────
     if (loading) {
         return (
-            <div className="flex h-[60vh] flex-col items-center justify-center">
+            <div className="flex h-[60dvh] flex-col items-center justify-center">
                 <div className="relative">
                     <div className="absolute inset-0 bg-[#6F00FF]/30 rounded-full blur-xl animate-pulse" />
                     <Loader2 className="relative h-8 w-8 animate-spin text-[#8B2FFF]" />

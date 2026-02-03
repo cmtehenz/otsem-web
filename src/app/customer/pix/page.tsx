@@ -267,7 +267,7 @@ export default function CustomerPixPage() {
 
   if (loading) {
     return (
-      <div className="flex h-[80vh] flex-col items-center justify-center gap-3">
+      <div className="flex h-[80dvh] flex-col items-center justify-center gap-3">
         <div className="relative">
           <div className="absolute inset-0 rounded-full bg-[#6F00FF]/20 blur-xl animate-pulse" />
           <div className="relative p-4 rounded-full bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08]">

@@ -146,7 +146,7 @@ export default function AffiliatesPage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-[50vh]">
+            <div className="flex items-center justify-center h-[50dvh]">
                 <div className="flex flex-col items-center gap-3">
                     <div className="w-8 h-8 rounded-full border-2 border-[#6F00FF]/30 border-t-[#6F00FF] animate-spin" />
                     <span className="text-[13px] text-white/60">Carregando...</span>
