@@ -7,14 +7,13 @@ import { Loader2 } from "lucide-react";
 import http from "@/lib/http";
 import type { CustomerResponse } from "@/types/customer";
 
-import { PhoneStep } from "./steps/phone-step";
 import { PersonalDataStep } from "./steps/personal-data-step";
 import { CpfVerificationStep } from "./steps/cpf-verification-step";
 import { SuccessStep } from "./steps/success-step";
 
-type Step = "phone" | "personal" | "cpf" | "success";
+type Step = "personal" | "cpf" | "success";
 
-const STEP_ORDER: Step[] = ["phone", "personal", "cpf", "success"];
+const STEP_ORDER: Step[] = ["personal", "cpf", "success"];
 
 function ProgressBar({ currentStep }: { currentStep: Step }) {
     const idx = STEP_ORDER.indexOf(currentStep);
@@ -41,7 +40,6 @@ function ProgressBar({ currentStep }: { currentStep: Step }) {
 
 function determineStep(customer: CustomerResponse): Step {
     if (customer.onboardingCompleted) return "success";
-    if (!customer.phoneVerified) return "phone";
     if (!customer.birthday || !customer.address) return "personal";
     if (customer.cpfVerificationStatus !== "verified") return "cpf";
     return "success";
@@ -50,7 +48,7 @@ function determineStep(customer: CustomerResponse): Step {
 export default function OnboardingPage() {
     const router = useRouter();
     const [customer, setCustomer] = React.useState<CustomerResponse | null>(null);
-    const [currentStep, setCurrentStep] = React.useState<Step>("phone");
+    const [currentStep, setCurrentStep] = React.useState<Step>("personal");
     const [loading, setLoading] = React.useState(true);
 
     const fetchCustomer = React.useCallback(async () => {
@@ -132,12 +130,6 @@ export default function OnboardingPage() {
                         <ProgressBar currentStep={currentStep} />
                     </div>
 
-                    {currentStep === "phone" && (
-                        <PhoneStep
-                            customer={customer}
-                            onComplete={handleStepComplete}
-                        />
-                    )}
                     {currentStep === "personal" && (
                         <PersonalDataStep
                             customer={customer}
