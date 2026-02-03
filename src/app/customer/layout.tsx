@@ -94,13 +94,13 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 onSuccess={triggerRefresh}
             />
 
-            <div className="relative h-dvh overflow-hidden">
-                {/* Full-bleed scroll area — content scrolls behind glass header & nav */}
-                <div ref={scrollRef} className="h-full overflow-y-auto overflow-x-hidden overscroll-y-contain">
+            <div className="relative h-dvh overflow-hidden customer-app-bg">
+                {/* Full-bleed scroll area — single scroll container */}
+                <div ref={scrollRef} className="h-full overflow-y-auto overflow-x-hidden overscroll-y-contain scrollbar-hide">
                     <AnimatePresence mode="wait">
                         <motion.main
                             key={pathname}
-                            className="px-5 pwa-content-top pwa-scroll-pad-bottom"
+                            className="px-5 pwa-content-top pwa-scroll-pad-bottom min-h-full"
                             initial={{ opacity: 0, y: 6, scale: 0.97 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.97 }}

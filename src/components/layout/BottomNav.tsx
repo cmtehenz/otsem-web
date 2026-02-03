@@ -48,18 +48,10 @@ export function BottomNav() {
                 onClose={() => setActionSheetOpen(false)}
             />
 
-            {/* Floating bar wrapper — extends to screen edge, pill floats inside via padding */}
+            {/* Floating bar wrapper — full bleed, no veil */}
             <div className="fixed z-50 left-0 right-0 flex justify-center pointer-events-none pwa-nav-bottom">
-                {/* Soft gradient veil — replaces the hard solid background strip */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent pointer-events-none" />
 
-                <nav className="pointer-events-auto relative mx-4 w-full max-w-[400px] rounded-[28px] overflow-hidden liquid-glass-nav">
-
-                    {/* Specular highlight — top edge refraction line */}
-                    <div className="absolute inset-x-4 top-0 h-[0.5px] bg-gradient-to-r from-transparent via-white/80 dark:via-white/15 to-transparent pointer-events-none z-10" />
-
-                    {/* Bottom edge subtle light */}
-                    <div className="absolute inset-x-6 bottom-0 h-[0.5px] bg-gradient-to-r from-transparent via-white/40 dark:via-white/5 to-transparent pointer-events-none z-10" />
+                <nav className="pointer-events-auto relative mx-4 mb-2 w-full max-w-[400px] rounded-[26px] liquid-glass-nav">
 
                     {/* Tab items */}
                     <div className="relative flex items-center justify-around px-1 py-2.5 z-10">
@@ -125,16 +117,16 @@ export function BottomNav() {
                                     href={tab.href}
                                     className="relative flex flex-col items-center justify-center px-3 py-1 outline-none"
                                 >
-                                    {/* Active pill — Liquid Glass highlight behind icon */}
+                                    {/* Active pill — subtle white glow behind icon */}
                                     {isActive && (
                                         <motion.div
                                             layoutId="navActivePill"
                                             className="absolute inset-0 rounded-[18px]"
                                             style={{
                                                 background:
-                                                    "linear-gradient(135deg, rgba(111,0,255,0.14) 0%, rgba(139,47,255,0.08) 100%)",
+                                                    "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)",
                                                 boxShadow:
-                                                    "inset 0 0 0 0.5px rgba(111,0,255,0.18), 0 0 16px rgba(111,0,255,0.08)",
+                                                    "inset 0 0 0 0.5px rgba(255,255,255,0.15), 0 0 12px rgba(155,77,255,0.15)",
                                             }}
                                             transition={{
                                                 type: "spring",
@@ -157,16 +149,16 @@ export function BottomNav() {
                                         <Icon
                                             className={`w-[22px] h-[22px] transition-colors duration-300 ${
                                                 isActive
-                                                    ? "text-[#6F00FF] dark:text-[#A855F7]"
-                                                    : "text-[#8e8a99] dark:text-[#6b6578]"
+                                                    ? "text-white"
+                                                    : "text-white/40"
                                             }`}
                                             strokeWidth={isActive ? 2.4 : 1.7}
                                         />
                                         <span
                                             className={`text-[10px] leading-tight font-medium transition-colors duration-300 ${
                                                 isActive
-                                                    ? "text-[#6F00FF] dark:text-[#A855F7]"
-                                                    : "text-[#8e8a99] dark:text-[#6b6578]"
+                                                    ? "text-white"
+                                                    : "text-white/40"
                                             }`}
                                         >
                                             {tab.label}
