@@ -17,6 +17,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { useUsdtRate } from "@/lib/useUsdtRate";
 import { useUiModals } from "@/stores/ui-modals";
 import { ConvertModal } from "@/components/modals/convert-modal";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -442,7 +443,7 @@ export default function Dashboard() {
                 {/* USDT Card (with rate integrated) */}
                 <div className="flex-1 rounded-2xl fintech-glass-card px-4 py-4">
                     <div className="flex items-center gap-1.5 mb-2">
-                        <span className="text-[15px]">💲</span>
+                        <Image src="/images/usdt-icon.svg" alt="USDT" width={20} height={20} />
                         <span className="text-[#94A3B8] text-[12px] font-medium">USDT</span>
                     </div>
                     <p className="text-[#FFFFFF] font-semibold text-[22px] leading-tight">
