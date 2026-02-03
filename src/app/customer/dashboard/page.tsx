@@ -143,8 +143,8 @@ function QuickAction({
         <motion.button
             className="flex flex-col items-center gap-1"
             onClick={onClick}
-            whileTap={{ scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 500, damping: 25 }}
         >
             <div className="flex items-center justify-center w-12 h-12 rounded-full fintech-glass-btn active:bg-white/20 transition-colors">
                 <Icon className="w-[20px] h-[20px] text-[#FFFFFF]" strokeWidth={1.8} />
@@ -402,9 +402,11 @@ export default function Dashboard() {
             <motion.div variants={fadeUp} className="text-center pt-4">
                 <div className="flex items-center justify-center gap-2 mb-2">
                     <p className="text-[14px] font-medium text-[#94A3B8]">Saldo total</p>
-                    <button
+                    <motion.button
                         onClick={() => setBalanceHidden(!balanceHidden)}
                         className="p-2.5 -m-2.5 rounded-full active:bg-white/10 transition-colors"
+                        whileTap={{ scale: 0.97 }}
+                        transition={{ type: "spring", stiffness: 500, damping: 25 }}
                         aria-label={balanceHidden ? "Mostrar saldo" : "Ocultar saldo"}
                     >
                         {balanceHidden ? (
@@ -412,7 +414,7 @@ export default function Dashboard() {
                         ) : (
                             <Eye className="w-4 h-4 text-[#94A3B8]" />
                         )}
-                    </button>
+                    </motion.button>
                 </div>
 
                 <motion.p

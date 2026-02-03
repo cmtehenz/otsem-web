@@ -30,9 +30,9 @@ export function MobileHeader({ customerName }: { customerName?: string }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
         >
-            {/* Safe area container — pt handles notch, bg gradient flows through */}
-            <div className="pwa-status-bar-safe">
-                <div className="flex items-center justify-between px-5 h-[88px]">
+            {/* Premium safe area container — gradient flows through, pt handles notch + 2rem */}
+            <div className="pwa-header-premium">
+                <div className="flex items-center justify-between px-5">
                     <div className="flex items-center gap-3.5">
                         <Link href="/customer/dashboard" className="flex items-center">
                             <Image
@@ -54,20 +54,27 @@ export function MobileHeader({ customerName }: { customerName?: string }) {
                     </div>
 
                     <div className="flex items-center gap-2.5">
-                        <button
+                        <motion.button
                             className="flex items-center justify-center w-10 h-10 rounded-full bg-white/[0.08] border border-white/[0.08] active:bg-white/15 transition-colors relative"
-                            style={{ transition: "all 0.25s cubic-bezier(0.32, 0.72, 0, 1)" }}
+                            style={{ transition: "background 0.25s cubic-bezier(0.32, 0.72, 0, 1)" }}
+                            whileTap={{ scale: 0.97 }}
+                            transition={{ type: "spring", stiffness: 500, damping: 25 }}
                             aria-label="Notificações"
                         >
                             <Bell className="w-[20px] h-[20px] text-white/50" strokeWidth={1.8} />
-                        </button>
-                        <Link
-                            href="/customer/settings"
-                            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/[0.08] border border-white/[0.08] active:bg-white/15 transition-colors"
-                            style={{ transition: "all 0.25s cubic-bezier(0.32, 0.72, 0, 1)" }}
+                        </motion.button>
+                        <motion.div
+                            whileTap={{ scale: 0.97 }}
+                            transition={{ type: "spring", stiffness: 500, damping: 25 }}
                         >
-                            <User className="w-[20px] h-[20px] text-white/50" strokeWidth={1.8} />
-                        </Link>
+                            <Link
+                                href="/customer/settings"
+                                className="flex items-center justify-center w-10 h-10 rounded-full bg-white/[0.08] border border-white/[0.08] active:bg-white/15 transition-colors"
+                                style={{ transition: "background 0.25s cubic-bezier(0.32, 0.72, 0, 1)" }}
+                            >
+                                <User className="w-[20px] h-[20px] text-white/50" strokeWidth={1.8} />
+                            </Link>
+                        </motion.div>
                     </div>
                 </div>
             </div>

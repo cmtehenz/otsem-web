@@ -145,14 +145,15 @@ export function ActionSheet({
                                     {actions.map((action, index) => (
                                         <motion.button
                                             key={action.id}
-                                            className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/50 dark:bg-white/[0.04] border border-white/60 dark:border-white/[0.06] active:scale-[0.98] transition-transform"
+                                            className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/50 dark:bg-white/[0.04] border border-white/60 dark:border-white/[0.06] transition-transform"
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
+                                            whileTap={{ scale: 0.97 }}
                                             transition={{
                                                 delay: index * 0.05,
                                                 type: "spring",
-                                                stiffness: 400,
-                                                damping: 30,
+                                                stiffness: 500,
+                                                damping: 25,
                                             }}
                                             onClick={() => handleAction(action.id)}
                                         >

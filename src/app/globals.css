@@ -254,6 +254,16 @@
   100% { left: 140%; }
 }
 
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 20px -10px rgba(111, 0, 255, 0.2); }
+  to { box-shadow: 0 0 30px 2px rgba(111, 0, 255, 0.4); }
+}
+
 @layer utilities {
     .animate-fade-in {
         animation: fade-in 0.6s cubic-bezier(0.32, 0.72, 0, 1) forwards;
@@ -311,19 +321,30 @@
     }
 
     .premium-card {
-        @apply bg-white/85 border border-white/80 rounded-[28px] p-6 shadow-xl;
+        @apply bg-white/85 rounded-[28px] p-6;
+        border: 0.5px solid rgba(255, 255, 255, 0.35);
         -webkit-backdrop-filter: blur(64px);
         backdrop-filter: blur(64px);
         box-shadow:
-            inset 0 0 0 0.5px rgba(255, 255, 255, 0.5),
-            0 20px 40px -10px rgba(0, 0, 0, 0.06);
+            inset 0 0.5px 0 rgba(255, 255, 255, 0.5),
+            inset 0 0 12px rgba(255, 255, 255, 0.06),
+            0 20px 40px -10px rgba(0, 0, 0, 0.15),
+            0 8px 16px -4px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Apply shimmer animation to premium cards */
+    .premium-card.animate-ios-shimmer::before {
+        border-radius: 28px;
     }
 
     .dark .premium-card {
-        @apply bg-[#1a1025]/90 border-white/10;
+        @apply bg-[#1a1025]/90;
+        border-color: rgba(255, 255, 255, 0.10);
         box-shadow:
-            inset 0 0 0 0.5px rgba(255, 255, 255, 0.05),
-            0 20px 40px -10px rgba(0, 0, 0, 0.3);
+            inset 0 0.5px 0 rgba(255, 255, 255, 0.08),
+            inset 0 0 12px rgba(255, 255, 255, 0.02),
+            0 20px 40px -10px rgba(0, 0, 0, 0.4),
+            0 8px 16px -4px rgba(0, 0, 0, 0.25);
     }
 
     .glass-nav {
@@ -446,6 +467,36 @@
         animation: gradient-shift 8s ease infinite;
     }
 
+    /* ── Liquid Metal shimmer — sweeping light reflection across glass surfaces ── */
+    .animate-ios-shimmer {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .animate-ios-shimmer::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            110deg,
+            rgba(255, 255, 255, 0) 20%,
+            rgba(255, 255, 255, 0.1) 48%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0.1) 52%,
+            rgba(255, 255, 255, 0) 80%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 8s linear infinite;
+        pointer-events: none;
+        z-index: 1;
+        border-radius: inherit;
+    }
+
+    /* ── Premium glass edge glow — pulsing purple border shadow ── */
+    .animate-ios-glow {
+        animation: glow 4s ease-in-out infinite alternate;
+    }
+
     .ios-card-premium {
         @apply bg-white rounded-[20px] p-4 sm:p-5;
         box-shadow: 
@@ -514,6 +565,12 @@
     /* ── Fintech-style status bar safe area ──────────── */
     .pwa-status-bar-safe {
         padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    /* ── Premium header — airy safe area with extra top breathing room ── */
+    .pwa-header-premium {
+        padding-top: calc(env(safe-area-inset-top, 0px) + 2rem);
+        padding-bottom: 1.5rem;
     }
 
     /* ── Fintech-style nav safe area (bottom) ────────── */
