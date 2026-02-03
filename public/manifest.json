@@ -5,6 +5,7 @@
   "description": "Pagamentos e conversão BRL ↔ USDT com transparência.",
   "start_url": "/customer/dashboard",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#0a0118",
   "theme_color": "#6F00FF",
   "orientation": "portrait",
