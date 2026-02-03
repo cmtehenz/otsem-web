@@ -438,7 +438,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                         <div className="w-full space-y-5">
                             <div className="bg-muted border border-border rounded-xl p-4">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <TrendingDown className="w-4 h-4 text-orange-500" />
+                                    <TrendingDown className="w-4 h-4 text-white/70" />
                                     <span className="text-muted-foreground text-sm">Cotação atual</span>
                                 </div>
                                 <p className="text-foreground font-bold text-lg">
@@ -463,8 +463,8 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                         onClick={() => { setNetwork("TRON"); setSelectedWallet(null); }}
                                         className={`flex-1 py-3 px-4 rounded-xl border transition font-medium ${
                                             network === "TRON"
-                                                ? "border-red-500 bg-red-500/20 text-red-600 dark:text-red-400"
-                                                : "border-border bg-muted text-muted-foreground hover:border-red-500/30"
+                                                ? "border-[#6F00FF] bg-[#6F00FF]/20 text-[#6F00FF] dark:text-[#8B2FFF]"
+                                                : "border-border bg-muted text-muted-foreground hover:border-[#6F00FF]/30"
                                         }`}
                                     >
                                         Tron (TRC20)
@@ -480,7 +480,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 
                                 {walletsLoading ? (
                                     <div className="flex items-center justify-center py-6">
-                                        <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
+                                        <Loader2 className="w-6 h-6 text-white/70 animate-spin" />
                                     </div>
                                 ) : filteredWallets.length === 0 ? (
                                     <div className="bg-muted border border-border rounded-xl p-4 text-center">
@@ -496,15 +496,15 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                                 onClick={() => handleSelectWallet(wallet)}
                                                 className={`w-full p-3 rounded-xl border text-left transition ${
                                                     selectedWallet?.id === wallet.id
-                                                        ? "border-orange-500 bg-orange-500/10"
-                                                        : "border-border bg-muted hover:border-orange-500/30"
+                                                        ? "border-[#6F00FF] bg-[#6F00FF]/10"
+                                                        : "border-border bg-muted hover:border-[#6F00FF]/30"
                                                 }`}
                                             >
                                                 <div className="flex items-center justify-between">
                                                     <p className="text-foreground font-medium text-sm">
                                                         {wallet.label || "Carteira"}
                                                     </p>
-                                                    <p className="text-green-600 dark:text-green-400 text-sm font-medium">
+                                                    <p className="text-white text-sm font-medium">
                                                         {parseFloat(wallet.balance || "0").toFixed(2)} USDT
                                                     </p>
                                                 </div>
@@ -520,7 +520,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                             <Button
                                 onClick={handleContinueToAmount}
                                 disabled={!selectedWallet || walletsLoading}
-                                className="w-full bg-linear-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 Continuar
                                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -546,7 +546,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 </div>
                                 <div className="flex items-center justify-between mt-1">
                                     <span className="text-muted-foreground text-sm">Rede:</span>
-                                    <span className={`text-sm font-medium ${network === "SOLANA" ? "text-[#6F00FF]" : "text-red-600"}`}>
+                                    <span className={`text-sm font-medium ${network === "SOLANA" ? "text-[#6F00FF]" : "text-[#6F00FF]"}`}>
                                         {network}
                                     </span>
                                 </div>
@@ -556,7 +556,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xl">
                                     💵
                                 </div>
-                                <ArrowRight className="w-5 h-5 text-orange-500" />
+                                <ArrowRight className="w-5 h-5 text-white/70" />
                                 <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xl">
                                     🇧🇷
                                 </div>
@@ -573,7 +573,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                     placeholder="0.00"
-                                    className="w-full pl-10 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full pl-10 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
                                     autoFocus
                                 />
                             </div>
@@ -583,7 +583,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                     <button
                                         key={value}
                                         onClick={() => handleQuickAmount(value)}
-                                        className="px-4 py-2 text-sm font-medium rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-600 dark:text-orange-300 hover:bg-orange-500/20 hover:border-orange-500/50 transition"
+                                        className="px-4 py-2 text-sm font-medium rounded-full border border-[#6F00FF]/30 bg-[#6F00FF]/10 text-[#6F00FF] dark:text-[#A78BFA] hover:bg-[#6F00FF]/20 hover:border-[#6F00FF]/50 transition"
                                     >
                                         $ {value}
                                     </button>
@@ -592,7 +592,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
 
                             <div className="bg-muted border border-border rounded-xl p-4">
                                 <p className="text-muted-foreground text-sm">Você receberá aproximadamente:</p>
-                                <p className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
+                                <p className="text-2xl font-bold text-white mt-1">
                                     {formatBRL(estimatedBrl)}
                                 </p>
                             </div>
@@ -600,7 +600,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                             <Button
                                 onClick={handleContinueToSign}
                                 disabled={numAmount < minAmount || loading}
-                                className="w-full bg-linear-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <>
@@ -627,9 +627,9 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 ← Voltar
                             </button>
 
-                            <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-3 flex items-center gap-2">
-                                <Shield className="w-5 h-5 text-green-500 flex-shrink-0" />
-                                <p className="text-green-600 dark:text-green-400 text-xs">
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-2">
+                                <Shield className="w-5 h-5 text-white flex-shrink-0" />
+                                <p className="text-white text-xs">
                                     Sua chave privada é processada localmente e nunca é enviada ao servidor
                                 </p>
                             </div>
@@ -637,7 +637,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                             <div className="bg-muted border border-border rounded-xl p-5 space-y-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-xl">
+                                        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl">
                                             💵
                                         </div>
                                         <div>
@@ -645,15 +645,15 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                             <p className="text-foreground font-bold">{formatUSDT(txData.usdtAmount)}</p>
                                         </div>
                                     </div>
-                                    <ArrowRight className="w-5 h-5 text-orange-500" />
+                                    <ArrowRight className="w-5 h-5 text-white/70" />
                                     <div className="flex items-center gap-3">
                                         <div>
                                             <p className="text-muted-foreground text-xs text-right">Você recebe</p>
-                                            <p className="text-green-600 dark:text-green-400 font-bold">
+                                            <p className="text-white font-bold">
                                                 {formatBRL(txData.quote.brlToReceive)}
                                             </p>
                                         </div>
-                                        <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-xl">
+                                        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl">
                                             🇧🇷
                                         </div>
                                     </div>
@@ -668,7 +668,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Rede</span>
-                                        <span className={network === "SOLANA" ? "text-[#6F00FF]" : "text-red-600"}>
+                                        <span className={network === "SOLANA" ? "text-[#6F00FF]" : "text-[#6F00FF]"}>
                                             {network}
                                         </span>
                                     </div>
@@ -689,7 +689,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
 
                             <div className="space-y-2">
                                 <div className="flex items-center gap-2">
-                                    <Key className="w-4 h-4 text-amber-500" />
+                                    <Key className="w-4 h-4 text-white/60" />
                                     <p className="text-muted-foreground text-sm">Chave Privada:</p>
                                 </div>
                                 <input
@@ -697,14 +697,14 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                     value={privateKey}
                                     onChange={(e) => setPrivateKey(e.target.value)}
                                     placeholder="Cole sua chave privada aqui..."
-                                    className="w-full px-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full px-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
                                     disabled={loading}
                                 />
                             </div>
 
                             {signingStatus && (
                                 <div className="bg-muted border border-border rounded-xl p-3 flex items-center gap-3">
-                                    <Loader2 className="w-4 h-4 text-orange-500 animate-spin flex-shrink-0" />
+                                    <Loader2 className="w-4 h-4 text-white/70 animate-spin flex-shrink-0" />
                                     <p className="text-muted-foreground text-sm">{signingStatus}</p>
                                 </div>
                             )}
@@ -712,7 +712,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                             <Button
                                 onClick={handleSignAndSubmit}
                                 disabled={!privateKey.trim() || loading}
-                                className="w-full bg-linear-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <>
@@ -733,12 +733,12 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                         <div className="w-full space-y-5">
                             <div className="flex justify-center">
                                 <div className="relative">
-                                    <div className="w-20 h-20 rounded-full border-4 border-orange-500/20 flex items-center justify-center">
-                                        <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
+                                    <div className="w-20 h-20 rounded-full border-4 border-[#6F00FF]/20 flex items-center justify-center">
+                                        <Loader2 className="w-10 h-10 text-white/70 animate-spin" />
                                     </div>
                                     {conversionStatus === "COMPLETED" && (
                                         <div className="absolute inset-0 flex items-center justify-center bg-card rounded-full">
-                                            <Check className="w-10 h-10 text-green-500" />
+                                            <Check className="w-10 h-10 text-white" />
                                         </div>
                                     )}
                                 </div>
@@ -763,9 +763,9 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                         <div key={status} className="flex items-center gap-3">
                                             <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                                                 isCompleted 
-                                                    ? "bg-green-500" 
+                                                    ? "bg-[#6F00FF]" 
                                                     : isCurrent 
-                                                        ? "bg-orange-500 animate-pulse" 
+                                                        ? "bg-[#6F00FF] animate-pulse" 
                                                         : "bg-muted-foreground/20"
                                             }`}>
                                                 {isCompleted ? (
@@ -795,7 +795,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">Valor em BRL</span>
-                                    <span className="text-green-600 dark:text-green-400 font-medium">
+                                    <span className="text-white font-medium">
                                         {formatBRL(conversionDetail?.brlAmount || txData?.quote.brlToReceive || 0)}
                                     </span>
                                 </div>
@@ -817,8 +817,8 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 )}
                             </div>
 
-                            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
-                                <p className="text-amber-600 dark:text-amber-400 text-sm text-center">
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                                <p className="text-white/70 text-sm text-center">
                                     Este processo leva aproximadamente 3-4 minutos. Você pode fechar esta janela.
                                 </p>
                             </div>
@@ -836,8 +836,8 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                     {step === "success" && (
                         <div className="w-full space-y-5">
                             <div className="flex justify-center">
-                                <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center">
-                                    <Check className="w-8 h-8 text-green-500" />
+                                <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
+                                    <Check className="w-8 h-8 text-white" />
                                 </div>
                             </div>
 
@@ -857,7 +857,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">Valor em BRL</span>
-                                    <span className="text-green-600 dark:text-green-400 font-medium">
+                                    <span className="text-white font-medium">
                                         {formatBRL(conversionDetail?.brlAmount || txData?.quote.brlToReceive || 0)}
                                     </span>
                                 </div>
@@ -879,15 +879,15 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 )}
                             </div>
 
-                            <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
-                                <p className="text-green-600 dark:text-green-400 text-sm text-center">
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                                <p className="text-white text-sm text-center">
                                     Valor creditado no seu saldo OTSEM!
                                 </p>
                             </div>
 
                             <Button
                                 onClick={handleClose}
-                                className="w-full bg-linear-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-semibold rounded-xl py-6"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6"
                             >
                                 Fechar
                             </Button>

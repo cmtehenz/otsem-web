@@ -130,8 +130,8 @@ export default function SendUsdtModal() {
 
                 {txResult ? (
                     <div className="space-y-4">
-                        <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl text-center">
-                            <p className="text-green-600 dark:text-green-400 font-semibold text-lg mb-1">
+                        <div className="p-4 bg-white/5 border border-white/10 rounded-xl text-center">
+                            <p className="text-white font-semibold text-lg mb-1">
                                 Transação enviada!
                             </p>
                             <p className="text-muted-foreground text-sm">
@@ -238,8 +238,8 @@ export default function SendUsdtModal() {
                             />
                         </div>
 
-                        <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl">
-                            <p className="text-amber-600 dark:text-amber-400 text-xs font-medium">
+                        <div className="p-3 bg-white/5 border border-white/10 rounded-xl">
+                            <p className="text-white/70 text-xs font-medium">
                                 Certifique-se de que o endereço de destino é da mesma rede da carteira.
                                 Envios para redes diferentes resultam em perda permanente.
                             </p>

@@ -534,42 +534,36 @@ export default function TransactionsPage() {
 
     // ── Icon helper ─────────────────────────────────────
 
-    function getIcon(tx: Transaction, meta: ReturnType<typeof getTransactionMeta>) {
+    function getIcon(_tx: Transaction, meta: ReturnType<typeof getTransactionMeta>) {
         const size = "w-[18px] h-[18px]";
 
         if (meta.isPending) {
             return (
-                <div className="w-9 h-9 rounded-full bg-amber-500/15 flex items-center justify-center">
-                    <ArrowRightLeft className={`${size} text-amber-500`} />
+                <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
+                    <ArrowRightLeft className={`${size} text-white/70`} />
                 </div>
             );
         }
 
         if (meta.isConversionTx) {
-            const color = meta.isSellConversion
-                ? "text-orange-500 dark:text-orange-400"
-                : "text-blue-500 dark:text-blue-400";
-            const bg = meta.isSellConversion
-                ? "bg-orange-500/15"
-                : "bg-blue-500/15";
             return (
-                <div className={`w-9 h-9 rounded-full ${bg} flex items-center justify-center`}>
-                    <ArrowRightLeft className={`${size} ${color}`} />
+                <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
+                    <ArrowRightLeft className={`${size} text-white`} />
                 </div>
             );
         }
 
         if (meta.isIncoming) {
             return (
-                <div className="w-9 h-9 rounded-full bg-green-500/15 flex items-center justify-center">
-                    <ArrowDownLeft className={`${size} text-green-500 dark:text-green-400`} />
+                <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
+                    <ArrowDownLeft className={`${size} text-white`} />
                 </div>
             );
         }
 
         return (
-            <div className="w-9 h-9 rounded-full bg-red-500/15 flex items-center justify-center">
-                <ArrowUpRight className={`${size} text-red-500 dark:text-red-400`} />
+            <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
+                <ArrowUpRight className={`${size} text-white`} />
             </div>
         );
     }
@@ -589,11 +583,11 @@ export default function TransactionsPage() {
         if (isPending) {
             return (
                 <div className="text-right">
-                    <span className="text-[14px] font-semibold text-amber-500 dark:text-amber-400">
+                    <span className="text-[14px] font-semibold text-white/50">
                         {isIncoming ? "+" : "-"}
                         {formatCurrency(Math.abs(amount))}
                     </span>
-                    <p className="text-[11px] font-medium text-amber-500/70 mt-0.5">
+                    <p className="text-[11px] font-medium text-white/40 mt-0.5">
                         Processando
                     </p>
                 </div>
@@ -604,11 +598,11 @@ export default function TransactionsPage() {
             if (isSellConversion) {
                 return (
                     <div className="text-right">
-                        <span className="text-[14px] font-semibold text-green-500 dark:text-green-400">
+                        <span className="text-[14px] font-semibold text-white">
                             +{formatCurrency(amount)}
                         </span>
                         {usdtAmountValue !== null && (
-                            <p className="text-[11px] font-medium text-red-400/80 mt-0.5">
+                            <p className="text-[11px] font-medium text-white/50 mt-0.5">
                                 -{formatUSD(usdtAmountValue)}
                             </p>
                         )}
@@ -617,11 +611,11 @@ export default function TransactionsPage() {
             }
             return (
                 <div className="text-right">
-                    <span className="text-[14px] font-semibold text-white/80">
+                    <span className="text-[14px] font-semibold text-white/70">
                         -{formatCurrency(amount)}
                     </span>
                     {usdtAmountValue !== null && (
-                        <p className="text-[11px] font-medium text-emerald-500 dark:text-emerald-400 mt-0.5">
+                        <p className="text-[11px] font-medium text-white/70 mt-0.5">
                             +{formatUSD(usdtAmountValue)}
                         </p>
                     )}
@@ -629,12 +623,8 @@ export default function TransactionsPage() {
             );
         }
 
-        const color = isIncoming
-            ? "text-green-500 dark:text-green-400"
-            : "text-red-500 dark:text-red-400";
-
         return (
-            <span className={`text-[14px] font-semibold ${color}`}>
+            <span className={`text-[14px] font-semibold ${isIncoming ? "text-white" : "text-white/70"}`}>
                 {isIncoming ? "+" : "-"}
                 {formatCurrency(Math.abs(amount))}
             </span>
@@ -786,12 +776,12 @@ export default function TransactionsPage() {
                                                                 {formatTime(tx.createdAt)}
                                                             </span>
                                                             {meta.isPending && (
-                                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-500 text-[10px] font-medium">
+                                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-white/10 text-white/60 text-[10px] font-medium">
                                                                     Processando
                                                                 </span>
                                                             )}
                                                             {tx.status === "FAILED" && (
-                                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-red-500/15 text-red-500 text-[10px] font-medium">
+                                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-white/10 text-white/60 text-[10px] font-medium">
                                                                     Falhou
                                                                 </span>
                                                             )}

@@ -271,20 +271,20 @@ export default function AffiliatesPage() {
                 {/* Total earnings */}
                 <div className="fintech-glass-card rounded-[20px] p-5 !p-4 !rounded-[20px]">
                     <div className="flex items-center justify-between mb-2">
-                        <div className="w-8 h-8 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center">
-                            <DollarSign className="w-4 h-4 text-emerald-600 dark:text-emerald-400" strokeWidth={2} />
+                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                            <DollarSign className="w-4 h-4 text-white" strokeWidth={2} />
                         </div>
                     </div>
-                    <p className="text-[20px] font-bold text-emerald-600 dark:text-emerald-400">
+                    <p className="text-[20px] font-bold text-white">
                         {formatCurrency(stats.totalEarnings)}
                     </p>
                     {(stats.totalEarningsUsdt ?? 0) > 0 && (
-                        <p className="text-[12px] text-emerald-600 dark:text-emerald-400 font-medium">
+                        <p className="text-[12px] text-white/70 font-medium">
                             {formatUsdt(stats.totalEarningsUsdt)} USDT
                         </p>
                     )}
                     <p className="text-[11px] text-white/60 mt-0.5">Total ganho</p>
-                    <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">
+                    <p className="text-[11px] text-white/70 font-medium mt-0.5">
                         {stats.commissionRate ?? 0}% comissão
                     </p>
                 </div>
@@ -292,15 +292,15 @@ export default function AffiliatesPage() {
                 {/* Pending */}
                 <div className="fintech-glass-card rounded-[20px] p-5 !p-4 !rounded-[20px]">
                     <div className="flex items-center justify-between mb-2">
-                        <div className="w-8 h-8 rounded-full bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center">
-                            <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400" strokeWidth={2} />
+                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                            <Clock className="w-4 h-4 text-white" strokeWidth={2} />
                         </div>
                     </div>
-                    <p className="text-[20px] font-bold text-amber-600 dark:text-amber-400">
+                    <p className="text-[20px] font-bold text-white/70">
                         {formatCurrency(stats.pendingEarnings)}
                     </p>
                     {(stats.pendingEarningsUsdt ?? 0) > 0 && (
-                        <p className="text-[12px] text-amber-600 dark:text-amber-400 font-medium">
+                        <p className="text-[12px] text-white/60 font-medium">
                             {formatUsdt(stats.pendingEarningsUsdt)} USDT
                         </p>
                     )}
@@ -311,11 +311,11 @@ export default function AffiliatesPage() {
                 {/* Paid */}
                 <div className="fintech-glass-card rounded-[20px] p-5 !p-4 !rounded-[20px]">
                     <div className="flex items-center justify-between mb-2">
-                        <div className="w-8 h-8 rounded-full bg-purple-500/10 dark:bg-purple-500/20 flex items-center justify-center">
-                            <TrendingUp className="w-4 h-4 text-purple-600 dark:text-purple-400" strokeWidth={2} />
+                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                            <TrendingUp className="w-4 h-4 text-white" strokeWidth={2} />
                         </div>
                     </div>
-                    <p className="text-[20px] font-bold text-purple-600 dark:text-purple-400">
+                    <p className="text-[20px] font-bold text-white">
                         {formatCurrency(stats.paidEarnings)}
                     </p>
                     <p className="text-[11px] text-white/60 mt-0.5">Já recebido</p>
@@ -376,7 +376,7 @@ export default function AffiliatesPage() {
                                         </div>
                                     </div>
                                     <div className="text-right shrink-0 pl-3">
-                                        <p className="text-[14px] font-semibold text-emerald-600 dark:text-emerald-400">
+                                        <p className="text-[14px] font-semibold text-white">
                                             {formatCurrency(referral.commissionEarned)}
                                         </p>
                                         <p className="text-[11px] text-white/60">
@@ -389,8 +389,8 @@ export default function AffiliatesPage() {
                     )
                 ) : commissions.length === 0 ? (
                     <div className="py-10 text-center">
-                        <div className="w-14 h-14 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center mx-auto mb-3">
-                            <DollarSign className="w-6 h-6 text-emerald-600 dark:text-emerald-400" strokeWidth={1.8} />
+                        <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3">
+                            <DollarSign className="w-6 h-6 text-white" strokeWidth={1.8} />
                         </div>
                         <p className="text-[14px] font-medium text-white mb-1">Nenhuma comissão ainda</p>
                         <p className="text-[13px] text-white/60">Suas comissões aparecerão aqui.</p>
@@ -403,11 +403,7 @@ export default function AffiliatesPage() {
                                     <div className="flex items-center gap-1.5">
                                         <p className="text-[14px] font-semibold text-white truncate">{commission.referralName}</p>
                                         {commission.conversionType && (
-                                            <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold ${
-                                                commission.conversionType === "BUY"
-                                                    ? "bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400"
-                                                    : "bg-orange-500/10 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400"
-                                            }`}>
+                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-white/10 text-white/70">
                                                 {commission.conversionType === "BUY" ? "Compra" : "Venda"}
                                             </span>
                                         )}
@@ -421,14 +417,14 @@ export default function AffiliatesPage() {
                                     <span
                                         className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${
                                             commission.status === "paid"
-                                                ? "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400"
-                                                : "bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400"
+                                                ? "bg-white/10 text-white/80"
+                                                : "bg-white/10 text-white/60"
                                         }`}
                                     >
                                         {commission.status === "paid" ? "Pago" : "Pendente"}
                                     </span>
                                     <div className="text-right">
-                                        <span className="text-[14px] font-semibold text-emerald-600 dark:text-emerald-400 block">
+                                        <span className="text-[14px] font-semibold text-white block">
                                             {formatCurrency(commission.amount)}
                                         </span>
                                         {(commission.amountUsdt ?? 0) > 0 && (

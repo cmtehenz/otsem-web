@@ -266,7 +266,7 @@ export function WithdrawModal() {
                                                     {KEY_TYPE_LABELS[key.keyType] || key.keyType}
                                                 </span>
                                                 {key.validated && (
-                                                    <span className="flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium rounded-full bg-green-500/20 text-green-600 dark:text-green-400">
+                                                    <span className="flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium rounded-full bg-white/10 text-white/70">
                                                         <CheckCircle2 className="w-3 h-3" />
                                                     </span>
                                                 )}
@@ -344,7 +344,7 @@ export function WithdrawModal() {
                             </div>
 
                             {error && (
-                                <div className="flex items-center gap-2 text-red-500 text-sm bg-red-500/10 rounded-lg px-3 py-2">
+                                <div className="flex items-center gap-2 text-white/70 text-sm bg-white/10 rounded-lg px-3 py-2">
                                     <AlertCircle className="w-4 h-4 shrink-0" />
                                     <span>{error}</span>
                                 </div>
@@ -398,15 +398,15 @@ export function WithdrawModal() {
 
                             {error && (
                                 isLimitExceededError(error) ? (
-                                    <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
-                                        <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                                    <div className="flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                                        <AlertTriangle className="w-5 h-5 text-white/70 flex-shrink-0 mt-0.5" />
                                         <div>
-                                            <p className="text-sm text-amber-800 dark:text-amber-200 font-medium">{error}</p>
+                                            <p className="text-sm text-white/80 font-medium">{error}</p>
                                             <Link href="/customer/kyc" onClick={handleClose}>
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    className="mt-2 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40"
+                                                    className="mt-2 border-white/20 text-white/70 hover:bg-white/10"
                                                 >
                                                     Ver meus limites
                                                 </Button>
@@ -414,7 +414,7 @@ export function WithdrawModal() {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="flex items-center gap-2 text-red-500 text-sm bg-red-500/10 rounded-lg px-3 py-2">
+                                    <div className="flex items-center gap-2 text-white/70 text-sm bg-white/10 rounded-lg px-3 py-2">
                                         <AlertCircle className="w-4 h-4 shrink-0" />
                                         <span>{error}</span>
                                     </div>
@@ -424,7 +424,7 @@ export function WithdrawModal() {
                             <Button
                                 onClick={handleSendPix}
                                 disabled={loading || isLimitExceededError(error ?? "")}
-                                className="w-full bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-green-500/25"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50 shadow-lg shadow-[#6F00FF]/25"
                             >
                                 {loading ? (
                                     <>
@@ -444,13 +444,13 @@ export function WithdrawModal() {
                     {step === "success" && txResult && (
                         <div className="w-full space-y-5">
                             <div className="flex justify-center">
-                                <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center">
-                                    <CheckCircle2 className="w-10 h-10 text-green-500 dark:text-green-400" />
+                                <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center">
+                                    <CheckCircle2 className="w-10 h-10 text-white" />
                                 </div>
                             </div>
 
                             <div className="text-center">
-                                <p className="text-3xl font-bold bg-linear-to-r from-green-500 to-emerald-500 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">
+                                <p className="text-3xl font-bold bg-linear-to-r from-[#6F00FF] to-[#8B2FFF] bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                                 <p className="text-muted-foreground text-sm mt-1">
@@ -461,7 +461,7 @@ export function WithdrawModal() {
                             <div className="bg-muted border border-border rounded-xl p-4 space-y-2">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">Status</span>
-                                    <span className="text-amber-500">Processando</span>
+                                    <span className="text-white/60">Processando</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">ID</span>

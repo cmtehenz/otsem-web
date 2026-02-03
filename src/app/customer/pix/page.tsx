@@ -117,21 +117,8 @@ function KeyTypeIconComponent({ type, size = "md" }: { type: string; size?: "sm"
   }
 }
 
-function getKeyIconColor(type: string) {
-  switch (type) {
-    case "CPF":
-      return "bg-blue-500/15 text-blue-600 dark:text-blue-400";
-    case "CNPJ":
-      return "bg-indigo-500/15 text-indigo-600 dark:text-indigo-400";
-    case "EMAIL":
-      return "bg-purple-500/15 text-purple-600 dark:text-purple-400";
-    case "PHONE":
-      return "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400";
-    case "RANDOM":
-      return "bg-amber-500/15 text-amber-600 dark:text-amber-400";
-    default:
-      return "bg-gray-500/15 text-gray-600 dark:text-gray-400";
-  }
+function getKeyIconColor(_type: string) {
+  return "bg-white/10 text-white";
 }
 
 const KEY_TYPES = [
@@ -147,7 +134,7 @@ const KEY_TYPES = [
 function StatusBadge({ pix }: { pix: PixKey }) {
   if (pix.validated) {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold rounded-full bg-white/10 text-white/80 border border-white/15">
         <CheckCircle2 className="w-3 h-3" />
         Validada
       </span>
@@ -155,14 +142,14 @@ function StatusBadge({ pix }: { pix: PixKey }) {
   }
   if (pix.validationAttempted && pix.validationError) {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold rounded-full bg-red-500/15 text-red-600 dark:text-red-400 border border-red-500/20">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold rounded-full bg-white/10 text-white/60 border border-white/15">
         <XCircle className="w-3 h-3" />
         Falhou
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold rounded-full bg-white/10 text-white/60 border border-white/15">
       <Clock className="w-3 h-3" />
       Pendente
     </span>
@@ -439,12 +426,12 @@ export default function CustomerPixPage() {
                     Criada em {formatDate(pix.createdAt)}
                   </span>
                   {pix.validated && pix.validatedAt && (
-                    <span className="text-[11px] text-emerald-500/70">
+                    <span className="text-[11px] text-white/50">
                       &middot; Validada {formatDate(pix.validatedAt)}
                     </span>
                   )}
                   {pix.validationAttempted && pix.validationError && (
-                    <span className="text-[11px] text-red-500/70">
+                    <span className="text-[11px] text-white/40">
                       &middot; {pix.validationError}
                     </span>
                   )}
@@ -606,8 +593,8 @@ function AddKeyModal({
 
           {/* Random key notice */}
           {newType === "RANDOM" && (
-            <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/15">
-              <AlertCircle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-white/5 border border-white/10">
+              <AlertCircle className="w-4 h-4 text-white/70 shrink-0 mt-0.5" />
               <div>
                 <p className="text-[13px] font-semibold text-white">
                   Chave Aleat&oacute;ria

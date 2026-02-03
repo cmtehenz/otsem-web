@@ -31,8 +31,8 @@ type WalletType = {
 type NetworkType = "SOLANA" | "TRON";
 
 const NETWORKS: { id: NetworkType; name: string; icon: string; color: string; badge: string }[] = [
-    { id: "SOLANA", name: "Solana", icon: "◎", color: "text-green-500", badge: "bg-green-500/12 text-green-500" },
-    { id: "TRON", name: "Tron (TRC20)", icon: "◈", color: "text-red-500", badge: "bg-red-500/12 text-red-500" },
+    { id: "SOLANA", name: "Solana", icon: "◎", color: "text-white", badge: "bg-white/10 text-white" },
+    { id: "TRON", name: "Tron (TRC20)", icon: "◈", color: "text-white", badge: "bg-white/10 text-white" },
 ];
 
 function getErrorMessage(err: unknown, fallback: string): string {
@@ -232,7 +232,7 @@ export default function WalletPage() {
             {wallets.length > 0 && (
                 <motion.div variants={fadeUp}>
                     <div className="relative overflow-hidden rounded-[20px] p-5">
-                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/80 via-blue-600/80 to-purple-600/80" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#8B2FFF]/80 via-[#6F00FF]/80 to-[#5800CC]/80" />
                         <div className="absolute -top-16 -right-16 w-32 h-32 rounded-full bg-white/10 blur-2xl" />
                         <div className="relative">
                             <p className="text-white/60 text-[12px] font-medium mb-1">Total USDT</p>
@@ -361,10 +361,10 @@ export default function WalletPage() {
 
             {/* Warning card */}
             <motion.div variants={fadeUp}>
-                <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-500/8 dark:bg-amber-500/10 border border-amber-500/15 dark:border-amber-500/20">
-                    <Shield className="w-4.5 h-4.5 text-amber-500 shrink-0 mt-0.5" strokeWidth={2} />
+                <div className="flex items-start gap-3 p-4 rounded-2xl bg-white/5 border border-white/10">
+                    <Shield className="w-4.5 h-4.5 text-white/70 shrink-0 mt-0.5" strokeWidth={2} />
                     <div>
-                        <p className="text-amber-600 dark:text-amber-400 font-semibold text-[13px]">Importante</p>
+                        <p className="text-white font-semibold text-[13px]">Importante</p>
                         <p className="text-white/60 text-[12px] mt-0.5 leading-relaxed">
                             Envie <strong className="text-white">apenas USDT</strong> na rede correta. Envios em redes diferentes serão perdidos.
                         </p>
@@ -493,8 +493,8 @@ export default function WalletPage() {
                         <BottomSheetTitle className="text-white text-lg">Carteira Criada!</BottomSheetTitle>
                     </BottomSheetHeader>
                     <div className="space-y-4">
-                        <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl">
-                            <p className="text-amber-600 dark:text-amber-400 text-[13px] font-semibold mb-0.5">Atenção!</p>
+                        <div className="p-3 bg-white/5 border border-white/10 rounded-2xl">
+                            <p className="text-white text-[13px] font-semibold mb-0.5">Atenção!</p>
                             <p className="text-white/60 text-[12px]">
                                 Salve sua chave privada. Ela <strong className="text-white">não será armazenada</strong>.
                             </p>

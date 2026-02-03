@@ -353,8 +353,8 @@ export function DepositModal() {
                     /* ── Error ── */
                     ) : step === "qrcode" && error ? (
                         <div className="flex flex-col items-center py-8">
-                            <div className="bg-red-500/10 rounded-full p-4 mb-4">
-                                <QrCode className="h-12 w-12 text-red-400/60" />
+                            <div className="bg-white/10 rounded-full p-4 mb-4">
+                                <QrCode className="h-12 w-12 text-white/40" />
                             </div>
                             <p className="text-muted-foreground text-sm text-center mb-4">{error}</p>
                             <button
@@ -438,7 +438,7 @@ export function DepositModal() {
                             <div className="flex justify-center">
                                 <div className="w-20 h-20 rounded-full border-4 border-[#6F00FF]/20 flex items-center justify-center">
                                     {depositStatus === "CONFIRMED" ? (
-                                        <Check className="w-10 h-10 text-green-500" />
+                                        <Check className="w-10 h-10 text-white" />
                                     ) : (
                                         <Loader2 className="w-10 h-10 text-[#6F00FF] animate-spin" />
                                     )}
@@ -465,7 +465,7 @@ export function DepositModal() {
                                         <div key={status} className="flex items-center gap-3">
                                             <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                                                 isCompleted
-                                                    ? "bg-green-500"
+                                                    ? "bg-[#6F00FF]"
                                                     : isCurrent
                                                         ? "bg-[#6F00FF] animate-pulse"
                                                         : "bg-muted-foreground/20"
@@ -517,14 +517,14 @@ export function DepositModal() {
                     ) : step === "success" ? (
                         <div className="w-full space-y-5">
                             <div className="flex justify-center">
-                                <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center">
-                                    <CheckCircle2 className="w-10 h-10 text-green-500 dark:text-green-400" />
+                                <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center">
+                                    <CheckCircle2 className="w-10 h-10 text-white" />
                                 </div>
                             </div>
 
                             <div className="text-center">
                                 <p className="text-muted-foreground text-sm mb-1">Depósito confirmado</p>
-                                <p className="text-3xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
+                                <p className="text-3xl font-bold bg-gradient-to-r from-[#6F00FF] to-[#8B2FFF] bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                                 <p className="text-muted-foreground text-sm mt-2">
