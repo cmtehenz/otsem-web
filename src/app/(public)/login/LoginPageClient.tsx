@@ -40,7 +40,7 @@ function safeNext(nextParam: string | null | undefined, fallback = '/customer/da
 export default function LoginPageClient(): React.JSX.Element {
     return (
         <Suspense fallback={
-            <div className="fixed inset-0 grid place-items-center fintech-bg-container text-sm text-white/50">
+            <div className="fixed inset-0 grid place-items-center overflow-hidden fintech-bg-container text-sm text-white/50" style={{ overscrollBehavior: 'none' }}>
                 ...
             </div>
         }>
@@ -138,7 +138,7 @@ function LoginPageInner(): React.JSX.Element {
     // Show 2FA verification if required
     if (requires2FA) {
         return (
-            <div className="fixed inset-0 overflow-y-auto overflow-x-hidden fintech-bg-container">
+            <div className="fixed inset-0 overflow-hidden fintech-bg-container" style={{ overscrollBehavior: 'none', touchAction: 'pan-x' }}>
                 <div className="fixed top-6 left-6 z-50">
                     <motion.button
                         onClick={handleCancel2FA}
@@ -163,7 +163,7 @@ function LoginPageInner(): React.JSX.Element {
     }
 
     return (
-        <div className="fixed inset-0 overflow-y-auto overflow-x-hidden fintech-bg-container">
+        <div className="fixed inset-0 overflow-hidden fintech-bg-container" style={{ overscrollBehavior: 'none', touchAction: 'pan-x' }}>
             <div className="fixed top-6 left-6 z-50">
                 <Link href="/">
                     <motion.button
@@ -183,7 +183,7 @@ function LoginPageInner(): React.JSX.Element {
                 </div>
             </div>
 
-            <div className="flex min-h-full w-full items-center justify-center px-4 py-24 lg:px-8 xl:px-16">
+            <div className="flex h-full w-full items-center justify-center px-4 py-24 lg:px-8 xl:px-16">
                 <div className="flex w-full max-w-6xl items-center gap-16">
                     <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:gap-8">
                         <div>
