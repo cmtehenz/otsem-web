@@ -150,8 +150,8 @@
         scroll-behavior: smooth;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        /* Match purple theme — prevents white flash behind status bar */
-        background-color: #7c3aed;
+        /* Black fallback — matches gradient bottom so bottom safe area is dark */
+        background-color: #000000;
         min-height: 100dvh;
         margin: 0;
         padding: 0;
@@ -196,12 +196,27 @@
 
 /* ── Prevent white flash in PWA standalone mode ──── */
 @media (display-mode: standalone) {
-    html,
-    body {
-        background: linear-gradient(180deg, #7c3aed 0%, #581c87 100%);
+    html {
+        /* Must match fintech-bg-layer gradient so safe areas blend seamlessly */
+        background: linear-gradient(
+            180deg,
+            #7B22FF 0%,
+            #6A10F0 8%,
+            #5500D0 16%,
+            #4200A8 25%,
+            #320080 34%,
+            #240060 44%,
+            #180040 54%,
+            #0F0028 65%,
+            #080014 78%,
+            #030008 90%,
+            #000000 100%
+        );
     }
 
     body {
+        /* Keep transparent so fintech-bg-layer (z-index: -1) shows through */
+        background: transparent;
         overflow-x: hidden;
     }
 }
