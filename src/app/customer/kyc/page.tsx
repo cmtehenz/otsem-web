@@ -282,7 +282,7 @@ export default function CustomerKycPage(): React.JSX.Element {
   /* ---- loading state ---- */
   if (loading) {
     return (
-      <div className="flex h-[80vh] flex-col items-center justify-center gap-3">
+      <div className="flex h-[80dvh] flex-col items-center justify-center gap-3">
         <Loader2 className="h-8 w-8 animate-spin text-[#6F00FF]" />
         <p className="text-[13px] text-white/60">Carregando...</p>
       </div>

@@ -147,12 +147,11 @@
     }
     
     html {
-        scroll-behavior: smooth;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         /* Black fallback — matches gradient bottom so bottom safe area is dark */
         background-color: #000000;
-        min-height: 100dvh;
+        height: 100%;
         margin: 0;
         padding: 0;
         overscroll-behavior: none;
@@ -167,7 +166,7 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
-        min-height: 100dvh;
+        height: 100%;
         margin: 0;
         padding: 0;
         overscroll-behavior: none;
@@ -645,10 +644,10 @@
         height: calc(100px + env(safe-area-inset-bottom));
     }
 
-    /* ── Premium header — airy safe area with extra top breathing room ── */
+    /* ── Premium header — safe area + compact breathing room ── */
     .pwa-header-premium {
-        padding-top: calc(env(safe-area-inset-top, 0px) + 2rem);
-        padding-bottom: 1.5rem;
+        padding-top: calc(env(safe-area-inset-top, 0px) + 0.5rem);
+        padding-bottom: 0.5rem;
     }
 
     /* ── Fullscreen edge-to-edge gradient background ─── */

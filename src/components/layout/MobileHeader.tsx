@@ -25,12 +25,12 @@ export function MobileHeader({ customerName }: { customerName?: string }) {
 
     return (
         <motion.header
-            className="sticky top-0 z-40 flex-shrink-0"
+            className="relative z-10"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
         >
-            {/* Premium safe area container — gradient flows through, pt handles notch + 2rem */}
+            {/* Safe area container — gradient flows through, pt handles notch */}
             <div className="pwa-header-premium">
                 <div className="flex items-center justify-between px-5">
                     <div className="flex items-center gap-3.5">

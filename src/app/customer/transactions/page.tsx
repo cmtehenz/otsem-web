@@ -645,7 +645,7 @@ export default function TransactionsPage() {
 
     if (loading && allTransactions.length === 0) {
         return (
-            <div className="flex h-[80vh] flex-col items-center justify-center px-4">
+            <div className="flex h-[80dvh] flex-col items-center justify-center px-4">
                 <div className="relative">
                     <div className="absolute inset-0 bg-[#6F00FF]/30 rounded-full blur-xl animate-pulse" />
                     <div className="relative">
