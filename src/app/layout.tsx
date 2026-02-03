@@ -17,7 +17,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 
 export const metadata: Metadata = {
-    title: "OtsemPay • BRL ↔ USDT",
+    title: "Otsem Pay | BRL ↔ USDT",
     description: "Pagamentos e conversão BRL ↔ USDT com transparência.",
     manifest: "/manifest.json",
     icons: {
