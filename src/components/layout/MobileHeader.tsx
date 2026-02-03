@@ -44,7 +44,7 @@ export function MobileHeader({ customerName }: { customerName?: string }) {
                             />
                         </Link>
                         <div className="flex flex-col">
-                            <span className="text-[17px] font-semibold text-white/60 leading-tight">
+                            <span className="text-[17px] font-semibold text-white leading-tight">
                                 {getGreeting()}
                             </span>
                             <span className="text-[22px] font-bold text-white leading-tight tracking-tight">
@@ -61,7 +61,7 @@ export function MobileHeader({ customerName }: { customerName?: string }) {
                             transition={{ type: "spring", stiffness: 500, damping: 25 }}
                             aria-label="Notificações"
                         >
-                            <Bell className="w-[20px] h-[20px] text-white/50" strokeWidth={1.8} />
+                            <Bell className="w-[20px] h-[20px] text-white/90" strokeWidth={1.8} />
                         </motion.button>
                         <motion.div
                             whileTap={{ scale: 0.97 }}
@@ -72,7 +72,7 @@ export function MobileHeader({ customerName }: { customerName?: string }) {
                                 className="flex items-center justify-center w-10 h-10 rounded-full bg-white/[0.08] border border-white/[0.08] active:bg-white/15 transition-colors"
                                 style={{ transition: "background 0.25s cubic-bezier(0.32, 0.72, 0, 1)" }}
                             >
-                                <User className="w-[20px] h-[20px] text-white/50" strokeWidth={1.8} />
+                                <User className="w-[20px] h-[20px] text-white/90" strokeWidth={1.8} />
                             </Link>
                         </motion.div>
                     </div>

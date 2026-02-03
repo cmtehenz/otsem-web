@@ -149,7 +149,7 @@ function QuickAction({
             <div className="flex items-center justify-center w-12 h-12 rounded-full fintech-glass-btn active:bg-white/20 transition-colors">
                 <Icon className="w-[20px] h-[20px] text-[#FFFFFF]" strokeWidth={1.8} />
             </div>
-            <span className="text-[12px] font-medium text-[#94A3B8]">{label}</span>
+            <span className="text-[12px] font-medium text-white">{label}</span>
         </motion.button>
     );
 }
@@ -217,7 +217,7 @@ function TransactionRow({ tx }: { tx: Transaction }) {
 
             <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-medium text-white truncate">{displayName}</p>
-                <p className="text-[11px] text-white/40">{formatDate(tx.createdAt)}</p>
+                <p className="text-[11px] text-white/80">{formatDate(tx.createdAt)}</p>
             </div>
 
             <div className="text-right">
@@ -401,7 +401,7 @@ export default function Dashboard() {
             {/* ── Balance Section ── */}
             <motion.div variants={fadeUp} className="text-center pt-4">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                    <p className="text-[14px] font-medium text-[#94A3B8]">Saldo total</p>
+                    <p className="text-[14px] font-medium text-white">Saldo total</p>
                     <motion.button
                         onClick={() => setBalanceHidden(!balanceHidden)}
                         className="p-2.5 -m-2.5 rounded-full active:bg-white/10 transition-colors"
@@ -410,9 +410,9 @@ export default function Dashboard() {
                         aria-label={balanceHidden ? "Mostrar saldo" : "Ocultar saldo"}
                     >
                         {balanceHidden ? (
-                            <EyeOff className="w-4 h-4 text-[#94A3B8]" />
+                            <EyeOff className="w-4 h-4 text-white/80" />
                         ) : (
-                            <Eye className="w-4 h-4 text-[#94A3B8]" />
+                            <Eye className="w-4 h-4 text-white/80" />
                         )}
                     </motion.button>
                 </div>
@@ -435,26 +435,26 @@ export default function Dashboard() {
                 <div className="flex-1 rounded-2xl fintech-glass-card px-4 py-4">
                     <div className="flex items-center gap-1.5 mb-2">
                         <span className="text-[15px]">🇧🇷</span>
-                        <span className="text-[#94A3B8] text-[12px] font-medium">BRL</span>
+                        <span className="text-white text-[12px] font-medium">BRL</span>
                     </div>
                     <p className="text-[#FFFFFF] font-semibold text-[22px] leading-tight">
                         {balanceHidden ? "••••" : formatCurrency(saldoBRL)}
                     </p>
-                    <p className="text-[#94A3B8] text-[11px] mt-1">Real Brasileiro</p>
+                    <p className="text-white text-[11px] mt-1">Real Brasileiro</p>
                 </div>
 
                 {/* USDT Card (with rate integrated) */}
                 <div className="flex-1 rounded-2xl fintech-glass-card px-4 py-4">
                     <div className="flex items-center gap-1.5 mb-2">
                         <Image src="/images/usdt-icon.svg" alt="USDT" width={20} height={20} />
-                        <span className="text-[#94A3B8] text-[12px] font-medium">USDT</span>
+                        <span className="text-white text-[12px] font-medium">USDT</span>
                     </div>
                     <p className="text-[#FFFFFF] font-semibold text-[22px] leading-tight">
                         {balanceHidden ? "••••" : usdtBalanceLoading ? "..." : formatUSD(saldoUSDT)}
                     </p>
                     <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-white/[0.06]">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="text-[11px] text-[#94A3B8]">
+                        <span className="text-[11px] text-white">
                             1 USDT = {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 2)}
                         </span>
                     </div>
@@ -508,9 +508,9 @@ export default function Dashboard() {
                     ) : (
                         <div className="flex flex-col items-center py-8">
                             <div className="w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center mb-2">
-                                <ArrowDownLeft className="w-4.5 h-4.5 text-[#94A3B8]" />
+                                <ArrowDownLeft className="w-4.5 h-4.5 text-white/80" />
                             </div>
-                            <p className="text-[13px] text-[#94A3B8]">Nenhuma transação ainda</p>
+                            <p className="text-[13px] text-white">Nenhuma transação ainda</p>
                         </div>
                     )}
                 </div>

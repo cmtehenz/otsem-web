@@ -180,7 +180,7 @@ export function BottomNav() {
                                             className={`w-[22px] h-[22px] transition-all duration-300 ${
                                                 isActive
                                                     ? "text-white"
-                                                    : "text-white/35"
+                                                    : "text-white/70"
                                             }`}
                                             strokeWidth={isActive ? 2.2 : 1.6}
                                         />
@@ -188,7 +188,7 @@ export function BottomNav() {
                                             className={`text-[11px] leading-tight tracking-tight transition-all duration-300 ${
                                                 isActive
                                                     ? "text-white font-semibold"
-                                                    : "text-white/35 font-medium"
+                                                    : "text-white/70 font-medium"
                                             }`}
                                         >
                                             {tab.label}
