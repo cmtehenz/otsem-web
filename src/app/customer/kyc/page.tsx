@@ -65,11 +65,11 @@ const KYC_LEVELS = {
       subtitle: "Básico",
       limit: "R$ 30.000",
       icon: User,
-      accent: "amber",
-      ring: "ring-amber-400/40",
-      badge: "bg-amber-500/15 text-amber-600 dark:text-amber-400",
-      iconBg: "bg-gradient-to-br from-amber-400 to-amber-600",
-      barColor: "bg-amber-500",
+      accent: "purple",
+      ring: "ring-white/20",
+      badge: "bg-white/10 text-white",
+      iconBg: "bg-gradient-to-br from-[#8B2FFF] to-[#6F00FF]",
+      barColor: "bg-[#6F00FF]",
       requirements: [
         "CPF válido",
         "Cadastro completo",
@@ -82,11 +82,11 @@ const KYC_LEVELS = {
       subtitle: "Intermediário",
       limit: "R$ 100.000",
       icon: Star,
-      accent: "blue",
-      ring: "ring-blue-400/40",
-      badge: "bg-blue-500/15 text-blue-600 dark:text-blue-400",
-      iconBg: "bg-gradient-to-br from-blue-400 to-blue-600",
-      barColor: "bg-blue-500",
+      accent: "purple",
+      ring: "ring-[#6F00FF]/40",
+      badge: "bg-white/10 text-white",
+      iconBg: "bg-gradient-to-br from-[#9B4DFF] to-[#8B2FFF]",
+      barColor: "bg-[#8B2FFF]",
       requirements: [
         "Comprovante de residência",
         "Comprovante de renda",
@@ -99,11 +99,11 @@ const KYC_LEVELS = {
       subtitle: "Premium",
       limit: "Ilimitado",
       icon: Crown,
-      accent: "emerald",
-      ring: "ring-emerald-400/40",
-      badge: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
-      iconBg: "bg-gradient-to-br from-emerald-400 to-emerald-600",
-      barColor: "bg-emerald-500",
+      accent: "purple",
+      ring: "ring-[#8B2FFF]/40",
+      badge: "bg-white/10 text-white",
+      iconBg: "bg-gradient-to-br from-[#6F00FF] to-[#5800CC]",
+      barColor: "bg-[#9B4DFF]",
       requirements: [
         "Declaração de IR",
         "Análise patrimonial",
@@ -118,11 +118,11 @@ const KYC_LEVELS = {
       subtitle: "Básico",
       limit: "R$ 50.000",
       icon: Building2,
-      accent: "amber",
-      ring: "ring-amber-400/40",
-      badge: "bg-amber-500/15 text-amber-600 dark:text-amber-400",
-      iconBg: "bg-gradient-to-br from-amber-400 to-amber-600",
-      barColor: "bg-amber-500",
+      accent: "purple",
+      ring: "ring-white/20",
+      badge: "bg-white/10 text-white",
+      iconBg: "bg-gradient-to-br from-[#8B2FFF] to-[#6F00FF]",
+      barColor: "bg-[#6F00FF]",
       requirements: [
         "CNPJ válido",
         "Cadastro completo",
@@ -135,11 +135,11 @@ const KYC_LEVELS = {
       subtitle: "Intermediário",
       limit: "R$ 200.000",
       icon: Star,
-      accent: "blue",
-      ring: "ring-blue-400/40",
-      badge: "bg-blue-500/15 text-blue-600 dark:text-blue-400",
-      iconBg: "bg-gradient-to-br from-blue-400 to-blue-600",
-      barColor: "bg-blue-500",
+      accent: "purple",
+      ring: "ring-[#6F00FF]/40",
+      badge: "bg-white/10 text-white",
+      iconBg: "bg-gradient-to-br from-[#9B4DFF] to-[#8B2FFF]",
+      barColor: "bg-[#8B2FFF]",
       requirements: [
         "Balanço patrimonial",
         "DRE dos últimos 12 meses",
@@ -152,11 +152,11 @@ const KYC_LEVELS = {
       subtitle: "Premium",
       limit: "Ilimitado",
       icon: Crown,
-      accent: "emerald",
-      ring: "ring-emerald-400/40",
-      badge: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
-      iconBg: "bg-gradient-to-br from-emerald-400 to-emerald-600",
-      barColor: "bg-emerald-500",
+      accent: "purple",
+      ring: "ring-[#8B2FFF]/40",
+      badge: "bg-white/10 text-white",
+      iconBg: "bg-gradient-to-br from-[#6F00FF] to-[#5800CC]",
+      barColor: "bg-[#9B4DFF]",
       requirements: [
         "Auditoria financeira",
         "Faturamento comprovado",
@@ -404,16 +404,16 @@ export default function CustomerKycPage(): React.JSX.Element {
             initial="hidden"
             animate="show"
             exit={{ opacity: 0, y: -8 }}
-            className="fintech-glass-card rounded-[20px] p-5 flex items-start gap-3 border-amber-300/60 bg-amber-50/80 dark:border-amber-700/40 dark:bg-amber-950/30"
+            className="fintech-glass-card rounded-[20px] p-5 flex items-start gap-3 border-white/10"
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/15">
-              <Clock className="h-[18px] w-[18px] text-amber-600 dark:text-amber-400" />
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10">
+              <Clock className="h-[18px] w-[18px] text-white" />
             </div>
             <div className="min-w-0">
-              <p className="text-[14px] font-bold text-amber-900 dark:text-amber-300">
+              <p className="text-[14px] font-bold text-white">
                 Solicitação em Análise
               </p>
-              <p className="mt-0.5 text-[12px] leading-relaxed text-amber-700 dark:text-amber-400/80">
+              <p className="mt-0.5 text-[12px] leading-relaxed text-white/60">
                 Sua solicitação de upgrade está sendo analisada. Resposta em até
                 24h úteis.
               </p>
@@ -428,30 +428,30 @@ export default function CustomerKycPage(): React.JSX.Element {
             initial="hidden"
             animate="show"
             exit={{ opacity: 0, y: -8 }}
-            className="fintech-glass-card rounded-[20px] p-5 space-y-3 border-red-300/60 bg-red-50/80 dark:border-red-700/40 dark:bg-red-950/30"
+            className="fintech-glass-card rounded-[20px] p-5 space-y-3 border-white/10"
           >
             <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-500/15">
-                <XCircle className="h-[18px] w-[18px] text-red-600 dark:text-red-400" />
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10">
+                <XCircle className="h-[18px] w-[18px] text-white/70" />
               </div>
               <div className="min-w-0">
-                <p className="text-[14px] font-bold text-red-900 dark:text-red-300">
+                <p className="text-[14px] font-bold text-white">
                   Solicitação Rejeitada –{" "}
                   {levels.find((l) => l.level === latestRejected.targetLevel)
                     ?.name || latestRejected.targetLevel}
                 </p>
-                <p className="mt-0.5 text-[12px] text-red-700 dark:text-red-400/80">
+                <p className="mt-0.5 text-[12px] text-white/60">
                   Você pode enviar uma nova solicitação com os documentos
                   corretos.
                 </p>
               </div>
             </div>
             {latestRejected.adminNotes && (
-              <div className="rounded-2xl border border-red-200/60 bg-white/60 px-4 py-3 dark:border-red-800/40 dark:bg-red-900/20">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-red-500 dark:text-red-400">
+              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-white/60">
                   Motivo
                 </p>
-                <p className="mt-1 text-[13px] leading-relaxed text-red-900 dark:text-red-300">
+                <p className="mt-1 text-[13px] leading-relaxed text-white/80">
                   {latestRejected.adminNotes}
                 </p>
               </div>
@@ -520,7 +520,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                 </span>
               )}
               {isCompleted && (
-                <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold text-white/80">
                   Concluído
                 </span>
               )}
@@ -551,7 +551,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                     className="flex items-center gap-2 text-[13px] text-white/80"
                   >
                     {isCompleted || isCurrent ? (
-                      <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
+                      <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-white/70" />
                     ) : (
                       <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground/30" />
                     )}
@@ -565,13 +565,13 @@ export default function CustomerKycPage(): React.JSX.Element {
             {isNext && (
               <div className="pt-1">
                 {hasPendingForThis ? (
-                  <div className="flex items-center gap-2 rounded-2xl bg-amber-500/10 px-4 py-3">
-                    <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                  <div className="flex items-center gap-2 rounded-2xl bg-white/5 border border-white/10 px-4 py-3">
+                    <Clock className="h-4 w-4 text-white/70" />
                     <div>
-                      <p className="text-[13px] font-semibold text-amber-700 dark:text-amber-300">
+                      <p className="text-[13px] font-semibold text-white">
                         Em análise
                       </p>
-                      <p className="text-[11px] text-amber-600/80 dark:text-amber-400/70">
+                      <p className="text-[11px] text-white/60">
                         Resposta em até 24h úteis
                       </p>
                     </div>
@@ -599,7 +599,7 @@ export default function CustomerKycPage(): React.JSX.Element {
           variants={fadeUp}
           className="fintech-glass-card rounded-[20px] p-5 flex flex-col items-center py-8 text-center"
         >
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/25">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-[#8B2FFF] to-[#6F00FF] shadow-lg shadow-[#6F00FF]/25">
             <Crown className="h-8 w-8 text-white" />
           </div>
           <p className="text-[15px] font-bold text-white">

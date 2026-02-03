@@ -197,14 +197,12 @@ function TransactionRow({ tx }: { tx: Transaction }) {
     }
 
     const iconConfig = isPending
-        ? { bg: "bg-amber-500/15", color: "text-amber-400", Icon: ArrowRightLeft }
+        ? { bg: "bg-white/10", color: "text-white/70", Icon: ArrowRightLeft }
         : isConversionTx
-          ? isSellConversion
-              ? { bg: "bg-orange-500/15", color: "text-orange-400", Icon: ArrowRightLeft }
-              : { bg: "bg-blue-500/15", color: "text-blue-400", Icon: ArrowRightLeft }
+          ? { bg: "bg-white/10", color: "text-white", Icon: ArrowRightLeft }
           : isIncoming
-            ? { bg: "bg-emerald-500/15", color: "text-emerald-400", Icon: ArrowDownLeft }
-            : { bg: "bg-red-500/15", color: "text-red-400", Icon: ArrowUpRight };
+            ? { bg: "bg-white/10", color: "text-white", Icon: ArrowDownLeft }
+            : { bg: "bg-white/10", color: "text-white", Icon: ArrowUpRight };
 
     return (
         <motion.div
@@ -223,12 +221,12 @@ function TransactionRow({ tx }: { tx: Transaction }) {
             <div className="text-right">
                 {isConversionTx ? (
                     <>
-                        <p className={`text-[13px] font-semibold ${isSellConversion ? "text-emerald-400" : "text-white"}`}>
+                        <p className={`text-[13px] font-semibold ${isSellConversion ? "text-white" : "text-white/70"}`}>
                             {isSellConversion ? "+" : "-"}
                             {formatCurrency(amount)}
                         </p>
                         {usdtAmountValue !== null && (
-                            <p className={`text-[10px] font-medium ${isSellConversion ? "text-red-400" : "text-emerald-400"}`}>
+                            <p className={`text-[10px] font-medium ${isSellConversion ? "text-white/50" : "text-white/70"}`}>
                                 {isSellConversion ? "-" : "+"}
                                 {formatUSD(usdtAmountValue)}
                             </p>
@@ -236,7 +234,7 @@ function TransactionRow({ tx }: { tx: Transaction }) {
                     </>
                 ) : (
                     <p className={`text-[13px] font-semibold ${
-                        isPending ? "text-amber-400" : isIncoming ? "text-emerald-400" : "text-white"
+                        isPending ? "text-white/50" : isIncoming ? "text-white" : "text-white/70"
                     }`}>
                         {isIncoming ? "+" : "-"}
                         {formatCurrency(Math.abs(amount))}
@@ -530,7 +528,7 @@ export default function Dashboard() {
                         {balanceHidden ? "••••" : usdtBalanceLoading ? "..." : formatUSD(saldoUSDT)}
                     </p>
                     <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-white/[0.06]">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse" />
                         <span className="text-[11px] text-white">
                             1 USDT = {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 2)}
                         </span>

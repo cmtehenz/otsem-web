@@ -340,9 +340,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                     <div className="space-y-2 max-h-48 overflow-y-auto">
                                         {wallets.map((wallet, index) => {
                                             const isMain = wallet.isMain || index === 0;
-                                            const networkColor = wallet.network === "TRON"
-                                                ? "text-red-600 dark:text-red-400 bg-red-500/20"
-                                                : "text-green-600 dark:text-green-400 bg-green-500/20";
+                                            const networkColor = "text-white bg-white/10";
                                             return (
                                                 <button
                                                     key={wallet.id}
@@ -352,8 +350,8 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                                         : "border-border bg-muted hover:border-[#6F00FF]/30"
                                                         }`}
                                                 >
-                                                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                                                        <Wallet className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
+                                                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                                                        <Wallet className="w-5 h-5 text-white" />
                                                     </div>
                                                     <div className="flex-1 text-left min-w-0">
                                                         <div className="flex items-center gap-2 flex-wrap">
@@ -361,7 +359,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                                                 {wallet.label || `Carteira ${index + 1}`}
                                                             </p>
                                                             {isMain && (
-                                                                <span className="flex items-center gap-1 px-1.5 py-0.5 bg-amber-500/20 rounded text-amber-600 dark:text-amber-400 text-xs shrink-0">
+                                                                <span className="flex items-center gap-1 px-1.5 py-0.5 bg-white/10 rounded text-white/70 text-xs shrink-0">
                                                                     <Star className="w-3 h-3" />
                                                                     Principal
                                                                 </span>
@@ -473,7 +471,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
 
                             <div className="bg-muted border border-border rounded-xl p-4">
                                 <p className="text-muted-foreground text-sm">Você receberá aproximadamente:</p>
-                                <p className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
+                                <p className="text-2xl font-bold text-white mt-1">
                                     {formatUSDT(convertedAmount)}
                                 </p>
                             </div>
@@ -504,7 +502,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                             <div className="bg-muted border border-border rounded-xl p-5 space-y-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-xl">
+                                        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl">
                                             🇧🇷
                                         </div>
                                         <div>
@@ -516,9 +514,9 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                     <div className="flex items-center gap-3">
                                         <div>
                                             <p className="text-muted-foreground text-xs text-right">Para</p>
-                                            <p className="text-green-600 dark:text-green-400 font-bold">{formatUSDT(convertedAmount)}</p>
+                                            <p className="text-white font-bold">{formatUSDT(convertedAmount)}</p>
                                         </div>
-                                        <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-xl">
+                                        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl">
                                             💵
                                         </div>
                                     </div>
@@ -545,23 +543,23 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                     </div>
                                 </div>
 
-                                <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-3">
-                                    <p className="text-amber-800 dark:text-amber-200 text-xs">
+                                <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                                    <p className="text-white/70 text-xs">
                                         Você receberá {formatUSDT(convertedAmount > 1 ? convertedAmount - 1 : 0)} USDT (taxa de rede: ~1 USDT)
                                     </p>
                                 </div>
                             </div>
 
                             {limitError && (
-                                <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
-                                    <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                                <div className="flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                                    <AlertTriangle className="w-5 h-5 text-white/70 flex-shrink-0 mt-0.5" />
                                     <div>
-                                        <p className="text-sm text-amber-800 dark:text-amber-200 font-medium">{limitError}</p>
+                                        <p className="text-sm text-white/80 font-medium">{limitError}</p>
                                         <Link href="/customer/kyc" onClick={handleClose}>
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                className="mt-2 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40"
+                                                className="mt-2 border-white/20 text-white/70 hover:bg-white/10"
                                             >
                                                 Ver meus limites
                                             </Button>
@@ -573,7 +571,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                             <Button
                                 onClick={handleConvert}
                                 disabled={loading || !!limitError}
-                                className="w-full bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <>
@@ -596,7 +594,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                     </div>
                                     {conversionStatus === "COMPLETED" && (
                                         <div className="absolute inset-0 flex items-center justify-center bg-card rounded-full">
-                                            <Check className="w-10 h-10 text-green-500" />
+                                            <Check className="w-10 h-10 text-white" />
                                         </div>
                                     )}
                                 </div>
@@ -621,7 +619,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                         <div key={status} className="flex items-center gap-3">
                                             <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                                                 isCompleted 
-                                                    ? "bg-green-500" 
+                                                    ? "bg-[#6F00FF]" 
                                                     : isCurrent 
                                                         ? "bg-[#6F00FF] animate-pulse" 
                                                         : "bg-muted-foreground/20"
@@ -653,7 +651,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">USDT a receber</span>
-                                    <span className="text-green-600 dark:text-green-400 font-medium">
+                                    <span className="text-white font-medium">
                                         {formatUSDT(usdtNet || conversionDetail?.usdtAmount || convertedAmount)}
                                     </span>
                                 </div>
@@ -690,14 +688,14 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                     {step === "success" && (
                         <div className="w-full space-y-5">
                             <div className="flex justify-center">
-                                <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center">
-                                    <CheckCircle2 className="w-10 h-10 text-green-500 dark:text-green-400" />
+                                <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center">
+                                    <CheckCircle2 className="w-10 h-10 text-white" />
                                 </div>
                             </div>
 
                             <div className="text-center">
                                 <p className="text-muted-foreground text-sm mb-1">Você recebeu</p>
-                                <p className="text-3xl font-bold bg-linear-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
+                                <p className="text-3xl font-bold bg-linear-to-r from-[#6F00FF] to-[#8B2FFF] bg-clip-text text-transparent">
                                     {formatUSDT(usdtNet || conversionDetail?.usdtAmount || convertedAmount)}
                                 </p>
                                 <p className="text-muted-foreground text-sm mt-2">
@@ -712,7 +710,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
 
                             <div className="bg-muted border border-border rounded-xl p-4 text-center">
                                 <p className="text-muted-foreground text-xs">Rede: {selectedWallet?.network || "SOLANA"}</p>
-                                <p className="text-green-600 dark:text-green-400 text-sm mt-1 font-medium">
+                                <p className="text-white text-sm mt-1 font-medium">
                                     USDT enviado para sua carteira!
                                 </p>
                             </div>

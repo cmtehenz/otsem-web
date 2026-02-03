@@ -210,10 +210,10 @@ export default function SettingsPage() {
       {/* ── Quick Links ─────────────────────────── */}
       <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5 !p-2">
         {[
-          { href: "/customer/pix", icon: KeyRound, label: "Chaves PIX", sublabel: "Gerenciar suas chaves", color: "text-green-600 dark:text-green-400", bg: "bg-green-500/10 dark:bg-green-500/20" },
-          { href: "/customer/kyc", icon: ShieldCheck, label: "Verificação", sublabel: "Limites e documentos", color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/10 dark:bg-blue-500/20" },
-          { href: "/customer/affiliates", icon: Users, label: "Indicações", sublabel: "Convide amigos e ganhe", color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-500/10 dark:bg-purple-500/20" },
-          { href: "/customer/support", icon: HelpCircle, label: "Suporte", sublabel: "Ajuda e contato", color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-500/10 dark:bg-orange-500/20" },
+          { href: "/customer/pix", icon: KeyRound, label: "Chaves PIX", sublabel: "Gerenciar suas chaves", color: "text-white", bg: "bg-white/10" },
+          { href: "/customer/kyc", icon: ShieldCheck, label: "Verificação", sublabel: "Limites e documentos", color: "text-white", bg: "bg-white/10" },
+          { href: "/customer/affiliates", icon: Users, label: "Indicações", sublabel: "Convide amigos e ganhe", color: "text-white", bg: "bg-white/10" },
+          { href: "/customer/support", icon: HelpCircle, label: "Suporte", sublabel: "Ajuda e contato", color: "text-white", bg: "bg-white/10" },
         ].map((item) => (
           <Link
             key={item.href}
@@ -237,10 +237,10 @@ export default function SettingsPage() {
           href="/customer/logout"
           className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl active:bg-red-500/10 transition-colors"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/10 dark:bg-red-500/20 shrink-0">
-            <LogOut className="h-5 w-5 text-red-600 dark:text-red-400" strokeWidth={1.8} />
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 shrink-0">
+            <LogOut className="h-5 w-5 text-white/70" strokeWidth={1.8} />
           </div>
-          <p className="text-[14px] font-semibold text-red-600 dark:text-red-400">Sair</p>
+          <p className="text-[14px] font-semibold text-white/70">Sair</p>
         </Link>
       </motion.div>
 
@@ -454,8 +454,8 @@ export default function SettingsPage() {
                   : "border-white/15 hover:border-white/30"
               }`}
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
-                <Sun className="h-5 w-5 text-amber-500" />
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10">
+                <Sun className="h-5 w-5 text-white" />
               </div>
               <span className="text-[13px] font-medium text-white">
                 Claro
@@ -475,8 +475,8 @@ export default function SettingsPage() {
                   : "border-white/15 hover:border-white/30"
               }`}
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/30">
-                <Moon className="h-5 w-5 text-indigo-500" />
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10">
+                <Moon className="h-5 w-5 text-white" />
               </div>
               <span className="text-[13px] font-medium text-white">
                 Escuro

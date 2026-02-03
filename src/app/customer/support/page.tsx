@@ -200,10 +200,10 @@ export default function SupportPage() {
                 <div className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 bg-gradient-to-br from-[#6F00FF]/10 to-[#6F00FF]/5 dark:from-[#6F00FF]/20 dark:to-[#6F00FF]/5">
                     <div className="flex items-center gap-3">
                         <div className="relative flex-shrink-0">
-                            <div className="w-9 h-9 rounded-full bg-emerald-500/15 flex items-center justify-center">
-                                <CheckCircle2 className="w-[18px] h-[18px] text-emerald-500" />
+                            <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
+                                <CheckCircle2 className="w-[18px] h-[18px] text-white" />
                             </div>
-                            <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-background animate-pulse" />
+                            <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-white/60 border-2 border-background animate-pulse" />
                         </div>
                         <div className="min-w-0">
                             <p className="text-[14px] font-semibold text-white">
@@ -230,8 +230,8 @@ export default function SupportPage() {
                         rel="noopener noreferrer"
                         className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 min-w-[160px] flex-1 snap-start active:scale-95 transition-transform group"
                     >
-                        <div className="w-10 h-10 rounded-2xl bg-[#25D366]/15 flex items-center justify-center mb-3">
-                            <MessageCircle className="w-5 h-5 text-[#25D366]" />
+                        <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center mb-3">
+                            <MessageCircle className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex items-center gap-1.5 mb-1">
                             <span className="text-[14px] font-semibold text-white">
@@ -271,8 +271,8 @@ export default function SupportPage() {
 
                     {/* Phone */}
                     <div className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 min-w-[160px] flex-1 snap-start">
-                        <div className="w-10 h-10 rounded-2xl bg-blue-500/12 flex items-center justify-center mb-3">
-                            <Phone className="w-5 h-5 text-blue-500" />
+                        <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center mb-3">
+                            <Phone className="w-5 h-5 text-white" />
                         </div>
                         <span className="text-[14px] font-semibold text-white block mb-1">
                             Telefone
