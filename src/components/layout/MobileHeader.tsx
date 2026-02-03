@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { User } from "lucide-react";
+import { User, Bell } from "lucide-react";
 
 function getGreeting(): string {
     const hour = new Date().getHours();
@@ -42,21 +42,29 @@ export function MobileHeader({ customerName }: { customerName?: string }) {
                         />
                     </Link>
                     <div className="flex flex-col">
-                        <span className="text-[10px] text-white/50 leading-tight">
+                        <span className="text-[10px] text-white/60 leading-tight">
                             {getGreeting()}
                         </span>
-                        <span className="text-[14px] font-semibold text-white leading-tight">
+                        <span className="text-[14px] font-semibold text-[#FFFFFF] leading-tight">
                             {displayName}
                         </span>
                     </div>
                 </div>
 
-                <Link
-                    href="/customer/settings"
-                    className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 active:bg-white/20 transition-colors"
-                >
-                    <User className="w-4 h-4 text-white/70" strokeWidth={2} />
-                </Link>
+                <div className="flex items-center gap-2">
+                    <button
+                        className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 active:bg-white/20 transition-colors relative"
+                        aria-label="Notificações"
+                    >
+                        <Bell className="w-4 h-4 text-white/70" strokeWidth={2} />
+                    </button>
+                    <Link
+                        href="/customer/settings"
+                        className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 active:bg-white/20 transition-colors"
+                    >
+                        <User className="w-4 h-4 text-white/70" strokeWidth={2} />
+                    </Link>
+                </div>
             </div>
         </motion.header>
     );

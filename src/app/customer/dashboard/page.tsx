@@ -145,10 +145,10 @@ function QuickAction({
             whileTap={{ scale: 0.9 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
         >
-            <div className="flex items-center justify-center w-11 h-11 rounded-full bg-white/10 active:bg-white/20 transition-colors">
+            <div className="flex items-center justify-center w-11 h-11 rounded-full fintech-glass-btn active:bg-white/20 transition-colors">
                 <Icon className="w-[18px] h-[18px] text-white" strokeWidth={2} />
             </div>
-            <span className="text-[10px] font-medium text-white/50">{label}</span>
+            <span className="text-[10px] font-medium text-white/60">{label}</span>
         </motion.button>
     );
 }
@@ -400,21 +400,22 @@ export default function Dashboard() {
             {/* ── Balance Section (scrollable, part of content) ── */}
             <motion.div variants={fadeUp} className="text-center pt-2">
                 <div className="flex items-center justify-center gap-2 mb-1">
-                    <p className="text-white/50 text-[13px] font-medium">Saldo total</p>
+                    <p className="text-white/70 text-[13px] font-medium">Saldo total</p>
                     <button
                         onClick={() => setBalanceHidden(!balanceHidden)}
-                        className="p-1 -m-1 rounded-full active:bg-white/10 transition-colors"
+                        className="p-2.5 -m-2.5 rounded-full active:bg-white/10 transition-colors"
+                        aria-label={balanceHidden ? "Mostrar saldo" : "Ocultar saldo"}
                     >
                         {balanceHidden ? (
-                            <EyeOff className="w-3.5 h-3.5 text-white/40" />
+                            <EyeOff className="w-4 h-4 text-white/50" />
                         ) : (
-                            <Eye className="w-3.5 h-3.5 text-white/40" />
+                            <Eye className="w-4 h-4 text-white/50" />
                         )}
                     </button>
                 </div>
 
                 <motion.p
-                    className="text-[38px] font-bold text-white tracking-tight leading-none"
+                    className="text-[38px] font-bold text-[#FFFFFF] tracking-tight leading-none"
                     key={balanceHidden ? "hidden" : "visible"}
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -424,40 +425,77 @@ export default function Dashboard() {
                 </motion.p>
             </motion.div>
 
-            {/* ── Currency Breakdown (compact inline cards) ── */}
-            <motion.div variants={fadeUp} className="flex gap-2.5">
-                <div className="flex-1 rounded-2xl fintech-glass-card px-3.5 py-3">
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="text-sm">🇧🇷</span>
-                        <span className="text-white/40 text-[11px] font-medium">BRL</span>
-                    </div>
-                    <p className="text-white font-bold text-[17px] leading-tight">
-                        {balanceHidden ? "••••" : formatCurrency(saldoBRL)}
-                    </p>
-                </div>
-                <div className="flex-1 rounded-2xl fintech-glass-card px-3.5 py-3">
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="text-sm">💲</span>
-                        <span className="text-white/40 text-[11px] font-medium">USDT</span>
-                    </div>
-                    <p className="text-white font-bold text-[17px] leading-tight">
-                        {balanceHidden ? "••••" : usdtBalanceLoading ? "..." : formatUSD(saldoUSDT)}
-                    </p>
-                    {!balanceHidden && usdtRateWithSpread > 0 && (
-                        <p className="text-white/30 text-[10px] mt-0.5">
-                            ≈ {formatCurrency(saldoUSDT * usdtRateWithSpread)}
+            {/* ── Currency Cards (horizontal swipeable carousel) ── */}
+            <motion.div variants={fadeUp}>
+                <div className="flex gap-2.5 overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-4 px-4 pb-1">
+                    {/* BRL Card */}
+                    <div className="flex-shrink-0 w-[46%] min-w-[160px] snap-start rounded-2xl fintech-glass-card px-3.5 py-3">
+                        <div className="flex items-center gap-1.5 mb-1">
+                            <span className="text-sm">🇧🇷</span>
+                            <span className="text-white/50 text-[11px] font-medium">BRL</span>
+                        </div>
+                        <p className="text-[#FFFFFF] font-bold text-[17px] leading-tight">
+                            {balanceHidden ? "••••" : formatCurrency(saldoBRL)}
                         </p>
-                    )}
-                </div>
-            </motion.div>
+                        <p className="text-white/30 text-[10px] mt-1">Real Brasileiro</p>
+                    </div>
 
-            {/* ── USDT Rate Pill ── */}
-            <motion.div variants={fadeUp} className="flex justify-center">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.06]">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-[12px] font-medium text-white/60">
-                        1 USDT = {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 4)}
-                    </span>
+                    {/* USDT Card (with rate pill integrated) */}
+                    <div className="flex-shrink-0 w-[46%] min-w-[160px] snap-start rounded-2xl fintech-glass-card px-3.5 py-3">
+                        <div className="flex items-center gap-1.5 mb-1">
+                            <span className="text-sm">💲</span>
+                            <span className="text-white/50 text-[11px] font-medium">USDT</span>
+                        </div>
+                        <p className="text-[#FFFFFF] font-bold text-[17px] leading-tight">
+                            {balanceHidden ? "••••" : usdtBalanceLoading ? "..." : formatUSD(saldoUSDT)}
+                        </p>
+                        {!balanceHidden && usdtRateWithSpread > 0 && (
+                            <p className="text-white/35 text-[10px] mt-0.5">
+                                ≈ {formatCurrency(saldoUSDT * usdtRateWithSpread)}
+                            </p>
+                        )}
+                        <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-white/[0.06]">
+                            <div className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
+                            <span className="text-[10px] text-white/50">
+                                1 USDT = {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 2)}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Portfolio overview card (future-ready) */}
+                    <div className="flex-shrink-0 w-[46%] min-w-[160px] snap-start rounded-2xl fintech-glass-card px-3.5 py-3">
+                        <div className="flex items-center gap-1.5 mb-1">
+                            <span className="text-sm">📊</span>
+                            <span className="text-white/50 text-[11px] font-medium">Portfolio</span>
+                        </div>
+                        <div className="space-y-1.5 mt-1">
+                            <div className="flex items-center justify-between">
+                                <span className="text-white/50 text-[10px]">BRL</span>
+                                <div className="flex-1 mx-2 h-1 rounded-full bg-white/[0.06] overflow-hidden">
+                                    <div
+                                        className="h-full rounded-full bg-indigo-400"
+                                        style={{ width: `${saldoTotal > 0 ? (saldoBRL / saldoTotal) * 100 : 50}%` }}
+                                    />
+                                </div>
+                                <span className="text-white/60 text-[10px] font-medium">
+                                    {saldoTotal > 0 ? Math.round((saldoBRL / saldoTotal) * 100) : 0}%
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <span className="text-white/50 text-[10px]">USDT</span>
+                                <div className="flex-1 mx-2 h-1 rounded-full bg-white/[0.06] overflow-hidden">
+                                    <div
+                                        className="h-full rounded-full bg-emerald-400"
+                                        style={{ width: `${saldoTotal > 0 ? ((saldoUSDT * usdtRateWithSpread) / saldoTotal) * 100 : 50}%` }}
+                                    />
+                                </div>
+                                <span className="text-white/60 text-[10px] font-medium">
+                                    {saldoTotal > 0 ? Math.round(((saldoUSDT * usdtRateWithSpread) / saldoTotal) * 100) : 0}%
+                                </span>
+                            </div>
+                        </div>
+                        <p className="text-white/30 text-[10px] mt-2">Alocação</p>
+                    </div>
                 </div>
             </motion.div>
 
@@ -487,12 +525,12 @@ export default function Dashboard() {
 
             {/* ── Recent Activity ── */}
             <motion.div variants={fadeUp}>
-                <div className="rounded-2xl bg-white/[0.03] border-[0.5px] border-white/[0.08] p-4">
+                <div className="rounded-2xl fintech-glass-activity p-4">
                     <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-[14px] font-bold text-white">Atividade recente</h3>
+                        <h3 className="text-[14px] font-bold text-[#FFFFFF]">Atividade recente</h3>
                         <Link
                             href="/customer/transactions"
-                            className="flex items-center gap-0.5 text-[12px] font-medium text-[#8B2FFF] active:opacity-70"
+                            className="flex items-center gap-0.5 text-[12px] font-medium text-[#a5b4fc] active:opacity-70"
                         >
                             Ver tudo
                             <ChevronRight className="w-3.5 h-3.5" />
@@ -510,7 +548,7 @@ export default function Dashboard() {
                             <div className="w-10 h-10 rounded-full bg-white/[0.08] flex items-center justify-center mb-2">
                                 <ArrowDownLeft className="w-4.5 h-4.5 text-white/30" />
                             </div>
-                            <p className="text-[13px] text-white/40">Nenhuma transação ainda</p>
+                            <p className="text-[13px] text-white/50">Nenhuma transação ainda</p>
                         </div>
                     )}
                 </div>
