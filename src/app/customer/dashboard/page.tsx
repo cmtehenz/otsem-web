@@ -265,6 +265,7 @@ export default function Dashboard() {
     const [showConvertModal, setShowConvertModal] = React.useState(false);
 
     const refreshData = React.useCallback(() => setRefreshCounter((c) => c + 1), []);
+    const initialLoadDone = React.useRef(false);
 
     const { rate: usdtRate, loading: usdtLoading } = useUsdtRate();
     const customerSpread = user?.spreadValue ?? 0.95;
@@ -280,49 +281,58 @@ export default function Dashboard() {
         }
     }, [searchParams, loading, router]);
 
-    // Load account data
-    React.useEffect(() => {
-        let cancelled = false;
-        async function load() {
-            try {
-                setLoading(true);
-                const customerId = user?.customerId;
-                if (!customerId) return;
+    // Shared loader for account data (silent = no spinner)
+    const loadAccountData = React.useCallback(async (silent: boolean) => {
+        const customerId = user?.customerId;
+        if (!customerId) return;
 
-                const accountRes = await http.get<AccountSummary & { payments: Payment[] }>(`/accounts/${customerId}/summary`);
-                if (!cancelled) {
-                    const accountData = accountRes.data;
-                    if (accountData) {
-                        setAccount({
-                            ...accountData,
-                            balance: Number(accountData.balance ?? 0),
-                            blockedAmount: Number(accountData.blockedAmount ?? 0),
-                        });
-                        const payments = accountData.payments || [];
-                        const convertedTransactions: Transaction[] = payments.map((payment) => ({
-                            transactionId: payment.id,
-                            type: "PIX_IN" as const,
-                            status: "COMPLETED" as const,
-                            amount: payment.paymentValue / 100,
-                            description: payment.bankPayload.descricao,
-                            senderName: payment.bankPayload.detalhes.nomePagador,
-                            senderCpf: payment.bankPayload.detalhes.cpfCnpjPagador,
-                            createdAt: payment.paymentDate,
-                        }));
-                        setTransactions(convertedTransactions);
-                    } else {
-                        setTransactions([]);
-                    }
-                }
-            } catch (error: unknown) {
-                if (!cancelled) console.error("Error loading dashboard:", error);
-            } finally {
-                if (!cancelled) setLoading(false);
+        if (!silent) setLoading(true);
+
+        try {
+            const accountRes = await http.get<AccountSummary & { payments: Payment[] }>(`/accounts/${customerId}/summary`);
+            const accountData = accountRes.data;
+            if (accountData) {
+                setAccount({
+                    ...accountData,
+                    balance: Number(accountData.balance ?? 0),
+                    blockedAmount: Number(accountData.blockedAmount ?? 0),
+                });
+                const payments = accountData.payments || [];
+                const convertedTransactions: Transaction[] = payments.map((payment) => ({
+                    transactionId: payment.id,
+                    type: "PIX_IN" as const,
+                    status: "COMPLETED" as const,
+                    amount: payment.paymentValue / 100,
+                    description: payment.bankPayload.descricao,
+                    senderName: payment.bankPayload.detalhes.nomePagador,
+                    senderCpf: payment.bankPayload.detalhes.cpfCnpjPagador,
+                    createdAt: payment.paymentDate,
+                }));
+                setTransactions(convertedTransactions);
+            } else {
+                setTransactions([]);
             }
+        } catch (error: unknown) {
+            console.error("Error loading dashboard:", error);
+        } finally {
+            if (!silent) setLoading(false);
         }
-        load();
-        return () => { cancelled = true; };
-    }, [user?.id, user?.customerId, refreshTrigger, refreshCounter]);
+    }, [user?.customerId]);
+
+    // Initial load + reload on refresh triggers
+    React.useEffect(() => {
+        const silent = initialLoadDone.current;
+        loadAccountData(silent).then(() => {
+            initialLoadDone.current = true;
+        });
+    }, [loadAccountData, refreshTrigger, refreshCounter]);
+
+    // Poll account data every 30s so deposit confirmations appear automatically
+    React.useEffect(() => {
+        if (!user?.customerId) return;
+        const interval = setInterval(() => loadAccountData(true), 30_000);
+        return () => clearInterval(interval);
+    }, [loadAccountData, user?.customerId]);
 
     // Load wallets
     React.useEffect(() => {
@@ -335,7 +345,7 @@ export default function Dashboard() {
             }
         }
         fetchWallets();
-    }, [refreshCounter]);
+    }, [refreshCounter, refreshTrigger]);
 
     // Calculate USDT balance
     React.useEffect(() => {
