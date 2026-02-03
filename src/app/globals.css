@@ -162,18 +162,6 @@
         @apply text-foreground;
         font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
         -webkit-tap-highlight-color: transparent;
-        touch-action: pan-x pan-y;
-        -webkit-user-select: none;
-        user-select: none;
-        -webkit-touch-callout: none;
-    }
-
-    /* Allow text selection in form inputs where users need to type/edit */
-    input, textarea, select, [contenteditable="true"] {
-        -webkit-user-select: text;
-        user-select: text;
-        -webkit-touch-callout: default;
-        touch-action: manipulation;
         /* Transparent — let the fixed gradient layer be the only background */
         background-color: transparent;
         -webkit-font-smoothing: antialiased;
@@ -205,7 +193,9 @@
     }
 }
 
-/* ── Prevent white flash in PWA standalone mode ──── */
+/* ── Installed PWA: native app lockdown + anti-flash ── */
+/* Only activate when running as an installed standalone app,
+   NOT when visiting otsempay.com in a regular browser.         */
 @media (display-mode: standalone) {
     html {
         /* Must match fintech-bg-layer gradient so safe areas blend seamlessly */
@@ -234,6 +224,19 @@
         height: 100dvh;
         position: fixed;
         width: 100%;
+        /* Native app behavior — no zoom, no text selection, no callout */
+        touch-action: pan-x pan-y;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+    }
+
+    /* Restore selection in form fields inside the PWA */
+    input, textarea, select, [contenteditable="true"] {
+        -webkit-user-select: text;
+        user-select: text;
+        -webkit-touch-callout: default;
+        touch-action: manipulation;
     }
 }
 
