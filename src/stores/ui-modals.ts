@@ -22,11 +22,13 @@ type OpenState = Record<ModalKey, boolean>;
 type UiModalsState = {
     open: OpenState;
     refreshTrigger: number;
+    depositBoostUntil: number;
     openModal: (k: ModalKey) => void;
     closeModal: (k: ModalKey) => void;
     toggleModal: (k: ModalKey) => void;
     closeAll: () => void;
     triggerRefresh: () => void;
+    triggerDepositBoost: () => void;
 };
 
 const initialOpen: OpenState = {
@@ -43,9 +45,11 @@ const initialOpen: OpenState = {
 export const useUiModals = create<UiModalsState>((set) => ({
     open: initialOpen,
     refreshTrigger: 0,
+    depositBoostUntil: 0,
     openModal: (k) => set((s) => ({ open: { ...s.open, [k]: true } })),
     closeModal: (k) => set((s) => ({ open: { ...s.open, [k]: false } })),
     toggleModal: (k) => set((s) => ({ open: { ...s.open, [k]: !s.open[k] } })),
     closeAll: () => set({ open: initialOpen }),
     triggerRefresh: () => set((s) => ({ refreshTrigger: s.refreshTrigger + 1 })),
+    triggerDepositBoost: () => set({ depositBoostUntil: Date.now() + 120_000 }),
 }));

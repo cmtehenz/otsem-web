@@ -250,7 +250,7 @@ function TransactionRow({ tx }: { tx: Transaction }) {
 // ─── Main Dashboard ──────────────────────────────────────
 export default function Dashboard() {
     const { user } = useAuth();
-    const { openModal, refreshTrigger } = useUiModals();
+    const { openModal, refreshTrigger, depositBoostUntil } = useUiModals();
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -289,15 +289,33 @@ export default function Dashboard() {
         if (!silent) setLoading(true);
 
         try {
-            const accountRes = await http.get<AccountSummary & { payments: Payment[] }>(`/accounts/${customerId}/summary`);
-            const accountData = accountRes.data;
-            if (accountData) {
-                setAccount({
-                    ...accountData,
-                    balance: Number(accountData.balance ?? 0),
-                    blockedAmount: Number(accountData.blockedAmount ?? 0),
-                });
-                const payments = accountData.payments || [];
+            // Fetch both sources in parallel
+            const [accountRes, statementRes] = await Promise.allSettled([
+                http.get<AccountSummary & { payments: Payment[] }>(`/accounts/${customerId}/summary`),
+                http.get<{ statements: Transaction[]; total: number }>(`/customers/${customerId}/statement?page=1&limit=20`),
+            ]);
+
+            // 1. Account summary (for balance)
+            if (accountRes.status === "fulfilled") {
+                const accountData = accountRes.value.data;
+                if (accountData) {
+                    setAccount({
+                        ...accountData,
+                        balance: Number(accountData.balance ?? 0),
+                        blockedAmount: Number(accountData.blockedAmount ?? 0),
+                    });
+                }
+            }
+
+            // 2. Transactions: prefer statement (has real statuses) with
+            //    fallback to payments from summary (hardcoded COMPLETED)
+            if (statementRes.status === "fulfilled" && statementRes.value.data.statements?.length > 0) {
+                const sorted = [...statementRes.value.data.statements].sort(
+                    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                );
+                setTransactions(sorted);
+            } else if (accountRes.status === "fulfilled") {
+                const payments = accountRes.value.data.payments || [];
                 const convertedTransactions: Transaction[] = payments.map((payment) => ({
                     transactionId: payment.id,
                     type: "PIX_IN" as const,
@@ -327,12 +345,28 @@ export default function Dashboard() {
         });
     }, [loadAccountData, refreshTrigger, refreshCounter]);
 
-    // Poll account data every 30s so deposit confirmations appear automatically
+    // Poll account data — adaptive interval (5s during deposit boost, otherwise 30s)
     React.useEffect(() => {
         if (!user?.customerId) return;
-        const interval = setInterval(() => loadAccountData(true), 30_000);
-        return () => clearInterval(interval);
-    }, [loadAccountData, user?.customerId]);
+
+        const isBoosted = depositBoostUntil > Date.now();
+        const intervalMs = isBoosted ? 5_000 : 30_000;
+
+        const interval = setInterval(() => loadAccountData(true), intervalMs);
+
+        // When boost is active, schedule a re-render when it expires to revert to 30s
+        let boostTimeout: NodeJS.Timeout | undefined;
+        if (isBoosted) {
+            boostTimeout = setTimeout(() => {
+                // Force re-run of this effect by no-op — depositBoostUntil will have expired
+            }, depositBoostUntil - Date.now());
+        }
+
+        return () => {
+            clearInterval(interval);
+            if (boostTimeout) clearTimeout(boostTimeout);
+        };
+    }, [loadAccountData, user?.customerId, depositBoostUntil]);
 
     // Load wallets
     React.useEffect(() => {

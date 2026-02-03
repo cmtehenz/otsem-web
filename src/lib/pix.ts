@@ -16,3 +16,14 @@ export async function pixPost<T = unknown>(
 ): Promise<AxiosResponse<T>> {
   return http.post<T>(`/pix/${path}`, data);
 }
+
+/**
+ * Make a GET request to the generic /pix/ endpoint.
+ *
+ * Example: pixGet("cobrancas/abc123")  →  GET /pix/cobrancas/abc123
+ */
+export async function pixGet<T = unknown>(
+  path: string,
+): Promise<AxiosResponse<T>> {
+  return http.get<T>(`/pix/${path}`);
+}
