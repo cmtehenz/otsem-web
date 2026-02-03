@@ -425,76 +425,34 @@ export default function Dashboard() {
                 </motion.p>
             </motion.div>
 
-            {/* ── Currency Cards (horizontal swipeable carousel) ── */}
-            <motion.div variants={fadeUp}>
-                <div className="flex gap-2.5 overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-4 px-4 pb-1">
-                    {/* BRL Card */}
-                    <div className="flex-shrink-0 w-[46%] min-w-[160px] snap-start rounded-2xl fintech-glass-card px-3.5 py-3">
-                        <div className="flex items-center gap-1.5 mb-1">
-                            <span className="text-sm">🇧🇷</span>
-                            <span className="text-white/50 text-[11px] font-medium">BRL</span>
-                        </div>
-                        <p className="text-[#FFFFFF] font-bold text-[17px] leading-tight">
-                            {balanceHidden ? "••••" : formatCurrency(saldoBRL)}
-                        </p>
-                        <p className="text-white/30 text-[10px] mt-1">Real Brasileiro</p>
+            {/* ── Currency Cards ── */}
+            <motion.div variants={fadeUp} className="flex gap-2.5">
+                {/* BRL Card */}
+                <div className="flex-1 rounded-2xl fintech-glass-card px-3.5 py-3">
+                    <div className="flex items-center gap-1.5 mb-1">
+                        <span className="text-sm">🇧🇷</span>
+                        <span className="text-white/50 text-[11px] font-medium">BRL</span>
                     </div>
+                    <p className="text-[#FFFFFF] font-bold text-[17px] leading-tight">
+                        {balanceHidden ? "••••" : formatCurrency(saldoBRL)}
+                    </p>
+                    <p className="text-white/30 text-[10px] mt-1">Real Brasileiro</p>
+                </div>
 
-                    {/* USDT Card (with rate pill integrated) */}
-                    <div className="flex-shrink-0 w-[46%] min-w-[160px] snap-start rounded-2xl fintech-glass-card px-3.5 py-3">
-                        <div className="flex items-center gap-1.5 mb-1">
-                            <span className="text-sm">💲</span>
-                            <span className="text-white/50 text-[11px] font-medium">USDT</span>
-                        </div>
-                        <p className="text-[#FFFFFF] font-bold text-[17px] leading-tight">
-                            {balanceHidden ? "••••" : usdtBalanceLoading ? "..." : formatUSD(saldoUSDT)}
-                        </p>
-                        {!balanceHidden && usdtRateWithSpread > 0 && (
-                            <p className="text-white/35 text-[10px] mt-0.5">
-                                ≈ {formatCurrency(saldoUSDT * usdtRateWithSpread)}
-                            </p>
-                        )}
-                        <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-white/[0.06]">
-                            <div className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
-                            <span className="text-[10px] text-white/50">
-                                1 USDT = {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 2)}
-                            </span>
-                        </div>
+                {/* USDT Card (with rate integrated) */}
+                <div className="flex-1 rounded-2xl fintech-glass-card px-3.5 py-3">
+                    <div className="flex items-center gap-1.5 mb-1">
+                        <span className="text-sm">💲</span>
+                        <span className="text-white/50 text-[11px] font-medium">USDT</span>
                     </div>
-
-                    {/* Portfolio overview card (future-ready) */}
-                    <div className="flex-shrink-0 w-[46%] min-w-[160px] snap-start rounded-2xl fintech-glass-card px-3.5 py-3">
-                        <div className="flex items-center gap-1.5 mb-1">
-                            <span className="text-sm">📊</span>
-                            <span className="text-white/50 text-[11px] font-medium">Portfolio</span>
-                        </div>
-                        <div className="space-y-1.5 mt-1">
-                            <div className="flex items-center justify-between">
-                                <span className="text-white/50 text-[10px]">BRL</span>
-                                <div className="flex-1 mx-2 h-1 rounded-full bg-white/[0.06] overflow-hidden">
-                                    <div
-                                        className="h-full rounded-full bg-indigo-400"
-                                        style={{ width: `${saldoTotal > 0 ? (saldoBRL / saldoTotal) * 100 : 50}%` }}
-                                    />
-                                </div>
-                                <span className="text-white/60 text-[10px] font-medium">
-                                    {saldoTotal > 0 ? Math.round((saldoBRL / saldoTotal) * 100) : 0}%
-                                </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <span className="text-white/50 text-[10px]">USDT</span>
-                                <div className="flex-1 mx-2 h-1 rounded-full bg-white/[0.06] overflow-hidden">
-                                    <div
-                                        className="h-full rounded-full bg-emerald-400"
-                                        style={{ width: `${saldoTotal > 0 ? ((saldoUSDT * usdtRateWithSpread) / saldoTotal) * 100 : 50}%` }}
-                                    />
-                                </div>
-                                <span className="text-white/60 text-[10px] font-medium">
-                                    {saldoTotal > 0 ? Math.round(((saldoUSDT * usdtRateWithSpread) / saldoTotal) * 100) : 0}%
-                                </span>
-                            </div>
-                        </div>
-                        <p className="text-white/30 text-[10px] mt-2">Alocação</p>
+                    <p className="text-[#FFFFFF] font-bold text-[17px] leading-tight">
+                        {balanceHidden ? "••••" : usdtBalanceLoading ? "..." : formatUSD(saldoUSDT)}
+                    </p>
+                    <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-white/[0.06]">
+                        <div className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="text-[10px] text-white/50">
+                            1 USDT = {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 2)}
+                        </span>
                     </div>
                 </div>
             </motion.div>
