@@ -15,8 +15,8 @@ type ActionItem = {
     label: string;
     sublabel: string;
     icon: typeof ArrowDownLeft;
-    color: string;
     iconBg: string;
+    iconColor: string;
 };
 
 const actions: ActionItem[] = [
@@ -25,40 +25,40 @@ const actions: ActionItem[] = [
         label: "Depositar",
         sublabel: "Via PIX",
         icon: ArrowDownLeft,
-        color: "text-white",
-        iconBg: "bg-white/10",
+        iconBg: "bg-emerald-500/15",
+        iconColor: "text-emerald-500",
     },
     {
         id: "withdraw",
         label: "Transferir",
         sublabel: "PIX para qualquer banco",
         icon: ArrowUpRight,
-        color: "text-white",
-        iconBg: "bg-white/10",
+        iconBg: "bg-blue-500/15",
+        iconColor: "text-blue-500",
     },
     {
         id: "convertBrlUsdt",
         label: "Comprar USDT",
         sublabel: "Converter BRL para USDT",
         icon: ArrowRightLeft,
-        color: "text-white",
-        iconBg: "bg-white/10",
+        iconBg: "bg-[#6F00FF]/15",
+        iconColor: "text-[#6F00FF]",
     },
     {
         id: "sellUsdt",
         label: "Vender USDT",
         sublabel: "Converter USDT para BRL",
         icon: DollarSign,
-        color: "text-white",
-        iconBg: "bg-white/10",
+        iconBg: "bg-amber-500/15",
+        iconColor: "text-amber-500",
     },
     {
         id: "sendUsdt",
         label: "Enviar USDT",
         sublabel: "Para carteira externa",
         icon: Send,
-        color: "text-white",
-        iconBg: "bg-white/10",
+        iconBg: "bg-sky-500/15",
+        iconColor: "text-sky-500",
     },
 ];
 
@@ -124,33 +124,33 @@ export function ActionSheet({
                     >
                         <div className="relative rounded-t-[28px] overflow-hidden pwa-sheet-safe-bottom">
                             {/* Glass background */}
-                            <div className="absolute inset-0 bg-white/80 dark:bg-[#1a1025]/90 border-t border-white/40 dark:border-white/[0.08] backdrop-blur-[40px] saturate-[180%]" />
+                            <div className="absolute inset-0 bg-[#1a1025]/95 border-t border-white/[0.08] backdrop-blur-[40px] saturate-[180%]" />
 
-                            <div className="relative px-6 pt-3 pb-4">
+                            <div className="relative px-5 pt-3 pb-4">
                                 {/* Drag handle */}
-                                <div className="flex justify-center mb-4">
-                                    <div className="w-9 h-1 rounded-full bg-black/10 dark:bg-white/20" />
+                                <div className="flex justify-center mb-3">
+                                    <div className="w-9 h-1 rounded-full bg-white/20" />
                                 </div>
 
                                 {/* Title */}
-                                <h3 className="text-lg font-bold text-foreground mb-1">
+                                <h3 className="text-[17px] font-bold text-white mb-0.5">
                                     Nova operação
                                 </h3>
-                                <p className="text-sm text-muted-foreground mb-5">
+                                <p className="text-[13px] text-white/50 mb-4">
                                     O que você gostaria de fazer?
                                 </p>
 
                                 {/* Action items */}
-                                <div className="space-y-2">
+                                <div className="space-y-1">
                                     {actions.map((action, index) => (
                                         <motion.button
                                             key={action.id}
-                                            className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/50 dark:bg-white/[0.04] border border-white/60 dark:border-white/[0.06] transition-transform"
-                                            initial={{ opacity: 0, y: 20 }}
+                                            className="w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl active:bg-white/[0.06] transition-colors"
+                                            initial={{ opacity: 0, y: 12 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             whileTap={{ scale: 0.97 }}
                                             transition={{
-                                                delay: index * 0.05,
+                                                delay: index * 0.04,
                                                 type: "spring",
                                                 stiffness: 500,
                                                 damping: 25,
@@ -158,18 +158,18 @@ export function ActionSheet({
                                             onClick={() => handleAction(action.id)}
                                         >
                                             <div
-                                                className={`flex items-center justify-center w-12 h-12 rounded-2xl ${action.iconBg}`}
+                                                className={`flex items-center justify-center w-10 h-10 rounded-xl ${action.iconBg}`}
                                             >
                                                 <action.icon
-                                                    className={`w-5 h-5 ${action.color}`}
+                                                    className={`w-[18px] h-[18px] ${action.iconColor}`}
                                                     strokeWidth={2}
                                                 />
                                             </div>
                                             <div className="text-left">
-                                                <p className="text-[15px] font-semibold text-foreground">
+                                                <p className="text-[15px] font-semibold text-white">
                                                     {action.label}
                                                 </p>
-                                                <p className="text-[13px] text-muted-foreground">
+                                                <p className="text-[12px] text-white/50">
                                                     {action.sublabel}
                                                 </p>
                                             </div>

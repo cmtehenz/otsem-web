@@ -26,6 +26,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
     const [onboardingCompleted, setOnboardingCompleted] = React.useState<boolean | null>(null);
     const [loading, setLoading] = React.useState(true);
     const [customerName, setCustomerName] = React.useState<string | undefined>();
+    const [profilePhotoUrl, setProfilePhotoUrl] = React.useState<string | undefined>();
     const scrollRef = React.useRef<HTMLDivElement>(null);
 
     // Lock body scroll — customer layout owns the single scroll container.
@@ -80,6 +81,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 const c = customer as CustomerResponse;
                 setOnboardingCompleted(c.onboardingCompleted ?? true);
                 setCustomerName(c.name);
+                setProfilePhotoUrl(c.profilePhotoUrl);
             } catch (err) {
                 console.error("Erro ao buscar dados do cliente:", err);
                 setOnboardingCompleted(true);
@@ -146,7 +148,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                         triggers on ALL pages (not just long ones). */}
                     <div className="min-h-[calc(100%+1px)]">
                         {/* Header scrolls with content — collapses naturally on scroll */}
-                        <MobileHeader customerName={customerName} />
+                        <MobileHeader customerName={customerName} profilePhotoUrl={profilePhotoUrl} />
 
                         <AnimatePresence mode="wait">
                             <motion.main

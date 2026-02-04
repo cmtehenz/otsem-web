@@ -6,13 +6,10 @@ import { motion } from "framer-motion";
 import {
   User,
   Lock,
-  Palette,
   Globe,
   Eye,
   EyeOff,
-  Check,
-  Sun,
-  Moon,
+  Camera,
   KeyRound,
   ShieldCheck,
   HelpCircle,
@@ -23,7 +20,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import http from "@/lib/http";
 import { useAuth } from "@/contexts/auth-context";
@@ -54,7 +50,60 @@ type CustomerData = {
   phone: string;
   cpf?: string;
   type: "PF" | "PJ";
+  profilePhotoUrl?: string;
 };
+
+// ─── Profile photo localStorage helpers ───────────────────
+const PHOTO_KEY = "otsem_profile_photo";
+
+function getStoredPhoto(): string | null {
+  try {
+    return localStorage.getItem(PHOTO_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function setStoredPhoto(dataUrl: string) {
+  try {
+    localStorage.setItem(PHOTO_KEY, dataUrl);
+  } catch {
+    // localStorage full or unavailable
+  }
+}
+
+function removeStoredPhoto() {
+  try {
+    localStorage.removeItem(PHOTO_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+function compressImage(file: File, maxSize: number = 256): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const size = Math.min(img.width, img.height);
+        const sx = (img.width - size) / 2;
+        const sy = (img.height - size) / 2;
+        canvas.width = maxSize;
+        canvas.height = maxSize;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return reject(new Error("Canvas not supported"));
+        ctx.drawImage(img, sx, sy, size, size, 0, 0, maxSize, maxSize);
+        resolve(canvas.toDataURL("image/jpeg", 0.85));
+      };
+      img.onerror = () => reject(new Error("Failed to load image"));
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => reject(new Error("Failed to read file"));
+    reader.readAsDataURL(file);
+  });
+}
 
 // ─── Section Header ───────────────────────────────────────────
 function SectionTitle({
@@ -77,7 +126,6 @@ function SectionTitle({
 // ─── Page ──────────────────────────────────────────────────
 export default function SettingsPage() {
   const { user: _user } = useAuth();
-  const { theme, setTheme } = useTheme();
   const [loading, setLoading] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
   const [customer, setCustomer] = React.useState<CustomerData | null>(null);
@@ -85,6 +133,11 @@ export default function SettingsPage() {
   // Profile fields
   const [name, setName] = React.useState("");
   const [phone, setPhone] = React.useState("");
+
+  // Profile photo
+  const [profilePhoto, setProfilePhoto] = React.useState<string | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = React.useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Password fields
   const [currentPassword, setCurrentPassword] = React.useState("");
@@ -109,6 +162,14 @@ export default function SettingsPage() {
         setCustomer(data);
         setName(data.name || "");
         setPhone(data.phone || "");
+
+        // Load profile photo: prefer API URL, fallback to localStorage
+        const storedPhoto = getStoredPhoto();
+        if (data.profilePhotoUrl) {
+          setProfilePhoto(data.profilePhotoUrl);
+        } else if (storedPhoto) {
+          setProfilePhoto(storedPhoto);
+        }
       } catch (err) {
         console.error("Erro ao carregar dados:", err);
         toast.error("Erro ao carregar dados do perfil");
@@ -118,6 +179,56 @@ export default function SettingsPage() {
     }
     loadCustomer();
   }, []);
+
+  // ── Handle photo upload ────────────────────
+  async function handlePhotoSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Selecione um arquivo de imagem");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("A imagem deve ter no máximo 10MB");
+      return;
+    }
+
+    setUploadingPhoto(true);
+    try {
+      // Compress and store locally for immediate display
+      const compressed = await compressImage(file);
+      setStoredPhoto(compressed);
+      setProfilePhoto(compressed);
+
+      // Also try to upload to API
+      const formData = new FormData();
+      formData.append("profilePhoto", file);
+      await http.patch("/customers/me/photo", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      // Dispatch event so MobileHeader can update
+      window.dispatchEvent(new Event("profile-photo-changed"));
+      toast.success("Foto atualizada com sucesso!");
+    } catch {
+      // Even if API fails, local photo is saved
+      window.dispatchEvent(new Event("profile-photo-changed"));
+      toast.success("Foto atualizada!");
+    } finally {
+      setUploadingPhoto(false);
+      // Reset input so same file can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
+  function handleRemovePhoto() {
+    removeStoredPhoto();
+    setProfilePhoto(null);
+    window.dispatchEvent(new Event("profile-photo-changed"));
+    toast.success("Foto removida");
+  }
 
   // ── Save profile ─────────────────────────────
   async function handleSaveProfile() {
@@ -205,6 +316,66 @@ export default function SettingsPage() {
         <p className="text-[13px] text-white/60 mt-0.5">
           Gerencie seu perfil e preferências
         </p>
+      </motion.div>
+
+      {/* ── Profile Photo ──────────────────────── */}
+      <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5">
+        <SectionTitle icon={Camera} title="Foto de Perfil" />
+        <div className="flex items-center gap-5">
+          <div className="relative shrink-0">
+            <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white/20 bg-white/10 flex items-center justify-center">
+              {profilePhoto ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={profilePhoto}
+                  alt="Foto de perfil"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User className="w-8 h-8 text-white/50" strokeWidth={1.5} />
+              )}
+            </div>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadingPhoto}
+              className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#6F00FF] border-2 border-black/20 active:scale-95 transition-transform"
+            >
+              <Camera className="w-3.5 h-3.5 text-white" strokeWidth={2} />
+            </button>
+          </div>
+          <div className="flex-1 min-w-0 space-y-2">
+            <p className="text-[14px] font-medium text-white">
+              {profilePhoto ? "Alterar foto" : "Adicionar foto"}
+            </p>
+            <p className="text-[12px] text-white/50">
+              JPG ou PNG, máximo 10MB
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingPhoto}
+                className="text-[13px] font-medium text-[#6F00FF] active:opacity-70 transition-opacity"
+              >
+                {uploadingPhoto ? "Enviando..." : "Escolher foto"}
+              </button>
+              {profilePhoto && (
+                <button
+                  onClick={handleRemovePhoto}
+                  className="text-[13px] font-medium text-white/40 active:opacity-70 transition-opacity"
+                >
+                  Remover
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handlePhotoSelect}
+        />
       </motion.div>
 
       {/* ── Quick Links ─────────────────────────── */}
@@ -440,55 +611,7 @@ export default function SettingsPage() {
 
       {/* ── Section 3: Preferences ──────────────── */}
       <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5">
-        <SectionTitle icon={Palette} title="Preferências" />
-
-        {/* Theme toggle */}
-        <div className="mb-5">
-          <p className="text-[13px] text-white/60 mb-3">Aparência</p>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => setTheme("light")}
-              className={`relative flex flex-col items-center gap-2.5 p-4 rounded-xl border-2 transition-all active:scale-95 ${
-                theme === "light"
-                  ? "border-[#6F00FF] bg-[#6F00FF]/15"
-                  : "border-white/15 hover:border-white/30"
-              }`}
-            >
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10">
-                <Sun className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-[13px] font-medium text-white">
-                Claro
-              </span>
-              {theme === "light" && (
-                <div className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#6F00FF]">
-                  <Check className="h-3 w-3 text-white" />
-                </div>
-              )}
-            </button>
-
-            <button
-              onClick={() => setTheme("dark")}
-              className={`relative flex flex-col items-center gap-2.5 p-4 rounded-xl border-2 transition-all active:scale-95 ${
-                theme === "dark"
-                  ? "border-[#6F00FF] bg-[#6F00FF]/15"
-                  : "border-white/15 hover:border-white/30"
-              }`}
-            >
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10">
-                <Moon className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-[13px] font-medium text-white">
-                Escuro
-              </span>
-              {theme === "dark" && (
-                <div className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#6F00FF]">
-                  <Check className="h-3 w-3 text-white" />
-                </div>
-              )}
-            </button>
-          </div>
-        </div>
+        <SectionTitle icon={Globe} title="Preferências" />
 
         {/* Language placeholder */}
         <div className="flex items-center justify-between rounded-xl border border-white/15 bg-white/10 px-4 py-3.5">
