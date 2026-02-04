@@ -49,12 +49,22 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
         body.style.inset = '0';
         body.style.backgroundColor = '#0C0432';
         window.scrollTo(0, 0);
+
+        // Prevent pinch-to-zoom in iOS PWA — gesturestart fires for
+        // two-finger gestures before touchmove. Blocking it prevents
+        // the page from zooming out and exposing the background.
+        const preventZoom = (e: Event) => e.preventDefault();
+        document.addEventListener('gesturestart', preventZoom, { passive: false } as EventListenerOptions);
+        document.addEventListener('gesturechange', preventZoom, { passive: false } as EventListenerOptions);
+
         return () => {
             html.style.overflow = orig.htmlOverflow;
             body.style.overflow = orig.bodyOverflow;
             body.style.position = orig.bodyPosition;
             body.style.inset = orig.bodyInset;
             body.style.backgroundColor = orig.bodyBg;
+            document.removeEventListener('gesturestart', preventZoom);
+            document.removeEventListener('gesturechange', preventZoom);
         };
     }, []);
 
