@@ -37,7 +37,6 @@ const DEPOSIT_STATUS_LABELS: Record<DepositStatus, string> = {
 
 const DEPOSIT_STATUS_ORDER: DepositStatus[] = ["WAITING", "RECEIVED", "CONFIRMED"];
 
-const QUICK_AMOUNTS = [50, 100, 200, 500, 1000];
 
 export function DepositModal() {
     const { user } = useAuth();
@@ -83,10 +82,6 @@ export function DepositModal() {
         const rawValue = e.target.value.replace(/\D/g, "");
         const newCents = parseInt(rawValue || "0", 10);
         setCents(newCents);
-    }
-
-    function handleQuickAmount(reais: number) {
-        setCents(reais * 100);
     }
 
     // ── Polling logic ────────────────────────────────────────
@@ -301,20 +296,8 @@ export function DepositModal() {
                                     onChange={handleInputChange}
                                     placeholder="0,00"
                                     className="w-full pl-12 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
-                                    autoFocus
+                                    autoFocus={false}
                                 />
-                            </div>
-
-                            <div className="flex flex-wrap gap-2 justify-center">
-                                {QUICK_AMOUNTS.map((value) => (
-                                    <button
-                                        key={value}
-                                        onClick={() => handleQuickAmount(value)}
-                                        className="px-4 py-2 text-sm font-medium rounded-full border border-[#6F00FF]/30 bg-[#6F00FF]/10 text-[#6F00FF] dark:text-[#A78BFA] hover:bg-[#6F00FF]/20 hover:border-[#6F00FF]/50 transition-colors"
-                                    >
-                                        R$ {value}
-                                    </button>
-                                ))}
                             </div>
 
                             <Button
