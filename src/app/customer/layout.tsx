@@ -141,32 +141,37 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 {/* Single scroll surface — header + content scroll together.
                     No fixed/sticky header = no permanent non-scrollable zone. */}
                 <div ref={scrollRef} data-scroll-container className="flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain">
-                    {/* Header scrolls with content — collapses naturally on scroll */}
-                    <MobileHeader customerName={customerName} />
+                    {/* min-h wrapper ensures content always overflows the scroll
+                        container by at least 1px, so iOS rubber-band bounce
+                        triggers on ALL pages (not just long ones). */}
+                    <div className="min-h-[calc(100%+1px)]">
+                        {/* Header scrolls with content — collapses naturally on scroll */}
+                        <MobileHeader customerName={customerName} />
 
-                    <AnimatePresence mode="wait">
-                        <motion.main
-                            key={pathname}
-                            className="px-4 page-content"
-                            initial={{ opacity: 0, y: 6, scale: 0.97 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.97 }}
-                            transition={{
-                                type: "spring",
-                                stiffness: 380,
-                                damping: 30,
-                                mass: 0.8,
-                            }}
-                        >
-                            {loading ? (
-                                <div className="flex items-center justify-center h-[60dvh]">
-                                    <LoadingSpinner />
-                                </div>
-                            ) : (
-                                children
-                            )}
-                        </motion.main>
-                    </AnimatePresence>
+                        <AnimatePresence mode="wait">
+                            <motion.main
+                                key={pathname}
+                                className="px-4 page-content"
+                                initial={{ opacity: 0, y: 6, scale: 0.97 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.97 }}
+                                transition={{
+                                    type: "spring",
+                                    stiffness: 380,
+                                    damping: 30,
+                                    mass: 0.8,
+                                }}
+                            >
+                                {loading ? (
+                                    <div className="flex items-center justify-center h-[60dvh]">
+                                        <LoadingSpinner />
+                                    </div>
+                                ) : (
+                                    children
+                                )}
+                            </motion.main>
+                        </AnimatePresence>
+                    </div>
                 </div>
 
                 {/* Fixed floating dock — sits above content */}

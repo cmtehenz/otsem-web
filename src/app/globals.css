@@ -149,8 +149,8 @@
     html {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        /* Dark purple fallback — matches background image bottom so bottom safe area is dark */
-        background-color: #0C0432;
+        /* Dark fallback — matches background image top (dark end of gradient) */
+        background-color: #050010;
         height: 100%;
         margin: 0;
         padding: 0;
@@ -200,7 +200,7 @@
         /* IMPORTANT: Use background-color + background-image separately.
            The `background` shorthand resets background-color to transparent,
            which exposes the white iOS window behind the home indicator area. */
-        background-color: #0C0432;
+        background-color: #050010;
         background-image: url('/images/customer-bg.png');
         background-size: cover;
         background-position: center top;

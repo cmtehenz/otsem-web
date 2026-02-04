@@ -6,7 +6,7 @@
   "start_url": "/customer/dashboard",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
-  "background_color": "#0C0432",
+  "background_color": "#050010",
   "theme_color": "#6F00FF",
   "orientation": "portrait",
   "categories": ["finance", "business"],

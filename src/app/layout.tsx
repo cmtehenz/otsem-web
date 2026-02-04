@@ -76,7 +76,7 @@ export default async function RootLayout({
             alignItems: "center",
             justifyContent: "center",
             background: "url('/images/customer-bg.png') center top / cover no-repeat",
-            backgroundColor: "#0C0432",
+            backgroundColor: "#050010",
             transition: "opacity 0.4s ease-out",
           }}
         >
