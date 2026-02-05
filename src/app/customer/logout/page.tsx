@@ -2,18 +2,16 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function LogoutPage() {
-    const router = useRouter();
+    const { logout } = useAuth();
 
     React.useEffect(() => {
-        (async () => {
-            toast.success("Você saiu da sua conta.");
-            router.replace("/login");
-        })();
-    }, [router]);
+        toast.success("Você saiu da sua conta.");
+        logout();
+    }, [logout]);
 
     return (
         <div className="min-h-dvh grid place-items-center px-4">

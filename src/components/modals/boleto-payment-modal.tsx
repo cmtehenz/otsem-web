@@ -66,8 +66,16 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
     const [quote, setQuote] = React.useState<QuoteResponse | null>(null);
     const [loading, setLoading] = React.useState(false);
     const [paymentId, setPaymentId] = React.useState<string | null>(null);
+    const [amountActive, setAmountActive] = React.useState(false);
+    const amountInputRef = React.useRef<HTMLInputElement>(null);
 
     const numAmount = parseFloat(boletoAmount) || 0;
+
+    // Determine which crypto currencies are available based on wallets
+    const hasSolanaWallet = wallets.some((w) => w.network?.toLowerCase() === "solana");
+    const availableCurrencies: CryptoCurrency[] = hasSolanaWallet
+        ? ["USDT", "SOL", "TRX"]
+        : ["USDT", "TRX"];
 
     React.useEffect(() => {
         if (open) {
@@ -170,7 +178,28 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
             setQuote(null);
             setLoading(false);
             setPaymentId(null);
+            setAmountActive(false);
         }, 200);
+    }
+
+    function handleCryptoSelect(c: CryptoCurrency) {
+        setCryptoCurrency(c);
+        if (c === "SOL") {
+            // Auto-select the primary Solana wallet
+            const solanaWallet = wallets.find((w) => w.network?.toLowerCase() === "solana" && w.isMain)
+                || wallets.find((w) => w.network?.toLowerCase() === "solana");
+            if (solanaWallet) {
+                setSelectedWalletId(solanaWallet.id);
+            }
+        }
+    }
+
+    function handleAmountClick() {
+        if (!amountActive) {
+            setAmountActive(true);
+            // Focus the input after activating
+            setTimeout(() => amountInputRef.current?.focus(), 0);
+        }
     }
 
     function handleBack() {
@@ -224,18 +253,21 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                             {/* Amount input */}
                             <div className="space-y-2">
                                 <label className="text-muted-foreground text-sm">Valor do boleto (BRL)</label>
-                                <div className="relative">
+                                <div className="relative cursor-pointer" onClick={handleAmountClick}>
                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-lg">
                                         R$
                                     </span>
                                     <input
+                                        ref={amountInputRef}
                                         type="number"
                                         step="0.01"
                                         min={1}
                                         value={boletoAmount}
                                         onChange={(e) => setBoletoAmount(e.target.value)}
+                                        readOnly={!amountActive}
+                                        onFocus={() => setAmountActive(true)}
                                         placeholder="0,00"
-                                        className="w-full pl-12 pr-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                        className={`w-full pl-12 pr-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50 ${!amountActive ? "cursor-pointer" : ""}`}
                                     />
                                 </div>
                             </div>
@@ -244,10 +276,10 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                             <div className="space-y-2">
                                 <label className="text-muted-foreground text-sm">Moeda de pagamento</label>
                                 <div className="flex gap-2">
-                                    {(["USDT", "SOL", "TRX"] as CryptoCurrency[]).map((c) => (
+                                    {availableCurrencies.map((c) => (
                                         <button
                                             key={c}
-                                            onClick={() => setCryptoCurrency(c)}
+                                            onClick={() => handleCryptoSelect(c)}
                                             className={`flex-1 py-3 px-4 rounded-xl border transition font-medium text-sm ${
                                                 cryptoCurrency === c
                                                     ? "border-[#6F00FF] bg-[#6F00FF]/20 text-[#6F00FF] dark:text-[#8B2FFF]"
