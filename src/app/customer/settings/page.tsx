@@ -1,14 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { isAxiosError } from "axios";
 import { motion } from "framer-motion";
 import {
   User,
-  Lock,
   Globe,
-  Eye,
-  EyeOff,
   Camera,
   KeyRound,
   ShieldCheck,
@@ -164,15 +160,6 @@ export default function SettingsPage() {
   const [uploadingPhoto, setUploadingPhoto] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  // Password fields
-  const [currentPassword, setCurrentPassword] = React.useState("");
-  const [newPassword, setNewPassword] = React.useState("");
-  const [confirmPassword, setConfirmPassword] = React.useState("");
-  const [showCurrentPassword, setShowCurrentPassword] = React.useState(false);
-  const [showNewPassword, setShowNewPassword] = React.useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const [changingPassword, setChangingPassword] = React.useState(false);
-
   // ── Load customer ────────────────────────────
   React.useEffect(() => {
     async function loadCustomer() {
@@ -281,49 +268,11 @@ export default function SettingsPage() {
     }
   }
 
-  // ── Change password ──────────────────────────
-  async function handleChangePassword() {
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      toast.error("Preencha todos os campos");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      toast.error("As senhas não coincidem");
-      return;
-    }
-
-    if (newPassword.length < 6) {
-      toast.error("A nova senha deve ter pelo menos 6 caracteres");
-      return;
-    }
-
-    setChangingPassword(true);
-    try {
-      await http.post("/auth/change-password", {
-        currentPassword,
-        newPassword,
-      });
-      toast.success("Senha alterada com sucesso!");
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-    } catch (err: unknown) {
-      console.error("Erro ao alterar senha:", err);
-      const message = isAxiosError(err)
-        ? err.response?.data?.message
-        : undefined;
-      toast.error(message || "Erro ao alterar senha");
-    } finally {
-      setChangingPassword(false);
-    }
-  }
-
   // ── Loading state ────────────────────────────
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-white/60 text-[14px]">Carregando...</div>
+        <div className="text-white text-[14px]">Carregando...</div>
       </div>
     );
   }
@@ -345,7 +294,7 @@ export default function SettingsPage() {
         <h1 className="text-[22px] font-bold text-white">
           Configurações
         </h1>
-        <p className="text-[13px] text-white/60 mt-0.5">
+        <p className="text-[13px] text-white mt-0.5">
           Gerencie seu perfil e preferências
         </p>
       </motion.div>
@@ -364,7 +313,7 @@ export default function SettingsPage() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <User className="w-8 h-8 text-white/50" strokeWidth={1.5} />
+                <User className="w-8 h-8 text-white" strokeWidth={1.5} />
               )}
             </div>
             <button
@@ -379,7 +328,7 @@ export default function SettingsPage() {
             <p className="text-[14px] font-medium text-white">
               {profilePhoto ? "Alterar foto" : "Adicionar foto"}
             </p>
-            <p className="text-[12px] text-white/50">
+            <p className="text-[12px] text-white">
               JPG ou PNG, máximo 10MB
             </p>
             <div className="flex gap-2">
@@ -393,7 +342,7 @@ export default function SettingsPage() {
               {profilePhoto && (
                 <button
                   onClick={handleRemovePhoto}
-                  className="text-[13px] font-medium text-white/40 active:opacity-70 transition-opacity"
+                  className="text-[13px] font-medium text-white active:opacity-70 transition-opacity"
                 >
                   Remover
                 </button>
@@ -413,24 +362,24 @@ export default function SettingsPage() {
       {/* ── Quick Links ─────────────────────────── */}
       <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5 !p-2">
         {[
-          { href: "/customer/pix", icon: KeyRound, label: "Chaves PIX", sublabel: "Gerenciar suas chaves", color: "text-white", bg: "bg-white/10" },
-          { href: "/customer/kyc", icon: ShieldCheck, label: "Verificação", sublabel: "Limites e documentos", color: "text-white", bg: "bg-white/10" },
-          { href: "/customer/affiliates", icon: Users, label: "Indicações", sublabel: "Convide amigos e ganhe", color: "text-white", bg: "bg-white/10" },
-          { href: "/customer/support", icon: HelpCircle, label: "Suporte", sublabel: "Ajuda e contato", color: "text-white", bg: "bg-white/10" },
+          { href: "/customer/pix", icon: KeyRound, label: "Chaves PIX", sublabel: "Gerenciar suas chaves" },
+          { href: "/customer/kyc", icon: ShieldCheck, label: "Verificação", sublabel: "Limites e documentos" },
+          { href: "/customer/affiliates", icon: Users, label: "Indicações", sublabel: "Convide amigos e ganhe" },
+          { href: "/customer/support", icon: HelpCircle, label: "Suporte", sublabel: "Ajuda e contato" },
         ].map((item) => (
           <Link
             key={item.href}
             href={item.href}
             className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl active:bg-white/10 transition-colors"
           >
-            <div className={`flex h-10 w-10 items-center justify-center rounded-full ${item.bg} shrink-0`}>
-              <item.icon className={`h-5 w-5 ${item.color}`} strokeWidth={1.8} />
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 shrink-0">
+              <item.icon className="h-5 w-5 text-white" strokeWidth={1.8} />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[14px] font-semibold text-white">{item.label}</p>
-              <p className="text-[12px] text-white/60">{item.sublabel}</p>
+              <p className="text-[12px] text-white">{item.sublabel}</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-white/40 shrink-0" />
+            <ChevronRight className="h-4 w-4 text-white shrink-0" />
           </Link>
         ))}
 
@@ -441,9 +390,9 @@ export default function SettingsPage() {
           className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl active:bg-red-500/10 transition-colors"
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 shrink-0">
-            <LogOut className="h-5 w-5 text-white/70" strokeWidth={1.8} />
+            <LogOut className="h-5 w-5 text-white" strokeWidth={1.8} />
           </div>
-          <p className="text-[14px] font-semibold text-white/70">Sair</p>
+          <p className="text-[14px] font-semibold text-white">Sair</p>
         </Link>
       </motion.div>
 
@@ -456,7 +405,7 @@ export default function SettingsPage() {
           <div className="space-y-1.5">
             <Label
               htmlFor="name"
-              className="text-[13px] text-white/60"
+              className="text-[13px] text-white"
             >
               Nome completo
             </Label>
@@ -465,7 +414,7 @@ export default function SettingsPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Seu nome"
-              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px]"
+              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/40"
             />
           </div>
 
@@ -473,7 +422,7 @@ export default function SettingsPage() {
           <div className="space-y-1.5">
             <Label
               htmlFor="email"
-              className="text-[13px] text-white/60"
+              className="text-[13px] text-white"
             >
               Email
             </Label>
@@ -481,9 +430,9 @@ export default function SettingsPage() {
               id="email"
               value={customer?.email || ""}
               disabled
-              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] opacity-60"
+              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/40 disabled:opacity-100"
             />
-            <p className="text-[12px] text-white/50">
+            <p className="text-[12px] text-white">
               O email não pode ser alterado
             </p>
           </div>
@@ -492,7 +441,7 @@ export default function SettingsPage() {
           <div className="space-y-1.5">
             <Label
               htmlFor="phone"
-              className="text-[13px] text-white/60"
+              className="text-[13px] text-white"
             >
               Telefone
             </Label>
@@ -501,7 +450,7 @@ export default function SettingsPage() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="(00) 00000-0000"
-              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px]"
+              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/40"
             />
           </div>
 
@@ -510,7 +459,7 @@ export default function SettingsPage() {
             <div className="space-y-1.5">
               <Label
                 htmlFor="cpf"
-                className="text-[13px] text-white/60"
+                className="text-[13px] text-white"
               >
                 CPF
               </Label>
@@ -518,7 +467,7 @@ export default function SettingsPage() {
                 id="cpf"
                 value={formattedCpf}
                 disabled
-                className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] opacity-60"
+                className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/40 disabled:opacity-100"
               />
             </div>
           )}
@@ -533,119 +482,11 @@ export default function SettingsPage() {
         </Button>
       </motion.div>
 
-      {/* ── Section 2: Security ─────────────────── */}
-      <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5">
-        <SectionTitle icon={Lock} title="Alterar Senha" />
-
-        <div className="space-y-4">
-          {/* Current password */}
-          <div className="space-y-1.5">
-            <Label
-              htmlFor="currentPassword"
-              className="text-[13px] text-white/60"
-            >
-              Senha atual
-            </Label>
-            <div className="relative">
-              <Input
-                id="currentPassword"
-                type={showCurrentPassword ? "text" : "password"}
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="Digite sua senha atual"
-                className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] pr-11"
-              />
-              <button
-                type="button"
-                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white active:scale-95 transition-transform"
-              >
-                {showCurrentPassword ? (
-                  <EyeOff className="w-4 h-4" />
-                ) : (
-                  <Eye className="w-4 h-4" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* New password */}
-          <div className="space-y-1.5">
-            <Label
-              htmlFor="newPassword"
-              className="text-[13px] text-white/60"
-            >
-              Nova senha
-            </Label>
-            <div className="relative">
-              <Input
-                id="newPassword"
-                type={showNewPassword ? "text" : "password"}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Digite a nova senha"
-                className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] pr-11"
-              />
-              <button
-                type="button"
-                onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white active:scale-95 transition-transform"
-              >
-                {showNewPassword ? (
-                  <EyeOff className="w-4 h-4" />
-                ) : (
-                  <Eye className="w-4 h-4" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Confirm password */}
-          <div className="space-y-1.5">
-            <Label
-              htmlFor="confirmPassword"
-              className="text-[13px] text-white/60"
-            >
-              Confirmar nova senha
-            </Label>
-            <div className="relative">
-              <Input
-                id="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirme a nova senha"
-                className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] pr-11"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white active:scale-95 transition-transform"
-              >
-                {showConfirmPassword ? (
-                  <EyeOff className="w-4 h-4" />
-                ) : (
-                  <Eye className="w-4 h-4" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <Button
-          onClick={handleChangePassword}
-          disabled={changingPassword}
-          className="mt-6 bg-[#6F00FF] hover:bg-[#6F00FF]/90 text-white rounded-2xl h-12 w-full text-[14px] font-semibold active:scale-95 transition-transform"
-        >
-          {changingPassword ? "Alterando..." : "Alterar senha"}
-        </Button>
-      </motion.div>
-
-      {/* ── Section 3: Preferences ──────────────── */}
+      {/* ── Section 2: Preferences ──────────────── */}
       <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5">
         <SectionTitle icon={Globe} title="Preferências" />
 
-        <p className="text-[13px] text-white/60 mb-3">Idioma</p>
+        <p className="text-[13px] text-white mb-3">Idioma</p>
         <div className="grid grid-cols-2 gap-2.5">
           {LOCALES.map((locale) => (
             <button

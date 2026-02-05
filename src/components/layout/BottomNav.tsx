@@ -91,7 +91,7 @@ export function BottomNav() {
         yTarget.set(visible ? 0 : 1);
     }, [visible, yTarget]);
 
-    // Get the index of the active tab for glow orb positioning
+    // Get the index of the active tab for metaball positioning
     const activeIndex = tabs.findIndex((t) => t.id === activeTab);
 
     return (
@@ -101,27 +101,63 @@ export function BottomNav() {
                 onClose={() => setActionSheetOpen(false)}
             />
 
-            {/* Floating Liquid Glass dock — safe area aware */}
+            {/* SVG filter for metaball gooey effect */}
+            <svg className="absolute w-0 h-0" aria-hidden="true">
+                <defs>
+                    <filter id="metaball-goo">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+                        <feColorMatrix
+                            in="blur"
+                            mode="matrix"
+                            values="1 0 0 0 0
+                                    0 1 0 0 0
+                                    0 0 1 0 0
+                                    0 0 0 20 -10"
+                            result="goo"
+                        />
+                        <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+                    </filter>
+                </defs>
+            </svg>
+
+            {/* Floating Metaball Glass dock */}
             <motion.nav
                 className="bottom-nav-container pointer-events-none"
                 style={{ y }}
             >
-                <div className="liquid-glass-dock pointer-events-auto">
-                    <div className="relative z-10 flex items-center justify-around h-[72px] px-4">
-                        {/* Animated Glow Orb — slides behind active tab */}
+                <div className="metaball-glass-dock pointer-events-auto">
+                    {/* Metaball layer — the gooey active bubble */}
+                    <div
+                        className="absolute inset-0 z-0"
+                        style={{ filter: "url(#metaball-goo)" }}
+                    >
+                        {/* Bar base shape */}
+                        <div className="absolute inset-0 rounded-[28px] bg-white/[0.08]" />
+
+                        {/* Active tab metaball bubble */}
                         {activeIndex >= 0 && activeIndex !== 2 && (
                             <motion.div
-                                layoutId="active-pill"
-                                transition={iosSpring}
-                                className="absolute h-12 w-12 rounded-full z-0"
+                                className="absolute rounded-full bg-white/[0.18]"
                                 style={{
-                                    background: "radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(139,47,255,0.08) 60%, transparent 100%)",
-                                    filter: "blur(16px)",
-                                    left: `calc(${(activeIndex / tabs.length) * 100}% + ${100 / tabs.length / 2}% - 24px)`,
+                                    width: 52,
+                                    height: 52,
+                                    top: -10,
+                                }}
+                                animate={{
+                                    left: `calc(${(activeIndex / tabs.length) * 100}% + ${100 / tabs.length / 2}% - 26px)`,
+                                }}
+                                transition={{
+                                    type: "spring",
+                                    stiffness: 380,
+                                    damping: 28,
+                                    mass: 0.9,
                                 }}
                             />
                         )}
+                    </div>
 
+                    {/* Tab icons layer */}
+                    <div className="relative z-10 flex items-center justify-around h-[68px] px-3">
                         {tabs.map((tab) => {
                             const isActive = tab.id === activeTab;
                             const isAction = tab.id === "action";
@@ -175,6 +211,7 @@ export function BottomNav() {
                                         className="relative flex flex-col items-center gap-1 z-10"
                                         whileTap={{ scale: 0.82 }}
                                         transition={iosSpring}
+                                        animate={isActive ? { y: -4 } : { y: 0 }}
                                     >
                                         <Icon
                                             className={`w-[22px] h-[22px] transition-all duration-300 ${
@@ -185,7 +222,7 @@ export function BottomNav() {
                                             strokeWidth={isActive ? 2.2 : 1.6}
                                         />
                                         <span
-                                            className={`text-[11px] leading-tight tracking-tight transition-all duration-300 ${
+                                            className={`text-[10px] leading-tight tracking-tight transition-all duration-300 ${
                                                 isActive
                                                     ? "text-white font-semibold"
                                                     : "text-white/70 font-medium"
