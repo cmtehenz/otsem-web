@@ -258,6 +258,27 @@
     "setUsername": "Definir username",
     "savingUsername": "Salvando..."
   },
+  "mercado": {
+    "title": "Mercado",
+    "subtitle": "Top 100 tokens por capitalização",
+    "searchPlaceholder": "Buscar tokens...",
+    "loading": "Carregando dados do mercado...",
+    "noResults": "Nenhum token encontrado para",
+    "updated": "Atualizado",
+    "ago": "atrás",
+    "rateLimited": "Limite de requisições atingido. Os dados serão atualizados automaticamente.",
+    "fetchError": "Erro ao carregar dados do mercado. Tentando novamente...",
+    "currentPrice": "Preço Atual",
+    "marketCap": "Cap. de Mercado",
+    "volume24h": "Volume (24h)",
+    "high24h": "Máxima (24h)",
+    "low24h": "Mínima (24h)",
+    "circulatingSupply": "Oferta Circulante",
+    "maxSupply": "Oferta Máxima",
+    "ath": "Máxima Histórica",
+    "athChange": "Var. da Máxima",
+    "viewMarket": "Ver Mercado"
+  },
   "footer": {
     "description": "Converta BRL em USDT instantaneamente com segurança institucional e as menores taxas do mercado.",
     "globalPlatform": "Plataforma Financeira Global",
