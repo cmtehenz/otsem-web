@@ -100,6 +100,8 @@ otsem-web/
 | `/customer/settings` | Account settings |
 | `/customer/support` | Support/help |
 | `/customer/affiliates` | Referral program |
+| `/customer/boleto` | Boleto payment processing |
+| `/customer/mercado` | Market/trading interface (crypto token prices) |
 | `/customer/onboarding` | Onboarding flow (redirected to if `onboardingCompleted === false`) |
 | `/customer/logout` | Logout |
 
@@ -126,6 +128,7 @@ otsem-web/
 | `/admin/affiliates/[id]` | Affiliate detail |
 | `/admin/recebidos` | Received transactions |
 | `/admin/sell-deposits` | USDT sale management |
+| `/admin/boleto-payments` | Boleto payment management |
 | `/admin/settings/bank` | Bank settings |
 
 ## API Integration
@@ -133,17 +136,23 @@ otsem-web/
 There is no Next.js API route or middleware. All backend calls are proxied via **Next.js rewrites** in `next.config.ts`:
 
 ```
-/auth/*           → {API_URL}/auth/*
-/pix/*            → {API_URL}/pix/*
-/accounts/*       → {API_URL}/accounts/*
-/customers/*      → {API_URL}/customers/*
-/wallet/*         → {API_URL}/wallet/*
-/fdbank/*         → {API_URL}/fdbank/*
-/inter/*          → {API_URL}/inter/*
-/transactions/*   → {API_URL}/transactions/*
+/api/*              → {API_URL}/*              (catch-all, used by httpClient)
+/auth/*             → {API_URL}/auth/*
+/pix/*              → {API_URL}/pix/*
+/pix-keys/*         → {API_URL}/pix-keys/*
+/accounts/*         → {API_URL}/accounts/*
+/customers/*        → {API_URL}/customers/*
+/wallet/*           → {API_URL}/wallet/*
+/fdbank/*           → {API_URL}/fdbank/*
+/inter/*            → {API_URL}/inter/*
+/transactions/*     → {API_URL}/transactions/*
+/transfers/*        → {API_URL}/transfers/*
+/payments/*         → {API_URL}/payments/*
+/public/*           → {API_URL}/public/*
+/boleto-payments/*  → {API_URL}/boleto-payments/*
 ```
 
-Default API base: `https://api.otsembank.com` (overridden by `NEXT_PUBLIC_API_URL` env var).
+Default API base: `https://api.otsembank.com` (overridden by `NEXT_PUBLIC_API_URL` or `NEXT_PUBLIC_API_BASE_URL` env var).
 
 The HTTP client (`src/lib/http.ts`) adds `Authorization: Bearer {token}` to all requests unless `X-Anonymous` header is set. On 401 response, tokens are cleared and the user is redirected to `/login`.
 
@@ -167,7 +176,7 @@ NEXT_PUBLIC_VAPID_PUBLIC_KEY=                         # Web Push notifications
 
 ### Modal Store (`src/stores/ui-modals.ts` — Zustand)
 
-Modal keys: `pix`, `convertBrlUsdt`, `convertUsdtBrl`, `sellUsdt`, `sendUsdt`, `receiveUsdt`, `deposit`, `withdraw`
+Modal keys: `pix`, `convertBrlUsdt`, `convertUsdtBrl`, `sellUsdt`, `sendUsdt`, `receiveUsdt`, `deposit`, `withdraw`, `usernameTransfer`, `payBoleto`
 
 Methods: `openModal()`, `closeModal()`, `toggleModal()`, `closeAll()`, `triggerRefresh()`, `triggerDepositBoost()`
 
@@ -215,7 +224,7 @@ For text gradients: `from-[#6F00FF] to-[#8B2FFF]` (vibrant, not washed).
 
 #### Typography
 
-- Font stack: `"Figtree"` (Google Fonts) with fallback to `-apple-system, BlinkMacSystemFont, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif`
+- Font stack: `"Figtree"` (via `@fontsource-variable/figtree`, self-hosted) with fallback to `-apple-system, BlinkMacSystemFont, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif`
 - Text rendering: `-webkit-font-smoothing: antialiased`, `font-feature-settings: "kern" 1, "liga" 1, "calt" 1`
 - **All customer-facing text is white** — no grey (`#94A3B8`) or low-opacity (`white/40`, `white/35`) text on the purple gradient background
 - Inactive navigation labels: `text-white/70` (not dimmer)
@@ -340,6 +349,7 @@ Default theme is `light` (set in `ThemeProvider` in `src/app/layout.tsx`). The P
 |------|---------|
 | `src/hooks/use-health-check.ts` | API health status checking |
 | `src/hooks/use-mobile.ts` | Mobile device detection |
+| `src/hooks/use-top-tokens.ts` | Top crypto token prices from CoinGecko (configurable currency, polling) |
 
 ## TypeScript Types
 
@@ -359,6 +369,7 @@ type CustomerResponse = {
     email: string;
     phone?: string;
     birthday?: string;
+    username?: string | null; // Username for transfers
     profilePhotoUrl?: string;
     address?: CustomerAddress;
     createdAt: string;
@@ -449,18 +460,24 @@ type PartyDetails = { name: string; maskedTaxNumber: string; pixKey?: string; ba
 | `src/components/modals/receipt-sheet.tsx` | Transaction receipt bottom sheet |
 | `src/components/modals/transaction-detail-sheet.tsx` | Transaction detail view bottom sheet |
 | `src/components/modals/send-email-modal.tsx` | Send receipt via email |
+| `src/components/modals/username-transfer-modal.tsx` | USDT transfer by recipient username |
+| `src/components/modals/boleto-payment-modal.tsx` | Boleto payment processing |
 | `src/components/modals/kyc-upgrade-modal.tsx` | KYC document upload |
 | `src/components/layout/PwaInstallPrompt.tsx` | iOS "Add to Home Screen" prompt |
 | `src/components/app-sidebar.tsx` | Admin sidebar navigation |
 | `src/components/auth/Protected.tsx` | Route protection wrapper |
 | `src/components/auth/RoleGuard.tsx` | Admin/Customer role enforcement |
+| `src/components/ui/exchange-widget.tsx` | BRL/USDT exchange rate widget |
+| `src/components/ui/exchange-widget-mobile.tsx` | Mobile-optimized exchange widget |
+| `src/components/ui/input-otp.tsx` | OTP input component (wraps `input-otp`) |
+| `src/components/connection-status.tsx` | Backend connection lost/restored toast notifications |
 | `public/manifest.json` | PWA manifest (standalone, shortcuts, icons) |
 | `public/sw.js` | Service worker |
 | `next.config.ts` | API rewrites, standalone output, next-intl plugin |
 
 ## PWA Configuration
 
-- `public/manifest.json` — name: "Otsem Pay", display: standalone, start_url: `/customer/dashboard`, theme_color: `#6F00FF`, background_color: `#050010`
+- `public/manifest.json` — name: "Otsem Pay", display: standalone, start_url: `/customer/dashboard`, theme_color: `#6F00FF`, background_color: `#050010`, categories: `["finance", "business"]`, display_override: `["standalone", "minimal-ui"]`
 - PWA shortcuts: Depositar (deposit), Transacoes (transactions), Carteira (wallet)
 - `public/apple-touch-icon.png` (180x180), `icon-192.png`, `icon-512.png`, `icon-1024.png` — with maskable variants
 - `public/splash/` — 11 iOS splash screens for different device sizes
@@ -503,18 +520,25 @@ The pre-commit hook also runs `scripts/verify-lockfile-sync.sh` to ensure `packa
 | `swr` | ^2.3.6 | Data fetching with caching |
 | `next-intl` | ^4.8.0 | Internationalization |
 | `react-hook-form` | ^7.63.0 | Form state management |
+| `@hookform/resolvers` | ^5.2.2 | RHF schema resolvers (Zod integration) |
 | `zod` | ^4.1.11 | Schema validation |
 | `@radix-ui/*` | various | Accessible UI primitives |
 | `lucide-react` | ^0.542.0 | Icon library |
 | `sonner` | ^2.0.7 | Toast notifications |
 | `@solana/web3.js` | ^1.98.4 | Solana blockchain |
+| `bs58` | ^6.0.0 | Base58 encoding (Solana keys) |
 | `tronweb` | ^6.1.1 | Tron blockchain |
 | `@uppy/*` | ^5.x | File upload (S3) |
 | `otplib` | ^13.2.1 | TOTP 2FA |
+| `input-otp` | ^1.4.2 | OTP input component |
 | `qrcode` / `qrcode.react` | various | QR code generation |
 | `date-fns` / `dayjs` | various | Date utilities |
+| `react-day-picker` | ^9.11.1 | Calendar date picker |
 | `html2canvas` | ^1.4.1 | Screenshot/receipt image generation |
 | `numeral` | ^2.0.6 | Number formatting |
+| `use-debounce` | ^10.0.6 | Debounce hook (admin search) |
+| `class-variance-authority` | ^0.7.1 | Component variant styling |
+| `@fontsource-variable/figtree` | ^5.2.10 | Self-hosted Figtree variable font |
 | `@google-cloud/storage` | ^7.18.0 | Google Cloud Storage (file uploads) |
 | `next-themes` | ^0.4.6 | Theme management (light/dark) |
 | `husky` | ^9.1.7 | Git hooks |
@@ -535,3 +559,16 @@ GitHub Actions workflows in `.github/workflows/`:
 | `claude.yml` | Issues/comments with `claude` label or `@claude` mention | Claude Code AI agent — parses issues, makes code changes, creates PRs |
 
 **Deployment**: The app uses `output: 'standalone'` in `next.config.ts` for Docker-ready Fly.io deployment. Secrets required: `FLY_API_TOKEN`, `ANTHROPIC_API_KEY`.
+
+## Next.js Image Optimization
+
+Configured in `next.config.ts`:
+
+- Formats: WebP, AVIF
+- Device sizes: 640, 750, 828, 1080, 1200
+- Image sizes: 16, 32, 48, 64, 96, 128, 256
+- Remote patterns: `slelguoygbfzlpylpxfs.supabase.co` (Supabase storage)
+
+## Development
+
+`allowedDevOrigins` in `next.config.ts` permits Replit dev domains (`*.replit.dev`, `*.replit.app`).
