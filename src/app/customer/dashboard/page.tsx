@@ -532,7 +532,7 @@ export default function Dashboard() {
                         {balanceHidden ? "••••" : usdtBalanceLoading ? "..." : formatUSD(saldoUSDT)}
                     </p>
                     <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-white/[0.06]">
-                        <div className="w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#39FF14] animate-pulse" />
                         <span className="text-[11px] text-white">
                             1 USDT = {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 2)}
                         </span>

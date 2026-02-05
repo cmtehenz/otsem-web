@@ -24,6 +24,24 @@ import { toast } from "sonner";
 import http from "@/lib/http";
 import { useAuth } from "@/contexts/auth-context";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+// ─── Language config ──────────────────────────────────────────
+const LOCALES = [
+  { code: "pt-BR", label: "Português (Brasil)", flag: "\u{1F1E7}\u{1F1F7}" },
+  { code: "en", label: "English", flag: "\u{1F1FA}\u{1F1F8}" },
+  { code: "es", label: "Español", flag: "\u{1F1EA}\u{1F1F8}" },
+  { code: "ru", label: "Русский", flag: "\u{1F1F7}\u{1F1FA}" },
+] as const;
+
+function getCurrentLocale(): string {
+  try {
+    const match = document.cookie.match(/NEXT_LOCALE=([^;]+)/);
+    return match?.[1] || "pt-BR";
+  } catch {
+    return "pt-BR";
+  }
+}
 
 // ─── Animation variants ────────────────────────────────────────────
 const stagger = {
@@ -126,9 +144,16 @@ function SectionTitle({
 // ─── Page ──────────────────────────────────────────────────
 export default function SettingsPage() {
   const { user: _user } = useAuth();
+  const router = useRouter();
   const [loading, setLoading] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
   const [customer, setCustomer] = React.useState<CustomerData | null>(null);
+  const [currentLocale, setCurrentLocale] = React.useState("pt-BR");
+
+  // Initialize locale from cookie on mount
+  React.useEffect(() => {
+    setCurrentLocale(getCurrentLocale());
+  }, []);
 
   // Profile fields
   const [name, setName] = React.useState("");
@@ -228,6 +253,13 @@ export default function SettingsPage() {
     setProfilePhoto(null);
     window.dispatchEvent(new Event("profile-photo-changed"));
     toast.success("Foto removida");
+  }
+
+  // ── Switch language ────────────────────────────
+  function switchLocale(code: string) {
+    document.cookie = `NEXT_LOCALE=${code};path=/;max-age=31536000;SameSite=Lax`;
+    setCurrentLocale(code);
+    router.refresh();
   }
 
   // ── Save profile ─────────────────────────────
@@ -613,22 +645,24 @@ export default function SettingsPage() {
       <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5">
         <SectionTitle icon={Globe} title="Preferências" />
 
-        {/* Language placeholder */}
-        <div className="flex items-center justify-between rounded-xl border border-white/15 bg-white/10 px-4 py-3.5">
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
-              <Globe className="h-4 w-4 text-white/60" />
-            </div>
-            <div>
-              <p className="text-[14px] font-medium text-white">Idioma</p>
-              <p className="text-[12px] text-white/60">
-                Português (Brasil)
-              </p>
-            </div>
-          </div>
-          <span className="text-[12px] font-medium text-white/40 bg-white/10 px-2.5 py-1 rounded-full">
-            Em breve
-          </span>
+        <p className="text-[13px] text-white/60 mb-3">Idioma</p>
+        <div className="grid grid-cols-2 gap-2.5">
+          {LOCALES.map((locale) => (
+            <button
+              key={locale.code}
+              onClick={() => switchLocale(locale.code)}
+              className={`relative flex items-center gap-2.5 px-3.5 py-3 rounded-xl border-2 transition-all active:scale-95 ${
+                currentLocale === locale.code
+                  ? "border-[#6F00FF] bg-[#6F00FF]/15"
+                  : "border-white/15 hover:border-white/30"
+              }`}
+            >
+              <span className="text-[18px]">{locale.flag}</span>
+              <span className="text-[13px] font-medium text-white">
+                {locale.label}
+              </span>
+            </button>
+          ))}
         </div>
       </motion.div>
     </motion.div>
