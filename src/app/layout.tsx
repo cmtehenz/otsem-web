@@ -93,7 +93,7 @@ export default async function RootLayout({
             justifyContent: "center",
             background: "url('/images/customer-bg.png') center top / cover no-repeat",
             backgroundColor: "#050010",
-            transition: "opacity 0.4s ease-out",
+            transition: "opacity 0.2s ease-out",
           }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
