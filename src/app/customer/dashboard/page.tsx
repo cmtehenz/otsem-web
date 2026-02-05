@@ -13,6 +13,7 @@ import {
     Loader2,
     UserRoundSearch,
     TrendingUp,
+    Receipt,
 } from "lucide-react";
 import http from "@/lib/http";
 import { useAuth } from "@/contexts/auth-context";
