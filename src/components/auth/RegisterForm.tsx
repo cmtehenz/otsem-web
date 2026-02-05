@@ -317,7 +317,6 @@ function RegisterPageInner(): React.JSX.Element {
                 email: v.email,
                 password: v.password,
                 name: v.name,
-                username: v.username,
                 type: v.customerType,
             };
 
@@ -346,6 +345,16 @@ function RegisterPageInner(): React.JSX.Element {
                 "Max-Age=604800",
                 "SameSite=Lax",
             ].join("; ");
+
+            // Set username via separate endpoint (backend doesn't accept it during registration)
+            if (v.username) {
+                try {
+                    await http.patch("/customers/me", { username: v.username });
+                } catch {
+                    // Username will need to be set later in settings
+                    console.warn("Could not set username during registration");
+                }
+            }
 
             toast.success("Conta criada! Bem-vindo(a).");
             router.replace("/customer/dashboard");
