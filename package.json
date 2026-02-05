@@ -10,6 +10,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@fontsource-variable/figtree": "^5.2.10",
     "@google-cloud/storage": "^7.18.0",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.15",

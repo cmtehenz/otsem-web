@@ -91,10 +91,11 @@ export function MobileHeader({ customerName, profilePhotoUrl, username }: { cust
                     <div className="flex items-center gap-3.5">
                         <Link href="/customer/dashboard" className="flex items-center">
                             <Image
-                                src="/images/logo.png"
+                                src="/images/logo-128.png"
                                 alt="OtsemPay"
                                 width={44}
                                 height={44}
+                                priority
                                 className="object-contain"
                             />
                         </Link>

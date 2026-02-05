@@ -459,8 +459,10 @@ function RegisterPageInner(): React.JSX.Element {
                                 <div className="mx-auto flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center overflow-hidden">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
-                                        src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/8dca9fc2-17fe-42a1-b323-5e4a298d9904/Untitled-1769589355434.png?width=8000&height=8000&resize=contain"
+                                        src="/images/logo-128.png"
                                         alt="Otsem Pay"
+                                        width={48}
+                                        height={48}
                                         className="h-full w-full object-contain"
                                     />
                                 </div>

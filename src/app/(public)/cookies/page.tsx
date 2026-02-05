@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Cookie, Shield, Settings, Info, Clock, Mail } from "lucide-react";
 
@@ -14,7 +15,7 @@ export default function CookiesPolicyPage() {
       <header className="border-b border-white/5 bg-[#0a0118]/80 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-3">
-            <img src="/images/logo.png" alt="OtsemPay" className="h-10 w-10 object-contain" />
+            <Image src="/images/logo-64.png" alt="OtsemPay" width={40} height={40} className="h-10 w-10 object-contain" />
             <span className="text-xl font-bold tracking-tight">
               <span className="text-amber-400">Otsem</span>
               <span className="text-[#6F00FF]">Pay</span>

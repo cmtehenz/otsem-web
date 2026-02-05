@@ -240,9 +240,12 @@ function LoginPageInner(): React.JSX.Element {
                         <div className="overflow-hidden rounded-[2.5rem] fintech-glass-card p-0">
                             <div className="space-y-3 border-b border-white/[0.08] px-6 pt-8 pb-6 sm:px-8">
                                 <div className="mx-auto flex h-14 w-14 items-center justify-center overflow-hidden">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
-                                        src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/8dca9fc2-17fe-42a1-b323-5e4a298d9904/Untitled-1769589355434.png?width=8000&height=8000&resize=contain"
+                                        src="/images/logo-128.png"
                                         alt="Otsem Pay"
+                                        width={56}
+                                        height={56}
                                         className="h-full w-full object-contain"
                                     />
                                 </div>

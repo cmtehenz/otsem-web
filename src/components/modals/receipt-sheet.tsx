@@ -202,7 +202,7 @@ export function ReceiptSheet({ transactionId, open, onOpenChange }: Props) {
                                 <div style={{ textAlign: "center", marginBottom: "24px" }}>
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
-                                        src="/images/logo.png"
+                                        src="/images/logo-128.png"
                                         alt="Otsem Pay"
                                         style={{
                                             height: "36px",

@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Instagram } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -45,9 +46,12 @@ const Footer = () => {
           <div className="flex flex-col lg:flex-row lg:justify-between gap-8 sm:gap-10 lg:gap-12">
             <div className="lg:max-w-sm">
               <Link href="/" className="inline-flex items-center gap-2.5 mb-6 group ios-touch-effect">
-                <img
-                  src="/images/logo-light.png"
+                <Image
+                  src="/images/logo-light-64.png"
                   alt="Otsem Pay Logo"
+                  width={36}
+                  height={36}
+                  loading="lazy"
                   className="w-9 h-9 object-contain transition-transform duration-500 group-hover:rotate-12"
                 />
                 <span className="text-[1.35rem] font-black tracking-tighter flex items-center gap-1">

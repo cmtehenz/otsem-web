@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronRight, Sparkles } from "lucide-react";
 import haptic from "@/lib/haptics";
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
@@ -55,9 +56,12 @@ const Header = () => {
             href="/"
             onClick={handleNavClick}
           >
-            <img
-              src="/images/logo.png"
+            <Image
+              src="/images/logo-64.png"
               alt="Otsem Pay Logo"
+              width={32}
+              height={32}
+              priority
               className="w-7 h-7 sm:w-8 sm:h-8 object-contain relative z-10 transition-transform duration-150 group-hover:scale-105"
             />
 <span className="text-[1.35rem] font-black tracking-tighter flex items-center gap-1">

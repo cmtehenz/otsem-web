@@ -222,12 +222,17 @@ const HeroSection = () => {
             className="mt-8 sm:mt-10 flex items-center gap-4 sm:gap-5 border-t border-slate-100 pt-6 sm:pt-8"
           >
             <div className="flex -space-x-2.5">
-              {[1, 2, 3, 4].map((i) => (
+              {[
+                { bg: "bg-violet-500", initials: "MR" },
+                { bg: "bg-emerald-500", initials: "AS" },
+                { bg: "bg-amber-500", initials: "LC" },
+                { bg: "bg-sky-500", initials: "JP" },
+              ].map((avatar) => (
                 <div
-                  key={i}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-[2.5px] border-white bg-slate-100 overflow-hidden shadow-md"
+                  key={avatar.initials}
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full border-[2.5px] border-white ${avatar.bg} flex items-center justify-center text-[9px] sm:text-[10px] font-bold text-white shadow-md`}
                 >
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 42}`} alt="User" />
+                  {avatar.initials}
                 </div>
               ))}
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-[2.5px] border-white bg-primary flex items-center justify-center text-[8px] sm:text-[9px] font-semibold text-white shadow-md">

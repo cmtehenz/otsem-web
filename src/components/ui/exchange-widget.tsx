@@ -7,6 +7,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 
+const BrazilFlag = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="20" height="14" rx="1" fill="#009B3A" />
+    <path d="M10 1.5L18.5 7L10 12.5L1.5 7L10 1.5Z" fill="#FEDF00" />
+    <circle cx="10" cy="7" r="3.5" fill="#002776" />
+    <path d="M7 6.2C8.2 5.5 11.8 5.5 13 6.2" stroke="white" strokeWidth="0.5" fill="none" />
+  </svg>
+);
+
 const ExchangeWidget = () => {
   const [amount, setAmount] = useState("1000");
   const [buyRate, setBuyRate] = useState<number | null>(null);
@@ -193,7 +202,7 @@ const ExchangeWidget = () => {
                       <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">
                         {direction === "buy" ? (
                           <>
-                            <img src="https://flagcdn.com/w40/br.png" alt="BR" className="w-5 h-3.5 rounded object-cover" />
+                            <BrazilFlag className="w-5 h-3.5 rounded" />
                             <span className="text-sm font-bold text-slate-700">BRL</span>
                           </>
                         ) : (
@@ -247,7 +256,7 @@ const ExchangeWidget = () => {
                           </>
                         ) : (
                           <>
-                            <img src="https://flagcdn.com/w40/br.png" alt="BR" className="w-5 h-3.5 rounded object-cover" />
+                            <BrazilFlag className="w-5 h-3.5 rounded" />
                             <span className="text-sm font-bold text-slate-700">BRL</span>
                           </>
                         )}

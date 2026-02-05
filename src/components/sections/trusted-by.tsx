@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 const TrustedBy = () => {
@@ -35,9 +36,12 @@ const TrustedBy = () => {
                 className="group relative ios-touch-effect"
               >
                 <div className="transition-all duration-500 group-hover:scale-105">
-                    <img 
-                      src={logo.src} 
-                      alt={logo.name} 
+                    <Image
+                      src={logo.src}
+                      alt={logo.name}
+                      width={120}
+                      height={48}
+                      loading="lazy"
                       className="h-8 sm:h-10 md:h-12 w-auto object-contain"
                     />
                   </div>

@@ -1,4 +1,20 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
+
+const figtree = localFont({
+    src: [
+        {
+            path: "../../public/fonts/figtree-latin-wght-normal.woff2",
+            style: "normal",
+        },
+        {
+            path: "../../public/fonts/figtree-latin-ext-wght-normal.woff2",
+            style: "normal",
+        },
+    ],
+    display: "swap",
+    variable: "--font-figtree",
+});
 
 export const viewport: Viewport = {
     width: "device-width",
@@ -49,12 +65,8 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} className={figtree.variable} suppressHydrationWarning>
       <head>
-        {/* Figtree font from Google Fonts */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap" rel="stylesheet" />
         {/* iOS splash screens */}
         <link rel="apple-touch-startup-image" href="/splash/apple-splash-640x1136.png"  media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
         <link rel="apple-touch-startup-image" href="/splash/apple-splash-750x1334.png"  media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />

@@ -1,15 +1,18 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Header from "@/components/sections/header";
 import HeroSection from "@/components/sections/hero";
-import TrustedBy from "@/components/sections/trusted-by";
-import StatsGrid from "@/components/sections/stats-grid";
-import ComparisonSection from "@/components/sections/comparison";
-import HowItWorks from "@/components/sections/how-it-works";
-import FeaturesGrid from "@/components/sections/features-grid";
-import Pricing from "@/components/sections/pricing";
-import CTABanner from "@/components/sections/cta-banner";
-import Footer from "@/components/sections/footer";
+
+// Below-the-fold sections — lazy loaded to reduce initial JS bundle
+const TrustedBy = dynamic(() => import("@/components/sections/trusted-by"));
+const StatsGrid = dynamic(() => import("@/components/sections/stats-grid"));
+const ComparisonSection = dynamic(() => import("@/components/sections/comparison"));
+const HowItWorks = dynamic(() => import("@/components/sections/how-it-works"));
+const FeaturesGrid = dynamic(() => import("@/components/sections/features-grid"));
+const Pricing = dynamic(() => import("@/components/sections/pricing"));
+const CTABanner = dynamic(() => import("@/components/sections/cta-banner"));
+const Footer = dynamic(() => import("@/components/sections/footer"));
 
 export default function Home() {
   return (

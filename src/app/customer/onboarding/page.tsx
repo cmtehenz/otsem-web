@@ -112,7 +112,7 @@ export default function OnboardingPage() {
         <div className="flex min-h-screen flex-col bg-background">
             <header className="flex items-center justify-center border-b border-border/50 px-4 py-4">
                 <Image
-                    src="/images/logo.png"
+                    src="/images/logo-64.png"
                     alt="OtsemPay"
                     width={36}
                     height={36}

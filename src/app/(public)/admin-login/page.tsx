@@ -6,6 +6,7 @@ import { z } from "zod";
 import { useForm, type SubmitHandler, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import Image from "next/image";
 import { toast } from "sonner";
 import { Eye, EyeOff, Mail, Lock, Shield, ShieldCheck, KeyRound } from "lucide-react";
 
@@ -79,7 +80,7 @@ export default function AdminLoginPage() {
             <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-slate-950/80 backdrop-blur-xl">
                 <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
                     <Link href="/" className="flex items-center gap-3">
-                        <img src="/images/logo.png" alt="OtsemPay" className="h-10 w-10 object-contain" />
+                        <Image src="/images/logo-64.png" alt="OtsemPay" width={40} height={40} className="h-10 w-10 object-contain" />
                         <span className="text-xl font-bold tracking-tight">
                             <span className="text-amber-400">Otsem</span>
                             <span className="text-slate-400">Admin</span>
