@@ -279,10 +279,16 @@ function RegisterPageInner(): React.JSX.Element {
             // If found, username is taken
             setUsernameAvailable(false);
             form.setError("username", { message: "Este username já está em uso" });
-        } catch {
-            // 404 = not found = available
-            setUsernameAvailable(true);
-            form.clearErrors("username");
+        } catch (err: unknown) {
+            const status = (err as { response?: { status?: number } })?.response?.status;
+            if (status === 404) {
+                // 404 = not found = available
+                setUsernameAvailable(true);
+                form.clearErrors("username");
+            } else {
+                // Network error or unexpected status — don't assume available
+                setUsernameAvailable(null);
+            }
         } finally {
             setValidatingUsername(false);
         }
@@ -364,7 +370,8 @@ function RegisterPageInner(): React.JSX.Element {
                 } else if (msg.includes("invalid_cnpj")) {
                     form.setError("cnpj", { message: "CNPJ inválido" });
                     toast.error("CNPJ inválido");
-                } else if (msg.includes("username") && (msg.includes("taken") || msg.includes("already") || msg.includes("use"))) {
+                } else if (msg.includes("username") && (msg.includes("taken") || msg.includes("already") || msg.includes("in use") || msg.includes("in_use"))) {
+                    setUsernameAvailable(false);
                     form.setError("username", { message: "Este username já está em uso" });
                     toast.error("Este username já está em uso");
                 } else {
