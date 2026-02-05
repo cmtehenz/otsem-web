@@ -6,18 +6,16 @@ import { ArrowUpDown, Sparkles, TrendingUp, Shield, Clock, Wallet, Home, History
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.otsembank.com";
-
 const ExchangeWidgetMobile = () => {
   const [amount, setAmount] = useState("1000");
-  const [buyRate, setBuyRate] = useState(6.01);
-  const [sellRate, setSellRate] = useState(5.95);
+  const [buyRate, setBuyRate] = useState<number | null>(null);
+  const [sellRate, setSellRate] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [direction, setDirection] = useState<"buy" | "sell">("buy");
   const [showRateUpdate, setShowRateUpdate] = useState(false);
-  const [countdown, setCountdown] = useState(30);
-  const prevRateRef = useRef(buyRate);
+  const [countdown, setCountdown] = useState(15);
+  const prevRateRef = useRef<number | null>(null);
   const router = useRouter();
   const { user } = useAuth();
 
@@ -25,17 +23,17 @@ const ExchangeWidgetMobile = () => {
   useEffect(() => {
     const fetchRate = async () => {
       try {
-        const response = await fetch(`${API_URL}/public/quote`);
+        const response = await fetch(`/api/public/quote`);
         const data = await response.json();
         if (data.buyRate && data.sellRate) {
-          if (Math.abs(data.buyRate - prevRateRef.current) > 0.01) {
+          if (prevRateRef.current != null && Math.abs(data.buyRate - prevRateRef.current) > 0.01) {
             setShowRateUpdate(true);
             setTimeout(() => setShowRateUpdate(false), 2000);
           }
           prevRateRef.current = data.buyRate;
           setBuyRate(data.buyRate);
           setSellRate(data.sellRate);
-          setCountdown(30); // Reset countdown when rate updates
+          setCountdown(15); // Reset countdown when rate updates
         }
       } catch (error) {
         console.error("Failed to fetch quote:", error);
@@ -45,7 +43,7 @@ const ExchangeWidgetMobile = () => {
     };
 
     fetchRate();
-    const interval = setInterval(fetchRate, 30000); // Fetch every 30 seconds
+    const interval = setInterval(fetchRate, 15000); // Fetch every 15 seconds
     return () => clearInterval(interval);
   }, []);
 
@@ -54,7 +52,7 @@ const ExchangeWidgetMobile = () => {
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          return 30; // Reset to 30 when it reaches 0
+          return 15; // Reset to 15 when it reaches 0
         }
         return prev - 1;
       });
@@ -65,7 +63,7 @@ const ExchangeWidgetMobile = () => {
 
   const numericAmount = parseFloat(amount) || 0;
   const rate = direction === "buy" ? buyRate : sellRate;
-  const convertedAmount = direction === "buy" ? numericAmount / buyRate : numericAmount * sellRate;
+  const convertedAmount = rate ? (direction === "buy" ? numericAmount / rate : numericAmount * rate) : 0;
 
   const formatBRL = (value: number): string => {
     return value.toLocaleString("pt-BR", {
@@ -108,6 +106,7 @@ const ExchangeWidgetMobile = () => {
   };
 
   const handleConvert = () => {
+    if (!rate) return;
     if (user) {
       // User is logged in - redirect to dashboard with exchange parameters
       const params = new URLSearchParams({
@@ -168,7 +167,7 @@ const ExchangeWidgetMobile = () => {
           <div className="flex items-center gap-1.5">
             <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
             <span className="text-[11px] text-white/50">
-              1 USDT = <span className="text-white/90 font-semibold">R$ {rate.toFixed(2)}</span>
+              1 USDT = <span className="text-white/90 font-semibold">{rate != null ? `R$ ${rate.toFixed(2)}` : "..."}</span>
             </span>
           </div>
           <div className="flex items-center gap-1.5">
@@ -275,7 +274,7 @@ const ExchangeWidgetMobile = () => {
               >
                 {direction === "sell" && <span className="text-white/30 text-3xl font-medium">R$</span>}
                 <span className="text-4xl font-bold text-white">
-                  {formatBRL(convertedAmount)}
+                  {isLoading ? "..." : formatBRL(convertedAmount)}
                 </span>
                 <span className="text-white/40 font-medium text-base">
                   {direction === "buy" ? "USDT" : ""}
