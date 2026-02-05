@@ -765,18 +765,18 @@
     .metaball-glass-dock {
         width: 92vw;
         max-width: 420px;
-        background: rgba(255, 255, 255, 0.06);
-        -webkit-backdrop-filter: blur(60px) saturate(200%) brightness(1.08);
-        backdrop-filter: blur(60px) saturate(200%) brightness(1.08);
-        border: 0.5px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.03);
+        -webkit-backdrop-filter: blur(80px) saturate(220%) brightness(1.05);
+        backdrop-filter: blur(80px) saturate(220%) brightness(1.05);
+        border: 0.5px solid rgba(255, 255, 255, 0.10);
         border-radius: 28px;
         position: relative;
         overflow: visible;
         box-shadow:
-            0 8px 40px -8px rgba(0, 0, 0, 0.2),
-            0 2px 12px rgba(0, 0, 0, 0.06),
-            inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
-            inset 0 -0.5px 0 0 rgba(255, 255, 255, 0.03);
+            0 8px 40px -8px rgba(0, 0, 0, 0.15),
+            0 2px 12px rgba(0, 0, 0, 0.04),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+            inset 0 -0.5px 0 0 rgba(255, 255, 255, 0.02);
     }
 
     /* Liquid glass shimmer highlight on top edge */
@@ -790,9 +790,9 @@
         background: linear-gradient(
             90deg,
             transparent 0%,
-            rgba(255, 255, 255, 0.5) 30%,
-            rgba(255, 255, 255, 0.7) 50%,
-            rgba(255, 255, 255, 0.5) 70%,
+            rgba(255, 255, 255, 0.35) 30%,
+            rgba(255, 255, 255, 0.5) 50%,
+            rgba(255, 255, 255, 0.35) 70%,
             transparent 100%
         );
         border-radius: 1px;
@@ -807,7 +807,7 @@
         border-radius: inherit;
         background: radial-gradient(
             ellipse 60% 80% at 50% 0%,
-            rgba(255, 255, 255, 0.08) 0%,
+            rgba(255, 255, 255, 0.05) 0%,
             transparent 60%
         );
         pointer-events: none;
