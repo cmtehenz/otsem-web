@@ -258,6 +258,27 @@
     "setUsername": "Set username",
     "savingUsername": "Saving..."
   },
+  "mercado": {
+    "title": "Market",
+    "subtitle": "Top 100 tokens by market cap",
+    "searchPlaceholder": "Search tokens...",
+    "loading": "Loading market data...",
+    "noResults": "No tokens found for",
+    "updated": "Updated",
+    "ago": "ago",
+    "rateLimited": "Rate limited. Data will refresh automatically.",
+    "fetchError": "Failed to load market data. Retrying...",
+    "currentPrice": "Current Price",
+    "marketCap": "Market Cap",
+    "volume24h": "Volume (24h)",
+    "high24h": "High (24h)",
+    "low24h": "Low (24h)",
+    "circulatingSupply": "Circulating Supply",
+    "maxSupply": "Max Supply",
+    "ath": "All-Time High",
+    "athChange": "ATH Change",
+    "viewMarket": "View Market"
+  },
   "footer": {
     "description": "Convert BRL to USDT instantly with institutional security and the lowest market rates.",
     "globalPlatform": "Global Financial Platform",
