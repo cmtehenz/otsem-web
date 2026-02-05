@@ -12,6 +12,7 @@ import {
     EyeOff,
     Loader2,
     UserRoundSearch,
+    TrendingUp,
 } from "lucide-react";
 import http from "@/lib/http";
 import { useAuth } from "@/contexts/auth-context";
@@ -573,6 +574,25 @@ export default function Dashboard() {
                     label="Vender"
                     onClick={() => openModal("sellUsdt")}
                 />
+            </motion.div>
+
+            {/* ── Mercado Link ── */}
+            <motion.div variants={fadeUp} className="mt-4">
+                <Link href="/customer/mercado">
+                    <motion.div
+                        whileTap={{ scale: 0.98 }}
+                        className="rounded-2xl fintech-glass-card px-4 py-3.5 flex items-center gap-3 active:bg-white/10 transition-colors"
+                    >
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#6F00FF]/20">
+                            <TrendingUp className="w-5 h-5 text-[#9B4DFF]" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-[15px] font-semibold text-white">Mercado</p>
+                            <p className="text-[12px] text-white/70">Top 100 tokens em tempo real</p>
+                        </div>
+                        <ChevronRight className="w-4.5 h-4.5 text-white/50" />
+                    </motion.div>
+                </Link>
             </motion.div>
 
             {/* ── Recent Activity ── */}
