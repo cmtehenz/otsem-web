@@ -260,7 +260,7 @@
   },
   "mercado": {
     "title": "Market",
-    "subtitle": "Top 100 tokens by market cap",
+    "subtitle": "Top 15 tokens by market cap",
     "searchPlaceholder": "Search tokens...",
     "loading": "Loading market data...",
     "noResults": "No tokens found for",

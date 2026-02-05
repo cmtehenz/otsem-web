@@ -260,7 +260,7 @@
   },
   "mercado": {
     "title": "Mercado",
-    "subtitle": "Top 100 tokens por capitalización",
+    "subtitle": "Top 15 tokens por capitalización",
     "searchPlaceholder": "Buscar tokens...",
     "loading": "Cargando datos del mercado...",
     "noResults": "No se encontraron tokens para",

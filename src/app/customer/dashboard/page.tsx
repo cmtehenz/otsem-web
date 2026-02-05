@@ -594,7 +594,7 @@ export default function Dashboard() {
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-[15px] font-semibold text-white">Mercado</p>
-                            <p className="text-[12px] text-white/70">Top 100 tokens em tempo real</p>
+                            <p className="text-[12px] text-white/70">Top 15 tokens em tempo real</p>
                         </div>
                         <ChevronRight className="w-4.5 h-4.5 text-white/50" />
                     </motion.div>

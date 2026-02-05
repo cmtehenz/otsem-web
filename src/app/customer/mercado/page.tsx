@@ -302,7 +302,7 @@ export default function MercadoPage() {
 
     const { tokens, loading, error, updatedAt, refresh } = useTopTokens({
         currency,
-        perPage: 100,
+        perPage: 15,
         refreshInterval: 60_000,
     });
 
