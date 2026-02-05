@@ -51,6 +51,7 @@ const nextConfig: NextConfig = {
       { source: "/fdbank/:path*", destination: `${base}/fdbank/:path*` },
       { source: "/inter/:path*", destination: `${base}/inter/:path*` },
       { source: "/transactions/:path*", destination: `${base}/transactions/:path*` },
+      { source: "/transfers/:path*", destination: `${base}/transfers/:path*` },
       { source: "/payments/:path*", destination: `${base}/payments/:path*` },
       { source: "/public/:path*", destination: `${base}/public/:path*` },
     ];

@@ -24,6 +24,7 @@ export type CustomerResponse = {
     birthday?: string;
     phone?: string;
     email: string;
+    username?: string | null;
     profilePhotoUrl?: string;
     address?: CustomerAddress;
     createdAt: string;

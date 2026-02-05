@@ -13,6 +13,7 @@ export const MODAL_KEYS = [
     "receiveUsdt",
     "deposit",
     "withdraw",
+    "usernameTransfer",
 ] as const;
 
 export type ModalKey = typeof MODAL_KEYS[number];
@@ -40,6 +41,7 @@ const initialOpen: OpenState = {
     receiveUsdt: false,
     deposit: false,
     withdraw: false,
+    usernameTransfer: false,
 };
 
 export const useUiModals = create<UiModalsState>((set) => ({
