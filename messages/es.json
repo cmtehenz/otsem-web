@@ -102,7 +102,7 @@
     "description": "Convierte BRL a USDT instantáneamente con <bold>seguridad institucional</bold> y las tarifas más bajas del mercado.",
     "descriptionBold": "seguridad institucional",
     "cta": "Crea tu cuenta",
-    "learnMore": "Entrar",
+    "learnMore": "Entrar en su cuenta",
     "socialProof": "Más de <bold>6 mil</bold> clientes confían en <highlight>Otsem Pay</highlight>",
     "socialProofCount": "6 mil",
     "badgeLiquidity": "Liquidez",
@@ -259,7 +259,7 @@
     "savingUsername": "Guardando..."
   },
   "mercado": {
-    "title": "Mercado",
+    "title": "Mercado cripto",
     "subtitle": "Top 15 tokens por capitalización",
     "searchPlaceholder": "Buscar tokens...",
     "loading": "Cargando datos del mercado...",

@@ -102,7 +102,7 @@
     "description": "Конвертируйте BRL в USDT мгновенно с <bold>институциональной безопасностью</bold> и самыми низкими рыночными ставками.",
     "descriptionBold": "институциональной безопасностью",
     "cta": "Создать аккаунт",
-    "learnMore": "Войти",
+    "learnMore": "Войти в аккаунт",
     "socialProof": "Более <bold>6 000</bold> клиентов доверяют <highlight>Otsem Pay</highlight>",
     "socialProofCount": "6 000",
     "badgeLiquidity": "Ликвидность",
@@ -259,7 +259,7 @@
     "savingUsername": "Сохранение..."
   },
   "mercado": {
-    "title": "Рынок",
+    "title": "Крипто рынок",
     "subtitle": "Топ-15 токенов по капитализации",
     "searchPlaceholder": "Поиск токенов...",
     "loading": "Загрузка рыночных данных...",
