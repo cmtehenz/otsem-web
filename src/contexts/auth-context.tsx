@@ -58,91 +58,71 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
-    // Carrega o usuário ao montar o componente
+    // Hydrate user on mount — uses JWT decode as fast path so the UI can
+    // render immediately, then validates with the API in the background.
     useEffect(() => {
-        async function loadUser() {
-            try {
-                const token = getAccessToken();
+        const token = getAccessToken();
 
-                if (!token) {
-                    setLoading(false);
-                    return;
-                }
-
-                // Tenta buscar o usuário atual via API conforme spec (/auth/me)
-                try {
-                    const authMeResponse = await httpClient.get("/auth/me");
-                    const userData = authMeResponse.data;
-                    
-                    let customerId = userData.customerId;
-
-                    // Se for CUSTOMER e não tiver customerId, tenta buscar na API de customers
-                    if (userData.role === "CUSTOMER" && !customerId) {
-                        try {
-                            const customerResponse = await httpClient.get("/customers/me");
-                            if (customerResponse.data && customerResponse.data.id) {
-                                customerId = customerResponse.data.id;
-                            }
-                        } catch (error) {
-                            console.warn("Não foi possível buscar dados do customer:", error);
-                        }
-                    }
-
-                    setUser({
-                        id: userData.id,
-                        customerId: customerId,
-                        email: userData.email,
-                        role: userData.role,
-                        name: userData.name,
-                    });
-                } catch (apiError) {
-                    // Fallback para decode local se a API falhar
-                    console.warn("API /auth/me falhou, usando decode local:", apiError);
-                    const payload = decodeJwt(token);
-
-                    if (!payload) {
-                        clearTokens();
-                        setLoading(false);
-                        return;
-                    }
-
-                    const now = Math.floor(Date.now() / 1000);
-                    if (payload.exp < now) {
-                        clearTokens();
-                        setLoading(false);
-                        return;
-                    }
-
-                    let customerId = payload.customerId;
-
-                    if (payload.role === "CUSTOMER" && !customerId) {
-                        try {
-                            const response = await httpClient.get("/customers/me");
-                            if (response.data && response.data.id) {
-                                customerId = response.data.id;
-                            }
-                        } catch (error) {
-                            console.warn("Não foi possível buscar dados do customer no fallback:", error);
-                        }
-                    }
-
-                    setUser({
-                        id: payload.sub,
-                        customerId: customerId,
-                        email: payload.email,
-                        role: payload.role,
-                    });
-                }
-            } catch (error) {
-                console.error("Erro ao carregar usuário:", error);
-                clearTokens();
-                setUser(null);
-            } finally {
-                setLoading(false);
-            }
+        if (!token) {
+            setLoading(false);
+            return;
         }
 
-        loadUser();
+        // 1. Fast path: decode JWT locally for instant hydration
+        const payload = decodeJwt(token);
+        if (!payload) {
+            clearTokens();
+            setLoading(false);
+            return;
+        }
+
+        const now = Math.floor(Date.now() / 1000);
+        if (payload.exp < now) {
+            clearTokens();
+            setLoading(false);
+            return;
+        }
+
+        // Set user immediately from JWT payload — unblocks rendering
+        const jwtUser: User = {
+            id: payload.sub,
+            customerId: payload.customerId,
+            email: payload.email,
+            role: payload.role,
+        };
+        setUser(jwtUser);
+        setLoading(false);
+
+        // 2. Background validation: fetch fresh data from API without blocking UI
+        (async () => {
+            try {
+                const authMeResponse = await httpClient.get("/auth/me");
+                const userData = authMeResponse.data;
+
+                let customerId = userData.customerId;
+
+                if (userData.role === "CUSTOMER" && !customerId) {
+                    try {
+                        const customerResponse = await httpClient.get("/customers/me");
+                        if (customerResponse.data?.id) {
+                            customerId = customerResponse.data.id;
+                        }
+                    } catch {
+                        // Not critical — keep JWT-derived customerId
+                    }
+                }
+
+                setUser({
+                    id: userData.id,
+                    customerId: customerId || payload.customerId,
+                    email: userData.email,
+                    role: userData.role,
+                    name: userData.name,
+                });
+            } catch {
+                // API unreachable — JWT-decoded user is still valid
+            }
+        })();
     }, []);
 
     async function login(email: string, password: string): Promise<User | TwoFactorRequired> {

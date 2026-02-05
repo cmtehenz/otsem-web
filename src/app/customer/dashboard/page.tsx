@@ -393,25 +393,50 @@ export default function Dashboard() {
         });
     }, [loadAccountData, refreshTrigger, refreshCounter]);
 
-    // Poll account data — adaptive interval (5s during deposit boost, otherwise 30s)
+    // Poll account data — adaptive interval (5s during deposit boost, otherwise 60s).
+    // Pauses when tab is not visible to save battery and bandwidth.
     React.useEffect(() => {
         if (!user?.customerId) return;
 
-        const isBoosted = depositBoostUntil > Date.now();
-        const intervalMs = isBoosted ? 5_000 : 30_000;
+        let interval: ReturnType<typeof setInterval> | null = null;
 
-        const interval = setInterval(() => loadAccountData(true), intervalMs);
+        const startPolling = () => {
+            if (interval) return;
+            const isBoosted = depositBoostUntil > Date.now();
+            const intervalMs = isBoosted ? 5_000 : 60_000;
+            interval = setInterval(() => loadAccountData(true), intervalMs);
+        };
 
-        // When boost is active, schedule a re-render when it expires to revert to 30s
+        const stopPolling = () => {
+            if (interval) { clearInterval(interval); interval = null; }
+        };
+
+        const handleVisibility = () => {
+            if (document.hidden) {
+                stopPolling();
+            } else {
+                // Refresh immediately when tab becomes visible, then resume polling
+                loadAccountData(true);
+                startPolling();
+            }
+        };
+
+        startPolling();
+        document.addEventListener("visibilitychange", handleVisibility);
+
+        // When boost is active, schedule a re-render when it expires to revert to 60s
         let boostTimeout: NodeJS.Timeout | undefined;
+        const isBoosted = depositBoostUntil > Date.now();
         if (isBoosted) {
             boostTimeout = setTimeout(() => {
-                // Force re-run of this effect by no-op — depositBoostUntil will have expired
+                stopPolling();
+                startPolling();
             }, depositBoostUntil - Date.now());
         }
 
         return () => {
-            clearInterval(interval);
+            stopPolling();
+            document.removeEventListener("visibilitychange", handleVisibility);
             if (boostTimeout) clearTimeout(boostTimeout);
         };
     }, [loadAccountData, user?.customerId, depositBoostUntil]);

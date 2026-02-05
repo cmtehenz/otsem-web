@@ -23,14 +23,18 @@ const ExchangeWidget = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [direction, setDirection] = useState<"buy" | "sell">("buy");
   const [showAuthScreen, setShowAuthScreen] = useState(false);
-  const [countdown, setCountdown] = useState(15);
+  const [countdown, setCountdown] = useState(30);
   const prevRateRef = useRef<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { user } = useAuth();
 
-  // Fetch rate from OKX via public quote API
+  // Fetch rate from OKX via public quote API — visibility-aware to save
+  // battery and bandwidth when the tab/page is not visible.
   useEffect(() => {
+    let interval: ReturnType<typeof setInterval> | null = null;
+    let countdownInterval: ReturnType<typeof setInterval> | null = null;
+
     const fetchRate = async () => {
       try {
         const response = await fetch(`/api/public/quote`);
@@ -39,7 +43,7 @@ const ExchangeWidget = () => {
           prevRateRef.current = data.buyRate;
           setBuyRate(data.buyRate);
           setSellRate(data.sellRate);
-          setCountdown(15); // Reset countdown when rate updates
+          setCountdown(30);
         }
       } catch (error) {
         console.error("Failed to fetch quote:", error);
@@ -48,23 +52,35 @@ const ExchangeWidget = () => {
       }
     };
 
-    fetchRate();
-    const interval = setInterval(fetchRate, 15000); // Fetch every 15 seconds
-    return () => clearInterval(interval);
-  }, []);
+    const startPolling = () => {
+      if (interval) return; // Already running
+      fetchRate();
+      interval = setInterval(fetchRate, 30000); // Poll every 30s instead of 15s
+      countdownInterval = setInterval(() => {
+        setCountdown((prev) => (prev <= 1 ? 30 : prev - 1));
+      }, 1000);
+    };
 
-  // Countdown timer that ticks every second
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          return 15; // Reset to 15 when it reaches 0
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    const stopPolling = () => {
+      if (interval) { clearInterval(interval); interval = null; }
+      if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+    };
 
-    return () => clearInterval(timer);
+    const handleVisibility = () => {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        startPolling();
+      }
+    };
+
+    startPolling();
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      stopPolling();
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
   }, []);
 
   const numericAmount = parseFloat(amount) || 0;

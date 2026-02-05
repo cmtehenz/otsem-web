@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { usePathname, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useAuth } from "@/contexts/auth-context";
@@ -12,13 +13,34 @@ import type { CustomerResponse } from "@/types/customer";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { MobileHeader } from "@/components/layout/MobileHeader";
 import { PwaInstallPrompt } from "@/components/layout/PwaInstallPrompt";
-import { DepositModal } from "@/components/modals/deposit-modal";
-import { WithdrawModal } from "@/components/modals/withdraw-modal";
-import { SellUsdtModal } from "@/components/modals/sell-usdt-modal";
-import SendUsdtModal from "@/components/modals/send-usdt-modal";
-import { UsernameTransferModal } from "@/components/modals/username-transfer-modal";
-import { BoletoPaymentModal } from "@/components/modals/boleto-payment-modal";
 import { useUiModals } from "@/stores/ui-modals";
+
+// Lazy-load all modals — they are heavy components with polling, API calls,
+// and third-party libraries (QRCode, etc.) that should not block initial render.
+const DepositModal = dynamic(
+    () => import("@/components/modals/deposit-modal").then(m => ({ default: m.DepositModal })),
+    { ssr: false }
+);
+const WithdrawModal = dynamic(
+    () => import("@/components/modals/withdraw-modal").then(m => ({ default: m.WithdrawModal })),
+    { ssr: false }
+);
+const SellUsdtModal = dynamic(
+    () => import("@/components/modals/sell-usdt-modal").then(m => ({ default: m.SellUsdtModal })),
+    { ssr: false }
+);
+const SendUsdtModal = dynamic(
+    () => import("@/components/modals/send-usdt-modal"),
+    { ssr: false }
+);
+const UsernameTransferModal = dynamic(
+    () => import("@/components/modals/username-transfer-modal").then(m => ({ default: m.UsernameTransferModal })),
+    { ssr: false }
+);
+const BoletoPaymentModal = dynamic(
+    () => import("@/components/modals/boleto-payment-modal").then(m => ({ default: m.BoletoPaymentModal })),
+    { ssr: false }
+);
 
 export default function CustomerLayout({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
@@ -107,7 +129,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
 
     return (
         <Protected>
-            {/* Global modals */}
+            {/* Global modals — code-split via dynamic() to reduce initial bundle */}
             <DepositModal />
             <WithdrawModal />
             <SendUsdtModal />

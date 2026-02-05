@@ -7,7 +7,6 @@ import { useUiModals } from "@/stores/ui-modals";
 import { Copy, Check, QrCode, Loader2, ArrowLeft, Clock, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { pixPost, pixGet } from "@/lib/pix";
-import QRCode from "qrcode";
 import { useAuth } from "@/contexts/auth-context";
 
 // Response from POST /pix/cobrancas (expanded to capture IDs for polling)
@@ -166,6 +165,8 @@ export function DepositModal() {
             setCobrancaTxId(txId);
 
             if (pixCode) {
+                // Lazy-load qrcode library — only needed when generating QR
+                const QRCode = (await import("qrcode")).default;
                 const url = await QRCode.toDataURL(pixCode, {
                     width: 240,
                     margin: 2,
