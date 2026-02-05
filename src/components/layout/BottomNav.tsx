@@ -91,7 +91,7 @@ export function BottomNav() {
         yTarget.set(visible ? 0 : 1);
     }, [visible, yTarget]);
 
-    // Get the index of the active tab for metaball positioning
+    // Get the index of the active tab for pill positioning
     const activeIndex = tabs.findIndex((t) => t.id === activeTab);
 
     return (
@@ -101,63 +101,36 @@ export function BottomNav() {
                 onClose={() => setActionSheetOpen(false)}
             />
 
-            {/* SVG filter for metaball gooey effect */}
-            <svg className="absolute w-0 h-0" aria-hidden="true">
-                <defs>
-                    <filter id="metaball-goo">
-                        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
-                        <feColorMatrix
-                            in="blur"
-                            mode="matrix"
-                            values="1 0 0 0 0
-                                    0 1 0 0 0
-                                    0 0 1 0 0
-                                    0 0 0 20 -10"
-                            result="goo"
-                        />
-                        <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-                    </filter>
-                </defs>
-            </svg>
-
-            {/* Floating Metaball Glass dock */}
+            {/* Floating Liquid Glass dock */}
             <motion.nav
                 className="bottom-nav-container pointer-events-none"
                 style={{ y }}
             >
                 <div className="metaball-glass-dock pointer-events-auto">
-                    {/* Metaball layer — the gooey active bubble */}
-                    <div
-                        className="absolute inset-0 z-0"
-                        style={{ filter: "url(#metaball-goo)" }}
-                    >
-                        {/* Bar base shape */}
-                        <div className="absolute inset-0 rounded-[28px] bg-white/[0.08]" />
-
-                        {/* Active tab metaball bubble */}
+                    {/* Tab icons layer */}
+                    <div className="relative z-10 flex items-center justify-around h-[68px] px-3">
+                        {/* Active glow pill — slides behind active tab */}
                         {activeIndex >= 0 && activeIndex !== 2 && (
                             <motion.div
-                                className="absolute rounded-full bg-white/[0.18]"
+                                layoutId="nav-active-pill"
+                                className="absolute h-[46px] w-[46px] rounded-full z-0"
                                 style={{
-                                    width: 52,
-                                    height: 52,
-                                    top: -10,
-                                }}
-                                animate={{
-                                    left: `calc(${(activeIndex / tabs.length) * 100}% + ${100 / tabs.length / 2}% - 26px)`,
+                                    background: "rgba(255, 255, 255, 0.15)",
+                                    boxShadow:
+                                        "0 0 20px 4px rgba(255, 255, 255, 0.08), inset 0 0.5px 0 rgba(255, 255, 255, 0.3)",
+                                    left: `calc(${(activeIndex / tabs.length) * 100}% + ${100 / tabs.length / 2}% - 23px)`,
+                                    top: "50%",
+                                    marginTop: -23,
                                 }}
                                 transition={{
                                     type: "spring",
-                                    stiffness: 380,
-                                    damping: 28,
-                                    mass: 0.9,
+                                    stiffness: 400,
+                                    damping: 30,
+                                    mass: 0.8,
                                 }}
                             />
                         )}
-                    </div>
 
-                    {/* Tab icons layer */}
-                    <div className="relative z-10 flex items-center justify-around h-[68px] px-3">
                         {tabs.map((tab) => {
                             const isActive = tab.id === activeTab;
                             const isAction = tab.id === "action";
@@ -211,13 +184,12 @@ export function BottomNav() {
                                         className="relative flex flex-col items-center gap-1 z-10"
                                         whileTap={{ scale: 0.82 }}
                                         transition={iosSpring}
-                                        animate={isActive ? { y: -4 } : { y: 0 }}
                                     >
                                         <Icon
                                             className={`w-[22px] h-[22px] transition-all duration-300 ${
                                                 isActive
                                                     ? "text-white"
-                                                    : "text-white/70"
+                                                    : "text-white/60"
                                             }`}
                                             strokeWidth={isActive ? 2.2 : 1.6}
                                         />
@@ -225,7 +197,7 @@ export function BottomNav() {
                                             className={`text-[10px] leading-tight tracking-tight transition-all duration-300 ${
                                                 isActive
                                                     ? "text-white font-semibold"
-                                                    : "text-white/70 font-medium"
+                                                    : "text-white/60 font-medium"
                                             }`}
                                         >
                                             {tab.label}
