@@ -7,6 +7,7 @@ import {
     ArrowRightLeft,
     Send,
     DollarSign,
+    UserRoundSearch,
 } from "lucide-react";
 import { useUiModals } from "@/stores/ui-modals";
 
@@ -48,6 +49,13 @@ const actions: ActionItem[] = [
         iconBg: "bg-amber-500/15",
     },
     {
+        id: "usernameTransfer",
+        label: "Enviar para usuário",
+        sublabel: "Transferir BRL por @username",
+        icon: UserRoundSearch,
+        iconBg: "bg-violet-500/15",
+    },
+    {
         id: "sendUsdt",
         label: "Enviar USDT",
         sublabel: "Para carteira externa",
@@ -73,6 +81,7 @@ export function ActionSheet({
             else if (id === "withdraw") openModal("withdraw");
             else if (id === "convertBrlUsdt") openModal("convertBrlUsdt");
             else if (id === "sellUsdt") openModal("sellUsdt");
+            else if (id === "usernameTransfer") openModal("usernameTransfer");
             else if (id === "sendUsdt") openModal("sendUsdt");
         }, 150);
     }

@@ -11,6 +11,7 @@ import {
     Eye,
     EyeOff,
     Loader2,
+    UserRoundSearch,
 } from "lucide-react";
 import http from "@/lib/http";
 import { useAuth } from "@/contexts/auth-context";
@@ -158,7 +159,8 @@ function QuickAction({
 // ─── Transaction Row ─────────────────────────────────────
 function TransactionRow({ tx, onTap }: { tx: Transaction; onTap?: () => void }) {
     const amount = Number(tx.amount);
-    const isIncoming = tx.type === "PIX_IN";
+    const isIncoming = tx.type === "PIX_IN" || tx.type === "TRANSFER_IN";
+    const isTransfer = tx.type === "TRANSFER" || tx.type === "TRANSFER_IN" || tx.type === "TRANSFER_OUT";
     const isPending = tx.status === "PENDING" || tx.status === "PROCESSING";
 
     const descLower = (tx.description || "").toLowerCase();
@@ -168,7 +170,7 @@ function TransactionRow({ tx, onTap }: { tx: Transaction; onTap?: () => void }) 
         descLower.includes("conversao") ||
         descLower.includes("buy") ||
         descLower.includes("sell");
-    const isConversionTx = tx.type === "CONVERSION" || isConversionByDesc;
+    const isConversionTx = tx.type === "CONVERSION" || (!isTransfer && isConversionByDesc);
     const isSellConversion =
         tx.subType === "SELL" || (!tx.subType && (descLower.includes("venda") || descLower.includes("sell")));
 
@@ -177,7 +179,15 @@ function TransactionRow({ tx, onTap }: { tx: Transaction; onTap?: () => void }) 
     let displayName = "";
     let usdtAmountValue: number | null = null;
 
-    if (isConversionTx) {
+    if (isTransfer) {
+        const toUser = tx.metadata?.toUsername;
+        const fromUser = tx.metadata?.fromUsername;
+        if (tx.type === "TRANSFER_OUT" || (tx.type === "TRANSFER" && !isIncoming)) {
+            displayName = toUser ? `Para @${toUser}` : (tx.recipientName || "Transferência");
+        } else {
+            displayName = fromUser ? `De @${fromUser}` : (tx.senderName || "Transferência recebida");
+        }
+    } else if (isConversionTx) {
         displayName = isSellConversion ? "Venda de USDT" : "Compra de USDT";
         const usdtRaw = tx.usdtAmount || (tx.externalData?.usdtAmount as string | number | undefined);
         if (usdtRaw) usdtAmountValue = typeof usdtRaw === "number" ? usdtRaw : parseFloat(String(usdtRaw));
@@ -199,11 +209,13 @@ function TransactionRow({ tx, onTap }: { tx: Transaction; onTap?: () => void }) 
 
     const iconConfig = isPending
         ? { bg: "bg-white/10", color: "text-white", Icon: ArrowRightLeft }
-        : isConversionTx
-          ? { bg: "bg-white/10", color: "text-white", Icon: ArrowRightLeft }
-          : isIncoming
-            ? { bg: "bg-white/10", color: "text-white", Icon: ArrowDownLeft }
-            : { bg: "bg-white/10", color: "text-white", Icon: ArrowUpRight };
+        : isTransfer
+          ? { bg: "bg-white/10", color: "text-white", Icon: UserRoundSearch }
+          : isConversionTx
+            ? { bg: "bg-white/10", color: "text-white", Icon: ArrowRightLeft }
+            : isIncoming
+              ? { bg: "bg-white/10", color: "text-white", Icon: ArrowDownLeft }
+              : { bg: "bg-white/10", color: "text-white", Icon: ArrowUpRight };
 
     return (
         <motion.div

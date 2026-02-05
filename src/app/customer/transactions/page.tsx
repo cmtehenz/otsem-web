@@ -10,6 +10,7 @@ import {
     ChevronLeft,
     ChevronRight,
     Inbox,
+    UserRoundSearch,
 } from "lucide-react";
 import http from "@/lib/http";
 import { useAuth } from "@/contexts/auth-context";
@@ -181,7 +182,8 @@ function deduplicateTransactions(txs: Transaction[]): Transaction[] {
 
 function getTransactionMeta(tx: Transaction) {
     const amount = Number(tx.amount);
-    const isIncoming = tx.type === "PIX_IN";
+    const isIncoming = tx.type === "PIX_IN" || tx.type === "TRANSFER_IN";
+    const isTransfer = tx.type === "TRANSFER" || tx.type === "TRANSFER_IN" || tx.type === "TRANSFER_OUT";
     const isPending = tx.status === "PENDING" || tx.status === "PROCESSING";
     const isCompleted = tx.status === "COMPLETED";
     const isConversion = tx.type === "CONVERSION";
@@ -208,7 +210,15 @@ function getTransactionMeta(tx: Transaction) {
         (!tx.subType &&
             (descLower.includes("venda") || descLower.includes("sell")));
 
-    if (isConversion || isConversionByDesc) {
+    if (isTransfer) {
+        const toUser = tx.metadata?.toUsername;
+        const fromUser = tx.metadata?.fromUsername;
+        if (tx.type === "TRANSFER_OUT" || (tx.type === "TRANSFER" && !isIncoming)) {
+            displayName = toUser ? `Para @${toUser}` : (tx.recipientName ? `Para ${tx.recipientName}` : "Transferência");
+        } else {
+            displayName = fromUser ? `De @${fromUser}` : (tx.senderName ? `De ${tx.senderName}` : "Transferência recebida");
+        }
+    } else if (isConversion || (!isTransfer && isConversionByDesc)) {
         isConversionTx = true;
 
         const walletAddr = tx.externalData?.walletAddress;
@@ -257,6 +267,7 @@ function getTransactionMeta(tx: Transaction) {
     return {
         amount,
         isIncoming,
+        isTransfer,
         isPending,
         isConversionTx,
         isSellConversion,
@@ -466,7 +477,12 @@ export default function TransactionsPage() {
         if (filter === "ALL") return allTransactions;
         if (filter === "PIX_OUT") {
             return allTransactions.filter(
-                (tx) => tx.type === "PIX_OUT" || tx.type === "TRANSFER"
+                (tx) => tx.type === "PIX_OUT" || tx.type === "TRANSFER" || tx.type === "TRANSFER_OUT"
+            );
+        }
+        if (filter === "PIX_IN") {
+            return allTransactions.filter(
+                (tx) => tx.type === "PIX_IN" || tx.type === "TRANSFER_IN"
             );
         }
         return allTransactions.filter((tx) => tx.type === filter);
@@ -519,6 +535,14 @@ export default function TransactionsPage() {
             return (
                 <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
                     <ArrowRightLeft className={`${size} text-white`} />
+                </div>
+            );
+        }
+
+        if (meta.isTransfer) {
+            return (
+                <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
+                    <UserRoundSearch className={`${size} text-white`} />
                 </div>
             );
         }

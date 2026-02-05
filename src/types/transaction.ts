@@ -1,6 +1,6 @@
 // Types for PIX transaction details and receipts
 
-export type TransactionType = "PIX_IN" | "PIX_OUT" | "CONVERSION" | "TRANSFER";
+export type TransactionType = "PIX_IN" | "PIX_OUT" | "CONVERSION" | "TRANSFER" | "TRANSFER_IN" | "TRANSFER_OUT";
 export type TransactionStatus = "PENDING" | "COMPLETED" | "FAILED" | "PROCESSING";
 
 export type Transaction = {
@@ -21,6 +21,11 @@ export type Transaction = {
     createdAt: string;
     usdtAmount?: string | number | null;
     subType?: "BUY" | "SELL" | null;
+    metadata?: {
+        fromUsername?: string;
+        toUsername?: string;
+        [key: string]: unknown;
+    };
     externalData?: {
         txHash?: string;
         usdtAmount?: string | number;

@@ -12,6 +12,7 @@ import {
   Users,
   LogOut,
   ChevronRight,
+  AtSign,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,6 +65,7 @@ type CustomerData = {
   phone: string;
   cpf?: string;
   type: "PF" | "PJ";
+  username?: string | null;
   profilePhotoUrl?: string;
 };
 
@@ -154,6 +156,9 @@ export default function SettingsPage() {
   // Profile fields
   const [name, setName] = React.useState("");
   const [phone, setPhone] = React.useState("");
+  const [usernameField, setUsernameField] = React.useState("");
+  const [savingUsername, setSavingUsername] = React.useState(false);
+  const [hasUsername, setHasUsername] = React.useState(false);
 
   // Profile photo
   const [profilePhoto, setProfilePhoto] = React.useState<string | null>(null);
@@ -174,6 +179,8 @@ export default function SettingsPage() {
         setCustomer(data);
         setName(data.name || "");
         setPhone(data.phone || "");
+        setUsernameField(data.username || "");
+        setHasUsername(!!data.username);
 
         // Load profile photo: prefer API URL, fallback to localStorage
         const storedPhoto = getStoredPhoto();
@@ -265,6 +272,33 @@ export default function SettingsPage() {
       toast.error("Erro ao atualizar perfil");
     } finally {
       setSaving(false);
+    }
+  }
+
+  // ── Save username ─────────────────────────────
+  async function handleSaveUsername() {
+    const cleaned = usernameField.trim().toLowerCase().replace(/^@/, "");
+    if (!cleaned) {
+      toast.error("Digite um nome de usuário");
+      return;
+    }
+    if (!/^[a-z0-9_]{3,30}$/.test(cleaned)) {
+      toast.error("Username deve conter 3-30 caracteres (letras, números, _)");
+      return;
+    }
+
+    setSavingUsername(true);
+    try {
+      await http.patch("/customers/me", { username: cleaned });
+      setUsernameField(cleaned);
+      setHasUsername(true);
+      toast.success("Username definido com sucesso!");
+    } catch (err) {
+      console.error("Erro ao salvar username:", err);
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast.error(msg || "Erro ao definir username");
+    } finally {
+      setSavingUsername(false);
     }
   }
 
@@ -477,6 +511,63 @@ export default function SettingsPage() {
         >
           {saving ? "Salvando..." : "Salvar alterações"}
         </Button>
+      </motion.div>
+
+      {/* ── Section: Username ──────────────────── */}
+      <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5">
+        <SectionTitle icon={AtSign} title="Nome de Usuário" />
+
+        {hasUsername ? (
+          <div className="space-y-3">
+            <div className="p-4 bg-white/5 border border-white/10 rounded-xl">
+              <p className="text-white font-semibold text-[15px]">
+                @{usernameField}
+              </p>
+              <p className="text-[12px] text-white mt-1">
+                Outros usuários podem te enviar transferências usando este nome.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <p className="text-[13px] text-white">
+              Defina um nome de usuário para receber transferências de outros
+              usuários Otsem Pay.
+            </p>
+            <div className="space-y-1.5">
+              <Label htmlFor="username" className="text-[13px] text-white">
+                Username
+              </Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50 text-sm">
+                  @
+                </span>
+                <Input
+                  id="username"
+                  value={usernameField}
+                  onChange={(e) =>
+                    setUsernameField(
+                      e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "")
+                    )
+                  }
+                  placeholder="meuusuario"
+                  maxLength={30}
+                  className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/40 pl-7"
+                />
+              </div>
+              <p className="text-[11px] text-white">
+                3-30 caracteres: letras, números e underline
+              </p>
+            </div>
+            <Button
+              onClick={handleSaveUsername}
+              disabled={savingUsername || !usernameField.trim()}
+              className="bg-yellow-500 hover:bg-yellow-400 text-black rounded-2xl h-12 w-full text-[14px] font-semibold active:scale-95 transition-transform"
+            >
+              {savingUsername ? "Salvando..." : "Definir username"}
+            </Button>
+          </div>
+        )}
       </motion.div>
 
       {/* ── Section 2: Preferences ──────────────── */}
