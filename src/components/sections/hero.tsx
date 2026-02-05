@@ -10,106 +10,25 @@ import {
   Clock,
 } from "lucide-react";
 import haptic from "@/lib/haptics";
-import ExchangeWidget from "@/components/ui/exchange-widget";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
-// Animated Wave Component
+// Lazy-load exchange widget — heavy component with polling + animations
+const ExchangeWidget = dynamic(
+  () => import("@/components/ui/exchange-widget"),
+  { ssr: false }
+);
+
+// Lightweight CSS-only wave — replaces expensive SVG morphing + Framer infinite animations
 const AnimatedWave = () => {
   return (
     <div className="relative h-6 sm:h-8 lg:h-10 -my-1 sm:-my-2 z-10 overflow-hidden">
-      {/* Main animated wave SVG */}
-      <svg
-        className="absolute inset-0 w-full h-full"
-        viewBox="0 0 400 40"
-        preserveAspectRatio="none"
-        fill="none"
-      >
-        <defs>
-          {/* Gradient for the wave */}
-          <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#FACC15" stopOpacity="0" />
-            <stop offset="20%" stopColor="#FACC15" stopOpacity="0.8" />
-            <stop offset="50%" stopColor="#FDE047" stopOpacity="1" />
-            <stop offset="80%" stopColor="#FACC15" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#FACC15" stopOpacity="0" />
-          </linearGradient>
-          {/* Glow filter */}
-          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-        
-        {/* Animated wave path */}
-        <motion.path
-          d="M0,20 Q50,10 100,20 T200,20 T300,20 T400,20"
-          stroke="url(#waveGradient)"
-          strokeWidth="3"
-          strokeLinecap="round"
-          fill="none"
-          filter="url(#glow)"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ 
-            pathLength: 1, 
-            opacity: 1,
-            d: [
-              "M0,20 Q50,10 100,20 T200,20 T300,20 T400,20",
-              "M0,20 Q50,28 100,20 T200,20 T300,20 T400,20",
-              "M0,20 Q50,10 100,20 T200,20 T300,20 T400,20",
-            ]
-          }}
-          transition={{
-            pathLength: { duration: 1, ease: "easeOut" },
-            opacity: { duration: 0.5 },
-            d: { 
-              duration: 3, 
-              ease: "easeInOut", 
-              repeat: Infinity,
-              repeatType: "loop"
-            }
-          }}
-        />
-      </svg>
-      
-      {/* Shimmer effect overlay */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute top-1/2 -translate-y-1/2 h-1 w-24 bg-gradient-to-r from-transparent via-yellow-200 to-transparent rounded-full blur-sm"
-          animate={{
-            x: ["-100%", "500%"],
-          }}
-          transition={{
-            duration: 2.5,
-            ease: "easeInOut",
-            repeat: Infinity,
-            repeatDelay: 1,
-          }}
-        />
+      <div className="absolute inset-0 flex items-center">
+        <div className="w-full h-[3px] bg-gradient-to-r from-transparent via-yellow-400 to-transparent rounded-full opacity-80" />
       </div>
-      
-      {/* Particle dots */}
-      <div className="absolute inset-0 flex items-center justify-center gap-1">
-        {[...Array(5)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="w-1 h-1 rounded-full bg-yellow-400"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ 
-              opacity: [0, 1, 0],
-              scale: [0, 1.2, 0],
-            }}
-            transition={{
-              duration: 2,
-              ease: "easeInOut",
-              repeat: Infinity,
-              delay: i * 0.4,
-            }}
-          />
-        ))}
+      <div className="absolute inset-0 flex items-center overflow-hidden">
+        <div className="h-[3px] w-24 bg-gradient-to-r from-transparent via-yellow-200 to-transparent rounded-full blur-sm animate-[shimmer_3s_ease-in-out_infinite]" />
       </div>
     </div>
   );
@@ -146,9 +65,9 @@ const HeroSection = () => {
 
   return (
     <section className="relative z-10 min-h-[100dvh] flex flex-col pt-20 sm:pt-24 lg:pt-28 overflow-hidden">
-      {/* Static background elements - no animations */}
-      <div className="absolute top-[-8%] right-[-12%] w-[75vw] sm:w-[55vw] h-[75vw] sm:h-[55vw] max-w-[450px] max-h-[450px] bg-primary/6 blur-[80px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-8%] left-[-12%] w-[65vw] sm:w-[45vw] h-[65vw] sm:h-[45vw] max-w-[380px] max-h-[380px] bg-primary/6 blur-[70px] rounded-full pointer-events-none" />
+      {/* Static background elements */}
+      <div className="absolute top-[-8%] right-[-12%] w-[75vw] sm:w-[55vw] h-[75vw] sm:h-[55vw] max-w-[450px] max-h-[450px] bg-primary/6 blur-[40px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-8%] left-[-12%] w-[65vw] sm:w-[45vw] h-[65vw] sm:h-[45vw] max-w-[380px] max-h-[380px] bg-primary/6 blur-[40px] rounded-full pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 flex-grow flex flex-col lg:flex-row items-center gap-8 lg:gap-12 py-6 sm:py-10">
         {/* Left side - Text content */}

@@ -48,25 +48,31 @@ export function BottomNav() {
     const activeTab = getActiveTab(pathname);
     const [actionSheetOpen, setActionSheetOpen] = useState(false);
 
-    // Scroll-aware auto-hide
+    // Scroll-aware auto-hide (rAF-throttled)
     const [visible, setVisible] = useState(true);
     const lastScrollY = useRef(0);
     const scrollThreshold = 8;
+    const ticking = useRef(false);
 
     const handleScroll = useCallback(() => {
-        const scrollEl = document.querySelector("[data-scroll-container]") as HTMLElement | null;
-        if (!scrollEl) return;
+        if (ticking.current) return;
+        ticking.current = true;
+        requestAnimationFrame(() => {
+            const scrollEl = document.querySelector("[data-scroll-container]") as HTMLElement | null;
+            if (scrollEl) {
+                const currentY = scrollEl.scrollTop;
+                const delta = currentY - lastScrollY.current;
 
-        const currentY = scrollEl.scrollTop;
-        const delta = currentY - lastScrollY.current;
+                if (delta > scrollThreshold && currentY > 60) {
+                    setVisible(false);
+                } else if (delta < -scrollThreshold) {
+                    setVisible(true);
+                }
 
-        if (delta > scrollThreshold && currentY > 60) {
-            setVisible(false);
-        } else if (delta < -scrollThreshold) {
-            setVisible(true);
-        }
-
-        lastScrollY.current = currentY;
+                lastScrollY.current = currentY;
+            }
+            ticking.current = false;
+        });
     }, []);
 
     useEffect(() => {
