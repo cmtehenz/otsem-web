@@ -345,6 +345,15 @@ export default function SettingsPage() {
                   src={profilePhoto}
                   alt="Foto de perfil"
                   className="w-full h-full object-cover"
+                  onError={() => {
+                    // If API URL fails, fall back to localStorage
+                    const stored = getStoredPhoto();
+                    if (stored && stored !== profilePhoto) {
+                      setProfilePhoto(stored);
+                    } else {
+                      setProfilePhoto(null);
+                    }
+                  }}
                 />
               ) : (
                 <User className="w-8 h-8 text-white" strokeWidth={1.5} />
@@ -360,7 +369,7 @@ export default function SettingsPage() {
           </div>
           <div className="flex-1 min-w-0 space-y-2">
             <p className="text-[14px] font-medium text-white">
-              {profilePhoto ? "Alterar foto" : "Adicionar foto"}
+              {customer?.name || (profilePhoto ? "Alterar foto" : "Adicionar foto")}
             </p>
             <div className="flex gap-2">
               <button

@@ -125,6 +125,15 @@ export function MobileHeader({ customerName, profilePhotoUrl, username }: { cust
                                         src={photoSrc}
                                         alt="Perfil"
                                         className="w-full h-full object-cover"
+                                        onError={() => {
+                                            // If API URL fails to load, fall back to localStorage
+                                            const stored = getStoredPhoto();
+                                            if (stored && stored !== photoSrc) {
+                                                setPhotoSrc(stored);
+                                            } else {
+                                                setPhotoSrc(null);
+                                            }
+                                        }}
                                     />
                                 ) : initials ? (
                                     <span className="text-[14px] font-semibold text-white">

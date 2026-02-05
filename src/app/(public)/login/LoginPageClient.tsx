@@ -19,6 +19,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { TwoFactorVerify } from '@/components/auth/TwoFactorVerify';
 import { useTranslations } from 'next-intl';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { PwaInstallPrompt } from '@/components/layout/PwaInstallPrompt';
 
 const loginSchema = z.object({
     email: z.string().min(1, 'Informe seu e-mail').email('E-mail inválido').transform((v) => v.trim().toLowerCase()),
@@ -70,6 +71,15 @@ function LoginPageInner(): React.JSX.Element {
     const [tempToken, setTempToken] = React.useState('');
     const [userEmail, setUserEmail] = React.useState('');
     const [_pendingUser, setPendingUser] = React.useState<unknown>(null);
+    const [isPwa, setIsPwa] = React.useState(false);
+
+    // Detect PWA standalone mode
+    React.useEffect(() => {
+        const standalone =
+            window.matchMedia('(display-mode: standalone)').matches ||
+            ('standalone' in navigator && (navigator as unknown as { standalone: boolean }).standalone);
+        setIsPwa(!!standalone);
+    }, []);
 
     // Lock body scroll while login page is mounted — prevents iOS scroll
     // state from carrying over to the dashboard after navigation.
@@ -139,17 +149,19 @@ function LoginPageInner(): React.JSX.Element {
     if (requires2FA) {
         return (
             <div className="fixed inset-0 overflow-hidden fintech-bg-container" style={{ overscrollBehavior: 'none', touchAction: 'pan-x' }}>
-                <div className="fixed top-6 left-6 z-50">
-                    <motion.button
-                        onClick={handleCancel2FA}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl fintech-glass-card text-white/70 hover:text-white font-bold text-sm transition-colors"
-                    >
-                        <ArrowLeft className="w-4 h-4" />
-                        {t('common.back')}
-                    </motion.button>
-                </div>
+                {!isPwa && (
+                    <div className="fixed top-6 left-6 z-50">
+                        <motion.button
+                            onClick={handleCancel2FA}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl fintech-glass-card text-white/70 hover:text-white font-bold text-sm transition-colors"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            {t('common.back')}
+                        </motion.button>
+                    </div>
+                )}
 
                 <div className="flex min-h-full w-full items-center justify-center px-4 py-24">
                     <TwoFactorVerify
@@ -164,18 +176,20 @@ function LoginPageInner(): React.JSX.Element {
 
     return (
         <div className="fixed inset-0 overflow-hidden fintech-bg-container" style={{ overscrollBehavior: 'none', touchAction: 'pan-x' }}>
-            <div className="fixed top-6 left-6 z-50">
-                <Link href="/">
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl fintech-glass-card text-white/70 hover:text-white font-bold text-sm transition-colors"
-                    >
-                        <ArrowLeft className="w-4 h-4" />
-                        {t('common.back')}
-                    </motion.button>
-                </Link>
-            </div>
+            {!isPwa && (
+                <div className="fixed top-6 left-6 z-50">
+                    <Link href="/">
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl fintech-glass-card text-white/70 hover:text-white font-bold text-sm transition-colors"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            {t('common.back')}
+                        </motion.button>
+                    </Link>
+                </div>
+            )}
 
             <div className="fixed top-6 right-6 z-50">
                 <div className="rounded-2xl fintech-glass-card px-1 py-1">
@@ -315,7 +329,7 @@ function LoginPageInner(): React.JSX.Element {
                                         disabled={isSubmitting}
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
-                                        className="flex items-center justify-center gap-2 w-full h-12 rounded-2xl font-black text-base disabled:opacity-50 bg-yellow-400 hover:bg-yellow-500 text-black shadow-lg shadow-yellow-400/25 transition-colors"
+                                        className="flex items-center justify-center gap-2 w-full h-12 rounded-2xl font-black text-base disabled:opacity-50 bg-yellow-400 hover:bg-yellow-500 text-white shadow-lg shadow-yellow-400/25 transition-colors"
                                         aria-busy={isSubmitting}
                                     >
                                         {isSubmitting ? t('auth.loggingIn') : 'Entrar'}
@@ -350,6 +364,7 @@ function LoginPageInner(): React.JSX.Element {
                     </div>
                 </div>
             </div>
+            {!isPwa && <PwaInstallPrompt />}
         </div>
     );
 }
