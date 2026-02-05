@@ -17,6 +17,7 @@ import { WithdrawModal } from "@/components/modals/withdraw-modal";
 import { SellUsdtModal } from "@/components/modals/sell-usdt-modal";
 import SendUsdtModal from "@/components/modals/send-usdt-modal";
 import { UsernameTransferModal } from "@/components/modals/username-transfer-modal";
+import { BoletoPaymentModal } from "@/components/modals/boleto-payment-modal";
 import { useUiModals } from "@/stores/ui-modals";
 
 export default function CustomerLayout({ children }: { children: React.ReactNode }) {
@@ -112,6 +113,11 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
             <SellUsdtModal
                 open={open.sellUsdt}
                 onClose={() => closeModal("sellUsdt")}
+                onSuccess={triggerRefresh}
+            />
+            <BoletoPaymentModal
+                open={open.payBoleto}
+                onClose={() => closeModal("payBoleto")}
                 onSuccess={triggerRefresh}
             />
 

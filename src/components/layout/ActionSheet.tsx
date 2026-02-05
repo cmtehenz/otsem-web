@@ -8,6 +8,7 @@ import {
     Send,
     DollarSign,
     UserRoundSearch,
+    Receipt,
 } from "lucide-react";
 import { useUiModals } from "@/stores/ui-modals";
 
@@ -62,6 +63,13 @@ const actions: ActionItem[] = [
         icon: Send,
         iconBg: "bg-sky-500/15",
     },
+    {
+        id: "payBoleto",
+        label: "Pagar Boleto",
+        sublabel: "Pague boletos com crypto",
+        icon: Receipt,
+        iconBg: "bg-orange-500/15",
+    },
 ];
 
 export function ActionSheet({
@@ -83,6 +91,7 @@ export function ActionSheet({
             else if (id === "sellUsdt") openModal("sellUsdt");
             else if (id === "usernameTransfer") openModal("usernameTransfer");
             else if (id === "sendUsdt") openModal("sendUsdt");
+            else if (id === "payBoleto") openModal("payBoleto");
         }, 150);
     }
 

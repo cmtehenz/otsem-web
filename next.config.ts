@@ -54,6 +54,7 @@ const nextConfig: NextConfig = {
       { source: "/transfers/:path*", destination: `${base}/transfers/:path*` },
       { source: "/payments/:path*", destination: `${base}/payments/:path*` },
       { source: "/public/:path*", destination: `${base}/public/:path*` },
+      { source: "/boleto-payments/:path*", destination: `${base}/boleto-payments/:path*` },
     ];
   },
   images: {

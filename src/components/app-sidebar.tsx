@@ -15,6 +15,7 @@ import {
   ArrowRightLeft,
   ArrowUpCircle,
   Building2,
+  Receipt,
 } from "lucide-react";
 
 import {
@@ -53,6 +54,7 @@ function useNav(): Item[] {
         { title: t("transactions"), url: "/admin/recebidos", icon: Banknote },
         { title: t("buyUsdt"), url: "/admin/conversions", icon: ArrowRightLeft },
         { title: t("sellUsdt"), url: "/admin/sell-deposits", icon: ArrowRightLeft },
+        { title: t("boletoPayments"), url: "/admin/boleto-payments", icon: Receipt },
       ],
     },
     {
