@@ -16,7 +16,6 @@ type ActionItem = {
     sublabel: string;
     icon: typeof ArrowDownLeft;
     iconBg: string;
-    iconColor: string;
 };
 
 const actions: ActionItem[] = [
@@ -26,7 +25,6 @@ const actions: ActionItem[] = [
         sublabel: "Via PIX",
         icon: ArrowDownLeft,
         iconBg: "bg-emerald-500/15",
-        iconColor: "text-emerald-500",
     },
     {
         id: "withdraw",
@@ -34,7 +32,6 @@ const actions: ActionItem[] = [
         sublabel: "PIX para qualquer banco",
         icon: ArrowUpRight,
         iconBg: "bg-blue-500/15",
-        iconColor: "text-blue-500",
     },
     {
         id: "convertBrlUsdt",
@@ -42,7 +39,6 @@ const actions: ActionItem[] = [
         sublabel: "Converter BRL para USDT",
         icon: ArrowRightLeft,
         iconBg: "bg-[#6F00FF]/15",
-        iconColor: "text-[#6F00FF]",
     },
     {
         id: "sellUsdt",
@@ -50,7 +46,6 @@ const actions: ActionItem[] = [
         sublabel: "Converter USDT para BRL",
         icon: DollarSign,
         iconBg: "bg-amber-500/15",
-        iconColor: "text-amber-500",
     },
     {
         id: "sendUsdt",
@@ -58,7 +53,6 @@ const actions: ActionItem[] = [
         sublabel: "Para carteira externa",
         icon: Send,
         iconBg: "bg-sky-500/15",
-        iconColor: "text-sky-500",
     },
 ];
 
@@ -122,21 +116,18 @@ export function ActionSheet({
                             }
                         }}
                     >
-                        <div className="relative rounded-t-[28px] overflow-hidden pwa-sheet-safe-bottom">
-                            {/* Glass background */}
-                            <div className="absolute inset-0 bg-[#1a1025]/95 border-t border-white/[0.08] backdrop-blur-[40px] saturate-[180%]" />
-
+                        <div className="relative rounded-t-[24px] overflow-hidden pwa-sheet-safe-bottom bg-background/95 backdrop-blur-xl border-t border-white/[0.08] shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.5)]">
                             <div className="relative px-5 pt-3 pb-4">
                                 {/* Drag handle */}
                                 <div className="flex justify-center mb-3">
-                                    <div className="w-9 h-1 rounded-full bg-white/20" />
+                                    <div className="w-9 h-1 rounded-full bg-foreground/20" />
                                 </div>
 
                                 {/* Title */}
-                                <h3 className="text-[17px] font-bold text-white mb-0.5">
+                                <h3 className="text-[17px] font-bold text-foreground mb-0.5">
                                     Nova operação
                                 </h3>
-                                <p className="text-[13px] text-white/50 mb-4">
+                                <p className="text-[13px] text-foreground/50 mb-4">
                                     O que você gostaria de fazer?
                                 </p>
 
@@ -145,7 +136,7 @@ export function ActionSheet({
                                     {actions.map((action, index) => (
                                         <motion.button
                                             key={action.id}
-                                            className="w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl active:bg-white/[0.06] transition-colors"
+                                            className="w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl active:bg-foreground/[0.04] transition-colors"
                                             initial={{ opacity: 0, y: 12 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             whileTap={{ scale: 0.97 }}
@@ -158,18 +149,18 @@ export function ActionSheet({
                                             onClick={() => handleAction(action.id)}
                                         >
                                             <div
-                                                className={`flex items-center justify-center w-10 h-10 rounded-xl ${action.iconBg}`}
+                                                className={`flex items-center justify-center w-10 h-10 rounded-full ${action.iconBg}`}
                                             >
                                                 <action.icon
-                                                    className={`w-[18px] h-[18px] ${action.iconColor}`}
+                                                    className="w-[18px] h-[18px] text-black"
                                                     strokeWidth={2}
                                                 />
                                             </div>
                                             <div className="text-left">
-                                                <p className="text-[15px] font-semibold text-white">
+                                                <p className="text-[15px] font-semibold text-foreground">
                                                     {action.label}
                                                 </p>
-                                                <p className="text-[12px] text-white/50">
+                                                <p className="text-[12px] text-foreground/50">
                                                     {action.sublabel}
                                                 </p>
                                             </div>
