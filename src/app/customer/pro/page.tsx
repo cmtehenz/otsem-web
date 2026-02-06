@@ -54,6 +54,11 @@ const PAIRS: PairMeta[] = [
 
 const TIMEFRAMES = ["1m", "5m", "15m", "1h", "4h", "1D"] as const;
 const ASSETS = ["USDT", "BTC", "ETH", "SOL", "TRX", "XRP"] as const;
+const PRO_FEE_RATE = (() => {
+    const raw = Number(process.env.NEXT_PUBLIC_PRO_FEE_RATE ?? "0.0098");
+    if (!Number.isFinite(raw) || raw < 0) return 0;
+    return raw;
+})();
 
 type Timeframe = typeof TIMEFRAMES[number];
 
@@ -459,6 +464,12 @@ export default function ProTradingPage() {
     const priceValue = orderType === "market" ? lastPrice : toNumber(priceInput) || lastPrice;
     const amountValue = toNumber(amountInput);
     const totalValue = priceValue * amountValue;
+    const feeValue = totalValue * PRO_FEE_RATE;
+    const feeRateLabel = (PRO_FEE_RATE * 100).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
+    const netValue = orderSide === "buy" ? totalValue + feeValue : Math.max(0, totalValue - feeValue);
     const canSubmit = amountValue > 0 && (orderType === "market" || priceValue > 0) && !placingOrder;
 
     const handlePlaceOrder = async () => {
@@ -902,6 +913,18 @@ export default function ProTradingPage() {
                         <span>Total estimado</span>
                         <span className="text-white/90 font-semibold tabular-nums">
                             {amountValue > 0 ? formatNumber(totalValue, pair.priceDecimals) : "0,00"} USDT
+                        </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[12px] text-white/60">
+                        <span>Taxa PRO ({feeRateLabel}%)</span>
+                        <span className="text-white/80 font-semibold tabular-nums">
+                            {amountValue > 0 ? formatNumber(feeValue, pair.priceDecimals) : "0,00"} USDT
+                        </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[12px] text-white/80">
+                        <span>{orderSide === "buy" ? "Total com taxa" : "Recebe líquido"}</span>
+                        <span className="text-white font-semibold tabular-nums">
+                            {amountValue > 0 ? formatNumber(netValue, pair.priceDecimals) : "0,00"} USDT
                         </span>
                     </div>
                     <button
