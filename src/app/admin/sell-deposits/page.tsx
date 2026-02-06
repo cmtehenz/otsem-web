@@ -198,62 +198,62 @@ export default function SellDepositsPage() {
         .reduce((sum, d) => sum + (d.usdtAmount || 0), 0);
 
     return (
-        <div className="w-full p-6 space-y-6">
-            <div className="flex items-center justify-between">
+        <div className="w-full space-y-4 sm:space-y-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold">Vendas USDT → BRL</h1>
-                    <p className="text-muted-foreground mt-1">
+                    <h1 className="text-xl sm:text-2xl font-bold">Vendas USDT → BRL</h1>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                         Gerencie depósitos de USDT e processe vendas
                     </p>
                 </div>
-                <Button onClick={loadData} variant="outline" className="gap-2">
+                <Button onClick={loadData} variant="outline" size="sm" className="gap-2 self-end sm:self-auto">
                     <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
                     Atualizar
                 </Button>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Aguardando Depósito</CardTitle>
-                        <Clock className="h-4 w-4 text-yellow-600" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6 sm:pb-2">
+                        <CardTitle className="text-xs sm:text-sm font-medium">Aguardando Depósito</CardTitle>
+                        <Clock className="h-4 w-4 text-yellow-600 shrink-0" />
                     </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-yellow-600">{pendingCount}</div>
-                        <p className="text-xs text-muted-foreground">Clientes enviando USDT</p>
+                    <CardContent className="p-3 pt-0 sm:p-6 sm:pt-0">
+                        <div className="text-xl sm:text-2xl font-bold text-yellow-600">{pendingCount}</div>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">Clientes enviando USDT</p>
                     </CardContent>
                 </Card>
 
                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Prontos p/ Processar</CardTitle>
-                        <ArrowRightLeft className="h-4 w-4 text-blue-600" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6 sm:pb-2">
+                        <CardTitle className="text-xs sm:text-sm font-medium">Prontos p/ Processar</CardTitle>
+                        <ArrowRightLeft className="h-4 w-4 text-blue-600 shrink-0" />
                     </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-blue-600">{confirmedCount}</div>
-                        <p className="text-xs text-muted-foreground">Depósitos confirmados</p>
+                    <CardContent className="p-3 pt-0 sm:p-6 sm:pt-0">
+                        <div className="text-xl sm:text-2xl font-bold text-blue-600">{confirmedCount}</div>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">Depósitos confirmados</p>
                     </CardContent>
                 </Card>
 
                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Concluídas</CardTitle>
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6 sm:pb-2">
+                        <CardTitle className="text-xs sm:text-sm font-medium">Concluídas</CardTitle>
+                        <CheckCircle2 className="h-4 w-4 text-green-600 shrink-0" />
                     </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-green-600">{completedCount}</div>
-                        <p className="text-xs text-muted-foreground">PIX enviado ao cliente</p>
+                    <CardContent className="p-3 pt-0 sm:p-6 sm:pt-0">
+                        <div className="text-xl sm:text-2xl font-bold text-green-600">{completedCount}</div>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">PIX enviado ao cliente</p>
                     </CardContent>
                 </Card>
 
                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Volume Total</CardTitle>
-                        <DollarSign className="h-4 w-4 text-emerald-600" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6 sm:pb-2">
+                        <CardTitle className="text-xs sm:text-sm font-medium">Volume Total</CardTitle>
+                        <DollarSign className="h-4 w-4 text-emerald-600 shrink-0" />
                     </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-emerald-600">{formatUSDT(totalVolume)}</div>
-                        <p className="text-xs text-muted-foreground">USDT vendido</p>
+                    <CardContent className="p-3 pt-0 sm:p-6 sm:pt-0">
+                        <div className="text-xl sm:text-2xl font-bold text-emerald-600 truncate">{formatUSDT(totalVolume)}</div>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">USDT vendido</p>
                     </CardContent>
                 </Card>
             </div>

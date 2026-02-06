@@ -12,7 +12,7 @@ import { RoleGuard } from "@/components/auth/RoleGuard";
 import { AppSidebar } from "@/components/app-sidebar";
 import { HeaderUserChip } from "@/components/auth/HeaderUserChip";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { LogOut, ChevronLeft } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 import {
@@ -35,7 +35,7 @@ function titleCase(s: string) {
 }
 
 function AutoBreadcrumb() {
-    const segments = useSelectedLayoutSegments() ?? []; // ex.: ["users","123"]
+    const segments = useSelectedLayoutSegments() ?? [];
     const parts = ["admin", ...segments];
 
     if (parts.length <= 1) {
@@ -75,6 +75,27 @@ function AutoBreadcrumb() {
     );
 }
 
+function MobileBreadcrumb() {
+    const segments = useSelectedLayoutSegments() ?? [];
+    if (segments.length === 0) return null;
+
+    const parts = ["admin", ...segments];
+    const currentLabel = titleCase(segments[segments.length - 1]);
+    const parentHref = segments.length > 1
+        ? "/" + parts.slice(0, parts.length - 1).join("/")
+        : "/admin/dashboard";
+
+    return (
+        <a
+            href={parentHref}
+            className="flex items-center gap-0.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors min-w-0"
+        >
+            <ChevronLeft className="h-4 w-4 shrink-0" />
+            <span className="truncate">{currentLabel}</span>
+        </a>
+    );
+}
+
 function HeaderLogout() {
     const { logout } = useAuth();
     const t = useTranslations("auth");
@@ -101,21 +122,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <AppSidebar />
 
                         <SidebarInset>
-                            <header className="flex h-16 shrink-0 items-center gap-2 px-4">
+                            <header className="flex h-14 shrink-0 items-center gap-1.5 px-3 sm:h-16 sm:gap-2 sm:px-4">
                                 <SidebarTrigger className="-ml-1" />
-                                <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
-                                <AutoBreadcrumb />
+                                <Separator orientation="vertical" className="mr-2 hidden sm:block data-[orientation=vertical]:h-4" />
+                                <div className="sm:hidden min-w-0">
+                                    <MobileBreadcrumb />
+                                </div>
+                                <div className="hidden sm:block min-w-0 flex-1">
+                                    <AutoBreadcrumb />
+                                </div>
 
                                 {/* Chip do usuário + Logout */}
-                                <div className="ml-auto flex items-center gap-2">
-                                    <LanguageSwitcher />
+                                <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
+                                    <div className="hidden md:block">
+                                        <LanguageSwitcher />
+                                    </div>
                                     <HeaderUserChip />
-                                    <Separator orientation="vertical" className="h-6" />
+                                    <Separator orientation="vertical" className="h-6 hidden sm:block" />
                                     <HeaderLogout />
                                 </div>
                             </header>
 
-                            <main className="flex flex-1 flex-col gap-4 p-4 pt-0">
+                            <main className="flex flex-1 flex-col gap-3 p-3 pt-0 sm:gap-4 sm:p-4 sm:pt-0">
                                 {children}
                             </main>
                         </SidebarInset>

@@ -257,19 +257,19 @@ export default function AdminPixKeysPage(): React.JSX.Element {
     --------------------------------------------------------- */
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4 sm:gap-6">
             {/* Cabeçalho */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
+                    <h1 className="text-xl sm:text-2xl font-semibold tracking-tight flex items-center gap-2">
                         <KeyRound className="size-5" />
                         Operações de Chaves Pix
                     </h1>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                         Gerencie chaves Pix vinculadas à conta BRX
                     </p>
                 </div>
-                <Button variant="ghost" onClick={loadKeys} disabled={loadingList}>
+                <Button variant="ghost" size="sm" onClick={loadKeys} disabled={loadingList} className="self-end sm:self-auto">
                     <RefreshCw className="size-4 mr-2" />
                     {loadingList ? "Carregando…" : "Recarregar"}
                 </Button>
@@ -277,88 +277,151 @@ export default function AdminPixKeysPage(): React.JSX.Element {
 
             {/* Lista de chaves */}
             <Card className="rounded-2xl">
-                <CardHeader>
-                    <CardTitle>
+                <CardHeader className="p-4 sm:p-6">
+                    <CardTitle className="text-base sm:text-lg">
                         Chaves cadastradas {bankName && `– ${bankName}`}
                     </CardTitle>
                 </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Tipo</TableHead>
-                                <TableHead>Chave</TableHead>
-                                <TableHead>Ag/Conta</TableHead>
-                                <TableHead>Tipo Conta</TableHead>
-                                <TableHead className="text-right">Ações</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {keys.length ? (
-                                keys.map((k) => (
-                                    <TableRow key={k.key}>
-                                        <TableCell className="capitalize">{k.keyType}</TableCell>
-                                        <TableCell className="font-mono">{k.key}</TableCell>
-                                        <TableCell className="text-sm text-muted-foreground">
-                                            {k.account
-                                                ? `${k.account.branch}/${k.account.number}`
-                                                : "—"}
-                                        </TableCell>
-                                        <TableCell className="text-sm text-muted-foreground">
-                                            {k.account?.type ?? "—"}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <AlertDialog>
-                                                <AlertDialogTrigger asChild>
-                                                    <Button
-                                                        variant="destructive"
-                                                        size="sm"
-                                                        className="gap-2"
-                                                        disabled={deletingKey === k.key}
+                <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
+                    {/* Mobile card view */}
+                    <div className="space-y-2 md:hidden">
+                        {keys.length ? (
+                            keys.map((k) => (
+                                <div key={k.key} className="rounded-lg border p-3 space-y-2">
+                                    <div className="flex items-start justify-between gap-2">
+                                        <div className="min-w-0 flex-1">
+                                            <span className="text-[10px] font-semibold uppercase bg-muted px-1.5 py-0.5 rounded">{k.keyType}</span>
+                                            <p className="text-xs font-mono mt-1 break-all">{k.key}</p>
+                                        </div>
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    className="shrink-0 h-7 px-2"
+                                                    disabled={deletingKey === k.key}
+                                                >
+                                                    {deletingKey === k.key ? (
+                                                        <Loader2 className="size-3.5 animate-spin" />
+                                                    ) : (
+                                                        <Trash2 className="size-3.5" />
+                                                    )}
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Excluir chave Pix?</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        Essa ação não pode ser desfeita. A chave{" "}
+                                                        <span className="font-mono">{k.key}</span> será removida
+                                                        permanentemente da sua conta BRX.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                    <AlertDialogAction
+                                                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                                        onClick={() => void deleteKey(k.key)}
                                                     >
-                                                        {deletingKey === k.key ? (
-                                                            <Loader2 className="size-4 animate-spin" />
-                                                        ) : (
-                                                            <Trash2 className="size-4" />
-                                                        )}
-                                                        Excluir
-                                                    </Button>
-                                                </AlertDialogTrigger>
-                                                <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                        <AlertDialogTitle>Excluir chave Pix?</AlertDialogTitle>
-                                                        <AlertDialogDescription>
-                                                            Essa ação não pode ser desfeita. A chave{" "}
-                                                            <span className="font-mono">{k.key}</span> será removida
-                                                            permanentemente da sua conta BRX.
-                                                        </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-                                                    <AlertDialogFooter>
-                                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                                        <AlertDialogAction
-                                                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                                            onClick={() => void deleteKey(k.key)}
+                                                        Confirmar exclusão
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    </div>
+                                    {k.account && (
+                                        <p className="text-[11px] text-muted-foreground">
+                                            Ag/Conta: {k.account.branch}/{k.account.number} • {k.account.type ?? "—"}
+                                        </p>
+                                    )}
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-center text-sm text-muted-foreground py-6">
+                                Nenhuma chave encontrada.
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Desktop table view */}
+                    <div className="hidden md:block overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Tipo</TableHead>
+                                    <TableHead>Chave</TableHead>
+                                    <TableHead>Ag/Conta</TableHead>
+                                    <TableHead>Tipo Conta</TableHead>
+                                    <TableHead className="text-right">Ações</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {keys.length ? (
+                                    keys.map((k) => (
+                                        <TableRow key={k.key}>
+                                            <TableCell className="capitalize">{k.keyType}</TableCell>
+                                            <TableCell className="font-mono">{k.key}</TableCell>
+                                            <TableCell className="text-sm text-muted-foreground">
+                                                {k.account
+                                                    ? `${k.account.branch}/${k.account.number}`
+                                                    : "—"}
+                                            </TableCell>
+                                            <TableCell className="text-sm text-muted-foreground">
+                                                {k.account?.type ?? "—"}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <Button
+                                                            variant="destructive"
+                                                            size="sm"
+                                                            className="gap-2"
+                                                            disabled={deletingKey === k.key}
                                                         >
-                                                            Confirmar exclusão
-                                                        </AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                </AlertDialogContent>
-                                            </AlertDialog>
+                                                            {deletingKey === k.key ? (
+                                                                <Loader2 className="size-4 animate-spin" />
+                                                            ) : (
+                                                                <Trash2 className="size-4" />
+                                                            )}
+                                                            Excluir
+                                                        </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>Excluir chave Pix?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                Essa ação não pode ser desfeita. A chave{" "}
+                                                                <span className="font-mono">{k.key}</span> será removida
+                                                                permanentemente da sua conta BRX.
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                            <AlertDialogAction
+                                                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                                                onClick={() => void deleteKey(k.key)}
+                                                            >
+                                                                Confirmar exclusão
+                                                            </AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell
+                                            colSpan={5}
+                                            className="text-center text-sm text-muted-foreground"
+                                        >
+                                            Nenhuma chave encontrada.
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell
-                                        colSpan={5}
-                                        className="text-center text-sm text-muted-foreground"
-                                    >
-                                        Nenhuma chave encontrada.
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
 

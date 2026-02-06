@@ -121,37 +121,36 @@ export default function AdminCustomersPage(): React.JSX.Element {
     }
 
     return (
-        <div className="flex flex-col gap-6">
-            <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    { }
-                    <h1 className="text-2xl font-semibold bg-linear-to-r from-indigo-600 to-[#6F00FF] bg-clip-text text-transparent">
+                    <h1 className="text-xl sm:text-2xl font-semibold bg-linear-to-r from-indigo-600 to-[#6F00FF] bg-clip-text text-transparent">
                         Clientes
                     </h1>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                         Acompanhe o status de verificação e realize credenciamentos manuais.
                     </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 self-end sm:self-auto">
                     <Link href="/admin/kyc/new/pf">
-                        <Button variant="outline">+ PF</Button>
+                        <Button variant="outline" size="sm">+ PF</Button>
                     </Link>
                     <Link href="/admin/kyc/new/pj">
-                        <Button variant="outline">+ PJ</Button>
+                        <Button variant="outline" size="sm">+ PJ</Button>
                     </Link>
                 </div>
             </div>
 
             <Card className="rounded-2xl shadow-sm border-indigo-50">
-                <CardHeader>
-                    <CardTitle>Listagem</CardTitle>
+                <CardHeader className="p-4 sm:p-6">
+                    <CardTitle className="text-base sm:text-lg">Listagem</CardTitle>
                 </CardHeader>
 
-                <CardContent className="grid gap-4">
+                <CardContent className="grid gap-4 p-4 pt-0 sm:p-6 sm:pt-0">
                     {/* busca */}
-                    <div className="flex items-end gap-3 flex-wrap">
-                        <div className="grid gap-1 flex-1 max-w-md">
-                            <Label>Buscar</Label>
+                    <div className="flex items-end gap-2 sm:gap-3 flex-wrap">
+                        <div className="grid gap-1 flex-1 min-w-0">
+                            <Label className="text-xs sm:text-sm">Buscar</Label>
                             <Input
                                 placeholder="nome, @username, doc, e-mail, telefone…"
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -161,6 +160,7 @@ export default function AdminCustomersPage(): React.JSX.Element {
                         </div>
                         <Button
                             variant="ghost"
+                            size="sm"
                             onClick={() => load(q, page)}
                             disabled={loading}
                         >
@@ -172,8 +172,53 @@ export default function AdminCustomersPage(): React.JSX.Element {
                         </Button>
                     </div>
 
-                    {/* tabela */}
-                    <div className="overflow-x-auto">
+                    {/* Mobile card view */}
+                    <div className="space-y-2 md:hidden">
+                        {loading && items.length === 0 ? (
+                            <div className="flex justify-center py-8">
+                                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                            </div>
+                        ) : items.length > 0 ? (
+                            items.map((i: AdminCustomerItem) => (
+                                <Link
+                                    key={i.id}
+                                    href={`/admin/kyc/${i.id}`}
+                                    className="block rounded-lg border p-3 hover:bg-muted/40 transition-colors"
+                                >
+                                    <div className="flex items-start justify-between gap-2">
+                                        <div className="min-w-0 flex-1">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-[10px] font-semibold bg-muted px-1.5 py-0.5 rounded">{i.type}</span>
+                                                <span className="text-sm font-medium truncate">{getDisplayName(i)}</span>
+                                            </div>
+                                            {i.username && (
+                                                <p className="text-xs font-medium text-[#6F00FF] mt-0.5">@{i.username}</p>
+                                            )}
+                                            <p className="text-xs text-muted-foreground mt-1 truncate">{i.email}</p>
+                                            <p className="text-[11px] font-mono text-muted-foreground">{getTaxNumber(i)}</p>
+                                        </div>
+                                        <div className="flex flex-col items-end gap-1 shrink-0">
+                                            <span
+                                                className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${getStatusColor(i.accountStatus)}`}
+                                            >
+                                                {getStatusLabel(i.accountStatus)}
+                                            </span>
+                                            <span className="text-[10px] text-muted-foreground">
+                                                {new Date(i.createdAt).toLocaleDateString("pt-BR")}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))
+                        ) : (
+                            <div className="text-center text-sm text-muted-foreground py-8">
+                                Nenhum cliente encontrado.
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Desktop table view */}
+                    <div className="hidden md:block overflow-x-auto">
                         <Table>
                             <TableHeader>
                                 <TableRow className="bg-muted/40">
@@ -246,13 +291,13 @@ export default function AdminCustomersPage(): React.JSX.Element {
 
                     <Separator />
 
-                    <div className="flex items-center justify-between">
-                        <div className="text-sm text-muted-foreground">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="text-xs sm:text-sm text-muted-foreground">
                             Total: {total} cliente(s) • Página {page}
                         </div>
 
                         {total > 20 && (
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 self-end sm:self-auto">
                                 <Button
                                     variant="outline"
                                     size="sm"

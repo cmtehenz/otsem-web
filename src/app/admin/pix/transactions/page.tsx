@@ -305,19 +305,19 @@ export default function AdminPixTransactionsPage(): React.JSX.Element {
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4 sm:gap-6">
             {/* HEADER */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-semibold flex items-center gap-2">
+                    <h1 className="text-xl sm:text-2xl font-semibold flex items-center gap-2">
                         <ArrowUpRight className="size-5" />
                         Transações Pix
                     </h1>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                         Envie, receba e acompanhe o histórico de transações Pix.
                     </p>
                 </div>
-                <Button variant="ghost" onClick={loadHistory} disabled={loadingHistory}>
+                <Button variant="ghost" size="sm" onClick={loadHistory} disabled={loadingHistory} className="self-end sm:self-auto">
                     <RefreshCw className="size-4 mr-2" />
                     {loadingHistory ? "Atualizando…" : "Atualizar"}
                 </Button>
@@ -480,38 +480,76 @@ export default function AdminPixTransactionsPage(): React.JSX.Element {
                         </select>
                     </div>
 
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Data</TableHead>
-                                <TableHead>Tipo</TableHead>
-                                <TableHead>Valor</TableHead>
-                                <TableHead>Chave</TableHead>
-                                <TableHead>Status</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {history.length ? (
-                                history.map((tx) => (
-                                    <TableRow key={tx.id}>
-                                        <TableCell>{new Date(tx.createdAt).toLocaleString()}</TableCell>
-                                        <TableCell>
-                                            {tx.direction === "out" ? "Enviado" : "Recebido"}
-                                        </TableCell>
-                                        <TableCell>R$ {tx.amount.toFixed(2)}</TableCell>
-                                        <TableCell>{tx.key ?? "—"}</TableCell>
-                                        <TableCell>{tx.status}</TableCell>
-                                    </TableRow>
-                                ))
-                            ) : (
+                    {/* Mobile card view */}
+                    <div className="space-y-2 md:hidden">
+                        {history.length ? (
+                            history.map((tx) => (
+                                <div key={tx.id} className="rounded-lg border p-3">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className="flex items-center gap-2 min-w-0">
+                                            <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
+                                                tx.direction === "out" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+                                            }`}>
+                                                {tx.direction === "out" ? "Enviado" : "Recebido"}
+                                            </span>
+                                            <span className="text-sm font-semibold tabular-nums">
+                                                R$ {tx.amount.toFixed(2)}
+                                            </span>
+                                        </div>
+                                        <span className="text-[10px] font-medium bg-muted px-1.5 py-0.5 rounded shrink-0">
+                                            {tx.status}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center justify-between gap-2 mt-1.5">
+                                        <span className="text-[11px] text-muted-foreground truncate">{tx.key ?? "—"}</span>
+                                        <span className="text-[10px] text-muted-foreground shrink-0">
+                                            {new Date(tx.createdAt).toLocaleDateString("pt-BR")}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-center text-sm text-muted-foreground py-6">
+                                Nenhuma transação encontrada.
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Desktop table view */}
+                    <div className="hidden md:block overflow-x-auto">
+                        <Table>
+                            <TableHeader>
                                 <TableRow>
-                                    <TableCell colSpan={5} className="text-center text-sm text-muted-foreground">
-                                        Nenhuma transação encontrada.
-                                    </TableCell>
+                                    <TableHead>Data</TableHead>
+                                    <TableHead>Tipo</TableHead>
+                                    <TableHead>Valor</TableHead>
+                                    <TableHead>Chave</TableHead>
+                                    <TableHead>Status</TableHead>
                                 </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {history.length ? (
+                                    history.map((tx) => (
+                                        <TableRow key={tx.id}>
+                                            <TableCell>{new Date(tx.createdAt).toLocaleString()}</TableCell>
+                                            <TableCell>
+                                                {tx.direction === "out" ? "Enviado" : "Recebido"}
+                                            </TableCell>
+                                            <TableCell>R$ {tx.amount.toFixed(2)}</TableCell>
+                                            <TableCell>{tx.key ?? "—"}</TableCell>
+                                            <TableCell>{tx.status}</TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="text-center text-sm text-muted-foreground">
+                                            Nenhuma transação encontrada.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
 
                     <div className="flex justify-between mt-3">
                         <div className="text-sm text-muted-foreground">

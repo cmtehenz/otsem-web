@@ -67,16 +67,58 @@ export default function RecentTransactions({ transactions }: Props) {
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-4">
-                <CardTitle>Transações Recentes</CardTitle>
+                <CardTitle className="text-base sm:text-lg">Transações Recentes</CardTitle>
                 <Button variant="ghost" size="sm" className="gap-1" asChild>
-                    <Link href="/admin/transactions">
+                    <Link href="/admin/recebidos">
                         Ver todas
                         <ExternalLink className="h-3 w-3" />
                     </Link>
                 </Button>
             </CardHeader>
             <CardContent>
-                <div className="overflow-x-auto">
+                {/* Mobile card view */}
+                <div className="space-y-3 md:hidden">
+                    {transactions.map((tx) => {
+                        const typeInfo = typeConfig[tx.type] || typeConfig.PIX_IN;
+                        const statusInfo = statusConfig[tx.status] || statusConfig.PENDING;
+                        const Icon = typeInfo.icon;
+
+                        return (
+                            <div key={tx.id} className="flex items-center gap-3 rounded-lg border p-3">
+                                <div className={`flex h-9 w-9 items-center justify-center rounded-lg shrink-0 ${typeInfo.color}`}>
+                                    <Icon className="h-4 w-4" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <span className="text-sm font-medium truncate">{tx.customerName || "—"}</span>
+                                        <span className={`text-sm font-semibold tabular-nums shrink-0 ${
+                                            tx.type === "PIX_IN" ? "text-green-600" :
+                                            tx.type === "PIX_OUT" || tx.type === "PAYOUT" ? "text-red-600" :
+                                            "text-blue-600"
+                                        }`}>
+                                            {tx.type === "PIX_IN" ? "+" : tx.type === "PIX_OUT" || tx.type === "PAYOUT" ? "-" : ""}
+                                            {formatBRL(tx.amount)}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center justify-between gap-2 mt-1">
+                                        <div className="flex items-center gap-1.5 min-w-0">
+                                            <span className="text-[11px] text-muted-foreground truncate">{typeInfo.label}</span>
+                                            <Badge variant={statusInfo.variant} className="text-[9px] px-1.5 py-0 shrink-0">
+                                                {statusInfo.label}
+                                            </Badge>
+                                        </div>
+                                        <span className="text-[11px] text-muted-foreground shrink-0">
+                                            {formatDate(tx.createdAt)}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* Desktop table view */}
+                <div className="hidden md:block overflow-x-auto">
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -114,8 +156,8 @@ export default function RecentTransactions({ transactions }: Props) {
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <span className={`font-semibold tabular-nums ${
-                                                tx.type === "PIX_IN" ? "text-green-600" : 
-                                                tx.type === "PIX_OUT" || tx.type === "PAYOUT" ? "text-red-600" : 
+                                                tx.type === "PIX_IN" ? "text-green-600" :
+                                                tx.type === "PIX_OUT" || tx.type === "PAYOUT" ? "text-red-600" :
                                                 "text-blue-600"
                                             }`}>
                                                 {tx.type === "PIX_IN" ? "+" : tx.type === "PIX_OUT" || tx.type === "PAYOUT" ? "-" : ""}

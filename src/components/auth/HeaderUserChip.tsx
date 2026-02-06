@@ -19,16 +19,16 @@ export function HeaderUserChip() {
 
     return (
         <div
-            className="ml-auto flex items-center rounded-full border bg-background px-3 py-1.5 gap-2"
+            className="ml-auto flex items-center rounded-full border bg-background px-2 py-1.5 gap-2 sm:px-3"
             role="group"
             aria-label="Usuário autenticado"
         >
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted text-xs font-semibold">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted text-xs font-semibold shrink-0">
                 {initials(user?.name || user?.email)}
             </div>
-            <div className="leading-tight">
-                <div className="text-sm font-medium">{title}</div>
-                {subtitle && <div className="text-[11px] text-muted-foreground">{subtitle}</div>}
+            <div className="leading-tight hidden sm:block">
+                <div className="text-sm font-medium truncate max-w-[140px]">{title}</div>
+                {subtitle && <div className="text-[11px] text-muted-foreground truncate max-w-[140px]">{subtitle}</div>}
             </div>
         </div>
     );

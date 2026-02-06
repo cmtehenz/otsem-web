@@ -59,17 +59,17 @@ export default function QuickActions() {
                 <CardTitle className="text-base">Ações Rápidas</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-8">
+                <div className="grid grid-cols-3 gap-2 sm:grid-cols-3 md:grid-cols-6">
                     {actions.map((action) => (
                         <Button
-                            key={action.href}
+                            key={action.label}
                             variant="outline"
-                            className={`h-auto flex-col gap-2 py-4 transition-all ${action.color}`}
+                            className={`h-auto flex-col gap-1.5 sm:gap-2 py-3 sm:py-4 transition-all ${action.color}`}
                             asChild
                         >
                             <Link href={action.href}>
-                                <action.icon className="h-5 w-5" />
-                                <span className="text-xs font-medium">{action.label}</span>
+                                <action.icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                                <span className="text-[10px] sm:text-xs font-medium text-center leading-tight">{action.label}</span>
                             </Link>
                         </Button>
                     ))}

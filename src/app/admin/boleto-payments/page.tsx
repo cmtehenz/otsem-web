@@ -205,15 +205,15 @@ export default function AdminBoletoPaymentsPage() {
     ];
 
     return (
-        <div className="w-full p-6 space-y-6">
-            <div className="flex items-center justify-between">
+        <div className="w-full space-y-4 sm:space-y-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold">Pagamentos de Boleto</h1>
-                    <p className="text-muted-foreground mt-1">
+                    <h1 className="text-xl sm:text-2xl font-bold">Pagamentos de Boleto</h1>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                         Gerencie pagamentos de boleto feitos com crypto
                     </p>
                 </div>
-                <Button onClick={loadData} variant="outline" className="gap-2">
+                <Button onClick={loadData} variant="outline" size="sm" className="gap-2 self-end sm:self-auto">
                     <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
                     Atualizar
                 </Button>
@@ -221,7 +221,7 @@ export default function AdminBoletoPaymentsPage() {
 
             {/* Stats Cards */}
             {stats && (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+                <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Total</CardTitle>

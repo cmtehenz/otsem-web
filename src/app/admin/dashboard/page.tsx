@@ -80,7 +80,7 @@ export default function AdminDashboardPage(): React.JSX.Element {
 
             const response = await http.get<DashboardData>("/admin/dashboard/stats");
             setData(response.data);
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err);
             toast.error("Falha ao carregar dashboard");
         } finally {
@@ -103,12 +103,12 @@ export default function AdminDashboardPage(): React.JSX.Element {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+        <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                    <h1 className="text-xl font-bold tracking-tight sm:text-2xl">Dashboard</h1>
                     {data?.timestamp && (
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-xs text-muted-foreground sm:text-sm">
                             Atualizado em {new Date(data.timestamp).toLocaleString("pt-BR")}
                         </p>
                     )}
@@ -118,7 +118,7 @@ export default function AdminDashboardPage(): React.JSX.Element {
                     size="sm"
                     onClick={() => loadData(true)}
                     disabled={refreshing}
-                    className="gap-2"
+                    className="gap-2 self-end sm:self-auto"
                 >
                     <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
                     Atualizar
@@ -129,7 +129,7 @@ export default function AdminDashboardPage(): React.JSX.Element {
 
             <KPICards kpis={data?.kpis ?? null} />
 
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
                 <div className="lg:col-span-2">
                     <ChartsSection charts={data?.charts ?? null} />
                 </div>

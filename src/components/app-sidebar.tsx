@@ -30,6 +30,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 type Item = {
@@ -88,6 +89,11 @@ function isActive(pathname: string, href: string) {
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname() ?? "";
   const nav = useNav();
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  const closeMobileSidebar = React.useCallback(() => {
+    if (isMobile) setOpenMobile(false);
+  }, [isMobile, setOpenMobile]);
 
   return (
     <Sidebar variant="floating" {...props}>
@@ -98,6 +104,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
               <Link
                 href="/admin/dashboard"
                 aria-label="Ir para dashboard do Admin"
+                onClick={closeMobileSidebar}
               >
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <GalleryVerticalEnd className="size-4" />
@@ -123,7 +130,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
                 return (
                   <SidebarMenuItem key={group.title}>
                     <SidebarMenuButton asChild isActive={active}>
-                      <Link href={group.url} className="font-medium">
+                      <Link href={group.url} className="font-medium" onClick={closeMobileSidebar}>
                         <Icon className="size-4" />
                         {group.title}
                       </Link>
@@ -149,6 +156,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
                             <Link
                               href={item.url}
                               className="flex items-center gap-2 relative"
+                              onClick={closeMobileSidebar}
                             >
                               <Icon className="size-4" />
                               <span className="flex-1">{item.title}</span>
