@@ -148,7 +148,10 @@ type SpotBalance = {
 type WalletItem = {
     id: string;
     network: string;
+    currency: string;
     balance: string | number;
+    isMain?: boolean;
+    okxWhitelisted?: boolean;
 };
 
 type SpotTransferItem = {
@@ -193,8 +196,9 @@ export default function ProTradingPage() {
     const [candles, setCandles] = useState<SpotCandle[]>([]);
     const [timeframe, setTimeframe] = useState<Timeframe>("1h");
     const [spotBalances, setSpotBalances] = useState<SpotBalance[]>([]);
-    const [walletUsdt, setWalletUsdt] = useState(0);
-    const [proUsdt, setProUsdt] = useState(0);
+    const [wallets, setWallets] = useState<WalletItem[]>([]);
+    const [transferAsset, setTransferAsset] = useState<typeof ASSETS[number]>("USDT");
+    const [selectedWalletId, setSelectedWalletId] = useState("");
     const [transferOpen, setTransferOpen] = useState(false);
     const [transferDirection, setTransferDirection] = useState<"toPro" | "toWallet">("toPro");
     const [transferAmount, setTransferAmount] = useState("");
@@ -216,6 +220,46 @@ export default function ProTradingPage() {
     const [amountInput, setAmountInput] = useState("");
     const [placingOrder, setPlacingOrder] = useState(false);
 
+    const walletBalances = useMemo(() => {
+        const map: Record<string, number> = {};
+        ASSETS.forEach((asset) => {
+            map[asset] = 0;
+        });
+        for (const wallet of wallets) {
+            const currency = wallet.currency?.toUpperCase();
+            if (currency && map[currency] !== undefined) {
+                map[currency] += Number(wallet.balance || 0);
+            }
+        }
+        return map;
+    }, [wallets]);
+
+    const spotAvailable = useMemo(() => {
+        const map: Record<string, number> = {};
+        ASSETS.forEach((asset) => {
+            map[asset] = 0;
+        });
+        for (const balance of spotBalances) {
+            const currency = balance.currency?.toUpperCase();
+            if (currency && map[currency] !== undefined) {
+                map[currency] = Number(balance.available || 0);
+            }
+        }
+        return map;
+    }, [spotBalances]);
+
+    const transferWalletOptions = useMemo(() => {
+        return wallets
+            .filter((wallet) => wallet.currency?.toUpperCase() === transferAsset)
+            .sort((a, b) => {
+                if (a.isMain && !b.isMain) return -1;
+                if (!a.isMain && b.isMain) return 1;
+                return a.network.localeCompare(b.network);
+            });
+    }, [wallets, transferAsset]);
+
+    const selectedWallet = transferWalletOptions.find((wallet) => wallet.id === selectedWalletId) || null;
+
     useEffect(() => {
         setPriceInput(formatNumber(pair.price, pair.priceDecimals));
         setAmountInput("");
@@ -229,19 +273,15 @@ export default function ProTradingPage() {
         try {
             const [spotRes, walletRes] = await Promise.all([
                 http.get<SpotBalance[]>("/okx/spot/balances"),
-                http.get<WalletItem[]>("/wallet/usdt"),
+                http.get<WalletItem[]>("/wallet"),
             ]);
             const spot = spotRes.data || [];
             const walletItems = walletRes.data || [];
-            const walletTotal = walletItems.reduce((sum, item) => sum + Number(item.balance || 0), 0);
-            const usdtSpot = spot.find((b) => b.currency === "USDT");
             setSpotBalances(spot);
-            setWalletUsdt(walletTotal);
-            setProUsdt(usdtSpot ? Number(usdtSpot.available) : 0);
+            setWallets(walletItems);
         } catch {
             setSpotBalances([]);
-            setWalletUsdt(0);
-            setProUsdt(0);
+            setWallets([]);
         }
     };
 
@@ -288,7 +328,7 @@ export default function ProTradingPage() {
             active = false;
             clearInterval(interval);
         };
-         
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -500,10 +540,9 @@ export default function ProTradingPage() {
                 description: ordId ? `ID: ${ordId}` : `Par: ${selectedPair}`,
             });
             setAmountInput("");
-        } catch (error: unknown) {
-            const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+        } catch (error: any) {
             toast.error("Não foi possível enviar a ordem", {
-                description: msg || "Tente novamente em instantes",
+                description: error?.response?.data?.message || "Tente novamente em instantes",
             });
         } finally {
             setPlacingOrder(false);
@@ -515,6 +554,18 @@ export default function ProTradingPage() {
         setTransferAmount("");
         setTransferOpen(true);
     };
+
+    useEffect(() => {
+        if (!transferOpen) return;
+        if (transferWalletOptions.length === 0) {
+            setSelectedWalletId("");
+            return;
+        }
+        const exists = transferWalletOptions.some((wallet) => wallet.id === selectedWalletId);
+        if (!exists) {
+            setSelectedWalletId(transferWalletOptions[0].id);
+        }
+    }, [transferOpen, transferAsset, transferWalletOptions, selectedWalletId]);
 
     useEffect(() => {
         setOrderPage(1);
@@ -537,10 +588,9 @@ export default function ProTradingPage() {
             await http.post("/okx/spot/cancel-order", { orderId });
             await Promise.all([refreshHistory(), refreshBalances()]);
             toast.success("Ordem cancelada");
-        } catch (error: unknown) {
-            const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+        } catch (error: any) {
             toast.error("Não foi possível cancelar", {
-                description: msg || "Tente novamente",
+                description: error?.response?.data?.message || "Tente novamente",
             });
         } finally {
             setCancelingOrderId(null);
@@ -553,12 +603,18 @@ export default function ProTradingPage() {
             toast.error("Informe um valor válido");
             return;
         }
-        if (transferDirection === "toPro" && amount > walletUsdt) {
+        const walletAvailable = walletBalances[transferAsset] || 0;
+        const proAvailable = spotAvailable[transferAsset] || 0;
+        if (transferDirection === "toPro" && amount > walletAvailable) {
             toast.error("Saldo insuficiente na carteira");
             return;
         }
-        if (transferDirection === "toWallet" && amount > proUsdt) {
+        if (transferDirection === "toWallet" && amount > proAvailable) {
             toast.error("Saldo insuficiente no PRO");
+            return;
+        }
+        if (!selectedWalletId) {
+            toast.error("Selecione uma carteira");
             return;
         }
         setTransferLoading(true);
@@ -566,14 +622,13 @@ export default function ProTradingPage() {
             const endpoint = transferDirection === "toPro"
                 ? "/okx/spot/transfer-to-pro"
                 : "/okx/spot/transfer-to-wallet";
-            await http.post(endpoint, { amount });
+            await http.post(endpoint, { amount, currency: transferAsset, walletId: selectedWalletId });
             await Promise.all([refreshBalances(), refreshHistory()]);
             toast.success("Transferência concluída");
             setTransferOpen(false);
-        } catch (error: unknown) {
-            const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+        } catch (error: any) {
             toast.error("Não foi possível transferir", {
-                description: msg || "Tente novamente em instantes",
+                description: error?.response?.data?.message || "Tente novamente em instantes",
             });
         } finally {
             setTransferLoading(false);
@@ -581,7 +636,7 @@ export default function ProTradingPage() {
     };
 
     return (
-        <motion.div variants={stagger} initial="hidden" animate="show" className="pro-trading pb-28">
+        <motion.div variants={stagger} initial="hidden" animate="show" className="pb-28">
             <motion.div variants={fadeUp} className="flex items-center justify-between mt-2">
                 <div className="flex items-center gap-3">
                     <Link
@@ -593,13 +648,13 @@ export default function ProTradingPage() {
                     <div>
                         <div className="flex items-center gap-2">
                             <span className="text-[18px] font-bold text-white">PRO</span>
-                            <span className="text-[11px] font-semibold text-white">Spot</span>
+                            <span className="text-[11px] font-semibold text-white/60">Spot</span>
                         </div>
-                        <p className="text-[12px] text-white">Trading com livro de ofertas</p>
+                        <p className="text-[12px] text-white/60">Trading com livro de ofertas</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2 rounded-full px-3 py-1.5 bg-white/10 border border-white/10">
-                    <span className="text-[11px] font-semibold text-white/80">PRO</span>
+                    <span className="text-[11px] font-semibold text-white/80">OKX</span>
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 </div>
             </motion.div>
@@ -614,8 +669,8 @@ export default function ProTradingPage() {
                             className={cn(
                                 "px-3.5 py-1.5 rounded-full text-[12px] font-semibold border transition-all",
                                 active
-                                    ? "bg-primary text-white border-primary"
-                                    : "bg-white/8 text-white border-white/10"
+                                    ? "bg-[#6F00FF] text-white border-[#6F00FF]"
+                                    : "bg-white/8 text-white/70 border-white/10"
                             )}
                         >
                             {item.base}/{item.quote}
@@ -625,12 +680,26 @@ export default function ProTradingPage() {
             </motion.div>
 
             <motion.div variants={fadeUp} className="mt-4 rounded-3xl fintech-glass-card p-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-3">
                     <div>
-                        <p className="text-[12px] text-white">Carteira USDT</p>
+                        <p className="text-[12px] text-white/60">Carteira ({transferAsset})</p>
                         <p className="text-[18px] font-semibold text-white tabular-nums">
-                            {formatNumber(walletUsdt, 4)}
+                            {formatNumber(walletBalances[transferAsset] || 0, 4)}
                         </p>
+                    </div>
+                    <div className="min-w-[120px]">
+                        <Select value={transferAsset} onValueChange={(value) => setTransferAsset(value as (typeof ASSETS)[number])}>
+                            <SelectTrigger className="bg-white/10 border-white/10 text-white text-[12px] h-9">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {ASSETS.map((asset) => (
+                                    <SelectItem key={asset} value={asset}>
+                                        {asset}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                     <button
                         type="button"
@@ -642,9 +711,9 @@ export default function ProTradingPage() {
                 </div>
                 <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3">
                     <div>
-                        <p className="text-[12px] text-white">Saldo PRO (USDT)</p>
+                        <p className="text-[12px] text-white/60">Saldo PRO ({transferAsset})</p>
                         <p className="text-[18px] font-semibold text-white tabular-nums">
-                            {formatNumber(proUsdt, 4)}
+                            {formatNumber(spotAvailable[transferAsset] || 0, 4)}
                         </p>
                     </div>
                     <button
@@ -656,14 +725,14 @@ export default function ProTradingPage() {
                     </button>
                 </div>
                 <p className="text-[10px] text-white/45 mt-2">
-                    Transferências usam USDT (Solana/Tron). BTC/ETH são apenas para trading.
+                    Transferências suportam USDT, BTC, ETH, SOL e TRX nas redes correspondentes.
                 </p>
             </motion.div>
 
             <motion.div variants={fadeUp} className="mt-4 rounded-3xl fintech-glass-card p-4">
                 <div className="flex items-center justify-between">
                     <h3 className="text-[15px] font-semibold text-white">Saldos PRO</h3>
-                    <span className="text-[11px] text-white">Disponível / Bloqueado</span>
+                    <span className="text-[11px] text-white/60">Disponível / Bloqueado</span>
                 </div>
                 <div className="mt-3 grid grid-cols-2 gap-2">
                     {ASSETS.map((asset) => {
@@ -676,7 +745,7 @@ export default function ProTradingPage() {
                                 className="rounded-2xl bg-white/5 border border-white/10 px-3 py-2"
                             >
                                 <p className="text-[12px] font-semibold text-white">{asset}</p>
-                                <p className="text-[11px] text-white tabular-nums">
+                                <p className="text-[11px] text-white/70 tabular-nums">
                                     {formatNumber(available, 4)} / {formatNumber(locked, 4)}
                                 </p>
                             </div>
@@ -688,10 +757,10 @@ export default function ProTradingPage() {
             <motion.div variants={fadeUp} className="mt-4 rounded-3xl fintech-glass-card p-4">
                 <div className="flex items-start justify-between">
                     <div>
-                        <p className="text-[13px] text-white">Preço atual</p>
+                        <p className="text-[13px] text-white/60">Preço atual</p>
                         <p className="text-[26px] font-bold text-white tabular-nums">
                             {formatNumber(lastPrice, pair.priceDecimals)}
-                            <span className="text-[13px] font-semibold text-white ml-1">USDT</span>
+                            <span className="text-[13px] font-semibold text-white/60 ml-1">USDT</span>
                         </p>
                     </div>
                     <div
@@ -705,7 +774,7 @@ export default function ProTradingPage() {
                     </div>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between text-[11px] text-white">
+                <div className="mt-4 flex items-center justify-between text-[11px] text-white/60">
                     <span>24h Máxima</span>
                     <span>24h Mínima</span>
                     <span>Volume</span>
@@ -725,7 +794,7 @@ export default function ProTradingPage() {
                                 "px-2.5 py-1 rounded-full text-[11px] font-semibold border",
                                 tf === timeframe
                                     ? "bg-white/15 text-white border-white/20"
-                                    : "bg-white/5 text-white border-white/10"
+                                    : "bg-white/5 text-white/60 border-white/10"
                             )}
                         >
                             {tf}
@@ -751,12 +820,12 @@ export default function ProTradingPage() {
                 <div className="rounded-3xl fintech-glass-card p-4">
                     <div className="flex items-center justify-between">
                         <h3 className="text-[15px] font-semibold text-white">Livro de ofertas</h3>
-                        <div className="flex items-center gap-1 text-[11px] text-white">
+                        <div className="flex items-center gap-1 text-[11px] text-white/60">
                             5 níveis
                             <ChevronDown className="w-3.5 h-3.5" />
                         </div>
                     </div>
-                    <div className="mt-3 grid grid-cols-[1.1fr_1fr_1fr] text-[11px] text-white">
+                    <div className="mt-3 grid grid-cols-[1.1fr_1fr_1fr] text-[11px] text-white/50">
                         <span>Preço</span>
                         <span>Qtd</span>
                         <span className="text-right">Total</span>
@@ -774,14 +843,14 @@ export default function ProTradingPage() {
                                 <span className="relative text-white/80 tabular-nums">
                                     {formatNumber(row.size, pair.qtyDecimals)}
                                 </span>
-                                <span className="relative text-white tabular-nums text-right">
+                                <span className="relative text-white/60 tabular-nums text-right">
                                     {formatNumber(row.total, pair.priceDecimals)}
                                 </span>
                             </div>
                         ))}
                         <div className="py-2 text-center text-[12px] font-semibold text-white">
                             {formatNumber(lastPrice, pair.priceDecimals)}
-                            <span className="text-[11px] text-white ml-1">USDT</span>
+                            <span className="text-[11px] text-white/50 ml-1">USDT</span>
                         </div>
                         {depth.bids.map((row) => (
                             <div key={`bid-${row.price}`} className="relative grid grid-cols-[1.1fr_1fr_1fr] text-[11px] font-medium">
@@ -795,7 +864,7 @@ export default function ProTradingPage() {
                                 <span className="relative text-white/80 tabular-nums">
                                     {formatNumber(row.size, pair.qtyDecimals)}
                                 </span>
-                                <span className="relative text-white tabular-nums text-right">
+                                <span className="relative text-white/60 tabular-nums text-right">
                                     {formatNumber(row.total, pair.priceDecimals)}
                                 </span>
                             </div>
@@ -806,9 +875,9 @@ export default function ProTradingPage() {
                 <div className="rounded-3xl fintech-glass-card p-4">
                     <div className="flex items-center justify-between">
                         <h3 className="text-[15px] font-semibold text-white">Negócios</h3>
-                        <span className="text-[11px] text-white">Atualizações</span>
+                        <span className="text-[11px] text-white/60">Atualizações</span>
                     </div>
-                    <div className="mt-3 grid grid-cols-[1.2fr_1fr_1fr] text-[11px] text-white">
+                    <div className="mt-3 grid grid-cols-[1.2fr_1fr_1fr] text-[11px] text-white/50">
                         <span>Preço</span>
                         <span>Qtd</span>
                         <span className="text-right">Hora</span>
@@ -827,7 +896,7 @@ export default function ProTradingPage() {
                                 <span className="text-white/80 tabular-nums">
                                     {formatNumber(trade.size, pair.qtyDecimals)}
                                 </span>
-                                <span className="text-white tabular-nums text-right">
+                                <span className="text-white/60 tabular-nums text-right">
                                     {trade.time}
                                 </span>
                             </div>
@@ -839,7 +908,7 @@ export default function ProTradingPage() {
             <motion.div variants={fadeUp} className="mt-4 rounded-3xl fintech-glass-card p-4">
                 <div className="flex items-center justify-between">
                     <h3 className="text-[15px] font-semibold text-white">Nova ordem</h3>
-                    <span className="text-[11px] text-white">Conta de trading</span>
+                    <span className="text-[11px] text-white/60">Conta única OKX</span>
                 </div>
 
                 <div className="mt-3 flex items-center gap-2">
@@ -886,7 +955,7 @@ export default function ProTradingPage() {
 
                 <div className="mt-4 grid grid-cols-1 gap-3">
                     <div className="space-y-1">
-                        <Label className="text-[12px] text-white">Preço (USDT)</Label>
+                        <Label className="text-[12px] text-white/70">Preço (USDT)</Label>
                         <Input
                             value={orderType === "market" ? formatNumber(lastPrice, pair.priceDecimals) : priceInput}
                             onChange={(e) => setPriceInput(e.target.value)}
@@ -895,7 +964,7 @@ export default function ProTradingPage() {
                         />
                     </div>
                     <div className="space-y-1">
-                        <Label className="text-[12px] text-white">Quantidade ({pair.base})</Label>
+                        <Label className="text-[12px] text-white/70">Quantidade ({pair.base})</Label>
                         <Input
                             value={amountInput}
                             onChange={(e) => setAmountInput(e.target.value)}
@@ -903,7 +972,7 @@ export default function ProTradingPage() {
                             className="bg-white/5 border-white/10 text-white"
                         />
                     </div>
-                    <div className="flex items-center justify-between text-[11px] text-white">
+                    <div className="flex items-center justify-between text-[11px] text-white/50">
                         <span>Disponível</span>
                         <span className="text-white/80 font-semibold tabular-nums">
                             {orderSide === "buy"
@@ -911,13 +980,13 @@ export default function ProTradingPage() {
                                 : `${formatNumber(availableBase, pair.qtyDecimals)} ${pair.base}`}
                         </span>
                     </div>
-                    <div className="flex items-center justify-between text-[12px] text-white">
+                    <div className="flex items-center justify-between text-[12px] text-white/60">
                         <span>Total estimado</span>
                         <span className="text-white/90 font-semibold tabular-nums">
                             {amountValue > 0 ? formatNumber(totalValue, pair.priceDecimals) : "0,00"} USDT
                         </span>
                     </div>
-                    <div className="flex items-center justify-between text-[12px] text-white">
+                    <div className="flex items-center justify-between text-[12px] text-white/60">
                         <span>Taxa PRO ({feeRateLabel}%)</span>
                         <span className="text-white/80 font-semibold tabular-nums">
                             {amountValue > 0 ? formatNumber(feeValue, pair.priceDecimals) : "0,00"} USDT
@@ -943,8 +1012,8 @@ export default function ProTradingPage() {
                     >
                         {placingOrder ? "Enviando..." : `${orderSide === "buy" ? "Comprar" : "Vender"} ${pair.base}`}
                     </button>
-                    <p className="text-[11px] text-white text-center">
-                        Ordens spot e limite do seu portfólio PRO
+                    <p className="text-[11px] text-white/50 text-center">
+                        Ordens spot e limite conectadas na sua conta OKX
                     </p>
                 </div>
             </motion.div>
@@ -953,11 +1022,11 @@ export default function ProTradingPage() {
                 <div className="rounded-3xl fintech-glass-card p-4">
                     <div className="flex items-center justify-between">
                         <h3 className="text-[15px] font-semibold text-white">Transferências PRO</h3>
-                        <span className="text-[11px] text-white">USDT</span>
+                        <span className="text-[11px] text-white/60">Multiativo</span>
                     </div>
                     <div className="mt-3 space-y-2">
                         {transferHistory.length === 0 ? (
-                            <p className="text-[12px] text-white">Sem transferências</p>
+                            <p className="text-[12px] text-white/50">Sem transferências</p>
                         ) : (
                             transferHistory.map((item) => (
                                 <div
@@ -968,13 +1037,13 @@ export default function ProTradingPage() {
                                         <p className="text-[12px] font-semibold text-white">
                                             {item.direction === "TO_PRO" ? "Para PRO" : "Para carteira"}
                                         </p>
-                                        <p className="text-[10px] text-white">
+                                        <p className="text-[10px] text-white/50">
                                             {item.network ? `${item.network} • ` : ""}{formatDateTime(item.createdAt)}
                                         </p>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-[12px] font-semibold text-white tabular-nums">
-                                            {formatNumber(item.amount, 4)} USDT
+                                            {formatNumber(item.amount, 4)} {item.currency}
                                         </p>
                                     </div>
                                 </div>
@@ -990,7 +1059,7 @@ export default function ProTradingPage() {
                                 "px-3 py-1.5 rounded-full text-[11px] font-semibold border",
                                 transferHasPrev
                                     ? "bg-white/10 text-white border-white/10"
-                                    : "bg-white/5 text-white border-white/5"
+                                    : "bg-white/5 text-white/40 border-white/5"
                             )}
                         >
                             Anterior
@@ -1003,7 +1072,7 @@ export default function ProTradingPage() {
                                 "px-3 py-1.5 rounded-full text-[11px] font-semibold border",
                                 transferHasNext
                                     ? "bg-white/10 text-white border-white/10"
-                                    : "bg-white/5 text-white border-white/5"
+                                    : "bg-white/5 text-white/40 border-white/5"
                             )}
                         >
                             Próxima
@@ -1014,7 +1083,7 @@ export default function ProTradingPage() {
                 <div className="rounded-3xl fintech-glass-card p-4">
                     <div className="flex items-center justify-between">
                         <h3 className="text-[15px] font-semibold text-white">Ordens PRO</h3>
-                        <span className="text-[11px] text-white">Histórico</span>
+                        <span className="text-[11px] text-white/60">Histórico</span>
                     </div>
                     <div className="mt-3 flex items-center gap-2">
                         <Select value={orderFilterPair} onValueChange={setOrderFilterPair}>
@@ -1046,7 +1115,7 @@ export default function ProTradingPage() {
                     </div>
                     <div className="mt-3 space-y-2">
                         {orderHistory.length === 0 ? (
-                            <p className="text-[12px] text-white">Sem ordens</p>
+                            <p className="text-[12px] text-white/50">Sem ordens</p>
                         ) : (
                             orderHistory.map((order) => (
                                 <div
@@ -1057,7 +1126,7 @@ export default function ProTradingPage() {
                                         <p className="text-[12px] font-semibold text-white">
                                             {order.side === "buy" ? "Compra" : "Venda"} {order.instId.replace("-", "/")}
                                         </p>
-                                        <p className="text-[10px] text-white">
+                                        <p className="text-[10px] text-white/50">
                                             {order.ordType === "limit" ? "Limite" : "Mercado"} • {order.status} • {formatDateTime(order.createdAt)}
                                         </p>
                                     </div>
@@ -1066,7 +1135,7 @@ export default function ProTradingPage() {
                                             <p className="text-[12px] font-semibold text-white tabular-nums">
                                                 {formatNumber(order.sz, 4)} {order.instId.split("-")[0]}
                                             </p>
-                                            <p className="text-[10px] text-white tabular-nums">
+                                            <p className="text-[10px] text-white/60 tabular-nums">
                                                 {order.avgPx ? `${formatNumber(order.avgPx, 4)} USDT` : order.px ? `${formatNumber(order.px, 4)} USDT` : "—"}
                                             </p>
                                         </div>
@@ -1078,7 +1147,7 @@ export default function ProTradingPage() {
                                                 className={cn(
                                                     "px-2.5 py-1 rounded-full text-[10px] font-semibold border",
                                                     cancelingOrderId === order.id
-                                                        ? "bg-white/10 text-white border-white/10"
+                                                        ? "bg-white/10 text-white/50 border-white/10"
                                                         : "bg-rose-500/20 text-rose-200 border-rose-500/30"
                                                 )}
                                             >
@@ -1099,7 +1168,7 @@ export default function ProTradingPage() {
                                 "px-3 py-1.5 rounded-full text-[11px] font-semibold border",
                                 orderHasPrev
                                     ? "bg-white/10 text-white border-white/10"
-                                    : "bg-white/5 text-white border-white/5"
+                                    : "bg-white/5 text-white/40 border-white/5"
                             )}
                         >
                             Anterior
@@ -1112,7 +1181,7 @@ export default function ProTradingPage() {
                                 "px-3 py-1.5 rounded-full text-[11px] font-semibold border",
                                 orderHasNext
                                     ? "bg-white/10 text-white border-white/10"
-                                    : "bg-white/5 text-white border-white/5"
+                                    : "bg-white/5 text-white/40 border-white/5"
                             )}
                         >
                             Próxima
@@ -1129,13 +1198,52 @@ export default function ProTradingPage() {
                         </BottomSheetTitle>
                         <BottomSheetDescription>
                             {transferDirection === "toPro"
-                                ? "Mover USDT da sua carteira para o saldo PRO."
-                                : "Mover USDT do saldo PRO para a carteira."}
+                                ? `Mover ${transferAsset} da sua carteira para o saldo PRO.`
+                                : `Mover ${transferAsset} do saldo PRO para a carteira.`}
                         </BottomSheetDescription>
                     </BottomSheetHeader>
                     <div className="px-5 pb-6 space-y-3">
                         <div className="space-y-1">
-                            <Label className="text-[12px] text-foreground/70">Valor em USDT</Label>
+                            <Label className="text-[12px] text-foreground/70">Ativo</Label>
+                            <Select value={transferAsset} onValueChange={(value) => setTransferAsset(value as (typeof ASSETS)[number])}>
+                                <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {ASSETS.map((asset) => (
+                                        <SelectItem key={asset} value={asset}>
+                                            {asset}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-1">
+                            <Label className="text-[12px] text-foreground/70">Carteira</Label>
+                            <Select
+                                value={selectedWalletId}
+                                onValueChange={setSelectedWalletId}
+                                disabled={transferWalletOptions.length === 0}
+                            >
+                                <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                                    <SelectValue placeholder={transferWalletOptions.length ? "Selecione" : "Nenhuma carteira disponível"} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {transferWalletOptions.map((wallet) => (
+                                        <SelectItem key={wallet.id} value={wallet.id}>
+                                            {wallet.network} · {Number(wallet.balance || 0).toFixed(4)} {wallet.currency}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {transferWalletOptions.length === 0 && (
+                                <p className="text-[11px] text-white/50">
+                                    Crie ou importe uma carteira {transferAsset} para continuar.
+                                </p>
+                            )}
+                        </div>
+                        <div className="space-y-1">
+                            <Label className="text-[12px] text-foreground/70">Valor em {transferAsset}</Label>
                             <Input
                                 value={transferAmount}
                                 onChange={(e) => setTransferAmount(e.target.value)}
@@ -1143,24 +1251,24 @@ export default function ProTradingPage() {
                                 className="bg-white/5 border-white/10 text-white"
                             />
                         </div>
-                        <div className="flex items-center justify-between text-[12px] text-white">
+                        <div className="flex items-center justify-between text-[12px] text-white/60">
                             <span>Disponível</span>
                             <span className="text-white/90 font-semibold tabular-nums">
                                 {transferDirection === "toPro"
-                                    ? `${formatNumber(walletUsdt, 4)} USDT`
-                                    : `${formatNumber(proUsdt, 4)} USDT`}
+                                    ? `${formatNumber(walletBalances[transferAsset] || 0, 4)} ${transferAsset}`
+                                    : `${formatNumber(spotAvailable[transferAsset] || 0, 4)} ${transferAsset}`}
                             </span>
                         </div>
                         <button
                             type="button"
                             onClick={handleTransfer}
-                            disabled={transferLoading}
+                            disabled={transferLoading || transferWalletOptions.length === 0}
                             className={cn(
                                 "w-full py-3 rounded-2xl text-[14px] font-semibold text-white transition-all",
                                 transferDirection === "toPro"
-                                    ? "bg-primary/80 hover:bg-primary"
+                                    ? "bg-[#6F00FF]/80 hover:bg-[#6F00FF]"
                                     : "bg-white/20 hover:bg-white/30",
-                                transferLoading && "opacity-60"
+                                (transferLoading || transferWalletOptions.length === 0) && "opacity-60"
                             )}
                         >
                             {transferLoading ? "Transferindo..." : "Confirmar transferência"}
