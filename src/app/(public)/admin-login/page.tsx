@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { useAuth } from "@/contexts/auth-context";
+import { TwoFactorVerify } from "@/components/auth/TwoFactorVerify";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
@@ -29,8 +30,11 @@ const loginResolver = zodResolver(loginSchema) as unknown as Resolver<LoginForm>
 
 export default function AdminLoginPage() {
     const router = useRouter();
-    const { login, user } = useAuth();
+    const { login, verifyTwoFactor, user } = useAuth();
     const [showPw, setShowPw] = React.useState(false);
+    const [requires2FA, setRequires2FA] = React.useState(false);
+    const [tempToken, setTempToken] = React.useState("");
+    const [userEmail, setUserEmail] = React.useState("");
     const t = useTranslations();
 
     const {
@@ -55,13 +59,68 @@ export default function AdminLoginPage() {
 
     const onSubmit: SubmitHandler<LoginForm> = async (values) => {
         try {
-            await login(values.email, values.password);
+            const result = await login(values.email, values.password);
+
+            if ("requiresTwoFactor" in result && result.requiresTwoFactor) {
+                setRequires2FA(true);
+                setTempToken(result.tempToken);
+                setUserEmail(values.email);
+                return;
+            }
+
             toast.success(t("auth.welcomeAdmin"));
+            router.replace("/admin/dashboard");
         } catch (error) {
             const message = error instanceof Error ? error.message : t("auth.loginFailed");
             toast.error(message);
         }
     };
+
+    const handle2FAVerify = async (code: string, isBackupCode: boolean) => {
+        try {
+            await verifyTwoFactor(code, tempToken, isBackupCode);
+            toast.success(t("auth.welcomeAdmin"));
+            router.replace("/admin/dashboard");
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    const handleCancel2FA = () => {
+        setRequires2FA(false);
+        setTempToken("");
+        setUserEmail("");
+    };
+
+    if (requires2FA) {
+        return (
+            <div className="relative min-h-screen w-full overflow-hidden bg-slate-950">
+                <div className="pointer-events-none absolute inset-0 -z-10">
+                    <div className="absolute -top-1/2 left-1/2 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-b from-slate-800/50 via-slate-900/30 to-transparent blur-3xl" />
+                </div>
+
+                <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-slate-950/80 backdrop-blur-xl">
+                    <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
+                        <button onClick={handleCancel2FA} className="flex items-center gap-3">
+                            <Image src="/images/logo-64.png" alt="OtsemPay" width={40} height={40} className="h-10 w-10 object-contain" />
+                            <span className="text-xl font-bold tracking-tight">
+                                <span className="text-amber-400">Otsem</span>
+                                <span className="text-slate-400">Admin</span>
+                            </span>
+                        </button>
+                    </div>
+                </header>
+
+                <div className="flex min-h-screen w-full items-center justify-center px-4 py-24">
+                    <TwoFactorVerify
+                        onVerify={handle2FAVerify}
+                        onCancel={handleCancel2FA}
+                        email={userEmail}
+                    />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="relative min-h-screen w-full overflow-hidden bg-slate-950">
