@@ -49,11 +49,10 @@ const PAIRS: PairMeta[] = [
     { id: "ETH-USDT", base: "ETH", quote: "USDT", price: 2310.5, priceDecimals: 2, qtyDecimals: 4, change: 0.82 },
     { id: "SOL-USDT", base: "SOL", quote: "USDT", price: 106.3, priceDecimals: 2, qtyDecimals: 2, change: -2.14 },
     { id: "TRX-USDT", base: "TRX", quote: "USDT", price: 0.1238, priceDecimals: 4, qtyDecimals: 0, change: 0.44 },
-    { id: "XRP-USDT", base: "XRP", quote: "USDT", price: 0.5442, priceDecimals: 4, qtyDecimals: 1, change: 3.11 },
 ];
 
 const TIMEFRAMES = ["1m", "5m", "15m", "1h", "4h", "1D"] as const;
-const ASSETS = ["USDT", "BTC", "ETH", "SOL", "TRX", "XRP"] as const;
+const ASSETS = ["USDT", "BTC", "ETH", "SOL", "TRX"] as const;
 const PRO_FEE_RATE = (() => {
     const raw = Number(process.env.NEXT_PUBLIC_PRO_FEE_RATE ?? "0.0098");
     if (!Number.isFinite(raw) || raw < 0) return 0;
@@ -656,8 +655,8 @@ export default function ProTradingPage() {
                         Transferir para carteira
                     </button>
                 </div>
-                <p className="text-[10px] text-white mt-2">
-                    Transferências usam USDT (Solana/Tron). BTC/ETH/XRP são apenas para trading.
+                <p className="text-[10px] text-white/45 mt-2">
+                    Transferências usam USDT (Solana/Tron). BTC/ETH são apenas para trading.
                 </p>
             </motion.div>
 

@@ -59,7 +59,7 @@ const actions: ActionItem[] = [
     },
     {
         id: "sendUsdt",
-        label: "Enviar USDT",
+        label: "Enviar cripto",
         sublabel: "Para carteira externa",
         icon: Send,
         colorKey: "send",

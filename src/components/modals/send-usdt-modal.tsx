@@ -20,6 +20,7 @@ import { useUiModals } from "@/stores/ui-modals";
 type WalletType = {
     id: string;
     network: string;
+    currency: string;
     balance: string;
     externalAddress: string;
     label?: string;
@@ -43,7 +44,7 @@ export default function SendUsdtModal() {
     const [selectedWalletId, setSelectedWalletId] = useState("");
     const [toAddress, setToAddress] = useState("");
     const [amount, setAmount] = useState("");
-    const [txResult, setTxResult] = useState<{ txId: string; network: string } | null>(null);
+    const [txResult, setTxResult] = useState<{ txId: string; network: string; currency: string } | null>(null);
     const [showConfirm, setShowConfirm] = useState(false);
 
     useEffect(() => {
@@ -111,16 +112,20 @@ export default function SendUsdtModal() {
     async function handleSend() {
         setSending(true);
         try {
-            const res = await http.post("/wallet/send-usdt", {
+            const res = await http.post("/wallet/send-crypto", {
                 walletId: selectedWalletId,
                 toAddress: toAddress.trim(),
                 amount: Number(amount),
             });
-            setTxResult({ txId: res.data.txId, network: res.data.network });
+            setTxResult({
+                txId: res.data.txId,
+                network: res.data.network,
+                currency: res.data.currency || selectedWallet?.currency || "USDT",
+            });
             setShowConfirm(false);
-            toast.success("USDT enviado com sucesso!");
+            toast.success("Transferência enviada com sucesso!");
         } catch (err: unknown) {
-            toast.error(getErrorMessage(err, "Erro ao enviar USDT"));
+            toast.error(getErrorMessage(err, "Erro ao enviar"));
         } finally {
             setSending(false);
         }
@@ -128,6 +133,8 @@ export default function SendUsdtModal() {
 
     function getExplorerTxUrl(txId: string, network: string) {
         if (network === "TRON") return `https://tronscan.org/#/transaction/${txId}`;
+        if (network === "ETHEREUM") return `https://etherscan.io/tx/${txId}`;
+        if (network === "BITCOIN") return `https://blockstream.info/tx/${txId}`;
         return `https://solscan.io/tx/${txId}`;
     }
 
@@ -141,10 +148,10 @@ export default function SendUsdtModal() {
                 <BottomSheetHeader>
                     <BottomSheetTitle className="text-foreground text-xl flex items-center gap-2">
                         <Send className="w-5 h-5 text-[#6F00FF]" />
-                        Enviar USDT
+                        Enviar cripto
                     </BottomSheetTitle>
                     <BottomSheetDescription className="text-muted-foreground">
-                        Envie USDT de uma carteira custodial para qualquer endereço
+                        Envie cripto de uma carteira custodial para qualquer endereço
                     </BottomSheetDescription>
                 </BottomSheetHeader>
 
@@ -155,7 +162,7 @@ export default function SendUsdtModal() {
                                 Transação enviada!
                             </p>
                             <p className="text-muted-foreground text-sm">
-                                {amount} USDT enviados para
+                                {amount} {txResult.currency} enviados para
                             </p>
                             <code className="text-muted-foreground text-xs font-mono break-all">
                                 {toAddress}
@@ -168,7 +175,13 @@ export default function SendUsdtModal() {
                             onClick={() => window.open(getExplorerTxUrl(txResult.txId, txResult.network), "_blank")}
                         >
                             <ExternalLink className="w-4 h-4 mr-2" />
-                            Ver no {txResult.network === "TRON" ? "Tronscan" : "Solscan"}
+                            Ver no {txResult.network === "TRON"
+                                ? "Tronscan"
+                                : txResult.network === "ETHEREUM"
+                                    ? "Etherscan"
+                                    : txResult.network === "BITCOIN"
+                                        ? "Blockstream"
+                                        : "Solscan"}
                         </Button>
 
                         <Button
@@ -207,7 +220,7 @@ export default function SendUsdtModal() {
                                 <option value="">Selecione uma carteira</option>
                                 {wallets.map((w) => (
                                     <option key={w.id} value={w.id}>
-                                        {w.label || w.network} — {Number(w.balance).toFixed(2)} USDT ({w.network})
+                                        {w.label || `${w.currency} ${w.network}`} — {Number(w.balance).toFixed(6)} {w.currency} ({w.network})
                                     </option>
                                 ))}
                             </select>
@@ -223,27 +236,39 @@ export default function SendUsdtModal() {
                                         ? "Ex: TJYs..."
                                         : selectedWallet?.network === "SOLANA"
                                             ? "Ex: 7xKXt..."
-                                            : "Selecione uma carteira primeiro"
+                                            : selectedWallet?.network === "ETHEREUM"
+                                                ? "Ex: 0x..."
+                                                : selectedWallet?.network === "BITCOIN"
+                                                    ? "Ex: bc1..."
+                                                    : "Selecione uma carteira primeiro"
                                 }
                                 className="border-border bg-background text-foreground font-mono text-sm"
                             />
                             {selectedWallet && (
                                 <p className="text-xs text-muted-foreground mt-1">
-                                    Rede: {selectedWallet.network === "TRON" ? "Tron (TRC20)" : "Solana (SPL)"}
+                                    Rede: {selectedWallet.network === "TRON"
+                                        ? "Tron"
+                                        : selectedWallet.network === "ETHEREUM"
+                                            ? "Ethereum"
+                                            : selectedWallet.network === "BITCOIN"
+                                                ? "Bitcoin"
+                                                : "Solana"}
                                 </p>
                             )}
                         </div>
 
                         <div>
                             <div className="flex items-center justify-between mb-1">
-                                <Label className="text-muted-foreground">Valor (USDT)</Label>
+                                <Label className="text-muted-foreground">
+                                    Valor ({selectedWallet?.currency || "—"})
+                                </Label>
                                 {selectedWallet && (
                                     <button
                                         type="button"
                                         onClick={() => setAmount(selectedWallet.balance)}
                                         className="text-xs text-[#6F00FF] hover:underline"
                                     >
-                                        Máx: {Number(selectedWallet.balance).toFixed(2)}
+                                        Máx: {Number(selectedWallet.balance).toFixed(6)}
                                     </button>
                                 )}
                             </div>
@@ -267,31 +292,65 @@ export default function SendUsdtModal() {
 
                         {showConfirm ? (
                             <div className="space-y-3">
-                                <div className="p-4 bg-white/5 border border-amber-500/30 rounded-xl">
-                                    <p className="text-amber-400 text-sm font-semibold mb-2">Confirmar envio</p>
+                                <div className="p-4 bg-white/5 border border-white/20 rounded-xl">
+                                    <p className="text-white text-sm font-semibold mb-2">Confirmar envio</p>
                                     <div className="space-y-1.5 text-sm">
-                                        <p className="text-white"><span className="text-muted-foreground">Valor:</span> {amount} USDT</p>
-                                        <p className="text-white"><span className="text-muted-foreground">Rede:</span> {selectedWallet?.network === "TRON" ? "Tron (TRC20)" : "Solana (SPL)"}</p>
-                                        <p className="text-white break-all"><span className="text-muted-foreground">Para:</span> {toAddress}</p>
+                                        <p className="text-white">
+                                            <span className="text-muted-foreground">Valor:</span>{" "}
+                                            {amount} {selectedWallet?.currency || "USDT"}
+                                        </p>
+                                        <p className="text-white">
+                                            <span className="text-muted-foreground">Rede:</span>{" "}
+                                            {selectedWallet?.network || "-"}
+                                        </p>
+                                        <p className="text-white break-all">
+                                            <span className="text-muted-foreground">Para:</span> {toAddress}
+                                        </p>
                                     </div>
                                 </div>
                                 <div className="flex gap-3">
-                                    <Button variant="ghost" onClick={() => setShowConfirm(false)} className="flex-1 bg-muted border border-border text-foreground hover:bg-accent">
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => setShowConfirm(false)}
+                                        className="flex-1 bg-muted border border-border text-foreground hover:bg-accent"
+                                    >
                                         Voltar
                                     </Button>
-                                    <Button onClick={handleSend} disabled={sending} className="flex-1 bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold">
-                                        {sending ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Enviando...</>) : (<><Send className="w-4 h-4 mr-2" />Confirmar Envio</>)}
+                                    <Button
+                                        onClick={handleSend}
+                                        disabled={sending}
+                                        className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold"
+                                    >
+                                        {sending ? (
+                                            <>
+                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                Enviando...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Send className="w-4 h-4 mr-2" />
+                                                Confirmar envio
+                                            </>
+                                        )}
                                     </Button>
                                 </div>
                             </div>
                         ) : (
                             <div className="flex gap-3 pt-2">
-                                <Button variant="ghost" onClick={handleClose} className="flex-1 bg-muted border border-border text-foreground hover:bg-accent">
+                                <Button
+                                    variant="ghost"
+                                    onClick={handleClose}
+                                    className="flex-1 bg-muted border border-border text-foreground hover:bg-accent"
+                                >
                                     Cancelar
                                 </Button>
-                                <Button onClick={handleReviewSend} disabled={!selectedWalletId || !toAddress.trim() || !amount.trim()} className="flex-1 bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold">
+                                <Button
+                                    onClick={handleReviewSend}
+                                    disabled={!selectedWalletId || !toAddress.trim() || !amount.trim()}
+                                    className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold"
+                                >
                                     <Send className="w-4 h-4 mr-2" />
-                                    Revisar Envio
+                                    Revisar envio
                                 </Button>
                             </div>
                         )}
