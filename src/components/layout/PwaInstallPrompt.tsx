@@ -128,7 +128,7 @@ export function PwaInstallPrompt() {
 
                             {/* Icon + title */}
                             <div className="flex items-center gap-3 mb-3">
-                                <div className="flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-br from-[#6F00FF] to-[#8B2FFF] shadow-lg shadow-[#6F00FF]/25">
+                                <div className="flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-br from-[#FFD54F] to-[#FFB300] shadow-lg shadow-[#FFB300]/25">
                                     {platform === "ios" ? (
                                         <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
                                     ) : (
@@ -173,7 +173,7 @@ export function PwaInstallPrompt() {
                                 /* Android: direct install button */
                                 <button
                                     onClick={handleAndroidInstall}
-                                    className="w-full mb-4 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold text-[15px] py-3 px-4 active:scale-[0.97] transition-transform"
+                                    className="w-full mb-4 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold text-[15px] py-3 px-4 active:scale-[0.97] transition-transform"
                                 >
                                     <Download className="w-4.5 h-4.5" strokeWidth={2} />
                                     Instalar aplicativo

@@ -149,12 +149,12 @@ const ExchangeWidgetMobile = () => {
       <div className="relative flex-1 flex flex-col pt-12 px-5 pb-4 overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-lg shadow-primary/30">
-              <Sparkles className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FFD54F] to-[#FFB300] flex items-center justify-center shadow-lg shadow-[#FFB300]/30">
+              <Sparkles className="w-5 h-5 text-black" />
             </div>
             <div>
               <h1 className="text-lg font-bold text-white tracking-tight">OtsemPay</h1>
-              <p className="text-[11px] text-white/40 font-medium">Câmbio Instantâneo</p>
+              <p className="text-[11px] text-white/90 font-medium">Câmbio Instantâneo</p>
             </div>
           </div>
           <motion.div
@@ -175,13 +175,13 @@ const ExchangeWidgetMobile = () => {
         <div className="flex items-center justify-between mb-5 px-1">
           <div className="flex items-center gap-1.5">
             <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="text-[11px] text-white/50">
+            <span className="text-[11px] text-white/90">
               1 USDT = <span className="text-white/90 font-semibold">{rate != null ? `R$ ${rate.toFixed(2)}` : "..."}</span>
             </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5 text-white/30" />
-            <span className="text-[11px] text-white/40 font-mono font-semibold">{countdown}s</span>
+            <Clock className="w-3.5 h-3.5 text-white/70" />
+            <span className="text-[11px] text-white/90 font-mono font-semibold">{countdown}s</span>
           </div>
         </div>
 
@@ -196,7 +196,7 @@ const ExchangeWidgetMobile = () => {
           >
             <div className="relative bg-white/[0.03] rounded-3xl p-5 border border-white/[0.06] mb-3">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[11px] font-bold text-white/40 uppercase tracking-wider">Você envia</span>
+                <span className="text-[11px] font-bold text-white/90 uppercase tracking-wider">Você envia</span>
                 <div className="flex items-center gap-2 bg-white/[0.06] px-3 py-1.5 rounded-full border border-white/[0.08]">
                   {direction === "buy" ? (
                     <>
@@ -215,7 +215,7 @@ const ExchangeWidgetMobile = () => {
               </div>
 
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-white/30 text-3xl font-medium">
+                <span className="text-white/70 text-3xl font-medium">
                   {direction === "buy" ? "R$" : ""}
                 </span>
                 <input
@@ -237,7 +237,7 @@ const ExchangeWidgetMobile = () => {
                     className={`flex-1 py-2 rounded-xl text-[11px] font-bold transition-all ${
                       numericAmount === preset
                         ? "bg-primary/20 text-primary border border-primary/30"
-                        : "bg-white/[0.04] text-white/50 border border-white/[0.06] active:bg-white/[0.08]"
+                        : "bg-white/[0.04] text-white/90 border border-white/[0.06] active:bg-white/[0.08]"
                     }`}
                   >
                     {direction === "buy" ? `R$${preset}` : preset}
@@ -250,9 +250,9 @@ const ExchangeWidgetMobile = () => {
               <motion.button
                 whileTap={{ scale: 0.9, rotate: 180 }}
                 onClick={toggleDirection}
-                className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-xl shadow-primary/40 border-4 border-[#0A0A0F]"
+                className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFD54F] to-[#FFB300] flex items-center justify-center shadow-xl shadow-[#FFB300]/40 border-4 border-[#0A0A0F]"
               >
-                <ArrowUpDown className="w-5 h-5 text-white" />
+                <ArrowUpDown className="w-5 h-5 text-black" />
               </motion.button>
             </div>
 
@@ -281,11 +281,11 @@ const ExchangeWidgetMobile = () => {
                 transition={{ duration: 0.3 }}
                 className="flex items-baseline gap-2"
               >
-                {direction === "sell" && <span className="text-white/30 text-3xl font-medium">R$</span>}
+                {direction === "sell" && <span className="text-white/70 text-3xl font-medium">R$</span>}
                 <span className="text-4xl font-bold text-white">
                   {isLoading ? "..." : formatBRL(convertedAmount)}
                 </span>
-                <span className="text-white/40 font-medium text-base">
+                <span className="text-white/90 font-medium text-base">
                   {direction === "buy" ? "USDT" : ""}
                 </span>
               </motion.div>
@@ -294,7 +294,7 @@ const ExchangeWidgetMobile = () => {
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={handleConvert}
-              className="w-full mt-5 py-4 bg-gradient-to-r from-primary via-violet-600 to-primary bg-[length:200%_100%] text-white text-base font-bold rounded-2xl shadow-lg shadow-primary/25 flex items-center justify-center gap-2.5 relative overflow-hidden"
+              className="w-full mt-5 py-4 bg-gradient-to-r from-[#FFD54F] via-[#FFB300] to-[#FFD54F] bg-[length:200%_100%] text-black text-base font-bold rounded-2xl shadow-lg shadow-[#FFB300]/25 flex items-center justify-center gap-2.5 relative overflow-hidden"
             >
               <motion.div
                 animate={{ x: ["-100%", "100%"] }}
@@ -308,11 +308,11 @@ const ExchangeWidgetMobile = () => {
             <div className="flex items-center justify-center gap-5 mt-4">
               <div className="flex items-center gap-1.5">
                 <Shield className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-[11px] text-white/40">100% Seguro</span>
+                <span className="text-[11px] text-white/90">100% Seguro</span>
               </div>
               <div className="w-px h-3 bg-white/10" />
               <div className="flex items-center gap-1.5">
-                <span className="text-[11px] text-white/40">Taxa: <span className="text-primary font-semibold">0.98%</span></span>
+                <span className="text-[11px] text-white/90">Taxa: <span className="text-primary font-semibold">0.98%</span></span>
               </div>
             </div>
           </motion.div>
@@ -321,7 +321,7 @@ const ExchangeWidgetMobile = () => {
 
       <div className="relative bg-[#0D0D12]/90 backdrop-blur-xl border-t border-white/[0.06] px-6 py-3 pb-6">
         <div className="flex items-center justify-around">
-          <button className="flex flex-col items-center gap-1 text-white/30">
+          <button className="flex flex-col items-center gap-1 text-white/70">
             <Home className="w-5 h-5" />
             <span className="text-[10px] font-medium">Início</span>
           </button>
@@ -332,11 +332,11 @@ const ExchangeWidgetMobile = () => {
             </div>
             <span className="text-[10px] font-semibold">Câmbio</span>
           </button>
-          <button className="flex flex-col items-center gap-1 text-white/30">
+          <button className="flex flex-col items-center gap-1 text-white/70">
             <History className="w-5 h-5" />
             <span className="text-[10px] font-medium">Histórico</span>
           </button>
-          <button className="flex flex-col items-center gap-1 text-white/30">
+          <button className="flex flex-col items-center gap-1 text-white/70">
             <User className="w-5 h-5" />
             <span className="text-[10px] font-medium">Perfil</span>
           </button>

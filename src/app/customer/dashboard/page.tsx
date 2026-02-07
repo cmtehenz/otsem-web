@@ -153,9 +153,9 @@ function QuickAction({
             transition={{ type: "spring", stiffness: 500, damping: 25 }}
         >
             <div className="flex items-center justify-center w-12 h-12 rounded-full fintech-glass-btn active:bg-white/10 transition-colors">
-                <Icon className="w-[20px] h-[20px] text-white/90" strokeWidth={1.8} />
+                <Icon className="w-[20px] h-[20px] text-white" strokeWidth={1.8} />
             </div>
-            <span className="text-[12px] font-medium text-white/70">{label}</span>
+            <span className="text-[12px] font-medium text-white">{label}</span>
         </motion.button>
     );
 }
@@ -506,7 +506,7 @@ export default function Dashboard() {
             <div className="flex h-[60dvh] flex-col items-center justify-center">
                 <div className="relative">
                     <div className="absolute inset-0 bg-primary/30 rounded-full blur-xl animate-pulse" />
-                    <Loader2 className="relative h-8 w-8 animate-spin text-primary" />
+                    <Loader2 className="relative h-8 w-8 animate-spin text-[#FFD54F]" />
                 </div>
             </div>
         );
@@ -526,7 +526,7 @@ export default function Dashboard() {
             {/* ── Balance Section ── */}
             <motion.div variants={fadeUp} className="text-center pt-4">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                    <p className="text-[13px] font-medium text-white/70">Saldo total</p>
+                    <p className="text-[13px] font-medium text-white">Saldo total</p>
                     <motion.button
                         onClick={() => setBalanceHidden(!balanceHidden)}
                         className="p-2.5 -m-2.5 rounded-full active:bg-white/10 transition-colors"
@@ -535,9 +535,9 @@ export default function Dashboard() {
                         aria-label={balanceHidden ? "Mostrar saldo" : "Ocultar saldo"}
                     >
                         {balanceHidden ? (
-                            <EyeOff className="w-4 h-4 text-white/60" />
+                            <EyeOff className="w-4 h-4 text-white" />
                         ) : (
-                            <Eye className="w-4 h-4 text-white/60" />
+                            <Eye className="w-4 h-4 text-white" />
                         )}
                     </motion.button>
                 </div>
@@ -560,26 +560,26 @@ export default function Dashboard() {
                 <div className="flex-1 fintech-glass-card px-4 py-4">
                     <div className="flex items-center gap-1.5 mb-2">
                         <span className="text-[15px]">🇧🇷</span>
-                        <span className="text-white/70 text-[12px] font-medium">BRL</span>
+                        <span className="text-white text-[12px] font-medium">BRL</span>
                     </div>
                     <p className="font-semibold text-[22px] leading-tight" style={{ color: "white" }}>
                         {balanceHidden ? "••••" : formatCurrency(saldoBRL)}
                     </p>
-                    <p className="text-white/48 text-[11px] mt-1">Real Brasileiro</p>
+                    <p className="text-white/90 text-[11px] mt-1">Real Brasileiro</p>
                 </div>
 
                 {/* USDT Card (with rate integrated) */}
                 <div className="flex-1 fintech-glass-card px-4 py-4">
                     <div className="flex items-center gap-1.5 mb-2">
                         <Image src="/images/usdt-icon.svg" alt="USDT" width={20} height={20} />
-                        <span className="text-white/70 text-[12px] font-medium">USDT</span>
+                        <span className="text-white text-[12px] font-medium">USDT</span>
                     </div>
                     <p className="font-semibold text-[22px] leading-tight" style={{ color: "white" }}>
                         {balanceHidden ? "••••" : usdtBalanceLoading ? "..." : formatUSD(saldoUSDT)}
                     </p>
                     <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-white/[0.06]">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="text-[11px] text-white/70">
+                        <span className="text-[11px] text-white">
                             1 USDT = {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 2)}
                         </span>
                     </div>
@@ -621,14 +621,14 @@ export default function Dashboard() {
                         whileTap={{ scale: 0.98 }}
                         className="fintech-glass-card px-4 py-3.5 flex items-center gap-3 active:bg-white/5 transition-colors"
                     >
-                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
-                            <Sparkles className="w-5 h-5 text-primary" />
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#FFB300]/15">
+                            <Sparkles className="w-5 h-5 text-[#FFD54F]" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-[15px] font-semibold text-white/92">PRO</p>
-                            <p className="text-[12px] text-white/48">Trading spot com livro de ofertas</p>
+                            <p className="text-[15px] font-semibold text-white">PRO</p>
+                            <p className="text-[12px] text-white/90">Trading spot com livro de ofertas</p>
                         </div>
-                        <ChevronRight className="w-4.5 h-4.5 text-white/30" />
+                        <ChevronRight className="w-4.5 h-4.5 text-white/70" />
                     </motion.div>
                 </Link>
             </motion.div>
@@ -640,14 +640,14 @@ export default function Dashboard() {
                         whileTap={{ scale: 0.98 }}
                         className="fintech-glass-card px-4 py-3.5 flex items-center gap-3 active:bg-white/5 transition-colors"
                     >
-                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
-                            <TrendingUp className="w-5 h-5 text-primary" />
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#FFB300]/15">
+                            <TrendingUp className="w-5 h-5 text-[#FFD54F]" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-[15px] font-semibold text-white/92">Mercado cripto</p>
-                            <p className="text-[12px] text-white/48">Top 15 tokens em tempo real</p>
+                            <p className="text-[15px] font-semibold text-white">Mercado cripto</p>
+                            <p className="text-[12px] text-white/90">Top 15 tokens em tempo real</p>
                         </div>
-                        <ChevronRight className="w-4.5 h-4.5 text-white/30" />
+                        <ChevronRight className="w-4.5 h-4.5 text-white/70" />
                     </motion.div>
                 </Link>
             </motion.div>
@@ -659,7 +659,7 @@ export default function Dashboard() {
                         <h3 className="text-[17px] font-bold" style={{ color: "white" }}>Atividade recente</h3>
                         <Link
                             href="/customer/transactions"
-                            className="flex items-center gap-0.5 text-[12px] font-medium text-primary active:opacity-80"
+                            className="flex items-center gap-0.5 text-[12px] font-medium text-[#FFD54F] active:opacity-80"
                         >
                             Ver tudo
                             <ChevronRight className="w-3.5 h-3.5" />
@@ -682,9 +682,9 @@ export default function Dashboard() {
                     ) : (
                         <div className="flex flex-col items-center py-8">
                             <div className="w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center mb-2">
-                                <ArrowDownLeft className="w-4.5 h-4.5 text-white/48" />
+                                <ArrowDownLeft className="w-4.5 h-4.5 text-white/90" />
                             </div>
-                            <p className="text-[13px] text-white/48">Nenhuma transação ainda</p>
+                            <p className="text-[13px] text-white/90">Nenhuma transação ainda</p>
                         </div>
                     )}
                 </div>

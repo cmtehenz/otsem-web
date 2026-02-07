@@ -169,7 +169,7 @@ export default function CustomerBoletoPage() {
                     <h1 className="text-[22px] font-bold text-white tracking-tight">
                         Meus Boletos
                     </h1>
-                    <p className="text-white/70 text-sm mt-0.5">
+                    <p className="text-white text-sm mt-0.5">
                         Pagamentos de boleto com crypto
                     </p>
                 </div>
@@ -190,8 +190,8 @@ export default function CustomerBoletoPage() {
                         onClick={() => setFilter(f.key)}
                         className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition ${
                             filter === f.key
-                                ? "bg-[#6F00FF]/20 text-[#6F00FF] border border-[#6F00FF]/50"
-                                : "bg-white/5 text-white/70 border border-white/10 hover:border-white/20"
+                                ? "bg-[#FFB300]/20 text-[#6F00FF] border border-[#FFB300]/50"
+                                : "bg-white/5 text-white border border-white/10 hover:border-white/20"
                         }`}
                     >
                         {f.label}
@@ -202,12 +202,12 @@ export default function CustomerBoletoPage() {
             {/* List */}
             {loading ? (
                 <div className="flex items-center justify-center py-20">
-                    <Loader2 className="w-8 h-8 text-white/50 animate-spin" />
+                    <Loader2 className="w-8 h-8 text-white/90 animate-spin" />
                 </div>
             ) : payments.length === 0 ? (
                 <div className="flex flex-col items-center py-20">
                     <Receipt className="w-12 h-12 text-white/20 mb-4" />
-                    <p className="text-white/50 text-sm">Nenhum pagamento encontrado</p>
+                    <p className="text-white/90 text-sm">Nenhum pagamento encontrado</p>
                     <motion.button
                         whileTap={{ scale: 0.97 }}
                         onClick={() => openModal("payBoleto")}
@@ -239,7 +239,7 @@ export default function CustomerBoletoPage() {
                                             <p className="text-white font-semibold text-[15px] truncate">
                                                 {payment.description || "Pagamento de Boleto"}
                                             </p>
-                                            <p className="text-white/50 text-xs mt-0.5">
+                                            <p className="text-white/90 text-xs mt-0.5">
                                                 {formatDate(payment.createdAt)}
                                             </p>
                                         </div>
@@ -253,7 +253,7 @@ export default function CustomerBoletoPage() {
                                             {statusConfig.label}
                                         </div>
                                     </div>
-                                    <ChevronRight className="w-4 h-4 text-white/30 ml-2 flex-shrink-0" />
+                                    <ChevronRight className="w-4 h-4 text-white/70 ml-2 flex-shrink-0" />
                                 </div>
                             </motion.button>
                         );

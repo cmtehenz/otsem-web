@@ -282,7 +282,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                             onClick={() => handleCryptoSelect(c)}
                                             className={`flex-1 py-3 px-4 rounded-xl border transition font-medium text-sm ${
                                                 cryptoCurrency === c
-                                                    ? "border-[#6F00FF] bg-[#6F00FF]/20 text-[#6F00FF] dark:text-[#8B2FFF]"
+                                                    ? "border-[#6F00FF] bg-[#FFB300]/20 text-[#6F00FF] dark:text-[#8B2FFF]"
                                                     : "border-border bg-muted text-muted-foreground hover:border-[#6F00FF]/30"
                                             }`}
                                         >
@@ -313,7 +313,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                                     onClick={() => setSelectedWalletId(wallet.id)}
                                                     className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${
                                                         selectedWalletId === wallet.id
-                                                            ? "border-[#6F00FF]/50 bg-[#6F00FF]/20"
+                                                            ? "border-[#6F00FF]/50 bg-[#FFB300]/20"
                                                             : "border-border bg-muted hover:border-[#6F00FF]/30"
                                                     }`}
                                                 >
@@ -375,7 +375,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                             <Button
                                 onClick={handleGetQuote}
                                 disabled={!barcode.trim() || numAmount < 1 || !selectedWalletId || loading}
-                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <>
@@ -469,7 +469,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                             <Button
                                 onClick={handleSubmit}
                                 disabled={loading}
-                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <>
@@ -554,7 +554,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                 </Link>
                                 <Button
                                     onClick={handleClose}
-                                    className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6"
+                                    className="flex-1 bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold rounded-xl py-6"
                                 >
                                     Fechar
                                 </Button>

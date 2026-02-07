@@ -336,7 +336,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                                     key={wallet.id}
                                                     onClick={() => setSelectedWalletId(wallet.id)}
                                                     className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${selectedWalletId === wallet.id
-                                                        ? "border-[#6F00FF]/50 bg-[#6F00FF]/20"
+                                                        ? "border-[#6F00FF]/50 bg-[#FFB300]/20"
                                                         : "border-border bg-muted hover:border-[#6F00FF]/30"
                                                         }`}
                                                 >
@@ -399,7 +399,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                             <Button
                                 onClick={handleContinueToAmount}
                                 disabled={!selectedWalletId || wallets.length === 0}
-                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 Continuar
                             </Button>
@@ -456,7 +456,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                             <Button
                                 onClick={handleContinueToConfirm}
                                 disabled={numAmount < minAmount}
-                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 Continuar
                             </Button>
@@ -548,7 +548,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                             <Button
                                 onClick={handleConvert}
                                 disabled={loading || !!limitError}
-                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <>
@@ -672,7 +672,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
 
                             <div className="text-center">
                                 <p className="text-muted-foreground text-sm mb-1">Você recebeu</p>
-                                <p className="text-3xl font-bold bg-linear-to-r from-[#6F00FF] to-[#8B2FFF] bg-clip-text text-transparent">
+                                <p className="text-3xl font-bold bg-linear-to-r from-[#FFD54F] to-[#FFB300] bg-clip-text text-transparent">
                                     {formatUSDT(usdtNet || conversionDetail?.usdtAmount || convertedAmount)}
                                 </p>
                                 <p className="text-muted-foreground text-sm mt-2">
@@ -694,7 +694,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
 
                             <Button
                                 onClick={handleClose}
-                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6"
+                                className="w-full bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold rounded-xl py-6"
                             >
                                 Fechar
                             </Button>

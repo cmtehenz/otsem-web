@@ -171,7 +171,7 @@ export default function AffiliatesPage() {
                 </motion.div>
 
                 <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5 !p-8 text-center">
-                    <div className="w-16 h-16 rounded-full bg-[#6F00FF]/10 dark:bg-[#6F00FF]/20 flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 rounded-full bg-[#FFB300]/10 dark:bg-[#FFB300]/20 flex items-center justify-center mx-auto mb-4">
                         <Users className="w-7 h-7 text-[#6F00FF]" strokeWidth={1.8} />
                     </div>
                     <h3 className="text-[15px] font-semibold text-white mb-1">Recurso não disponível</h3>
@@ -257,7 +257,7 @@ export default function AffiliatesPage() {
                 {/* Total referrals */}
                 <div className="fintech-glass-card rounded-[20px] p-5 !p-4 !rounded-[20px]">
                     <div className="flex items-center justify-between mb-2">
-                        <div className="w-8 h-8 rounded-full bg-[#6F00FF]/10 dark:bg-[#6F00FF]/20 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-[#FFB300]/10 dark:bg-[#FFB300]/20 flex items-center justify-center">
                             <Users className="w-4 h-4 text-[#6F00FF]" strokeWidth={2} />
                         </div>
                     </div>
@@ -329,7 +329,7 @@ export default function AffiliatesPage() {
                     onClick={() => setActiveTab("referrals")}
                     className={`px-4 py-2 rounded-full text-[13px] font-semibold active:scale-95 transition-all ${
                         activeTab === "referrals"
-                            ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
+                            ? "bg-[#6F00FF] text-white shadow-lg shadow-[#FFB300]/25"
                             : "bg-white/60 dark:bg-white/[0.06] text-white border border-white/60 dark:border-white/[0.08]"
                     }`}
                 >
@@ -339,7 +339,7 @@ export default function AffiliatesPage() {
                     onClick={() => setActiveTab("commissions")}
                     className={`px-4 py-2 rounded-full text-[13px] font-semibold active:scale-95 transition-all ${
                         activeTab === "commissions"
-                            ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
+                            ? "bg-[#6F00FF] text-white shadow-lg shadow-[#FFB300]/25"
                             : "bg-white/60 dark:bg-white/[0.06] text-white border border-white/60 dark:border-white/[0.08]"
                     }`}
                 >
@@ -352,7 +352,7 @@ export default function AffiliatesPage() {
                 {activeTab === "referrals" ? (
                     referrals.length === 0 ? (
                         <div className="py-10 text-center">
-                            <div className="w-14 h-14 rounded-full bg-[#6F00FF]/10 dark:bg-[#6F00FF]/20 flex items-center justify-center mx-auto mb-3">
+                            <div className="w-14 h-14 rounded-full bg-[#FFB300]/10 dark:bg-[#FFB300]/20 flex items-center justify-center mx-auto mb-3">
                                 <Users className="w-6 h-6 text-[#6F00FF]" strokeWidth={1.8} />
                             </div>
                             <p className="text-[14px] font-medium text-white mb-1">Nenhum indicado ainda</p>
@@ -363,7 +363,7 @@ export default function AffiliatesPage() {
                             {referrals.map((referral) => (
                                 <div key={referral.id} className="flex items-center justify-between py-3.5 first:pt-0 last:pb-0">
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <div className="w-10 h-10 rounded-full bg-[#6F00FF]/10 dark:bg-[#6F00FF]/20 flex items-center justify-center shrink-0">
+                                        <div className="w-10 h-10 rounded-full bg-[#FFB300]/10 dark:bg-[#FFB300]/20 flex items-center justify-center shrink-0">
                                             <span className="text-[14px] font-bold text-[#6F00FF] dark:text-[#8B2FFF]">
                                                 {referral.name.charAt(0).toUpperCase()}
                                             </span>

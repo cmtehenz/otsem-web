@@ -107,7 +107,7 @@ function TokenRow({
             }}
         >
             {/* Rank */}
-            <span className="text-[13px] font-medium text-white/60 w-6 text-right tabular-nums shrink-0">
+            <span className="text-[13px] font-medium text-white w-6 text-right tabular-nums shrink-0">
                 {token.market_cap_rank}
             </span>
 
@@ -128,7 +128,7 @@ function TokenRow({
                 <span className="text-[15px] font-semibold text-white truncate">
                     {token.name}
                 </span>
-                <span className="text-[13px] text-white/70 uppercase">
+                <span className="text-[13px] text-white uppercase">
                     {token.symbol}
                 </span>
             </div>
@@ -242,7 +242,7 @@ function TokenDetailSheet({
                             <h3 className="text-xl font-bold text-white truncate">
                                 {token.name}
                             </h3>
-                            <p className="text-[15px] text-white/70 uppercase">
+                            <p className="text-[15px] text-white uppercase">
                                 {token.symbol} · #{token.market_cap_rank}
                             </p>
                         </div>
@@ -250,7 +250,7 @@ function TokenDetailSheet({
 
                     {/* Price */}
                     <div className="rounded-2xl p-4" style={{ background: "rgba(18, 20, 29, 0.55)", border: "1px solid rgba(255, 255, 255, 0.1)" }}>
-                        <p className="text-[13px] text-white/48 mb-1">
+                        <p className="text-[13px] text-white/90 mb-1">
                             {t("currentPrice")}
                         </p>
                         <p className="text-3xl font-bold text-white tabular-nums">
@@ -280,7 +280,7 @@ function TokenDetailSheet({
                                 className="rounded-xl p-3"
                                 style={{ background: "rgba(18, 20, 29, 0.55)", border: "1px solid rgba(255, 255, 255, 0.1)" }}
                             >
-                                <p className="text-[12px] text-white/48 mb-0.5">
+                                <p className="text-[12px] text-white/90 mb-0.5">
                                     {stat.label}
                                 </p>
                                 <p className="text-[14px] font-semibold text-white tabular-nums">
@@ -330,8 +330,8 @@ export default function MercadoPage() {
     if (loading && tokens.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-                <Loader2 className="w-8 h-8 text-white/60 animate-spin" />
-                <p className="text-[15px] text-white/70">{t("loading")}</p>
+                <Loader2 className="w-8 h-8 text-white animate-spin" />
+                <p className="text-[15px] text-white">{t("loading")}</p>
             </div>
         );
     }
@@ -361,7 +361,7 @@ export default function MercadoPage() {
                     <h1 className="text-[22px] font-bold text-white tracking-tight">
                         {t("title")}
                     </h1>
-                    <p className="text-[13px] text-white/70">{t("subtitle")}</p>
+                    <p className="text-[13px] text-white">{t("subtitle")}</p>
                 </div>
                 <motion.button
                     whileTap={{ scale: 0.92 }}
@@ -369,20 +369,20 @@ export default function MercadoPage() {
                     className="w-10 h-10 rounded-full flex items-center justify-center"
                     style={{ background: "rgba(18, 20, 29, 0.55)", border: "1px solid rgba(255, 255, 255, 0.1)" }}
                 >
-                    <RefreshCw className="w-4.5 h-4.5 text-white/70" />
+                    <RefreshCw className="w-4.5 h-4.5 text-white" />
                 </motion.button>
             </motion.div>
 
             {/* Search + Currency Toggle */}
             <motion.div variants={fadeUp} className="flex gap-2 mb-4">
                 <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/90" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder={t("searchPlaceholder")}
-                        className="w-full pl-9 pr-9 py-2.5 rounded-full text-[15px] text-white placeholder:text-white/40 outline-none transition-colors"
+                        className="w-full pl-9 pr-9 py-2.5 rounded-full text-[15px] text-white placeholder:text-white/90 outline-none transition-colors"
                         style={{
                             background: "rgba(18, 20, 29, 0.55)",
                             border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -393,7 +393,7 @@ export default function MercadoPage() {
                             onClick={() => setSearchQuery("")}
                             className="absolute right-3 top-1/2 -translate-y-1/2"
                         >
-                            <X className="w-4 h-4 text-white/40" />
+                            <X className="w-4 h-4 text-white/90" />
                         </button>
                     )}
                 </div>
@@ -402,8 +402,8 @@ export default function MercadoPage() {
                         onClick={() => setCurrency("usd")}
                         className={`px-3.5 py-2 rounded-full text-[13px] font-semibold transition-all ${
                             currency === "usd"
-                                ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/30"
-                                : "text-white/60 hover:text-white"
+                                ? "bg-[#6F00FF] text-white shadow-lg shadow-[#FFB300]/30"
+                                : "text-white hover:text-white"
                         }`}
                     >
                         USD
@@ -412,8 +412,8 @@ export default function MercadoPage() {
                         onClick={() => setCurrency("brl")}
                         className={`px-3.5 py-2 rounded-full text-[13px] font-semibold transition-all ${
                             currency === "brl"
-                                ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/30"
-                                : "text-white/60 hover:text-white"
+                                ? "bg-[#6F00FF] text-white shadow-lg shadow-[#FFB300]/30"
+                                : "text-white hover:text-white"
                         }`}
                     >
                         BRL
@@ -425,7 +425,7 @@ export default function MercadoPage() {
             {updatedAt && (
                 <motion.p
                     variants={fadeUp}
-                    className="text-[12px] text-white/50 mb-3 px-1"
+                    className="text-[12px] text-white/90 mb-3 px-1"
                 >
                     {t("updated")} {timeAgo(updatedAt)} {t("ago")}
                 </motion.p>
@@ -459,8 +459,8 @@ export default function MercadoPage() {
                         variants={fadeUp}
                         className="flex flex-col items-center py-16 gap-3"
                     >
-                        <Search className="w-8 h-8 text-white/30" />
-                        <p className="text-[15px] text-white/50">
+                        <Search className="w-8 h-8 text-white/70" />
+                        <p className="text-[15px] text-white/90">
                             {t("noResults")} &ldquo;{searchQuery}&rdquo;
                         </p>
                     </motion.div>

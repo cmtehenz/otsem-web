@@ -173,7 +173,7 @@ export default function SendUsdtModal() {
 
                         <Button
                             onClick={handleClose}
-                            className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold"
+                            className="w-full bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold"
                         >
                             Fechar
                         </Button>
@@ -279,7 +279,7 @@ export default function SendUsdtModal() {
                                     <Button variant="ghost" onClick={() => setShowConfirm(false)} className="flex-1 bg-muted border border-border text-foreground hover:bg-accent">
                                         Voltar
                                     </Button>
-                                    <Button onClick={handleSend} disabled={sending} className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold">
+                                    <Button onClick={handleSend} disabled={sending} className="flex-1 bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold">
                                         {sending ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Enviando...</>) : (<><Send className="w-4 h-4 mr-2" />Confirmar Envio</>)}
                                     </Button>
                                 </div>
@@ -289,7 +289,7 @@ export default function SendUsdtModal() {
                                 <Button variant="ghost" onClick={handleClose} className="flex-1 bg-muted border border-border text-foreground hover:bg-accent">
                                     Cancelar
                                 </Button>
-                                <Button onClick={handleReviewSend} disabled={!selectedWalletId || !toAddress.trim() || !amount.trim()} className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold">
+                                <Button onClick={handleReviewSend} disabled={!selectedWalletId || !toAddress.trim() || !amount.trim()} className="flex-1 bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold">
                                     <Send className="w-4 h-4 mr-2" />
                                     Revisar Envio
                                 </Button>

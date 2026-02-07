@@ -256,7 +256,7 @@ export default function CustomerPixPage() {
     return (
       <div className="flex h-[80dvh] flex-col items-center justify-center gap-3">
         <div className="relative">
-          <div className="absolute inset-0 rounded-full bg-[#6F00FF]/20 blur-xl animate-pulse" />
+          <div className="absolute inset-0 rounded-full bg-[#FFB300]/20 blur-xl animate-pulse" />
           <div className="relative p-4 rounded-full bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08]">
             <Loader2 className="h-7 w-7 animate-spin text-[#6F00FF]" />
           </div>
@@ -298,7 +298,7 @@ export default function CustomerPixPage() {
         >
           <div className="relative mb-5">
             <div className="absolute inset-0 rounded-full bg-[#6F00FF]/15 blur-2xl scale-150" />
-            <div className="relative w-16 h-16 rounded-full bg-[#6F00FF]/10 flex items-center justify-center">
+            <div className="relative w-16 h-16 rounded-full bg-[#FFB300]/10 flex items-center justify-center">
               <KeyRound className="w-7 h-7 text-[#6F00FF]" />
             </div>
           </div>
@@ -359,7 +359,7 @@ export default function CustomerPixPage() {
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="w-10 h-10 rounded-full bg-[#6F00FF] hover:bg-[#8B2FFF] text-white flex items-center justify-center active:scale-95 transition-transform shadow-lg shadow-[#6F00FF]/25"
+          className="w-10 h-10 rounded-full bg-[#6F00FF] hover:bg-[#8B2FFF] text-white flex items-center justify-center active:scale-95 transition-transform shadow-lg shadow-[#FFB300]/25"
         >
           <Plus className="w-5 h-5" />
         </button>
@@ -370,7 +370,7 @@ export default function CustomerPixPage() {
         variants={fadeUp}
         className="fintech-glass-card rounded-[20px] p-5 !p-3.5 mb-4 flex items-start gap-3"
       >
-        <div className="w-8 h-8 rounded-xl bg-[#6F00FF]/10 flex items-center justify-center shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-[#FFB300]/10 flex items-center justify-center shrink-0">
           <ShieldCheck className="w-4 h-4 text-[#6F00FF]" />
         </div>
         <div className="min-w-0">
@@ -552,7 +552,7 @@ function AddKeyModal({
                   className={
                     "flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl text-[12px] font-medium active:scale-95 transition-all " +
                     (newType === kt.value
-                      ? "bg-[#6F00FF]/10 text-[#6F00FF] border-2 border-[#6F00FF]/40 shadow-sm"
+                      ? "bg-[#FFB300]/10 text-[#6F00FF] border-2 border-[#6F00FF]/40 shadow-sm"
                       : "bg-muted/50 border border-border text-foreground hover:border-[#6F00FF]/20")
                   }
                 >

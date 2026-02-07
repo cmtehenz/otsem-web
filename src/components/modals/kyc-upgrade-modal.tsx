@@ -220,7 +220,7 @@ export function KycUpgradeModal({
                             <Button
                                 onClick={handleSubmit}
                                 disabled={selectedFiles.length === 0 || submitting}
-                                className="flex-1 bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white"
+                                className="flex-1 bg-gradient-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black"
                             >
                                 Enviar Solicitação
                                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -254,7 +254,7 @@ export function KycUpgradeModal({
                         </p>
                         <Button
                             onClick={handleClose}
-                            className="mt-6 bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white"
+                            className="mt-6 bg-gradient-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black"
                         >
                             Entendi
                         </Button>

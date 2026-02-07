@@ -129,8 +129,8 @@ export function BottomNav() {
                                             className="flex items-center justify-center w-12 h-12 rounded-full"
                                             style={{
                                                 background:
-                                                    "linear-gradient(145deg, #9B4DFF 0%, #6F00FF 50%, #5800CC 100%)",
-                                                boxShadow: "0 4px 20px rgba(111, 0, 255, 0.45)",
+                                                    "linear-gradient(145deg, #FFE066 0%, #FFD54F 50%, #FFB300 100%)",
+                                                boxShadow: "0 4px 20px rgba(255, 179, 0, 0.45)",
                                             }}
                                             whileTap={{ scale: 0.88 }}
                                             transition={iosSpring}
@@ -144,7 +144,7 @@ export function BottomNav() {
                                                     transition={iosSpring}
                                                 >
                                                     <Plus
-                                                        className={`w-5.5 h-5.5 text-white ${actionSheetOpen ? "rotate-45" : ""}`}
+                                                        className={`w-5.5 h-5.5 text-black ${actionSheetOpen ? "rotate-45" : ""}`}
                                                         strokeWidth={2.5}
                                                     />
                                                 </motion.div>
@@ -179,13 +179,13 @@ export function BottomNav() {
                                     >
                                         <Icon
                                             className={`w-[22px] h-[22px] transition-all duration-300 ${
-                                                isActive ? "text-white" : "text-white/70"
+                                                isActive ? "text-white" : "text-white/90"
                                             }`}
                                             strokeWidth={isActive ? 2.2 : 1.6}
                                         />
                                         <span
                                             className={`text-[10px] leading-tight tracking-tight transition-all duration-300 ${
-                                                isActive ? "font-semibold text-white" : "font-medium text-white/70"
+                                                isActive ? "font-semibold text-white" : "font-medium text-white/90"
                                             }`}
                                         >
                                             {tab.label}

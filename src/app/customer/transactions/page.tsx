@@ -534,7 +534,7 @@ export default function TransactionsPage() {
         if (meta.isPending) {
             return (
                 <div className="w-9 h-9 rounded-full bg-white/8 flex items-center justify-center">
-                    <ArrowRightLeft className={`${size} text-white/60`} />
+                    <ArrowRightLeft className={`${size} text-white`} />
                 </div>
             );
         }
@@ -687,7 +687,7 @@ export default function TransactionsPage() {
                                 whitespace-nowrap transition-all duration-200
                                 ${
                                     isActive
-                                        ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
+                                        ? "bg-[#6F00FF] text-white shadow-lg shadow-[#FFB300]/25"
                                         : "bg-white/10 border border-white/15 text-white hover:text-white"
                                 }
                             `}
@@ -848,7 +848,7 @@ export default function TransactionsPage() {
                                     text-[13px] font-semibold transition-all duration-200
                                     ${
                                         page === p
-                                            ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
+                                            ? "bg-[#6F00FF] text-white shadow-lg shadow-[#FFB300]/25"
                                             : "bg-white/10 border border-white/15 text-white hover:text-white hover:bg-white/15"
                                     }
                                 `}

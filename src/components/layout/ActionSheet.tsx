@@ -150,7 +150,7 @@ export function ActionSheet({
                                 <h3 className="text-[17px] font-bold text-white mb-0.5">
                                     Nova operação
                                 </h3>
-                                <p className="text-[13px] text-white/50 mb-4">
+                                <p className="text-[13px] text-white/90 mb-4">
                                     O que você gostaria de fazer?
                                 </p>
 
@@ -185,7 +185,7 @@ export function ActionSheet({
                                                     <p className="text-[15px] font-semibold text-white">
                                                         {action.label}
                                                     </p>
-                                                    <p className="text-[12px] text-white/50">
+                                                    <p className="text-[12px] text-white/90">
                                                         {action.sublabel}
                                                     </p>
                                                 </div>

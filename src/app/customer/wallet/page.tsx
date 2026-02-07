@@ -251,7 +251,7 @@ export default function WalletPage() {
             {/* Wallets list */}
             {wallets.length === 0 ? (
                 <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5 !p-8 text-center">
-                    <div className="w-16 h-16 rounded-full bg-[#6F00FF]/10 flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 rounded-full bg-[#FFB300]/10 flex items-center justify-center mx-auto mb-4">
                         <Wallet className="w-7 h-7 text-[#6F00FF]" />
                     </div>
                     <h2 className="text-lg font-bold text-white mb-1">Nenhuma carteira</h2>
@@ -392,7 +392,7 @@ export default function WalletPage() {
                                         onClick={() => setSelectedNetwork(network.id)}
                                         className={`flex items-center justify-center gap-2 p-3.5 rounded-2xl border transition-all active:scale-[0.97] ${
                                             selectedNetwork === network.id
-                                                ? "border-[#6F00FF]/50 bg-[#6F00FF]/10"
+                                                ? "border-[#FFB300]/50 bg-[#FFB300]/10"
                                                 : "border-border bg-muted/50 hover:border-border/80"
                                         }`}
                                     >
@@ -413,7 +413,7 @@ export default function WalletPage() {
                                     onClick={() => setAddMode("create")}
                                     className={`p-3.5 rounded-2xl border transition-all text-left active:scale-[0.97] ${
                                         addMode === "create"
-                                            ? "border-[#6F00FF]/50 bg-[#6F00FF]/10"
+                                            ? "border-[#FFB300]/50 bg-[#FFB300]/10"
                                             : "border-border bg-muted/50 hover:border-border/80"
                                     }`}
                                 >
@@ -424,7 +424,7 @@ export default function WalletPage() {
                                     onClick={() => setAddMode("import")}
                                     className={`p-3.5 rounded-2xl border transition-all text-left active:scale-[0.97] ${
                                         addMode === "import"
-                                            ? "border-[#6F00FF]/50 bg-[#6F00FF]/10"
+                                            ? "border-[#FFB300]/50 bg-[#FFB300]/10"
                                             : "border-border bg-muted/50 hover:border-border/80"
                                     }`}
                                 >

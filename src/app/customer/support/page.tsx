@@ -253,12 +253,12 @@ export default function SupportPage() {
                                 <span className="text-[15px] font-semibold text-white">
                                     WhatsApp
                                 </span>
-                                <ExternalLink className="w-3.5 h-3.5 text-white/40 group-hover:text-white/80 transition-colors" />
+                                <ExternalLink className="w-3.5 h-3.5 text-white/90 group-hover:text-white/80 transition-colors" />
                             </div>
                             <p className="text-[13px] text-white/80 leading-snug">
                                 Atendimento rápido
                             </p>
-                            <p className="text-[12px] text-white/60 mt-2">
+                            <p className="text-[12px] text-white mt-2">
                                 Seg-Sex 9h-18h
                             </p>
                         </div>
@@ -277,12 +277,12 @@ export default function SupportPage() {
                                 <span className="text-[15px] font-semibold text-white">
                                     Email
                                 </span>
-                                <ExternalLink className="w-3.5 h-3.5 text-white/40 group-hover:text-white/80 transition-colors" />
+                                <ExternalLink className="w-3.5 h-3.5 text-white/90 group-hover:text-white/80 transition-colors" />
                             </div>
                             <p className="text-[13px] text-white/80 leading-snug">
                                 suporte@otsempay.com
                             </p>
-                            <p className="text-[12px] text-white/60 mt-2">
+                            <p className="text-[12px] text-white mt-2">
                                 Resposta em até 24h
                             </p>
                         </div>
@@ -300,7 +300,7 @@ export default function SupportPage() {
                             <p className="text-[13px] text-white/80 leading-snug">
                                 (11) 3000-0000
                             </p>
-                            <p className="text-[12px] text-white/60 mt-2">
+                            <p className="text-[12px] text-white mt-2">
                                 Seg-Sex 9h-18h
                             </p>
                         </div>
@@ -332,7 +332,7 @@ export default function SupportPage() {
                                 <h3 className="text-[13px] font-semibold text-white mb-1 leading-snug">
                                     {tutorial.title}
                                 </h3>
-                                <p className="text-[11px] text-white/70 leading-snug">
+                                <p className="text-[11px] text-white leading-snug">
                                     {tutorial.description}
                                 </p>
                                 <div className="flex items-center gap-1 text-primary text-[11px] font-medium mt-3 opacity-70 group-hover:opacity-100 transition-opacity">
@@ -387,7 +387,7 @@ export default function SupportPage() {
                                     value={ticketSubject}
                                     onChange={(e) => setTicketSubject(e.target.value)}
                                     placeholder="Ex: Problema com depósito"
-                                    className="h-12 rounded-xl bg-white/8 border-white/10 text-[14px] text-white placeholder:text-white/40 focus:border-primary/50 focus:ring-primary/20 transition-colors"
+                                    className="h-12 rounded-xl bg-white/8 border-white/10 text-[14px] text-white placeholder:text-white/90 focus:border-primary/50 focus:ring-primary/20 transition-colors"
                                 />
                             </div>
                             <div className="space-y-2">
@@ -426,7 +426,7 @@ export default function SupportPage() {
                                 onChange={(e) => setTicketMessage(e.target.value)}
                                 placeholder="Descreva sua dúvida ou problema com o máximo de detalhes possível..."
                                 rows={5}
-                                className="rounded-xl bg-white/8 border-white/10 text-[14px] text-white placeholder:text-white/40 resize-none focus:border-primary/50 focus:ring-primary/20 transition-colors"
+                                className="rounded-xl bg-white/8 border-white/10 text-[14px] text-white placeholder:text-white/90 resize-none focus:border-primary/50 focus:ring-primary/20 transition-colors"
                             />
                         </div>
 
@@ -434,7 +434,7 @@ export default function SupportPage() {
                             <Button
                                 type="submit"
                                 disabled={submitting}
-                                className="h-12 px-7 rounded-xl bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white text-[14px] font-semibold gap-2.5 active:scale-[0.96] transition-transform shadow-lg shadow-primary/25 disabled:opacity-60"
+                                className="h-12 px-7 rounded-xl bg-gradient-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black text-[14px] font-semibold gap-2.5 active:scale-[0.96] transition-transform shadow-lg shadow-[#FFB300]/25 disabled:opacity-60"
                             >
                                 {submitting ? (
                                     <span className="flex items-center gap-2.5">

@@ -366,7 +366,7 @@ export default function CustomerKycPage(): React.JSX.Element {
               <span
                 key={l.level}
                 className={`text-[11px] font-medium ${
-                  i <= currentLevelIndex ? "text-white" : "text-white/50"
+                  i <= currentLevelIndex ? "text-white" : "text-white/90"
                 }`}
               >
                 {l.name}
@@ -394,13 +394,13 @@ export default function CustomerKycPage(): React.JSX.Element {
                 <>
                   <div className="flex items-end justify-between mb-2">
                     <div>
-                      <p className="text-[11px] text-white/70">Utilizado</p>
+                      <p className="text-[11px] text-white">Utilizado</p>
                       <p className="text-[18px] font-bold text-white">
                         {(limitsData.usedThisMonth ?? 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 2 })}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-[11px] text-white/70">Disponível</p>
+                      <p className="text-[11px] text-white">Disponível</p>
                       <p className="text-[15px] font-semibold text-white">
                         {(limitsData.remainingLimit ?? 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 2 })}
                       </p>
@@ -416,7 +416,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                       transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
                     />
                   </div>
-                  <p className="text-[11px] text-white/70 mt-1.5">
+                  <p className="text-[11px] text-white mt-1.5">
                     Renova em {Math.max(0, Math.ceil((new Date(limitsData.resetDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))} dia{Math.ceil((new Date(limitsData.resetDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)) !== 1 ? "s" : ""}
                   </p>
                 </>
@@ -545,7 +545,7 @@ export default function CustomerKycPage(): React.JSX.Element {
 
               {/* Status pill */}
               {isCurrent && (
-                <span className="rounded-full bg-[#6F00FF]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#6F00FF]">
+                <span className="rounded-full bg-[#FFB300]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#6F00FF]">
                   Atual
                 </span>
               )}
@@ -629,7 +629,7 @@ export default function CustomerKycPage(): React.JSX.Element {
           variants={fadeUp}
           className="fintech-glass-card rounded-[20px] p-5 flex flex-col items-center py-8 text-center"
         >
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-[#8B2FFF] to-[#6F00FF] shadow-lg shadow-[#6F00FF]/25">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-[#8B2FFF] to-[#6F00FF] shadow-lg shadow-[#FFB300]/25">
             <Crown className="h-8 w-8 text-white" />
           </div>
           <p className="text-[15px] font-bold text-white">

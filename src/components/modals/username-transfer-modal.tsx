@@ -190,7 +190,7 @@ export function UsernameTransferModal() {
                                 <Button
                                     onClick={handleLookup}
                                     disabled={lookupLoading || !username.trim()}
-                                    className="bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold px-4"
+                                    className="bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold px-4"
                                 >
                                     {lookupLoading ? (
                                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -226,7 +226,7 @@ export function UsernameTransferModal() {
                             <Button
                                 onClick={handleProceed}
                                 disabled={!recipient}
-                                className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold"
+                                className="flex-1 bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold"
                             >
                                 Continuar
                                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -288,7 +288,7 @@ export function UsernameTransferModal() {
                             <Button
                                 onClick={handleTransfer}
                                 disabled={sending || !amount.trim()}
-                                className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold"
+                                className="flex-1 bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold"
                             >
                                 {sending ? (
                                     <>
@@ -323,7 +323,7 @@ export function UsernameTransferModal() {
 
                         <Button
                             onClick={handleClose}
-                            className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold"
+                            className="w-full bg-linear-to-r from-[#FFD54F] to-[#FFB300] hover:from-[#FFC107] hover:to-[#FF8F00] text-black font-semibold"
                         >
                             Fechar
                         </Button>

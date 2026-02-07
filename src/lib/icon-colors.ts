@@ -69,11 +69,11 @@ export const iconColors: Record<IconType, IconColorEntry> = {
     },
     pending: {
         bg: "bg-white/8",
-        text: "text-white/60",
+        text: "text-white",
     },
     empty: {
         bg: "bg-white/6",
-        text: "text-white/40",
+        text: "text-white/90",
     },
     neutral: {
         bg: "bg-white/10",

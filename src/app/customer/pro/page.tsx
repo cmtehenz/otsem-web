@@ -594,9 +594,9 @@ export default function ProTradingPage() {
                     <div>
                         <div className="flex items-center gap-2">
                             <span className="text-[18px] font-bold text-white">PRO</span>
-                            <span className="text-[11px] font-semibold text-white/60">Spot</span>
+                            <span className="text-[11px] font-semibold text-white">Spot</span>
                         </div>
-                        <p className="text-[12px] text-white/60">Trading com livro de ofertas</p>
+                        <p className="text-[12px] text-white">Trading com livro de ofertas</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2 rounded-full px-3 py-1.5 bg-white/10 border border-white/10">
@@ -616,7 +616,7 @@ export default function ProTradingPage() {
                                 "px-3.5 py-1.5 rounded-full text-[12px] font-semibold border transition-all",
                                 active
                                     ? "bg-primary text-white border-primary"
-                                    : "bg-white/8 text-white/70 border-white/10"
+                                    : "bg-white/8 text-white border-white/10"
                             )}
                         >
                             {item.base}/{item.quote}
@@ -628,7 +628,7 @@ export default function ProTradingPage() {
             <motion.div variants={fadeUp} className="mt-4 rounded-3xl fintech-glass-card p-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <p className="text-[12px] text-white/60">Carteira USDT</p>
+                        <p className="text-[12px] text-white">Carteira USDT</p>
                         <p className="text-[18px] font-semibold text-white tabular-nums">
                             {formatNumber(walletUsdt, 4)}
                         </p>
@@ -643,7 +643,7 @@ export default function ProTradingPage() {
                 </div>
                 <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3">
                     <div>
-                        <p className="text-[12px] text-white/60">Saldo PRO (USDT)</p>
+                        <p className="text-[12px] text-white">Saldo PRO (USDT)</p>
                         <p className="text-[18px] font-semibold text-white tabular-nums">
                             {formatNumber(proUsdt, 4)}
                         </p>
@@ -656,7 +656,7 @@ export default function ProTradingPage() {
                         Transferir para carteira
                     </button>
                 </div>
-                <p className="text-[10px] text-white/70 mt-2">
+                <p className="text-[10px] text-white mt-2">
                     Transferências usam USDT (Solana/Tron). BTC/ETH/XRP são apenas para trading.
                 </p>
             </motion.div>
@@ -664,7 +664,7 @@ export default function ProTradingPage() {
             <motion.div variants={fadeUp} className="mt-4 rounded-3xl fintech-glass-card p-4">
                 <div className="flex items-center justify-between">
                     <h3 className="text-[15px] font-semibold text-white">Saldos PRO</h3>
-                    <span className="text-[11px] text-white/60">Disponível / Bloqueado</span>
+                    <span className="text-[11px] text-white">Disponível / Bloqueado</span>
                 </div>
                 <div className="mt-3 grid grid-cols-2 gap-2">
                     {ASSETS.map((asset) => {
@@ -677,7 +677,7 @@ export default function ProTradingPage() {
                                 className="rounded-2xl bg-white/5 border border-white/10 px-3 py-2"
                             >
                                 <p className="text-[12px] font-semibold text-white">{asset}</p>
-                                <p className="text-[11px] text-white/70 tabular-nums">
+                                <p className="text-[11px] text-white tabular-nums">
                                     {formatNumber(available, 4)} / {formatNumber(locked, 4)}
                                 </p>
                             </div>
@@ -689,10 +689,10 @@ export default function ProTradingPage() {
             <motion.div variants={fadeUp} className="mt-4 rounded-3xl fintech-glass-card p-4">
                 <div className="flex items-start justify-between">
                     <div>
-                        <p className="text-[13px] text-white/60">Preço atual</p>
+                        <p className="text-[13px] text-white">Preço atual</p>
                         <p className="text-[26px] font-bold text-white tabular-nums">
                             {formatNumber(lastPrice, pair.priceDecimals)}
-                            <span className="text-[13px] font-semibold text-white/60 ml-1">USDT</span>
+                            <span className="text-[13px] font-semibold text-white ml-1">USDT</span>
                         </p>
                     </div>
                     <div
@@ -706,7 +706,7 @@ export default function ProTradingPage() {
                     </div>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between text-[11px] text-white/60">
+                <div className="mt-4 flex items-center justify-between text-[11px] text-white">
                     <span>24h Máxima</span>
                     <span>24h Mínima</span>
                     <span>Volume</span>
@@ -726,7 +726,7 @@ export default function ProTradingPage() {
                                 "px-2.5 py-1 rounded-full text-[11px] font-semibold border",
                                 tf === timeframe
                                     ? "bg-white/15 text-white border-white/20"
-                                    : "bg-white/5 text-white/60 border-white/10"
+                                    : "bg-white/5 text-white border-white/10"
                             )}
                         >
                             {tf}
@@ -752,12 +752,12 @@ export default function ProTradingPage() {
                 <div className="rounded-3xl fintech-glass-card p-4">
                     <div className="flex items-center justify-between">
                         <h3 className="text-[15px] font-semibold text-white">Livro de ofertas</h3>
-                        <div className="flex items-center gap-1 text-[11px] text-white/60">
+                        <div className="flex items-center gap-1 text-[11px] text-white">
                             5 níveis
                             <ChevronDown className="w-3.5 h-3.5" />
                         </div>
                     </div>
-                    <div className="mt-3 grid grid-cols-[1.1fr_1fr_1fr] text-[11px] text-white/60">
+                    <div className="mt-3 grid grid-cols-[1.1fr_1fr_1fr] text-[11px] text-white">
                         <span>Preço</span>
                         <span>Qtd</span>
                         <span className="text-right">Total</span>
@@ -775,14 +775,14 @@ export default function ProTradingPage() {
                                 <span className="relative text-white/80 tabular-nums">
                                     {formatNumber(row.size, pair.qtyDecimals)}
                                 </span>
-                                <span className="relative text-white/60 tabular-nums text-right">
+                                <span className="relative text-white tabular-nums text-right">
                                     {formatNumber(row.total, pair.priceDecimals)}
                                 </span>
                             </div>
                         ))}
                         <div className="py-2 text-center text-[12px] font-semibold text-white">
                             {formatNumber(lastPrice, pair.priceDecimals)}
-                            <span className="text-[11px] text-white/60 ml-1">USDT</span>
+                            <span className="text-[11px] text-white ml-1">USDT</span>
                         </div>
                         {depth.bids.map((row) => (
                             <div key={`bid-${row.price}`} className="relative grid grid-cols-[1.1fr_1fr_1fr] text-[11px] font-medium">
@@ -796,7 +796,7 @@ export default function ProTradingPage() {
                                 <span className="relative text-white/80 tabular-nums">
                                     {formatNumber(row.size, pair.qtyDecimals)}
                                 </span>
-                                <span className="relative text-white/60 tabular-nums text-right">
+                                <span className="relative text-white tabular-nums text-right">
                                     {formatNumber(row.total, pair.priceDecimals)}
                                 </span>
                             </div>
@@ -807,9 +807,9 @@ export default function ProTradingPage() {
                 <div className="rounded-3xl fintech-glass-card p-4">
                     <div className="flex items-center justify-between">
                         <h3 className="text-[15px] font-semibold text-white">Negócios</h3>
-                        <span className="text-[11px] text-white/60">Atualizações</span>
+                        <span className="text-[11px] text-white">Atualizações</span>
                     </div>
-                    <div className="mt-3 grid grid-cols-[1.2fr_1fr_1fr] text-[11px] text-white/60">
+                    <div className="mt-3 grid grid-cols-[1.2fr_1fr_1fr] text-[11px] text-white">
                         <span>Preço</span>
                         <span>Qtd</span>
                         <span className="text-right">Hora</span>
@@ -828,7 +828,7 @@ export default function ProTradingPage() {
                                 <span className="text-white/80 tabular-nums">
                                     {formatNumber(trade.size, pair.qtyDecimals)}
                                 </span>
-                                <span className="text-white/60 tabular-nums text-right">
+                                <span className="text-white tabular-nums text-right">
                                     {trade.time}
                                 </span>
                             </div>
@@ -840,7 +840,7 @@ export default function ProTradingPage() {
             <motion.div variants={fadeUp} className="mt-4 rounded-3xl fintech-glass-card p-4">
                 <div className="flex items-center justify-between">
                     <h3 className="text-[15px] font-semibold text-white">Nova ordem</h3>
-                    <span className="text-[11px] text-white/60">Conta de trading</span>
+                    <span className="text-[11px] text-white">Conta de trading</span>
                 </div>
 
                 <div className="mt-3 flex items-center gap-2">
@@ -887,7 +887,7 @@ export default function ProTradingPage() {
 
                 <div className="mt-4 grid grid-cols-1 gap-3">
                     <div className="space-y-1">
-                        <Label className="text-[12px] text-white/70">Preço (USDT)</Label>
+                        <Label className="text-[12px] text-white">Preço (USDT)</Label>
                         <Input
                             value={orderType === "market" ? formatNumber(lastPrice, pair.priceDecimals) : priceInput}
                             onChange={(e) => setPriceInput(e.target.value)}
@@ -896,7 +896,7 @@ export default function ProTradingPage() {
                         />
                     </div>
                     <div className="space-y-1">
-                        <Label className="text-[12px] text-white/70">Quantidade ({pair.base})</Label>
+                        <Label className="text-[12px] text-white">Quantidade ({pair.base})</Label>
                         <Input
                             value={amountInput}
                             onChange={(e) => setAmountInput(e.target.value)}
@@ -904,7 +904,7 @@ export default function ProTradingPage() {
                             className="bg-white/5 border-white/10 text-white"
                         />
                     </div>
-                    <div className="flex items-center justify-between text-[11px] text-white/60">
+                    <div className="flex items-center justify-between text-[11px] text-white">
                         <span>Disponível</span>
                         <span className="text-white/80 font-semibold tabular-nums">
                             {orderSide === "buy"
@@ -912,13 +912,13 @@ export default function ProTradingPage() {
                                 : `${formatNumber(availableBase, pair.qtyDecimals)} ${pair.base}`}
                         </span>
                     </div>
-                    <div className="flex items-center justify-between text-[12px] text-white/60">
+                    <div className="flex items-center justify-between text-[12px] text-white">
                         <span>Total estimado</span>
                         <span className="text-white/90 font-semibold tabular-nums">
                             {amountValue > 0 ? formatNumber(totalValue, pair.priceDecimals) : "0,00"} USDT
                         </span>
                     </div>
-                    <div className="flex items-center justify-between text-[12px] text-white/60">
+                    <div className="flex items-center justify-between text-[12px] text-white">
                         <span>Taxa PRO ({feeRateLabel}%)</span>
                         <span className="text-white/80 font-semibold tabular-nums">
                             {amountValue > 0 ? formatNumber(feeValue, pair.priceDecimals) : "0,00"} USDT
@@ -944,7 +944,7 @@ export default function ProTradingPage() {
                     >
                         {placingOrder ? "Enviando..." : `${orderSide === "buy" ? "Comprar" : "Vender"} ${pair.base}`}
                     </button>
-                    <p className="text-[11px] text-white/60 text-center">
+                    <p className="text-[11px] text-white text-center">
                         Ordens spot e limite do seu portfólio PRO
                     </p>
                 </div>
@@ -954,11 +954,11 @@ export default function ProTradingPage() {
                 <div className="rounded-3xl fintech-glass-card p-4">
                     <div className="flex items-center justify-between">
                         <h3 className="text-[15px] font-semibold text-white">Transferências PRO</h3>
-                        <span className="text-[11px] text-white/60">USDT</span>
+                        <span className="text-[11px] text-white">USDT</span>
                     </div>
                     <div className="mt-3 space-y-2">
                         {transferHistory.length === 0 ? (
-                            <p className="text-[12px] text-white/60">Sem transferências</p>
+                            <p className="text-[12px] text-white">Sem transferências</p>
                         ) : (
                             transferHistory.map((item) => (
                                 <div
@@ -969,7 +969,7 @@ export default function ProTradingPage() {
                                         <p className="text-[12px] font-semibold text-white">
                                             {item.direction === "TO_PRO" ? "Para PRO" : "Para carteira"}
                                         </p>
-                                        <p className="text-[10px] text-white/60">
+                                        <p className="text-[10px] text-white">
                                             {item.network ? `${item.network} • ` : ""}{formatDateTime(item.createdAt)}
                                         </p>
                                     </div>
@@ -991,7 +991,7 @@ export default function ProTradingPage() {
                                 "px-3 py-1.5 rounded-full text-[11px] font-semibold border",
                                 transferHasPrev
                                     ? "bg-white/10 text-white border-white/10"
-                                    : "bg-white/5 text-white/60 border-white/5"
+                                    : "bg-white/5 text-white border-white/5"
                             )}
                         >
                             Anterior
@@ -1004,7 +1004,7 @@ export default function ProTradingPage() {
                                 "px-3 py-1.5 rounded-full text-[11px] font-semibold border",
                                 transferHasNext
                                     ? "bg-white/10 text-white border-white/10"
-                                    : "bg-white/5 text-white/60 border-white/5"
+                                    : "bg-white/5 text-white border-white/5"
                             )}
                         >
                             Próxima
@@ -1015,7 +1015,7 @@ export default function ProTradingPage() {
                 <div className="rounded-3xl fintech-glass-card p-4">
                     <div className="flex items-center justify-between">
                         <h3 className="text-[15px] font-semibold text-white">Ordens PRO</h3>
-                        <span className="text-[11px] text-white/60">Histórico</span>
+                        <span className="text-[11px] text-white">Histórico</span>
                     </div>
                     <div className="mt-3 flex items-center gap-2">
                         <Select value={orderFilterPair} onValueChange={setOrderFilterPair}>
@@ -1047,7 +1047,7 @@ export default function ProTradingPage() {
                     </div>
                     <div className="mt-3 space-y-2">
                         {orderHistory.length === 0 ? (
-                            <p className="text-[12px] text-white/60">Sem ordens</p>
+                            <p className="text-[12px] text-white">Sem ordens</p>
                         ) : (
                             orderHistory.map((order) => (
                                 <div
@@ -1058,7 +1058,7 @@ export default function ProTradingPage() {
                                         <p className="text-[12px] font-semibold text-white">
                                             {order.side === "buy" ? "Compra" : "Venda"} {order.instId.replace("-", "/")}
                                         </p>
-                                        <p className="text-[10px] text-white/60">
+                                        <p className="text-[10px] text-white">
                                             {order.ordType === "limit" ? "Limite" : "Mercado"} • {order.status} • {formatDateTime(order.createdAt)}
                                         </p>
                                     </div>
@@ -1067,7 +1067,7 @@ export default function ProTradingPage() {
                                             <p className="text-[12px] font-semibold text-white tabular-nums">
                                                 {formatNumber(order.sz, 4)} {order.instId.split("-")[0]}
                                             </p>
-                                            <p className="text-[10px] text-white/60 tabular-nums">
+                                            <p className="text-[10px] text-white tabular-nums">
                                                 {order.avgPx ? `${formatNumber(order.avgPx, 4)} USDT` : order.px ? `${formatNumber(order.px, 4)} USDT` : "—"}
                                             </p>
                                         </div>
@@ -1079,7 +1079,7 @@ export default function ProTradingPage() {
                                                 className={cn(
                                                     "px-2.5 py-1 rounded-full text-[10px] font-semibold border",
                                                     cancelingOrderId === order.id
-                                                        ? "bg-white/10 text-white/60 border-white/10"
+                                                        ? "bg-white/10 text-white border-white/10"
                                                         : "bg-rose-500/20 text-rose-200 border-rose-500/30"
                                                 )}
                                             >
@@ -1100,7 +1100,7 @@ export default function ProTradingPage() {
                                 "px-3 py-1.5 rounded-full text-[11px] font-semibold border",
                                 orderHasPrev
                                     ? "bg-white/10 text-white border-white/10"
-                                    : "bg-white/5 text-white/60 border-white/5"
+                                    : "bg-white/5 text-white border-white/5"
                             )}
                         >
                             Anterior
@@ -1113,7 +1113,7 @@ export default function ProTradingPage() {
                                 "px-3 py-1.5 rounded-full text-[11px] font-semibold border",
                                 orderHasNext
                                     ? "bg-white/10 text-white border-white/10"
-                                    : "bg-white/5 text-white/60 border-white/5"
+                                    : "bg-white/5 text-white border-white/5"
                             )}
                         >
                             Próxima
@@ -1144,7 +1144,7 @@ export default function ProTradingPage() {
                                 className="bg-white/5 border-white/10 text-white"
                             />
                         </div>
-                        <div className="flex items-center justify-between text-[12px] text-white/60">
+                        <div className="flex items-center justify-between text-[12px] text-white">
                             <span>Disponível</span>
                             <span className="text-white/90 font-semibold tabular-nums">
                                 {transferDirection === "toPro"

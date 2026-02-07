@@ -467,7 +467,7 @@ export default function SettingsPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Seu nome"
-              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/40"
+              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/90"
             />
           </div>
 
@@ -483,7 +483,7 @@ export default function SettingsPage() {
               id="email"
               value={customer?.email || ""}
               disabled
-              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/40 disabled:opacity-100"
+              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/90 disabled:opacity-100"
             />
             <p className="text-[12px] text-white">
               O email não pode ser alterado
@@ -503,7 +503,7 @@ export default function SettingsPage() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="(00) 00000-0000"
-              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/40"
+              className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/90"
             />
           </div>
 
@@ -520,7 +520,7 @@ export default function SettingsPage() {
                 id="cpf"
                 value={formattedCpf}
                 disabled
-                className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/40 disabled:opacity-100"
+                className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/90 disabled:opacity-100"
               />
             </div>
           )}
@@ -561,7 +561,7 @@ export default function SettingsPage() {
                 Username
               </Label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50 text-sm">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/90 text-sm">
                   @
                 </span>
                 <Input
@@ -574,7 +574,7 @@ export default function SettingsPage() {
                   }
                   placeholder="meuusuario"
                   maxLength={30}
-                  className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/40 pl-7"
+                  className="border-white/15 bg-white/10 rounded-xl h-11 text-[14px] text-white placeholder:text-white/90 pl-7"
                 />
               </div>
               <p className="text-[11px] text-white">
