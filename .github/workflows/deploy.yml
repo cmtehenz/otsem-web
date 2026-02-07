@@ -13,6 +13,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout backend routes repo
+        uses: actions/checkout@v4
+        with:
+          repository: 0xdeni/otsem-api
+          path: otsem-api
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Lint critical API surface
+        run: npm run lint:ci
+
+      - name: Typecheck critical API surface
+        run: npm run typecheck:ci
+
+      - name: Validate frontend/backend contract
+        run: npm run check:api-contract -- otsem-api
+
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
       - run: flyctl deploy --remote-only

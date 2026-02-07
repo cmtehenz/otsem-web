@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "src/app/admin/kyc/**/*.ts",
+    "src/app/admin/kyc/**/*.tsx",
+    "src/lib/http.ts",
+    "src/lib/env.ts",
+    "src/lib/cep.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

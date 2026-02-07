@@ -95,41 +95,46 @@ export default function NewAccreditationPFPage() {
         try {
             setSubmitting(true);
 
+            const phoneDigits = onlyDigits(values.phone);
+            const phoneE164 = phoneDigits
+                ? `+${phoneDigits.startsWith("55") ? phoneDigits : `55${phoneDigits}`}`
+                : undefined;
+
             const payload = {
-                identifier: values.identifier,
-                productId: 1,
-                person: {
-                    name: values.name,
-                    socialName: values.socialName || undefined,
-                    cpf: onlyDigits(values.cpf),
-                    birthday: values.birthday,
-                    phone: onlyDigits(values.phone),
-                    email: values.email,
-                    genderId: values.genderId ? Number(values.genderId) : undefined,
-                    address: {
-                        zipCode: onlyDigits(values.zipCode),
-                        street: values.street,
-                        number: values.number || undefined,
-                        complement: values.complement || undefined,
-                        neighborhood: values.neighborhood,
-                        cityIbgeCode: Number(values.cityIbgeCode),
-                    },
+                type: "PF",
+                name: values.name,
+                email: values.email,
+                phone: phoneE164,
+                cpf: onlyDigits(values.cpf),
+                birthday: values.birthday,
+                address: {
+                    zipCode: onlyDigits(values.zipCode),
+                    street: values.street,
+                    number: values.number || undefined,
+                    complement: values.complement || undefined,
+                    neighborhood: values.neighborhood,
+                    cityIbgeCode: Number(values.cityIbgeCode),
                 },
-                pixLimits: {
-                    singleTransfer: values.singleTransfer,
-                    daytime: values.daytime,
-                    nighttime: values.nighttime,
-                    monthly: values.monthly,
-                    serviceId: Number(values.serviceId),
+                metadata: {
+                    legacyIdentifier: values.identifier,
+                    socialName: values.socialName || undefined,
+                    genderId: values.genderId || undefined,
+                    pixLimits: {
+                        singleTransfer: values.singleTransfer,
+                        daytime: values.daytime,
+                        nighttime: values.nighttime,
+                        monthly: values.monthly,
+                        serviceId: Number(values.serviceId),
+                    },
                 },
             };
 
-            await http.post("/customers/pf", payload);
-            toast.success("Credenciamento PF solicitado com sucesso!");
+            await http.post("/customers", payload);
+            toast.success("Cliente PF criado com sucesso!");
             router.push("/admin/kyc");
         } catch (err) {
             console.error(err);
-            toast.error("Falha ao enviar credenciamento");
+            toast.error("Falha ao criar cliente PF");
         } finally {
             setSubmitting(false);
         }

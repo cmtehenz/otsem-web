@@ -28,11 +28,16 @@ type WalletType = {
     balance: string; externalAddress: string; createdAt: string; updatedAt: string;
     label?: string; isMain?: boolean;
 };
-type NetworkType = "SOLANA" | "TRON";
+type NetworkType = "SOLANA" | "TRON" | "ETHEREUM" | "BITCOIN";
+type AssetOption = { id: string; name: string; network: NetworkType; currency: string; icon: string; badge: string };
 
-const NETWORKS: { id: NetworkType; name: string; icon: string; color: string; badge: string }[] = [
-    { id: "SOLANA", name: "Solana", icon: "◎", color: "text-white", badge: "bg-white/10 text-white" },
-    { id: "TRON", name: "Tron (TRC20)", icon: "◈", color: "text-white", badge: "bg-white/10 text-white" },
+const ASSET_OPTIONS: AssetOption[] = [
+    { id: "USDT_SOL", name: "USDT (Solana)", network: "SOLANA", currency: "USDT", icon: "◎", badge: "bg-white/10 text-white" },
+    { id: "USDT_TRON", name: "USDT (Tron)", network: "TRON", currency: "USDT", icon: "◈", badge: "bg-white/10 text-white" },
+    { id: "SOL", name: "SOL (Solana)", network: "SOLANA", currency: "SOL", icon: "◎", badge: "bg-white/10 text-white" },
+    { id: "TRX", name: "TRX (Tron)", network: "TRON", currency: "TRX", icon: "◈", badge: "bg-white/10 text-white" },
+    { id: "ETH", name: "ETH (Ethereum)", network: "ETHEREUM", currency: "ETH", icon: "Ξ", badge: "bg-white/10 text-white" },
+    { id: "BTC", name: "BTC (Bitcoin)", network: "BITCOIN", currency: "BTC", icon: "₿", badge: "bg-white/10 text-white" },
 ];
 
 function getErrorMessage(err: unknown, fallback: string): string {
@@ -59,10 +64,11 @@ export default function WalletPage() {
     const { openModal } = useUiModals();
     const [showAddModal, setShowAddModal] = useState(false);
     const [addMode, setAddMode] = useState<"create" | "import">("create");
-    const [selectedNetwork, setSelectedNetwork] = useState<NetworkType>("SOLANA");
+    const [selectedAssetId, setSelectedAssetId] = useState<string>("USDT_SOL");
     const [importAddress, setImportAddress] = useState("");
     const [importLabel, setImportLabel] = useState("");
     const [importing, setImporting] = useState(false);
+    const selectedAsset = ASSET_OPTIONS.find((asset) => asset.id === selectedAssetId) || ASSET_OPTIONS[0];
 
     useEffect(() => { fetchWallets(); }, []);
 
@@ -94,8 +100,14 @@ export default function WalletPage() {
     async function handleCreateWallet() {
         setCreating(true);
         try {
-            const endpoint = selectedNetwork === "SOLANA" ? "/wallet/create-solana" : "/wallet/create-tron";
-            const res = await http.post(endpoint);
+            const endpoint = selectedAsset.network === "SOLANA"
+                ? "/wallet/create-solana"
+                : selectedAsset.network === "TRON"
+                    ? "/wallet/create-tron"
+                    : selectedAsset.network === "ETHEREUM"
+                        ? "/wallet/create-ethereum"
+                        : "/wallet/create-bitcoin";
+            const res = await http.post(endpoint, { currency: selectedAsset.currency });
             if (res.status === 200 || res.status === 201) {
                 const data = res.data;
                 const publicKey = data.publicKey || data.address || data.externalAddress || data.wallet?.externalAddress;
@@ -117,7 +129,8 @@ export default function WalletPage() {
         try {
             const res = await http.post("/wallet/import", {
                 externalAddress: importAddress.trim(),
-                network: selectedNetwork,
+                network: selectedAsset.network,
+                currency: selectedAsset.currency,
                 label: importLabel.trim() || undefined,
             });
             if (res.status === 200 || res.status === 201) {
@@ -172,22 +185,34 @@ export default function WalletPage() {
     }
 
     function getExplorerUrl(wallet: WalletType) {
-        return wallet.network === "TRON"
-            ? `https://tronscan.org/#/address/${wallet.externalAddress}`
-            : `https://solscan.io/account/${wallet.externalAddress}`;
+        if (wallet.network === "TRON") {
+            return `https://tronscan.org/#/address/${wallet.externalAddress}`;
+        }
+        if (wallet.network === "ETHEREUM") {
+            return `https://etherscan.io/address/${wallet.externalAddress}`;
+        }
+        if (wallet.network === "BITCOIN") {
+            return `https://blockstream.info/address/${wallet.externalAddress}`;
+        }
+        return `https://solscan.io/account/${wallet.externalAddress}`;
     }
 
     function getExplorerName(wallet: WalletType) {
-        return wallet.network === "TRON" ? "Tronscan" : "Solscan";
+        if (wallet.network === "TRON") return "Tronscan";
+        if (wallet.network === "ETHEREUM") return "Etherscan";
+        if (wallet.network === "BITCOIN") return "Blockstream";
+        return "Solscan";
     }
 
     function openAddModal() {
         setShowAddModal(true); setAddMode("create");
-        setSelectedNetwork("SOLANA"); setImportAddress(""); setImportLabel("");
+        setSelectedAssetId("USDT_SOL"); setImportAddress(""); setImportLabel("");
     }
 
     // Total USDT balance
-    const totalUsdt = wallets.reduce((sum, w) => sum + (parseFloat(w.balance) || 0), 0);
+    const totalUsdt = wallets
+        .filter((w) => w.currency === "USDT")
+        .reduce((sum, w) => sum + (parseFloat(w.balance) || 0), 0);
 
     if (loadingWallets) {
         return (
@@ -211,7 +236,7 @@ export default function WalletPage() {
             <motion.div variants={fadeUp} className="flex items-center justify-between">
                 <div>
                     <h1 className="text-[22px] font-bold text-white">Carteiras</h1>
-                    <p className="text-[13px] text-white mt-0.5">Gerencie suas carteiras USDT</p>
+                    <p className="text-[13px] text-white mt-0.5">Gerencie suas carteiras cripto</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <button
@@ -256,7 +281,7 @@ export default function WalletPage() {
                     </div>
                     <h2 className="text-lg font-bold text-white mb-1">Nenhuma carteira</h2>
                     <p className="text-[13px] text-white mb-5 max-w-xs mx-auto">
-                        Adicione sua primeira carteira para receber e enviar USDT.
+                        Adicione sua primeira carteira para receber e enviar cripto.
                     </p>
                     <motion.button
                         onClick={openAddModal}
@@ -270,7 +295,9 @@ export default function WalletPage() {
             ) : (
                 <div className="space-y-3">
                     {wallets.map((wallet, index) => {
-                        const networkInfo = NETWORKS.find(n => n.id === wallet.network) || NETWORKS[0];
+                        const assetInfo = ASSET_OPTIONS.find(
+                            (asset) => asset.network === wallet.network && asset.currency === wallet.currency
+                        );
                         return (
                             <motion.div
                                 key={wallet.id}
@@ -279,8 +306,8 @@ export default function WalletPage() {
                             >
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-center gap-3 min-w-0 flex-1">
-                                        <div className={`flex items-center justify-center w-11 h-11 rounded-2xl ${networkInfo.badge} text-lg shrink-0`}>
-                                            {networkInfo.icon}
+                                        <div className={`flex items-center justify-center w-11 h-11 rounded-2xl ${assetInfo?.badge || "bg-white/10 text-white"} text-lg shrink-0`}>
+                                            {assetInfo?.icon || "◈"}
                                         </div>
                                         <div className="min-w-0">
                                             <div className="flex items-center gap-2 flex-wrap">
@@ -295,8 +322,8 @@ export default function WalletPage() {
                                                 )}
                                             </div>
                                             <div className="flex items-center gap-1.5 mt-0.5">
-                                                <span className={`text-[11px] font-medium ${networkInfo.badge} px-1.5 py-0.5 rounded-full`}>
-                                                    {wallet.network || "SOLANA"}
+                                                <span className={`text-[11px] font-medium ${assetInfo?.badge || "bg-white/10 text-white"} px-1.5 py-0.5 rounded-full`}>
+                                                    {`${wallet.currency} • ${wallet.network}`}
                                                 </span>
                                                 <code className="text-[12px] text-white font-mono">
                                                     {formatAddress(wallet.externalAddress)}
@@ -313,7 +340,7 @@ export default function WalletPage() {
                                             <p className="text-[16px] font-bold text-white">
                                                 {Number(wallet.balance).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
                                             </p>
-                                            <p className="text-[11px] text-white">USDT</p>
+                                            <p className="text-[11px] text-white">{wallet.currency}</p>
                                         </div>
 
                                         <DropdownMenu>
@@ -325,7 +352,7 @@ export default function WalletPage() {
                                             <DropdownMenuContent align="end" className="bg-black/60 backdrop-blur-xl border-white/15 min-w-[180px]">
                                                 {Number(wallet.balance) > 0 && (
                                                     <DropdownMenuItem onClick={() => openModal("sendUsdt")} className="text-white hover:text-white cursor-pointer">
-                                                        <Send className="w-4 h-4 mr-2" /> Enviar USDT
+                                                        <Send className="w-4 h-4 mr-2" /> Enviar {wallet.currency}
                                                     </DropdownMenuItem>
                                                 )}
                                                 <DropdownMenuItem onClick={() => syncWallet(wallet.id)} className="text-white hover:text-white cursor-pointer">
@@ -367,7 +394,7 @@ export default function WalletPage() {
                     <div>
                         <p className="text-white font-semibold text-[13px]">Importante</p>
                         <p className="text-white text-[12px] mt-0.5 leading-relaxed">
-                            Envie <strong className="text-white">apenas USDT</strong> na rede correta. Envios em redes diferentes serão perdidos.
+                            Envie <strong className="text-white">apenas o ativo da carteira</strong> na rede correta. Envios em redes diferentes serão perdidos.
                         </p>
                     </div>
                 </div>
@@ -386,10 +413,10 @@ export default function WalletPage() {
                         <div>
                             <Label className="text-white/60 text-[13px] mb-2 block">Rede</Label>
                             <div className="grid grid-cols-2 gap-2">
-                                {NETWORKS.map((network) => (
+                                {ASSET_OPTIONS.map((asset) => (
                                     <button
-                                        key={network.id}
-                                        onClick={() => setSelectedNetwork(network.id)}
+                                        key={asset.id}
+                                        onClick={() => setSelectedAssetId(asset.id)}
                                         className={`flex items-center justify-center gap-2 p-3.5 rounded-2xl border transition-all active:scale-[0.97] ${
                                             selectedNetwork === network.id
                                                 ? "border-[#FFB300]/50 bg-[#FFB300]/10"

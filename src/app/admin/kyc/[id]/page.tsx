@@ -128,35 +128,6 @@ export default function AdminKycDetailPage(): React.JSX.Element {
         })();
     }, [id]);
 
-    // Try a list of routes until one succeeds or a non-404 error happens
-    async function trySequence<T = unknown>(
-        seq: Array<{ method: "patch" | "post"; url: string; body?: unknown }>
-    ): Promise<T> {
-        let last404 = false;
-        for (const step of seq) {
-            try {
-                const res =
-                    step.method === "patch"
-                        ? await http.patch<T>(step.url, step.body ?? {})
-                        : await http.post<T>(step.url, step.body ?? {});
-                return res.data;
-            } catch (e) {
-                const status = getAxiosStatus(e);
-                if (status === 404) {
-                    last404 = true;
-                    continue; // try next
-                }
-                throw e; // other errors: stop
-            }
-        }
-        if (last404) {
-            throw new Error(
-                "Endpoint não encontrado (404). Verifique as rotas do backend para KYC. "
-            );
-        }
-        throw new Error("Falha ao processar ação de KYC.");
-    }
-
     async function refresh() {
         if (!id) return;
         const res = await http.get<KycCustomer>(`/customers/${id}`);
@@ -170,7 +141,7 @@ export default function AdminKycDetailPage(): React.JSX.Element {
             setActionLoading(true);
 
             if (actionType === "approve") {
-                await http.patch(`/customers/${data.id}/approve`);
+                await http.patch(`/customers/${data.id}/kyc/approve`);
                 toast.success("KYC aprovado com sucesso!");
             }
 
@@ -179,14 +150,14 @@ export default function AdminKycDetailPage(): React.JSX.Element {
                     toast.error("Informe o motivo da rejeição");
                     return;
                 }
-                await http.patch(`/customers/${data.id}/reject`, {
+                await http.patch(`/customers/${data.id}/kyc/reject`, {
                     reason: rejectionReason,
                 });
                 toast.success("KYC rejeitado");
             }
 
             if (actionType === "review") {
-                await http.patch(`/customers/${data.id}/review`, {
+                await http.patch(`/customers/${data.id}/kyc/review`, {
                     notes: reviewNotes || undefined,
                 });
                 toast.success("Solicitação de revisão enviada");

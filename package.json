@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "lint:ci": "eslint \"src/app/admin/kyc/**/*.{ts,tsx}\" \"src/lib/http.ts\" \"src/lib/env.ts\" --max-warnings=0",
+    "typecheck:ci": "tsc --project tsconfig.ci.json --noEmit",
+    "check:api-contract": "node scripts/check-api-contract.mjs",
     "prepare": "husky"
   },
   "dependencies": {
