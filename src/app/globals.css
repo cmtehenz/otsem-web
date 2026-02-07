@@ -201,7 +201,7 @@
            The `background` shorthand resets background-color to transparent,
            which exposes the white iOS window behind the home indicator area. */
         background-color: #050010;
-        background-image: url('/images/customer-bg.png');
+        background-image: url('/bg-gradient.png');
         background-size: cover;
         background-position: center top;
         background-repeat: no-repeat;
@@ -664,45 +664,13 @@
         right: 0;
         bottom: -50px;
         z-index: 0;
-        background: linear-gradient(
-            180deg,
-            #020008 0%,
-            #080020 8%,
-            #100040 16%,
-            #1a0a60 24%,
-            #261080 32%,
-            #3418a0 40%,
-            #4428b8 48%,
-            #5838c8 56%,
-            #7050d8 64%,
-            #8868e0 72%,
-            #a088e8 80%,
-            #b8a8f0 88%,
-            #d0c4f8 94%,
-            #e8e0ff 100%
-        );
+        background: url('/bg-gradient.png') center / cover no-repeat;
         pointer-events: none;
     }
 
     /* ── Container gradient — applied directly as background, no z-index needed ─── */
     .fintech-bg-container {
-        background: linear-gradient(
-            180deg,
-            #020008 0%,
-            #080020 8%,
-            #100040 16%,
-            #1a0a60 24%,
-            #261080 32%,
-            #3418a0 40%,
-            #4428b8 48%,
-            #5838c8 56%,
-            #7050d8 64%,
-            #8868e0 72%,
-            #a088e8 80%,
-            #b8a8f0 88%,
-            #d0c4f8 94%,
-            #e8e0ff 100%
-        );
+        background: url('/bg-gradient.png') center / cover no-repeat;
         /* Default height for browser mode (same as Tailwind h-dvh).
            Standalone PWA mode overrides this below to include safe area. */
         height: 100dvh;
@@ -850,12 +818,12 @@
         right: 0;
         bottom: -50px;
         z-index: 0;
-        background: url('/images/customer-bg.png') center top / cover no-repeat;
+        background: url('/bg-gradient.png') center top / cover no-repeat;
         pointer-events: none;
     }
 
     .dark .customer-app-bg-layer {
-        background: url('/images/customer-bg.png') center top / cover no-repeat;
+        background: url('/bg-gradient.png') center top / cover no-repeat;
     }
 
     .social-icon-hover {
