@@ -38,7 +38,7 @@ primary_region = 'gru'
     path = '/'
 
 [[vm]]
-  memory = '512mb'
-  cpu_kind = 'shared'
-  cpus = 1
-  memory_mb = 512
+  memory = '4gb'
+  cpu_kind = 'performance'
+  cpus = 2
+  memory_mb = 4096
