@@ -29,24 +29,24 @@ const ComparisonSection = () => {
     <section className="relative z-10 section-padding">
       <div className="mx-auto max-w-5xl container-mobile">
         <div className="mb-8 sm:mb-12 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/12 text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
-            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#9B4DFF] font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#9B4DFF] animate-pulse" />
             {t("badge")}
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest text-slate-900 leading-[1.1]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest text-white leading-[1.1]">
             {t("titleLine1")} <br />
             <span className="text-primary">{t("titleLine2")}</span>
           </h2>
         </div>
 
         <div className="grid gap-3 sm:gap-4 lg:grid-cols-2 max-w-4xl mx-auto">
-          <div className="ios-card-premium group">
+          <div className="rounded-[20px] p-4 sm:p-5 bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-[0.4s] group">
             <div className="mb-4 sm:mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 border border-red-100 transition-transform duration-300 group-hover:scale-105">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/15 border border-red-500/20 transition-transform duration-300 group-hover:scale-105">
                 <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-red-500" strokeWidth={1.75} />
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-bold tracking-tight text-slate-900">
+                <h3 className="text-sm sm:text-base font-bold tracking-tight text-white">
                   {t("banksTitle")}
                 </h3>
                 <p className="text-[9px] sm:text-[10px] font-semibold text-red-500 uppercase tracking-wider">
@@ -59,9 +59,9 @@ const ComparisonSection = () => {
               {traditionalItems.map((item, index) => (
                 <li
                   key={index}
-                  className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0"
+                  className="flex items-center justify-between py-2 border-b border-white/5 last:border-0"
                 >
-                  <span className="text-[12px] sm:text-[13px] font-medium text-slate-500">
+                  <span className="text-[12px] sm:text-[13px] font-medium text-white/60">
                     {item.label}
                   </span>
                   <div className="flex items-center gap-1.5">
@@ -75,7 +75,7 @@ const ComparisonSection = () => {
             </ul>
           </div>
 
-          <div className="relative ios-card-premium bg-emerald-50/30 border-emerald-200/50 group">
+          <div className="relative rounded-[20px] p-4 sm:p-5 bg-emerald-500/5 border border-emerald-500/20 backdrop-blur-xl transition-all duration-[0.4s] group">
             <div className="absolute -top-2 right-4">
               <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[8px] sm:text-[9px] font-semibold uppercase tracking-wider text-white bg-emerald-500 rounded-full shadow-md">
                 <Crown className="h-2.5 w-2.5" strokeWidth={2} />
@@ -84,11 +84,11 @@ const ComparisonSection = () => {
             </div>
 
             <div className="mb-4 sm:mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 border border-emerald-200 transition-transform duration-300 group-hover:scale-105">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/15 border border-emerald-500/20 transition-transform duration-300 group-hover:scale-105">
                 <Zap className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" strokeWidth={1.75} />
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-bold tracking-tight text-slate-900">
+                <h3 className="text-sm sm:text-base font-bold tracking-tight text-white">
                   Otsem Pay
                 </h3>
                 <p className="text-[9px] sm:text-[10px] font-semibold text-emerald-600 uppercase tracking-wider">
@@ -101,9 +101,9 @@ const ComparisonSection = () => {
               {otcItems.map((item, index) => (
                 <li
                   key={index}
-                  className="flex items-center justify-between py-2 border-b border-emerald-100/50 last:border-0"
+                  className="flex items-center justify-between py-2 border-b border-emerald-500/10 last:border-0"
                 >
-                  <span className="text-[12px] sm:text-[13px] font-medium text-slate-500">
+                  <span className="text-[12px] sm:text-[13px] font-medium text-white/60">
                     {item.label}
                   </span>
                   <div className="flex items-center gap-1.5">

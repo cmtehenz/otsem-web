@@ -68,14 +68,14 @@ const FeaturesGrid = () => {
         <div className="mb-12 sm:mb-16">
           <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/12 text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#9B4DFF] font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
                 {t("badge")}
               </div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest text-slate-900 leading-[1.1]">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest text-white leading-[1.1]">
                 {t("titleLine1")} <br />
                 <span className="text-primary">{t("titleLine2")}</span>
               </h2>
-              <p className="mt-4 text-[14px] sm:text-base text-slate-600 leading-relaxed font-medium max-w-sm">
+              <p className="mt-4 text-[14px] sm:text-base text-white/60 leading-relaxed font-medium max-w-sm">
                 {t("subtitle")}
               </p>
             </div>
@@ -84,13 +84,13 @@ const FeaturesGrid = () => {
               {secondaryFeatures.map((feature, index) => (
                 <div
                   key={index}
-                  className="ios-card-premium group"
+                  className="rounded-[20px] p-4 sm:p-5 bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-[0.4s] group"
                 >
-                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 border border-primary/10 transition-transform duration-300 group-hover:scale-105">
+                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-[#6F00FF]/15 border border-[#6F00FF]/20 transition-transform duration-300 group-hover:scale-105">
                     <feature.icon className="h-4 w-4 text-primary" strokeWidth={1.75} />
                   </div>
-                  <h3 className="font-semibold text-slate-900 text-[12px] sm:text-[13px] tracking-tight">{feature.title}</h3>
-                  <p className="mt-0.5 text-[10px] sm:text-[11px] text-slate-500 font-medium leading-snug">{feature.description}</p>
+                  <h3 className="font-semibold text-white text-[12px] sm:text-[13px] tracking-tight">{feature.title}</h3>
+                  <p className="mt-0.5 text-[10px] sm:text-[11px] text-white/60 font-medium leading-snug">{feature.description}</p>
                 </div>
               ))}
             </div>
@@ -101,13 +101,13 @@ const FeaturesGrid = () => {
           {mainFeatures.map((feature, index) => (
             <div
               key={index}
-              className="ios-card-premium group"
+              className="rounded-[20px] p-4 sm:p-5 bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-[0.4s] group"
             >
-              <div className="mb-3 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/12 transition-transform duration-300 group-hover:scale-105">
+              <div className="mb-3 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-[#6F00FF]/15 border border-[#6F00FF]/20 transition-transform duration-300 group-hover:scale-105">
                 <feature.icon className="h-4 w-4 sm:h-5 sm:w-5 text-primary" strokeWidth={1.75} />
               </div>
-              <h3 className="text-[12px] sm:text-[14px] font-semibold text-slate-900 mb-1 tracking-tight">{feature.title}</h3>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 leading-relaxed font-medium">
+              <h3 className="text-[12px] sm:text-[14px] font-semibold text-white mb-1 tracking-tight">{feature.title}</h3>
+              <p className="text-[10px] sm:text-[11px] text-white/60 leading-relaxed font-medium">
                 {feature.description}
               </p>
             </div>

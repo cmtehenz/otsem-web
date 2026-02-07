@@ -104,7 +104,7 @@ export default function ForgotPage(): React.JSX.Element {
     }
 
     return (
-        <div className="min-h-dvh" style={{ background: 'linear-gradient(180deg, #0a1352 0%, #0d1a5a 25%, #091040 50%, #060a28 75%, #030614 100%)' }}>
+        <div className="min-h-dvh" style={{ background: "url('/bg-gradient.png') center top / cover no-repeat", backgroundColor: "#050010" }}>
             <div className="mx-auto flex min-h-dvh max-w-5xl items-center justify-center px-4">
                 <div className="w-full max-w-md">
                     <div className="fintech-glass-card rounded-[2rem] overflow-hidden">

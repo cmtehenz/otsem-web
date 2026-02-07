@@ -156,13 +156,13 @@ const ExchangeWidget = () => {
         <div className="absolute -inset-1 bg-gradient-to-r from-primary/15 via-primary/10 to-primary/15 rounded-[30px] opacity-70" />
 
         {/* Main card */}
-        <div className="relative bg-white rounded-[28px] overflow-hidden shadow-2xl shadow-primary/10 border border-slate-100">
+        <div className="relative bg-[#0d0518]/90 backdrop-blur-xl rounded-[28px] overflow-hidden shadow-2xl shadow-black/30 border border-white/10">
           {/* Static gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-50/80 via-white to-primary/[0.02] pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-[#6F00FF]/[0.03] pointer-events-none" />
 
           {/* Static decorative elements */}
-          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary/8 to-primary/5 blur-3xl rounded-full translate-x-10 -translate-y-10 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-400/8 to-primary/5 blur-3xl rounded-full -translate-x-10 translate-y-10 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#6F00FF]/15 to-[#6F00FF]/8 blur-3xl rounded-full translate-x-10 -translate-y-10 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-400/10 to-[#6F00FF]/8 blur-3xl rounded-full -translate-x-10 translate-y-10 pointer-events-none" />
 
           <div className="relative p-6 sm:p-7">
             {/* Header */}
@@ -177,27 +177,27 @@ const ExchangeWidget = () => {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-slate-900 tracking-tight">Câmbio Instantâneo</h3>
-                    <p className="text-xs text-slate-500 font-medium">Cotação em tempo real</p>
+                    <h3 className="text-base font-bold text-white tracking-tight">Câmbio Instantâneo</h3>
+                    <p className="text-xs text-white/60 font-medium">Cotação em tempo real</p>
                   </div>
                 </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/20">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-xs font-bold text-emerald-600">
+                <span className="text-xs font-bold text-emerald-400">
                   {isLoading ? "..." : "LIVE"}
                 </span>
               </div>
             </div>
 
             {/* Exchange rate banner with countdown */}
-            <div className="flex items-center justify-between px-4 py-3 mb-5 rounded-2xl bg-gradient-to-r from-slate-50 to-slate-100/50 border border-slate-100">
+            <div className="flex items-center justify-between px-4 py-3 mb-5 rounded-2xl bg-white/5 border border-white/10">
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-emerald-500" />
-                <span className="text-sm text-slate-600 font-medium">
-                  1 USDT = <span className="text-slate-900 font-bold">{rate != null ? `R$ ${rate.toFixed(2)}` : "..."}</span>
+                <span className="text-sm text-white/60 font-medium">
+                  1 USDT = <span className="text-white font-bold">{rate != null ? `R$ ${rate.toFixed(2)}` : "..."}</span>
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              <div className="flex items-center gap-1.5 text-xs text-white/40">
                 <Zap className="w-3.5 h-3.5" />
                 <span className="font-mono font-semibold">{countdown}s</span>
               </div>
@@ -212,28 +212,28 @@ const ExchangeWidget = () => {
                   transition={{ duration: 0.2 }}
                 >
                   {/* Input section - You send */}
-                  <div className="relative bg-gradient-to-br from-slate-50 to-slate-100/70 rounded-3xl p-5 border border-slate-100">
+                  <div className="relative bg-white/5 rounded-3xl p-5 border border-white/10">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Você envia</span>
-                      <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">
+                      <span className="text-xs font-bold text-white/40 uppercase tracking-wider">Você envia</span>
+                      <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-xl border border-white/15">
                         {direction === "buy" ? (
                           <>
                             <BrazilFlag className="w-5 h-3.5 rounded" />
-                            <span className="text-sm font-bold text-slate-700">BRL</span>
+                            <span className="text-sm font-bold text-white">BRL</span>
                           </>
                         ) : (
                           <>
                             <div className="w-5 h-5 rounded-full bg-[#26A17B] flex items-center justify-center">
                               <span className="text-[10px] font-bold text-white">₮</span>
                             </div>
-                            <span className="text-sm font-bold text-slate-700">USDT</span>
+                            <span className="text-sm font-bold text-white">USDT</span>
                           </>
                         )}
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-300 text-3xl font-semibold">
+                      <span className="text-white/30 text-3xl font-semibold">
                         {direction === "buy" ? "R$" : ""}
                       </span>
                       <input
@@ -243,7 +243,7 @@ const ExchangeWidget = () => {
                         value={amount}
                         onChange={handleAmountChange}
                         placeholder="0,00"
-                        className="w-full bg-transparent text-4xl font-bold text-slate-900 outline-none placeholder:text-slate-200"
+                        className="w-full bg-transparent text-4xl font-bold text-white outline-none placeholder:text-white/20"
                       />
                     </div>
                   </div>
@@ -252,39 +252,39 @@ const ExchangeWidget = () => {
                   <div className="flex justify-center -my-5 relative z-10">
                     <button
                       onClick={toggleDirection}
-                      className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-xl shadow-primary/30 border-4 border-white transition-transform duration-150 hover:scale-105 active:scale-95"
+                      className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-xl shadow-primary/30 border-4 border-[#0d0518] transition-transform duration-150 hover:scale-105 active:scale-95"
                     >
                       <ArrowDownUp className="w-5 h-5 text-white" />
                     </button>
                   </div>
 
                   {/* Output section - You receive */}
-                  <div className="relative bg-gradient-to-br from-slate-50 to-slate-100/70 rounded-3xl p-5 border border-slate-100">
+                  <div className="relative bg-white/5 rounded-3xl p-5 border border-white/10">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Você recebe</span>
-                      <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">
+                      <span className="text-xs font-bold text-white/40 uppercase tracking-wider">Você recebe</span>
+                      <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-xl border border-white/15">
                         {direction === "buy" ? (
                           <>
                             <div className="w-5 h-5 rounded-full bg-[#26A17B] flex items-center justify-center">
                               <span className="text-[10px] font-bold text-white">₮</span>
                             </div>
-                            <span className="text-sm font-bold text-slate-700">USDT</span>
+                            <span className="text-sm font-bold text-white">USDT</span>
                           </>
                         ) : (
                           <>
                             <BrazilFlag className="w-5 h-3.5 rounded" />
-                            <span className="text-sm font-bold text-slate-700">BRL</span>
+                            <span className="text-sm font-bold text-white">BRL</span>
                           </>
                         )}
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      {direction === "sell" && <span className="text-slate-300 text-3xl font-semibold">R$</span>}
-                      <span className="text-4xl font-bold text-slate-900">
+                      {direction === "sell" && <span className="text-white/30 text-3xl font-semibold">R$</span>}
+                      <span className="text-4xl font-bold text-white">
                         {isLoading ? "..." : formatBRL(convertedAmount)}
                       </span>
-                      <span className="text-slate-400 font-semibold text-lg">
+                      <span className="text-white/40 font-semibold text-lg">
                         {direction === "buy" ? "USDT" : ""}
                       </span>
                     </div>
@@ -295,7 +295,7 @@ const ExchangeWidget = () => {
               {/* CTA Button */}
               <button
                 onClick={handleConvert}
-                className="w-full mt-6 py-4 text-base rounded-2xl bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold flex items-center justify-center gap-2.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-yellow-400/30"
+                className="w-full mt-6 py-4 text-base rounded-2xl bg-yellow-400 hover:bg-yellow-500 text-black font-bold flex items-center justify-center gap-2.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-yellow-400/30"
               >
                 <span>Converter Agora</span>
               </button>
@@ -303,14 +303,14 @@ const ExchangeWidget = () => {
             {/* Trust badges */}
             <div className="flex items-center justify-center gap-6 mt-5">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center">
+                <div className="w-6 h-6 rounded-lg bg-emerald-500/15 flex items-center justify-center">
                   <Shield className="w-3.5 h-3.5 text-emerald-500" />
                 </div>
-                <span className="text-xs text-slate-500 font-medium">100% Seguro</span>
+                <span className="text-xs text-white/60 font-medium">100% Seguro</span>
               </div>
-              <div className="w-px h-4 bg-slate-200" />
+              <div className="w-px h-4 bg-white/10" />
               <div className="flex items-center gap-1.5">
-                <span className="text-xs text-slate-500">Taxa:</span>
+                <span className="text-xs text-white/40">Taxa:</span>
                 <span className="text-xs text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-md">0.98%</span>
               </div>
             </div>
@@ -324,17 +324,17 @@ const ExchangeWidget = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="absolute inset-0 bg-white rounded-[28px] overflow-hidden z-30"
+                className="absolute inset-0 bg-[#0d0518]/95 backdrop-blur-xl rounded-[28px] overflow-hidden z-30"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-50/80 via-white to-primary/[0.02] pointer-events-none" />
-                <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary/8 to-primary/5 blur-3xl rounded-full translate-x-10 -translate-y-10 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-400/8 to-primary/5 blur-3xl rounded-full -translate-x-10 translate-y-10 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-[#6F00FF]/[0.03] pointer-events-none" />
+                <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#6F00FF]/15 to-[#6F00FF]/8 blur-3xl rounded-full translate-x-10 -translate-y-10 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-400/10 to-[#6F00FF]/8 blur-3xl rounded-full -translate-x-10 translate-y-10 pointer-events-none" />
 
                 <div className="relative p-6 sm:p-7 h-full flex flex-col">
                   {/* Back button */}
                   <button
                     onClick={() => setShowAuthScreen(false)}
-                    className="flex items-center gap-2 text-slate-500 hover:text-slate-700 transition-colors mb-6 self-start"
+                    className="flex items-center gap-2 text-white/60 hover:text-white transition-colors mb-6 self-start"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     <span className="text-sm font-medium">Voltar</span>
@@ -346,11 +346,11 @@ const ExchangeWidget = () => {
                         <Repeat className="w-8 h-8 text-white" />
                       </div>
 
-                    <h3 className="text-xl font-bold text-slate-900 text-center mb-2">
+                    <h3 className="text-xl font-bold text-white text-center mb-2">
                       Acesse sua conta
                     </h3>
 
-                    <p className="text-sm text-slate-500 text-center mb-8 max-w-[260px]">
+                    <p className="text-sm text-white/60 text-center mb-8 max-w-[260px]">
                       Para continuar com sua conversão, faça login ou crie uma conta
                     </p>
 
@@ -365,7 +365,7 @@ const ExchangeWidget = () => {
                       </Link>
 
                       <Link href="/register" className="block">
-                        <button className="w-full py-4 bg-white border-2 border-primary/20 text-primary text-base font-bold rounded-2xl flex items-center justify-center gap-2.5 hover:border-primary/40 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]">
+                        <button className="w-full py-4 bg-white/5 border-2 border-white/15 text-white text-base font-bold rounded-2xl flex items-center justify-center gap-2.5 hover:border-white/30 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]">
                           <UserPlus className="w-5 h-5" />
                           <span>Criar Conta</span>
                         </button>
@@ -373,14 +373,14 @@ const ExchangeWidget = () => {
                     </div>
 
                     {/* Conversion summary */}
-                    <div className="mt-8 w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-100">
+                    <div className="mt-8 w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-500">Sua conversão:</span>
+                        <span className="text-white/60">Sua conversão:</span>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-slate-700">
+                          <span className="font-bold text-white">
                             {direction === "buy" ? "R$" : ""}{formatBRL(numericAmount)} {direction === "sell" ? "USDT" : ""}
                           </span>
-                          <span className="text-slate-400">→</span>
+                          <span className="text-white/30">→</span>
                           <span className="font-bold text-primary">
                             {direction === "sell" ? "R$" : ""}{formatBRL(convertedAmount)} {direction === "buy" ? "USDT" : ""}
                           </span>

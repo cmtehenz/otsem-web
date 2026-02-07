@@ -34,7 +34,7 @@ export default function ResetPage(): React.JSX.Element {
     return (
         <Suspense
             fallback={
-                <div className="min-h-dvh grid place-items-center text-sm text-white/50" style={{ background: 'linear-gradient(180deg, #0a1352 0%, #0d1a5a 25%, #091040 50%, #060a28 75%, #030614 100%)' }}>
+                <div className="min-h-dvh grid place-items-center text-sm text-white/50" style={{ background: "url('/bg-gradient.png') center top / cover no-repeat", backgroundColor: "#050010" }}>
                     Carregando...
                 </div>
             }
@@ -60,7 +60,7 @@ function ResetInner(): React.JSX.Element {
 
     if (!token) {
         return (
-            <div className="min-h-dvh grid place-items-center px-4" style={{ background: 'linear-gradient(180deg, #0a1352 0%, #0d1a5a 25%, #091040 50%, #060a28 75%, #030614 100%)' }}>
+            <div className="min-h-dvh grid place-items-center px-4" style={{ background: "url('/bg-gradient.png') center top / cover no-repeat", backgroundColor: "#050010" }}>
                 <div className="fintech-glass-card rounded-[2rem] p-8 max-w-sm w-full text-center space-y-4">
                     <h2 className="text-lg font-semibold text-white">Link inválido</h2>
                     <p className="text-sm text-white/60">
@@ -103,7 +103,7 @@ function ResetInner(): React.JSX.Element {
     }
 
     return (
-        <div className="min-h-dvh" style={{ background: 'linear-gradient(180deg, #0a1352 0%, #0d1a5a 25%, #091040 50%, #060a28 75%, #030614 100%)' }}>
+        <div className="min-h-dvh" style={{ background: "url('/bg-gradient.png') center top / cover no-repeat", backgroundColor: "#050010" }}>
             <div className="mx-auto flex min-h-dvh max-w-5xl items-center justify-center px-4">
                 <div className="w-full max-w-md">
                     <div className="fintech-glass-card rounded-[2rem] overflow-hidden">

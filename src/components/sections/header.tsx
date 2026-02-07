@@ -51,7 +51,7 @@ const Header = () => {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-4 pt-2 sm:pt-3">
         <div
-          className={`mx-auto flex items-center justify-between transition-all duration-300 ios-glass rounded-2xl ${
+          className={`mx-auto flex items-center justify-between transition-all duration-300 bg-white/8 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.3)] rounded-2xl ${
             scrolled
               ? "px-3 sm:px-4 py-2 max-w-2xl sm:max-w-3xl mt-1"
               : "px-4 sm:px-5 py-2.5 sm:py-3 max-w-5xl sm:max-w-6xl mt-0.5"
@@ -72,7 +72,7 @@ const Header = () => {
             />
 <span className="text-[1.35rem] font-black tracking-tighter flex items-center gap-1">
                 <span className="text-primary">Otsem</span>
-                <span className="text-slate-900">Pay</span>
+                <span className="text-white">Pay</span>
               </span>
           </Link>
 
@@ -82,7 +82,7 @@ const Header = () => {
                 key={link.href}
                 href={link.href}
                 onClick={handleNavClick}
-                className="relative px-3 py-1.5 text-[12px] sm:text-[13px] font-semibold text-slate-600 transition-all hover:text-primary rounded-xl hover:bg-primary/5"
+                className="relative px-3 py-1.5 text-[12px] sm:text-[13px] font-semibold text-white/60 transition-all hover:text-white rounded-xl hover:bg-white/10"
               >
                 {link.label}
               </a>
@@ -90,11 +90,11 @@ const Header = () => {
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
-            <LanguageSwitcher className="text-slate-600" />
+            <LanguageSwitcher className="text-white/60" />
             <Link
               href="/login"
               onClick={handleNavClick}
-              className="text-[12px] sm:text-[13px] font-semibold text-slate-600 hover:text-primary transition-colors px-2.5 py-1.5"
+              className="text-[12px] sm:text-[13px] font-semibold text-white/60 hover:text-white transition-colors px-2.5 py-1.5"
             >
               {t("common.login")}
             </Link>
@@ -109,14 +109,14 @@ const Header = () => {
           </div>
 
           <button
-            className="flex items-center justify-center w-8 h-8 rounded-xl bg-slate-100/80 md:hidden ios-touch-effect transition-transform duration-150 active:scale-95"
+            className="flex items-center justify-center w-8 h-8 rounded-xl bg-white/10 md:hidden ios-touch-effect transition-transform duration-150 active:scale-95"
             onClick={toggleMenu}
             aria-label="Menu"
           >
             {mobileMenuOpen ? (
-              <X className="w-4 h-4 text-slate-700" />
+              <X className="w-4 h-4 text-white" />
             ) : (
-              <Menu className="w-4 h-4 text-slate-700" />
+              <Menu className="w-4 h-4 text-white" />
             )}
           </button>
         </div>
@@ -140,7 +140,7 @@ const Header = () => {
               transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
               className="fixed inset-x-3 top-16 z-50 md:hidden"
             >
-              <div className="ios-glass rounded-2xl p-2.5 shadow-xl overflow-hidden">
+              <div className="bg-[#0d0518]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-2.5 shadow-xl overflow-hidden">
                 <nav className="space-y-0.5">
                     {navLinks.map((link) => (
                       <a
@@ -150,15 +150,15 @@ const Header = () => {
                           haptic.selection();
                           setMobileMenuOpen(false);
                         }}
-                        className="flex items-center px-3 py-3 text-[14px] font-semibold text-slate-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all ios-touch-effect"
+                        className="flex items-center px-3 py-3 text-[14px] font-semibold text-white hover:text-white hover:bg-white/10 rounded-xl transition-all ios-touch-effect"
                       >
                         {link.label}
                       </a>
                     ))}
 
-                    <div className="h-px bg-slate-200/60 my-1 mx-2" />
+                    <div className="h-px bg-white/10 my-1 mx-2" />
 
-                    <LanguageSwitcher className="text-slate-700 justify-start px-3 py-3" />
+                    <LanguageSwitcher className="text-white/60 justify-start px-3 py-3" />
 
                     <Link
                       href="/login"
@@ -166,7 +166,7 @@ const Header = () => {
                         haptic.selection();
                         setMobileMenuOpen(false);
                       }}
-                      className="flex items-center px-3 py-3 text-[14px] font-semibold text-slate-700 hover:text-primary hover:bg-primary/5 rounded-xl transition-all ios-touch-effect"
+                      className="flex items-center px-3 py-3 text-[14px] font-semibold text-white hover:text-white hover:bg-white/10 rounded-xl transition-all ios-touch-effect"
                     >
                       {t("common.login")}
                     </Link>

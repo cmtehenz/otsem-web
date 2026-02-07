@@ -41,7 +41,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative z-10 w-full px-4 sm:px-6 pt-16 sm:pt-20 pb-8 sm:pb-10 overflow-hidden bg-white/40 backdrop-blur-md mobile-safe-area">
+    <footer className="relative z-10 w-full px-4 sm:px-6 pt-16 sm:pt-20 pb-8 sm:pb-10 overflow-hidden bg-white/5 backdrop-blur-xl border-t border-white/10 mobile-safe-area">
       <div className="mx-auto max-w-7xl">
           <div className="flex flex-col lg:flex-row lg:justify-between gap-8 sm:gap-10 lg:gap-12">
             <div className="lg:max-w-sm">
@@ -56,25 +56,25 @@ const Footer = () => {
                 />
                 <span className="text-[1.35rem] font-black tracking-tighter flex items-center gap-1">
                   <span className="text-primary">Otsem</span>
-                  <span className="text-slate-900">Pay</span>
+                  <span className="text-white">Pay</span>
                 </span>
               </Link>
-              <p className="max-w-[280px] text-[13px] sm:text-[14px] text-slate-500 leading-relaxed font-medium mb-6">
+              <p className="max-w-[280px] text-[13px] sm:text-[14px] text-white/60 leading-relaxed font-medium mb-6">
                 {t("description")}
               </p>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400/10 border border-yellow-400/20">
                 <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 animate-pulse" />
-                <span className="text-[9px] sm:text-[10px] font-bold text-yellow-600 uppercase tracking-[0.15em]">{t("globalPlatform")}</span>
+                <span className="text-[9px] sm:text-[10px] font-bold text-yellow-400 uppercase tracking-[0.15em]">{t("globalPlatform")}</span>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-8 sm:gap-12 lg:gap-16">
               <div>
-                <h3 className="mb-3 sm:mb-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">{t("product")}</h3>
+                <h3 className="mb-3 sm:mb-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-white/40">{t("product")}</h3>
                 <ul className="space-y-2 sm:space-y-2.5">
                   {footerLinks.produto.map((link) => (
                     <li key={link.label}>
-                      <a href={link.href} className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block">
+                      <a href={link.href} className="text-[13px] sm:text-[14px] font-medium text-white/60 transition-colors hover:text-primary ios-touch-effect inline-block">
                         {link.label}
                       </a>
                     </li>
@@ -83,13 +83,13 @@ const Footer = () => {
               </div>
 
               <div>
-                <h3 className="mb-3 sm:mb-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">{t("legal")}</h3>
+                <h3 className="mb-3 sm:mb-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-white/40">{t("legal")}</h3>
                 <ul className="space-y-2 sm:space-y-2.5">
                   <li>
                     <button
                       type="button"
                       onClick={handleTermosClick}
-                      className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer bg-transparent border-none p-0 text-left"
+                      className="text-[13px] sm:text-[14px] font-medium text-white/60 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer bg-transparent border-none p-0 text-left"
                     >
                       {t("terms")}
                     </button>
@@ -98,7 +98,7 @@ const Footer = () => {
                     <button
                       type="button"
                       onClick={handlePrivacidadeClick}
-                      className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer bg-transparent border-none p-0 text-left"
+                      className="text-[13px] sm:text-[14px] font-medium text-white/60 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer bg-transparent border-none p-0 text-left"
                     >
                       {t("privacy")}
                     </button>
@@ -107,7 +107,7 @@ const Footer = () => {
                     <button
                       type="button"
                       onClick={handleCookiesClick}
-                      className="text-[13px] sm:text-[14px] font-medium text-slate-500 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer bg-transparent border-none p-0 text-left"
+                      className="text-[13px] sm:text-[14px] font-medium text-white/60 transition-colors hover:text-primary ios-touch-effect inline-block cursor-pointer bg-transparent border-none p-0 text-left"
                     >
                       {t("cookies")}
                     </button>
@@ -128,8 +128,8 @@ const Footer = () => {
             </div>
           </div>
 
-        <div className="mt-10 sm:mt-12 flex flex-col items-center justify-between gap-3 border-t border-foreground/[0.05] pt-5 sm:pt-6 sm:flex-row">
-          <p className="text-[11px] sm:text-[12px] font-medium text-slate-400">
+        <div className="mt-10 sm:mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-5 sm:pt-6 sm:flex-row">
+          <p className="text-[11px] sm:text-[12px] font-medium text-white/40">
             {t("copyright")}{" "}
             <button
               type="button"
@@ -139,7 +139,7 @@ const Footer = () => {
               0xdeni
             </button>
           </p>
-          <p className="text-[11px] sm:text-[12px] font-medium text-slate-400">
+          <p className="text-[11px] sm:text-[12px] font-medium text-white/40">
             CNPJ: 12.474.440/0001-60
           </p>
         </div>

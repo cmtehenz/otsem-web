@@ -66,8 +66,8 @@ const HeroSection = () => {
   return (
     <section className="relative z-10 min-h-[100dvh] flex flex-col pt-20 sm:pt-24 lg:pt-28 overflow-hidden">
       {/* Static background elements */}
-      <div className="absolute top-[-8%] right-[-12%] w-[75vw] sm:w-[55vw] h-[75vw] sm:h-[55vw] max-w-[450px] max-h-[450px] bg-primary/6 blur-[40px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-8%] left-[-12%] w-[65vw] sm:w-[45vw] h-[65vw] sm:h-[45vw] max-w-[380px] max-h-[380px] bg-primary/6 blur-[40px] rounded-full pointer-events-none" />
+      <div className="absolute top-[-8%] right-[-12%] w-[75vw] sm:w-[55vw] h-[75vw] sm:h-[55vw] max-w-[450px] max-h-[450px] bg-[#6F00FF]/10 blur-[40px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-8%] left-[-12%] w-[65vw] sm:w-[45vw] h-[65vw] sm:h-[45vw] max-w-[380px] max-h-[380px] bg-[#6F00FF]/10 blur-[40px] rounded-full pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 flex-grow flex flex-col lg:flex-row items-center gap-8 lg:gap-12 py-6 sm:py-10">
         {/* Left side - Text content */}
@@ -78,8 +78,8 @@ const HeroSection = () => {
           className="w-full lg:w-[50%] text-left relative z-20"
         >
           <motion.div variants={itemVariants} className="mb-5 sm:mb-6">
-            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-primary/10 border border-primary/12 shadow-sm text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.18em]">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 border border-white/15 shadow-sm text-[#9B4DFF] font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.18em]">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#9B4DFF] animate-pulse" />
               <span className="whitespace-nowrap">{t("badge")}</span>
             </div>
           </motion.div>
@@ -89,7 +89,7 @@ const HeroSection = () => {
               className="font-black tracking-tighter leading-[0.95] mb-5 sm:mb-7 relative"
             >
               <div className="relative mb-0.5">
-                <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-slate-900 block leading-[1.05]">
+                <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-white block leading-[1.05]">
                   {t("titleLine1")}
                 </span>
               </div>
@@ -99,16 +99,16 @@ const HeroSection = () => {
 
               <div className="relative">
                 <span className="text-[12vw] sm:text-5xl md:text-6xl lg:text-[5rem] text-primary leading-[1.05]">
-                  {t("titleLine2Highlight")} <span className="text-slate-900">{t("titleLine2")}</span>
+                  {t("titleLine2Highlight")} <span className="text-white">{t("titleLine2")}</span>
                 </span>
               </div>
             </motion.h1>
 
           <motion.p
             variants={itemVariants}
-            className="max-w-md text-[15px] sm:text-base lg:text-lg text-slate-600 font-medium leading-relaxed mb-6 sm:mb-8"
+            className="max-w-md text-[15px] sm:text-base lg:text-lg text-white/60 font-medium leading-relaxed mb-6 sm:mb-8"
           >
-            {t.rich("description", { bold: (chunks) => <span className="text-slate-900 font-semibold">{chunks}</span> })}
+            {t.rich("description", { bold: (chunks) => <span className="text-white font-semibold">{chunks}</span> })}
           </motion.p>
 
           <motion.div
@@ -138,7 +138,7 @@ const HeroSection = () => {
 
           <motion.div
             variants={itemVariants}
-            className="mt-8 sm:mt-10 flex items-center gap-4 sm:gap-5 border-t border-slate-100 pt-6 sm:pt-8"
+            className="mt-8 sm:mt-10 flex items-center gap-4 sm:gap-5 border-t border-white/10 pt-6 sm:pt-8"
           >
             <div className="flex -space-x-2.5">
               {[
@@ -158,9 +158,9 @@ const HeroSection = () => {
                 +6k
               </div>
             </div>
-            <div className="text-[12px] sm:text-[13px] font-medium text-slate-500 leading-snug">
+            <div className="text-[12px] sm:text-[13px] font-medium text-white/60 leading-snug">
                 {t.rich("socialProof", {
-                  bold: (chunks) => <span className="text-slate-900 font-semibold">{chunks}</span>,
+                  bold: (chunks) => <span className="text-white font-semibold">{chunks}</span>,
                   highlight: (chunks) => <span className="text-primary font-semibold">{chunks}</span>,
                 })}
               </div>
@@ -170,50 +170,50 @@ const HeroSection = () => {
         {/* Right side - Exchange Widget */}
         <div className="w-full lg:w-[50%] relative flex items-center justify-center">
           {/* Static floating badges - no continuous animations */}
-          <div className="absolute -top-8 sm:-top-6 -left-8 sm:-left-16 z-30 ios-card-elevated hidden sm:block">
+          <div className="absolute -top-8 sm:-top-6 -left-8 sm:-left-16 z-30 rounded-[24px] p-6 bg-white/8 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.3)] hidden sm:block">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-yellow-50 flex items-center justify-center text-yellow-600 border border-yellow-100">
+              <div className="w-9 h-9 rounded-xl bg-yellow-500/15 flex items-center justify-center text-yellow-400 border border-yellow-500/20">
                 <Zap className="w-4.5 h-4.5" />
               </div>
               <div>
-                <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">{t("badgeLiquidity")}</p>
-                <p className="text-base font-semibold text-slate-800 tracking-tight">{t("badgeLiquidityValue")}</p>
+                <p className="text-[8px] font-semibold text-white/40 uppercase tracking-wider mb-0.5">{t("badgeLiquidity")}</p>
+                <p className="text-base font-semibold text-white tracking-tight">{t("badgeLiquidityValue")}</p>
               </div>
             </div>
           </div>
 
-          <div className="absolute -bottom-8 sm:-bottom-6 -right-4 sm:-right-8 z-30 ios-card-elevated hidden sm:block">
+          <div className="absolute -bottom-8 sm:-bottom-6 -right-4 sm:-right-8 z-30 rounded-[24px] p-6 bg-white/8 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.3)] hidden sm:block">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/15">
+              <div className="w-9 h-9 rounded-xl bg-[#6F00FF]/15 flex items-center justify-center text-primary border border-[#6F00FF]/20">
                 <ShieldCheck className="w-4.5 h-4.5" />
               </div>
               <div>
-                <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">{t("badgeSecurity")}</p>
-                <p className="text-base font-semibold text-slate-800 tracking-tight">{t("badgeSecurityValue")}</p>
+                <p className="text-[8px] font-semibold text-white/40 uppercase tracking-wider mb-0.5">{t("badgeSecurity")}</p>
+                <p className="text-base font-semibold text-white tracking-tight">{t("badgeSecurityValue")}</p>
               </div>
             </div>
           </div>
 
-          <div className="absolute top-1/2 -translate-y-1/2 -left-12 z-30 ios-card-elevated hidden xl:block">
+          <div className="absolute top-1/2 -translate-y-1/2 -left-12 z-30 rounded-[24px] p-6 bg-white/8 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.3)] hidden xl:block">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100">
+              <div className="w-9 h-9 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
                 <Globe className="w-4.5 h-4.5" />
               </div>
               <div>
-                <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">{t("badgeCoverage")}</p>
-                <p className="text-base font-semibold text-slate-800 tracking-tight">{t("badgeCoverageValue")}</p>
+                <p className="text-[8px] font-semibold text-white/40 uppercase tracking-wider mb-0.5">{t("badgeCoverage")}</p>
+                <p className="text-base font-semibold text-white tracking-tight">{t("badgeCoverageValue")}</p>
               </div>
             </div>
           </div>
 
-          <div className="absolute top-4 -right-8 z-30 ios-card-elevated hidden xl:block">
+          <div className="absolute top-4 -right-8 z-30 rounded-[24px] p-6 bg-white/8 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.3)] hidden xl:block">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100">
+              <div className="w-9 h-9 rounded-xl bg-blue-500/15 flex items-center justify-center text-blue-400 border border-blue-500/20">
                 <Clock className="w-4.5 h-4.5" />
               </div>
               <div>
-                <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">{t("badgeTime")}</p>
-                <p className="text-base font-semibold text-slate-800 tracking-tight">{t("badgeTimeValue")}</p>
+                <p className="text-[8px] font-semibold text-white/40 uppercase tracking-wider mb-0.5">{t("badgeTime")}</p>
+                <p className="text-base font-semibold text-white tracking-tight">{t("badgeTimeValue")}</p>
               </div>
             </div>
           </div>

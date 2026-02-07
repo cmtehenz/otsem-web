@@ -44,11 +44,11 @@ const StatsGrid = () => {
 
       <div className="container mx-auto container-mobile">
         <div className="flex flex-col items-center text-center mb-8 sm:mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400 text-yellow-950 font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-5 shadow-md">
-            <div className="w-1.5 h-1.5 rounded-full bg-yellow-950 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400/20 text-yellow-400 border border-yellow-400/30 font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-5">
+            <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
             {t("badge")}
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest max-w-md leading-[1.1] text-slate-900">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest max-w-md leading-[1.1] text-white">
             {t("titleLine1")} <br />
             <span className="text-primary">{t("titleLine2")}</span>
           </h2>
@@ -60,10 +60,10 @@ const StatsGrid = () => {
               key={index}
               className="relative group"
             >
-              <div className="ios-card-premium h-full flex flex-col">
+              <div className="rounded-[20px] p-4 sm:p-5 bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-[0.4s] h-full flex flex-col">
                 <div className="space-y-3 sm:space-y-4">
                   <div
-                    className={`flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl ${stat.color} border border-slate-100/80 transition-transform duration-200 group-hover:scale-105`}
+                    className={`flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl ${stat.color} border border-white/10 transition-transform duration-200 group-hover:scale-105`}
                   >
                     <stat.icon
                       className={`h-4 w-4 sm:h-5 sm:w-5 ${stat.iconColor}`}
@@ -72,14 +72,14 @@ const StatsGrid = () => {
                   </div>
 
                   <div>
-                    <div className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 mb-1 flex items-baseline gap-1">
+                    <div className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white mb-1 flex items-baseline gap-1">
                       {stat.value}
                       {stat.value.includes("%") && (
                         <span className="text-yellow-500 text-sm sm:text-base">↑</span>
                       )}
                     </div>
 
-                    <div className="text-[9px] sm:text-[10px] text-slate-500 font-semibold uppercase tracking-wider leading-snug">
+                    <div className="text-[9px] sm:text-[10px] text-white/40 font-semibold uppercase tracking-wider leading-snug">
                       {stat.label}
                     </div>
                   </div>

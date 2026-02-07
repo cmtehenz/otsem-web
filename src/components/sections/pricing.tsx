@@ -51,13 +51,13 @@ const Pricing = () => {
     <section id="precos" className="relative z-10 section-padding">
       <div className="mx-auto max-w-5xl container-mobile">
         <div className="mb-8 sm:mb-12 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/12 text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#9B4DFF] font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
             {t("badge")}
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest text-slate-900">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest text-white">
             {t("title")}
           </h2>
-          <p className="mx-auto mt-2 max-w-md text-[13px] sm:text-[14px] text-slate-600 font-medium leading-relaxed">
+          <p className="mx-auto mt-2 max-w-md text-[13px] sm:text-[14px] text-white/60 font-medium leading-relaxed">
             {t("subtitle")}
           </p>
         </div>
@@ -66,9 +66,9 @@ const Pricing = () => {
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative ios-card-premium group ${
+              className={`relative rounded-[20px] p-4 sm:p-5 bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-[0.4s] group ${
                 plan.popular
-                  ? "ring-2 ring-primary/25 bg-primary/[0.02]"
+                  ? "ring-2 ring-[#6F00FF]/30 bg-[#6F00FF]/5"
                   : ""
               }`}
             >
@@ -83,30 +83,30 @@ const Pricing = () => {
                 <div className="mb-4">
                   <div className="flex items-center gap-2.5 mb-1.5">
                     {'icon' in plan && plan.icon ? (
-                      <div className={`flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-105 ${plan.popular ? 'bg-primary text-white shadow-md' : 'bg-primary/10 text-primary'}`}>
+                      <div className={`flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-105 ${plan.popular ? 'bg-primary text-white shadow-md' : 'bg-[#6F00FF]/15 text-[#9B4DFF]'}`}>
                         <plan.icon className="h-4 w-4" strokeWidth={1.75} />
                       </div>
                     ) : null}
-                    <h3 className="text-[14px] sm:text-base font-bold text-slate-900 tracking-tight">{plan.name}</h3>
+                    <h3 className="text-[14px] sm:text-base font-bold text-white tracking-tight">{plan.name}</h3>
                   </div>
-                  <p className="text-[11px] sm:text-[12px] text-slate-500 font-medium">{plan.description}</p>
+                  <p className="text-[11px] sm:text-[12px] text-white/60 font-medium">{plan.description}</p>
                 </div>
 
-              <div className="mb-4 p-3 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-[8px] font-semibold uppercase tracking-wider text-slate-400">{plan.priceLabel}</span>
+              <div className="mb-4 p-3 rounded-xl bg-white/5 border border-white/10">
+                <span className="text-[8px] font-semibold uppercase tracking-wider text-white/40">{plan.priceLabel}</span>
                 <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">{plan.price}</span>
-                  <span className="text-[10px] text-slate-500 font-medium">{plan.priceSuffix}</span>
+                  <span className="text-2xl sm:text-3xl font-bold tracking-tight text-white">{plan.price}</span>
+                  <span className="text-[10px] text-white/40 font-medium">{plan.priceSuffix}</span>
                 </div>
               </div>
 
               <ul className="mb-4 space-y-1.5">
                 {plan.features.map((feature, i) => (
                   <li key={i} className="flex items-center gap-2">
-                    <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100">
-                      <Check className="h-2.5 w-2.5 text-emerald-600" strokeWidth={3} />
+                    <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/20">
+                      <Check className="h-2.5 w-2.5 text-emerald-400" strokeWidth={3} />
                     </div>
-                    <span className="text-[12px] text-slate-700 font-medium">{feature}</span>
+                    <span className="text-[12px] text-white/80 font-medium">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -116,7 +116,7 @@ const Pricing = () => {
                   className={`w-full rounded-xl py-3 text-[12px] sm:text-[13px] font-semibold transition-all active:scale-[0.98] ${
                     plan.popular
                       ? "bg-primary text-white shadow-md shadow-primary/20"
-                      : "bg-slate-900 text-white"
+                      : "bg-white/10 text-white border border-white/10"
                   }`}
                 >
                   {plan.cta}

@@ -196,7 +196,10 @@ function getHttpMessage(e: unknown, fallback = "Falha no cadastro"): string {
 export default function RegisterForm(): React.JSX.Element {
     return (
         <Suspense fallback={
-            <div className="grid min-h-screen place-items-center bg-white text-sm text-slate-900/50">
+            <div
+                className="grid min-h-screen place-items-center text-sm text-white/50"
+                style={{ background: "url('/bg-gradient.png') center top / cover no-repeat", backgroundColor: "#050010" }}
+            >
                 Carregando...
             </div>
         }>
@@ -388,17 +391,17 @@ function RegisterPageInner(): React.JSX.Element {
     }
 
     return (
-        <div className="relative min-h-screen w-full overflow-hidden bg-white">
+        <div className="relative min-h-screen w-full overflow-hidden" style={{ background: "url('/bg-gradient.png') center top / cover no-repeat", backgroundColor: "#050010" }}>
             <div className="pointer-events-none absolute inset-0 -z-10">
                 <motion.div
                     animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.15, 1] }}
                     transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-primary/5 blur-[120px] rounded-full"
+                    className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-[#6F00FF]/10 blur-[120px] rounded-full"
                 />
                 <motion.div
                     animate={{ x: [0, -30, 0], y: [0, 50, 0], scale: [1, 1.1, 1] }}
                     transition={{ duration: 30, repeat: Infinity, ease: "easeInOut", delay: 5 }}
-                    className="absolute bottom-[10%] right-[-5%] w-[40vw] h-[40vw] bg-accent/5 blur-[100px] rounded-full"
+                    className="absolute bottom-[10%] right-[-5%] w-[40vw] h-[40vw] bg-[#6F00FF]/8 blur-[100px] rounded-full"
                 />
             </div>
 
@@ -407,7 +410,7 @@ function RegisterPageInner(): React.JSX.Element {
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl liquid-glass text-slate-900/70 hover:text-slate-900 font-bold text-xs sm:text-sm transition-colors"
+                        className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl fintech-glass-card text-white/70 hover:text-white font-bold text-xs sm:text-sm transition-colors"
                     >
                         <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         <span className="hidden xs:inline">Voltar</span>
@@ -419,10 +422,10 @@ function RegisterPageInner(): React.JSX.Element {
                 <div className="flex w-full max-w-6xl items-center gap-12 xl:gap-16">
                     <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:gap-6 lg:self-start lg:pt-16">
                         <div>
-                            <h1 className="text-3xl xl:text-4xl font-semibold text-slate-900 tracking-tightest leading-tight">
+                            <h1 className="text-3xl xl:text-4xl font-semibold text-white tracking-tightest leading-tight">
                                 Crie sua conta
                             </h1>
-                            <p className="mt-2 text-sm xl:text-base text-slate-500 font-medium">
+                            <p className="mt-2 text-sm xl:text-base text-white/60 font-medium">
                                 Cadastre-se para começar a operar.
                             </p>
                         </div>
@@ -439,7 +442,7 @@ function RegisterPageInner(): React.JSX.Element {
                                 desc="Aumente seus limites quando precisar"
                             />
                             <FeatureItem
-                                icon={<Globe2 className="h-4 w-4 xl:h-5 xl:w-5 text-primary" />}
+                                icon={<Globe2 className="h-4 w-4 xl:h-5 xl:w-5 text-[#9B4DFF]" />}
                                 title="Sem fronteiras"
                                 desc="Opere de qualquer lugar"
                             />
@@ -447,8 +450,8 @@ function RegisterPageInner(): React.JSX.Element {
                     </div>
 
                     <div className="w-full lg:flex-1 lg:max-w-md">
-                        <Card className="overflow-hidden rounded-3xl sm:rounded-[2.5rem] border-white/40 rich-glass">
-                            <CardHeader className="space-y-2 border-b border-black/[0.03] pb-3.5 sm:pb-4 pt-4 sm:pt-5">
+                        <Card className="overflow-hidden rounded-3xl sm:rounded-[2.5rem] border-white/10 fintech-glass-card">
+                            <CardHeader className="space-y-2 border-b border-white/[0.08] pb-3.5 sm:pb-4 pt-4 sm:pt-5">
                                 <div className="mx-auto flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center overflow-hidden">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
@@ -459,10 +462,10 @@ function RegisterPageInner(): React.JSX.Element {
                                         className="h-full w-full object-contain"
                                     />
                                 </div>
-                                <CardTitle className="text-center text-lg sm:text-xl font-semibold text-slate-900">
+                                <CardTitle className="text-center text-lg sm:text-xl font-semibold text-white">
                                     Criar conta
                                 </CardTitle>
-                                <p className="text-center text-xs text-slate-500 font-medium">
+                                <p className="text-center text-xs text-white/60 font-medium">
                                     Preencha os dados para comecar
                                 </p>
                             </CardHeader>
@@ -472,83 +475,83 @@ function RegisterPageInner(): React.JSX.Element {
 
                                     {/* Customer Type Selection */}
                                     <div className="grid gap-1.5">
-                                        <Label className="text-xs sm:text-sm font-semibold text-slate-900">
+                                        <Label className="text-xs sm:text-sm font-semibold text-white">
                                             Tipo de cadastro
                                         </Label>
                                         <div className="grid grid-cols-2 gap-2">
                                             <label className={`flex items-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl border p-3 sm:p-4 cursor-pointer transition ${
                                                 customerType === "PF"
-                                                    ? "border-primary bg-primary/5"
-                                                    : "border-black/[0.05] bg-white/60 hover:bg-white/80"
+                                                    ? "border-[#6F00FF] bg-[#6F00FF]/10"
+                                                    : "border-white/15 bg-white/10 hover:bg-white/15"
                                             }`}>
                                                 <input
                                                     type="radio"
                                                     value="PF"
-                                                    className="h-4 w-4 text-primary focus:ring-2 focus:ring-primary/20"
+                                                    className="h-4 w-4 text-[#6F00FF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                                     {...form.register("customerType")}
                                                 />
                                                 <div className="flex items-center gap-1.5 sm:gap-2">
-                                                    <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
-                                                    <span className="text-xs sm:text-sm font-bold text-slate-900 leading-tight">
+                                                    <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#9B4DFF] flex-shrink-0" />
+                                                    <span className="text-xs sm:text-sm font-bold text-white leading-tight">
                                                         Pessoa Física
                                                     </span>
                                                 </div>
                                             </label>
                                             <label className={`flex items-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl border p-3 sm:p-4 cursor-pointer transition ${
                                                 customerType === "PJ"
-                                                    ? "border-primary bg-primary/5"
-                                                    : "border-black/[0.05] bg-white/60 hover:bg-white/80"
+                                                    ? "border-[#6F00FF] bg-[#6F00FF]/10"
+                                                    : "border-white/15 bg-white/10 hover:bg-white/15"
                                             }`}>
                                                 <input
                                                     type="radio"
                                                     value="PJ"
-                                                    className="h-4 w-4 text-primary focus:ring-2 focus:ring-primary/20"
+                                                    className="h-4 w-4 text-[#6F00FF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                                     {...form.register("customerType")}
                                                 />
                                                 <div className="flex items-center gap-1.5 sm:gap-2">
-                                                    <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
-                                                    <span className="text-xs sm:text-sm font-bold text-slate-900 leading-tight">
+                                                    <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#9B4DFF] flex-shrink-0" />
+                                                    <span className="text-xs sm:text-sm font-bold text-white leading-tight">
                                                         Pessoa Jurídica
                                                     </span>
                                                 </div>
                                             </label>
                                         </div>
                                         {form.formState.errors.customerType && (
-                                            <p className="text-xs text-red-500 font-medium">{form.formState.errors.customerType.message}</p>
+                                            <p className="text-xs text-rose-400 font-medium">{form.formState.errors.customerType.message}</p>
                                         )}
                                     </div>
 
                                     {/* Full Name */}
                                     <div className="grid gap-1.5">
-                                        <Label htmlFor="name" className="text-xs sm:text-sm font-semibold text-slate-900">
+                                        <Label htmlFor="name" className="text-xs sm:text-sm font-semibold text-white">
                                             Nome completo
                                         </Label>
                                         <div className="relative">
-                                            <User className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                            <User className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                             <Input
                                                 id="name"
-                                                className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-3 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-white/15 bg-white/10 pl-9 sm:pl-10 pr-3 text-sm sm:text-base text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                                 placeholder="Seu nome completo"
                                                 {...form.register("name")}
                                             />
                                         </div>
                                         {form.formState.errors.name && (
-                                            <p className="text-xs text-red-500 font-medium">{form.formState.errors.name.message}</p>
+                                            <p className="text-xs text-rose-400 font-medium">{form.formState.errors.name.message}</p>
                                         )}
                                     </div>
 
                                     {/* CPF Field (only for PF) */}
                                     {customerType === "PF" && (
                                         <div className="grid gap-1.5 sm:gap-2">
-                                            <Label htmlFor="cpf" className="text-xs sm:text-sm font-semibold text-slate-900">
+                                            <Label htmlFor="cpf" className="text-xs sm:text-sm font-semibold text-white">
                                                 CPF
                                             </Label>
                                             <div className="relative">
-                                                <IdCard className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                                <IdCard className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                                 <Input
                                                     id="cpf"
                                                     inputMode="numeric"
-                                                    className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-3 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                    className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-white/15 bg-white/10 pl-9 sm:pl-10 pr-3 text-sm sm:text-base text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                                     placeholder="000.000.000-00"
                                                     value={cpfValue}
                                                     onChange={(e) => {
@@ -558,7 +561,7 @@ function RegisterPageInner(): React.JSX.Element {
                                                 />
                                             </div>
                                             {form.formState.errors.cpf && (
-                                                <p className="text-xs text-red-500 font-medium">{form.formState.errors.cpf.message}</p>
+                                                <p className="text-xs text-rose-400 font-medium">{form.formState.errors.cpf.message}</p>
                                             )}
                                         </div>
                                     )}
@@ -566,15 +569,15 @@ function RegisterPageInner(): React.JSX.Element {
                                     {/* CNPJ Field (only for PJ) */}
                                     {customerType === "PJ" && (
                                         <div className="grid gap-1.5 sm:gap-2">
-                                            <Label htmlFor="cnpj" className="text-xs sm:text-sm font-semibold text-slate-900">
+                                            <Label htmlFor="cnpj" className="text-xs sm:text-sm font-semibold text-white">
                                                 CNPJ
                                             </Label>
                                             <div className="relative">
-                                                <Building2 className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                                <Building2 className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                                 <Input
                                                     id="cnpj"
                                                     inputMode="numeric"
-                                                    className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-3 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                    className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-white/15 bg-white/10 pl-9 sm:pl-10 pr-3 text-sm sm:text-base text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                                     placeholder="00.000.000/0000-00"
                                                     value={cnpjValue}
                                                     onChange={(e) => {
@@ -584,118 +587,118 @@ function RegisterPageInner(): React.JSX.Element {
                                                 />
                                             </div>
                                             {form.formState.errors.cnpj && (
-                                                <p className="text-xs text-red-500 font-medium">{form.formState.errors.cnpj.message}</p>
+                                                <p className="text-xs text-rose-400 font-medium">{form.formState.errors.cnpj.message}</p>
                                             )}
                                         </div>
                                     )}
 
                                     {/* Username */}
                                     <div className="grid gap-1.5 sm:gap-2">
-                                        <Label htmlFor="username" className="text-xs sm:text-sm font-semibold text-slate-900">
+                                        <Label htmlFor="username" className="text-xs sm:text-sm font-semibold text-white">
                                             Nome de usuário
                                         </Label>
                                         <div className="relative">
-                                            <AtSign className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                            <AtSign className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                             <Input
                                                 id="username"
-                                                className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-10 sm:pr-11 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20 lowercase"
+                                                className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-white/15 bg-white/10 pl-9 sm:pl-10 pr-10 sm:pr-11 text-sm sm:text-base text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20 lowercase"
                                                 placeholder="seunome"
                                                 autoComplete="username"
                                                 {...form.register("username")}
                                             />
                                             <div className="absolute right-3 top-1/2 -translate-y-1/2">
                                                 {validatingUsername ? (
-                                                    <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
+                                                    <Loader2 className="h-4 w-4 animate-spin text-white/40" />
                                                 ) : usernameAvailable === true ? (
                                                     <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                                                 ) : usernameAvailable === false ? (
-                                                    <span className="text-xs text-red-500 font-medium">Em uso</span>
+                                                    <span className="text-xs text-rose-400 font-medium">Em uso</span>
                                                 ) : null}
                                             </div>
                                         </div>
                                         {form.formState.errors.username && (
-                                            <p className="text-xs text-red-500 font-medium">{form.formState.errors.username.message}</p>
+                                            <p className="text-xs text-rose-400 font-medium">{form.formState.errors.username.message}</p>
                                         )}
-                                        <p className="text-[10px] sm:text-xs text-slate-400">3-30 caracteres: letras, números e underline</p>
+                                        <p className="text-[10px] sm:text-xs text-white/40">3-30 caracteres: letras, números e underline</p>
                                     </div>
 
                                     {/* Email */}
                                     <div className="grid gap-1.5 sm:gap-2">
-                                        <Label htmlFor="email" className="text-xs sm:text-sm font-semibold text-slate-900">
+                                        <Label htmlFor="email" className="text-xs sm:text-sm font-semibold text-white">
                                             E-mail
                                         </Label>
                                         <div className="relative">
-                                            <Mail className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                            <Mail className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                             <Input
                                                 id="email"
                                                 type="email"
                                                 inputMode="email"
                                                 autoComplete="email"
-                                                className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-3 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-white/15 bg-white/10 pl-9 sm:pl-10 pr-3 text-sm sm:text-base text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                                 placeholder="voce@exemplo.com"
                                                 {...form.register("email")}
                                             />
                                         </div>
                                         {form.formState.errors.email && (
-                                            <p className="text-xs text-red-500 font-medium">{form.formState.errors.email.message}</p>
+                                            <p className="text-xs text-rose-400 font-medium">{form.formState.errors.email.message}</p>
                                         )}
                                     </div>
 
                                     {/* Password Fields - 2 columns on desktop */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         <div className="grid gap-1.5">
-                                            <Label htmlFor="password" className="text-xs sm:text-sm font-semibold text-slate-900">
+                                            <Label htmlFor="password" className="text-xs sm:text-sm font-semibold text-white">
                                                 Senha
                                             </Label>
                                             <div className="relative">
-                                                <Lock className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                                <Lock className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                                 <Input
                                                     id="password"
                                                     type={showPw ? "text" : "password"}
                                                     autoComplete="new-password"
-                                                    className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-10 sm:pr-11 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                    className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-white/15 bg-white/10 pl-9 sm:pl-10 pr-10 sm:pr-11 text-sm sm:text-base text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                                     placeholder="Minimo 8 caracteres"
                                                     {...form.register("password")}
                                                 />
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowPw((v) => !v)}
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-900 p-1 touch-manipulation"
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white p-1 touch-manipulation"
                                                     aria-label={showPw ? "Ocultar senha" : "Mostrar senha"}
                                                 >
                                                     {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                                 </button>
                                             </div>
                                             {form.formState.errors.password && (
-                                                <p className="text-xs text-red-500 font-medium">{form.formState.errors.password.message}</p>
+                                                <p className="text-xs text-rose-400 font-medium">{form.formState.errors.password.message}</p>
                                             )}
                                         </div>
 
                                         <div className="grid gap-1.5">
-                                            <Label htmlFor="confirm" className="text-xs sm:text-sm font-semibold text-slate-900">
+                                            <Label htmlFor="confirm" className="text-xs sm:text-sm font-semibold text-white">
                                                 Confirmar senha
                                             </Label>
                                             <div className="relative">
-                                                <Lock className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                                <Lock className="pointer-events-none absolute left-3 sm:left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                                                 <Input
                                                     id="confirm"
                                                     type={showConfirm ? "text" : "password"}
                                                     autoComplete="new-password"
-                                                    className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/60 pl-9 sm:pl-10 pr-10 sm:pr-11 text-sm sm:text-base text-slate-900 placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                    className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-white/15 bg-white/10 pl-9 sm:pl-10 pr-10 sm:pr-11 text-sm sm:text-base text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                                     placeholder="Repita a senha"
                                                     {...form.register("confirm")}
                                                 />
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowConfirm((v) => !v)}
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-900 p-1 touch-manipulation"
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white p-1 touch-manipulation"
                                                     aria-label={showConfirm ? "Ocultar confirmação" : "Mostrar confirmação"}
                                                 >
                                                     {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                                 </button>
                                             </div>
                                             {form.formState.errors.confirm && (
-                                                <p className="text-xs text-red-500 font-medium">{form.formState.errors.confirm.message}</p>
+                                                <p className="text-xs text-rose-400 font-medium">{form.formState.errors.confirm.message}</p>
                                             )}
                                         </div>
                                     </div>
@@ -713,12 +716,12 @@ function RegisterPageInner(): React.JSX.Element {
                                                                 : score === 2
                                                                     ? "bg-yellow-500"
                                                                     : "bg-emerald-500"
-                                                            : "bg-black/[0.05]"
+                                                            : "bg-white/10"
                                                             }`}
                                                     />
                                                 ))}
                                             </div>
-                                            <p className="mt-1 text-[10px] sm:text-xs text-slate-500">
+                                            <p className="mt-1 text-[10px] sm:text-xs text-white/60">
                                                 Forca:{" "}
                                                 <span
                                                     className={`font-bold ${score <= 1 ? "text-red-500" : score === 2 ? "text-yellow-500" : "text-emerald-500"}`}
@@ -729,13 +732,13 @@ function RegisterPageInner(): React.JSX.Element {
                                         </div>
                                     )}
 
-                                    <label className="flex items-start gap-2.5 sm:gap-3 rounded-xl sm:rounded-2xl border border-black/[0.05] bg-white/60 p-2.5 sm:p-3 text-xs sm:text-sm transition hover:bg-white/80 cursor-pointer">
+                                    <label className="flex items-start gap-2.5 sm:gap-3 rounded-xl sm:rounded-2xl border border-white/15 bg-white/10 p-2.5 sm:p-3 text-xs sm:text-sm transition hover:bg-white/15 cursor-pointer">
                                         <input
                                             type="checkbox"
-                                            className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-black/10 bg-white/60 text-primary focus:ring-2 focus:ring-primary/20 cursor-pointer"
+                                            className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-white/20 bg-white/10 text-[#6F00FF] focus:ring-2 focus:ring-[#8B2FFF]/20 cursor-pointer"
                                             {...form.register("accept")}
                                         />
-                                        <span className="text-slate-500 font-medium leading-relaxed">
+                                        <span className="text-white/60 font-medium leading-relaxed">
                                             Aceito os{" "}
                                             <a
                                                 className="font-bold text-primary hover:underline"
@@ -757,38 +760,38 @@ function RegisterPageInner(): React.JSX.Element {
                                         </span>
                                     </label>
                                     {form.formState.errors.accept && (
-                                        <p className="text-xs text-red-500 font-medium">{form.formState.errors.accept.message}</p>
+                                        <p className="text-xs text-rose-400 font-medium">{form.formState.errors.accept.message}</p>
                                     )}
 
                                     {!showAffiliateField ? (
                                         <button
                                             type="button"
                                             onClick={() => setShowAffiliateField(true)}
-                                            className="flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl border border-dashed border-black/10 p-2.5 sm:p-3 text-xs sm:text-sm text-slate-500 transition hover:border-primary/50 hover:text-primary font-medium touch-manipulation"
+                                            className="flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl border border-dashed border-white/15 p-2.5 sm:p-3 text-xs sm:text-sm text-white/60 transition hover:border-[#6F00FF]/50 hover:text-[#9B4DFF] font-medium touch-manipulation"
                                         >
                                             <Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                             Tenho um codigo de indicacao
                                         </button>
                                     ) : (
-                                        <div className="grid gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl border border-primary/30 bg-primary/5 p-2.5 sm:p-3">
-                                            <Label htmlFor="affiliateCode" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold text-slate-900">
+                                        <div className="grid gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl border border-[#6F00FF]/30 bg-[#6F00FF]/10 p-2.5 sm:p-3">
+                                            <Label htmlFor="affiliateCode" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold text-white">
                                                 <Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                                                 Codigo de indicacao
                                             </Label>
                                             <div className="relative">
                                                 <Input
                                                     id="affiliateCode"
-                                                    className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-black/[0.05] bg-white/80 pr-10 sm:pr-11 text-sm sm:text-base text-slate-900 uppercase placeholder:text-slate-500 transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                                    className="h-11 sm:h-12 rounded-xl sm:rounded-2xl border-white/15 bg-white/10 pr-10 sm:pr-11 text-sm sm:text-base text-white uppercase placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                                     placeholder="Ex: PARCEIRO123"
                                                     {...form.register("affiliateCode")}
                                                 />
                                                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
                                                     {validatingCode ? (
-                                                        <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
+                                                        <Loader2 className="h-4 w-4 animate-spin text-white/40" />
                                                     ) : codeValid === true ? (
                                                         <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                                                     ) : codeValid === false ? (
-                                                        <span className="text-xs text-red-500 font-medium">Invalido</span>
+                                                        <span className="text-xs text-rose-400 font-medium">Invalido</span>
                                                     ) : null}
                                                 </div>
                                             </div>
@@ -807,13 +810,13 @@ function RegisterPageInner(): React.JSX.Element {
                                         {!loading && <ArrowRight className="ml-1.5 sm:ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                                     </motion.button>
 
-                                    <Separator className="my-1.5 sm:my-2 bg-black/[0.03]" />
+                                    <Separator className="my-1.5 sm:my-2 bg-white/[0.08]" />
 
-                                    <p className="text-center text-xs sm:text-sm text-slate-500 font-medium">
+                                    <p className="text-center text-xs sm:text-sm text-white/60 font-medium">
                                         Ja tem uma conta?{" "}
                                         <Link
                                             href="/login"
-                                            className="font-bold text-primary transition hover:text-primary/80 touch-manipulation"
+                                            className="font-bold text-[#9B4DFF] transition hover:text-white touch-manipulation"
                                         >
                                             Entrar
                                         </Link>
@@ -822,13 +825,13 @@ function RegisterPageInner(): React.JSX.Element {
                             </CardContent>
                         </Card>
 
-                        <div className="mt-4 sm:mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-[10px] sm:text-xs text-slate-500 font-medium">
+                        <div className="mt-4 sm:mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-[10px] sm:text-xs text-white/50 font-medium">
                             <div className="flex items-center gap-1 sm:gap-1.5">
-                                <Shield className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-emerald-500 flex-shrink-0" />
+                                <Shield className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-emerald-400 flex-shrink-0" />
                                 <span>Conexao segura</span>
                             </div>
                             <div className="flex items-center gap-1 sm:gap-1.5">
-                                <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary flex-shrink-0" />
+                                <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#9B4DFF] flex-shrink-0" />
                                 <span>Registro verificado</span>
                             </div>
                         </div>
@@ -842,12 +845,12 @@ function RegisterPageInner(): React.JSX.Element {
 function FeatureItem({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
     return (
         <div className="flex items-start gap-2.5">
-            <div className="flex h-8 w-8 xl:h-9 xl:w-9 shrink-0 items-center justify-center rounded-xl xl:rounded-2xl bg-white/60 border border-black/[0.05] shadow-sm">
+            <div className="flex h-8 w-8 xl:h-9 xl:w-9 shrink-0 items-center justify-center rounded-xl xl:rounded-2xl bg-white/10 border border-white/15">
                 {icon}
             </div>
             <div>
-                <h3 className="text-xs xl:text-sm font-semibold text-slate-900">{title}</h3>
-                <p className="text-xs xl:text-sm text-slate-500 font-medium leading-snug">{desc}</p>
+                <h3 className="text-xs xl:text-sm font-semibold text-white">{title}</h3>
+                <p className="text-xs xl:text-sm text-white/60 font-medium leading-snug">{desc}</p>
             </div>
         </div>
     );
