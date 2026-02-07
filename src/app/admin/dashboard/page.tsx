@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Loader2, RefreshCw, LayoutDashboard } from "lucide-react";
+import { motion } from "framer-motion";
 import http from "@/lib/http";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -68,6 +69,15 @@ export type DashboardData = {
     timestamp: string;
 };
 
+const fadeIn = {
+    hidden: { opacity: 0, y: 12 },
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: { type: "spring", stiffness: 380, damping: 30, mass: 0.8 },
+    },
+};
+
 export default function AdminDashboardPage(): React.JSX.Element {
     const [loading, setLoading] = React.useState(true);
     const [refreshing, setRefreshing] = React.useState(false);
@@ -95,52 +105,75 @@ export default function AdminDashboardPage(): React.JSX.Element {
 
     if (loading) {
         return (
-            <div className="flex h-96 flex-col items-center justify-center">
-                <Loader2 className="mb-4 h-8 w-8 animate-spin text-red-500" />
-                <p className="text-sm text-muted-foreground">Carregando dashboard...</p>
+            <div className="flex h-[60dvh] flex-col items-center justify-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted">
+                    <Loader2 className="h-6 w-6 animate-spin text-[#6F00FF]" />
+                </div>
+                <p className="text-sm font-medium text-muted-foreground">Carregando dashboard...</p>
             </div>
         );
     }
 
     return (
-        <div className="space-y-4 sm:space-y-6">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div className="min-w-0">
-                    <h1 className="text-xl font-bold tracking-tight sm:text-2xl">Dashboard</h1>
-                    {data?.timestamp && (
-                        <p className="text-xs text-muted-foreground sm:text-sm">
-                            Atualizado em {new Date(data.timestamp).toLocaleString("pt-BR")}
-                        </p>
-                    )}
+        <motion.div
+            className="space-y-5 sm:space-y-6 pb-8"
+            initial="hidden"
+            animate="show"
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+        >
+            <motion.div
+                variants={fadeIn}
+                className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+            >
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className="hidden sm:flex h-10 w-10 items-center justify-center rounded-xl bg-[#6F00FF]/10">
+                        <LayoutDashboard className="h-5 w-5 text-[#6F00FF]" />
+                    </div>
+                    <div>
+                        <h1 className="text-xl font-bold tracking-tight sm:text-2xl">Dashboard</h1>
+                        {data?.timestamp && (
+                            <p className="text-xs text-muted-foreground">
+                                Atualizado em {new Date(data.timestamp).toLocaleString("pt-BR")}
+                            </p>
+                        )}
+                    </div>
                 </div>
                 <Button
                     variant="outline"
                     size="sm"
                     onClick={() => loadData(true)}
                     disabled={refreshing}
-                    className="gap-2 self-end sm:self-auto"
+                    className="gap-2 self-end sm:self-auto rounded-xl"
                 >
                     <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
                     Atualizar
                 </Button>
-            </div>
+            </motion.div>
 
-            <BalanceCards balances={data?.balances ?? null} />
+            <motion.div variants={fadeIn}>
+                <BalanceCards balances={data?.balances ?? null} />
+            </motion.div>
 
-            <KPICards kpis={data?.kpis ?? null} />
+            <motion.div variants={fadeIn}>
+                <KPICards kpis={data?.kpis ?? null} />
+            </motion.div>
 
-            <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
+            <motion.div variants={fadeIn} className="grid gap-5 lg:grid-cols-3">
                 <div className="lg:col-span-2">
                     <ChartsSection charts={data?.charts ?? null} />
                 </div>
                 <div>
                     <AlertsSection alerts={data?.alerts ?? []} />
                 </div>
-            </div>
+            </motion.div>
 
-            <RecentTransactions transactions={data?.recentTransactions ?? []} />
+            <motion.div variants={fadeIn}>
+                <RecentTransactions transactions={data?.recentTransactions ?? []} />
+            </motion.div>
 
-            <QuickActions />
-        </div>
+            <motion.div variants={fadeIn}>
+                <QuickActions />
+            </motion.div>
+        </motion.div>
     );
 }

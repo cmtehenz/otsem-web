@@ -106,8 +106,9 @@ function HeaderLogout() {
             onClick={logout}
             title={t("logoutAccount")}
             aria-label={t("logoutAccount")}
+            className="rounded-xl hover:bg-red-50 hover:text-red-600 transition-colors"
         >
-            <LogOut className="h-5 w-5" />
+            <LogOut className="h-4.5 w-4.5" />
         </Button>
     );
 }
@@ -117,37 +118,35 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <Protected>
             <RoleGuard roles={["ADMIN"]} redirectTo="/customer/dashboard">
                 <SidebarProvider
-                        style={{ "--sidebar-width": "19rem" } as React.CSSProperties}
-                    >
-                        <AppSidebar />
+                    style={{ "--sidebar-width": "17rem" } as React.CSSProperties}
+                >
+                    <AppSidebar />
 
-                        <SidebarInset>
-                            <header className="flex h-14 shrink-0 items-center gap-1.5 px-3 sm:h-16 sm:gap-2 sm:px-4">
-                                <SidebarTrigger className="-ml-1" />
-                                <Separator orientation="vertical" className="mr-2 hidden sm:block data-[orientation=vertical]:h-4" />
-                                <div className="sm:hidden min-w-0">
-                                    <MobileBreadcrumb />
-                                </div>
-                                <div className="hidden sm:block min-w-0 flex-1">
-                                    <AutoBreadcrumb />
-                                </div>
+                    <SidebarInset>
+                        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-1.5 border-b border-border/40 bg-background/80 backdrop-blur-lg px-3 sm:h-14 sm:gap-2 sm:px-4">
+                            <SidebarTrigger className="-ml-1 rounded-xl" />
+                            <Separator orientation="vertical" className="mr-1 hidden sm:block data-[orientation=vertical]:h-4" />
+                            <div className="sm:hidden min-w-0">
+                                <MobileBreadcrumb />
+                            </div>
+                            <div className="hidden sm:block min-w-0 flex-1">
+                                <AutoBreadcrumb />
+                            </div>
 
-                                {/* Chip do usuário + Logout */}
-                                <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
-                                    <div className="hidden md:block">
-                                        <LanguageSwitcher />
-                                    </div>
-                                    <HeaderUserChip />
-                                    <Separator orientation="vertical" className="h-6 hidden sm:block" />
-                                    <HeaderLogout />
+                            <div className="ml-auto flex items-center gap-1 sm:gap-1.5">
+                                <div className="hidden md:block">
+                                    <LanguageSwitcher />
                                 </div>
-                            </header>
+                                <HeaderUserChip />
+                                <HeaderLogout />
+                            </div>
+                        </header>
 
-                            <main className="flex flex-1 flex-col gap-3 p-3 pt-0 sm:gap-4 sm:p-4 sm:pt-0">
-                                {children}
-                            </main>
-                        </SidebarInset>
-                    </SidebarProvider>
+                        <main className="flex flex-1 flex-col p-3 sm:p-4 lg:p-6">
+                            {children}
+                        </main>
+                    </SidebarInset>
+                </SidebarProvider>
             </RoleGuard>
         </Protected>
     );
