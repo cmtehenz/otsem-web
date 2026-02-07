@@ -447,7 +447,7 @@ export function ReceiptSheet({ transactionId, open, onOpenChange }: Props) {
                             <button
                                 onClick={handleDownload}
                                 disabled={exporting}
-                                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#6F00FF] text-white font-semibold text-[14px] active:bg-[#5800CC] transition-colors disabled:opacity-50"
+                                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#6F00FF] text-white font-semibold text-[14px] active:bg-[#E8A000] transition-colors disabled:opacity-50"
                             >
                                 {exporting ? (
                                     <Loader2 className="w-4 h-4 animate-spin" />

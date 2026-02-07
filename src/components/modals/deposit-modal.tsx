@@ -296,7 +296,7 @@ export function DepositModal() {
                                     value={inputValue}
                                     onChange={handleInputChange}
                                     placeholder="0,00"
-                                    className="w-full pl-12 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full pl-12 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
                                     autoFocus={false}
                                 />
                             </div>
@@ -343,7 +343,7 @@ export function DepositModal() {
                             <p className="text-muted-foreground text-sm text-center mb-4">{error}</p>
                             <button
                                 onClick={handleBack}
-                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-[#6F00FF]/30 bg-[#6F00FF]/10 text-[#6F00FF] dark:text-[#A78BFA] hover:bg-[#FFB300]/20 hover:border-[#6F00FF]/50 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-[#FFB300]/30 bg-[#FFB300]/10 text-[#6F00FF] dark:text-[#A78BFA] hover:bg-[#FFB300]/20 hover:border-[#FFB300]/50 transition-colors"
                             >
                                 <ArrowLeft className="w-4 h-4" />
                                 Tentar novamente
@@ -482,7 +482,7 @@ export function DepositModal() {
                                 </div>
                             </div>
 
-                            <div className="bg-[#6F00FF]/10 border border-[#6F00FF]/30 rounded-xl p-4">
+                            <div className="bg-[#FFB300]/10 border border-[#FFB300]/30 rounded-xl p-4">
                                 <p className="text-[#6F00FF] dark:text-[#A78BFA] text-sm text-center">
                                     Você pode fechar esta janela. Seu saldo será atualizado automaticamente.
                                 </p>

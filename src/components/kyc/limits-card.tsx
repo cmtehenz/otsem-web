@@ -115,11 +115,11 @@ export function LimitsCard({ compact = false, showUpgradeLink = true }: LimitsCa
         </div>
 
         {isUnlimited ? (
-          <p className="text-lg font-black text-emerald-600">Ilimitado</p>
+          <p className="text-lg font-semibold text-emerald-600">Ilimitado</p>
         ) : (
           <>
             <div className="flex items-baseline gap-1 mb-2">
-              <span className="text-lg font-black text-foreground">
+              <span className="text-lg font-semibold text-foreground">
                 {formatCurrency(usedThisMonth)}
               </span>
               <span className="text-sm text-muted-foreground">
@@ -173,7 +173,7 @@ export function LimitsCard({ compact = false, showUpgradeLink = true }: LimitsCa
 
       {isUnlimited ? (
         <div className="text-center py-4">
-          <p className="text-2xl font-black text-emerald-600">Ilimitado</p>
+          <p className="text-2xl font-semibold text-emerald-600">Ilimitado</p>
           <p className="text-sm text-muted-foreground mt-1">
             Você tem acesso total à plataforma
           </p>
@@ -184,7 +184,7 @@ export function LimitsCard({ compact = false, showUpgradeLink = true }: LimitsCa
             <div className="flex items-end justify-between mb-2">
               <div>
                 <p className="text-sm text-muted-foreground">Utilizado</p>
-                <p className="text-2xl font-black text-foreground">
+                <p className="text-2xl font-semibold text-foreground">
                   {formatFullCurrency(usedThisMonth)}
                 </p>
               </div>

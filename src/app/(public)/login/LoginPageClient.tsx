@@ -50,7 +50,7 @@ function safeNext(nextParam: string | null | undefined, fallback = '/customer/da
 export default function LoginPageClient(): React.JSX.Element {
     return (
         <Suspense fallback={
-            <div className="fixed inset-0 grid place-items-center overflow-hidden fintech-bg-container text-sm text-white/50" style={{ overscrollBehavior: 'none' }}>
+            <div className="fixed inset-0 grid place-items-center overflow-hidden text-sm text-white/50" style={{ overscrollBehavior: 'none', background: 'linear-gradient(180deg, #0a1352 0%, #0d1a5a 25%, #091040 50%, #060a28 75%, #030614 100%)' }}>
                 ...
             </div>
         }>
@@ -157,7 +157,7 @@ function LoginPageInner(): React.JSX.Element {
     // Show 2FA verification if required
     if (requires2FA) {
         return (
-            <div className="fixed inset-0 overflow-hidden fintech-bg-container" style={{ overscrollBehavior: 'none', touchAction: 'pan-x' }}>
+            <div className="fixed inset-0 overflow-hidden" style={{ overscrollBehavior: 'none', touchAction: 'pan-x', background: 'linear-gradient(180deg, #0a1352 0%, #0d1a5a 25%, #091040 50%, #060a28 75%, #030614 100%)' }}>
                 {!isPwa && (
                     <div className="fixed top-6 left-6 z-50">
                         <motion.button
@@ -184,7 +184,7 @@ function LoginPageInner(): React.JSX.Element {
     }
 
     return (
-        <div className="fixed inset-0 overflow-hidden fintech-bg-container" style={{ overscrollBehavior: 'none', touchAction: 'pan-x' }}>
+        <div className="fixed inset-0 overflow-hidden" style={{ overscrollBehavior: 'none', touchAction: 'pan-x', background: 'linear-gradient(180deg, #0a1352 0%, #0d1a5a 25%, #091040 50%, #060a28 75%, #030614 100%)' }}>
             {!isPwa && (
                 <div className="fixed top-6 left-6 z-50">
                     <Link href="/">
@@ -210,11 +210,11 @@ function LoginPageInner(): React.JSX.Element {
                 <div className="flex w-full max-w-6xl items-center gap-16">
                     <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:gap-8">
                         <div>
-                            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-4 py-1.5 text-sm font-black text-white">
+                            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-4 py-1.5 text-sm font-semibold text-white">
                                 <Sparkles className="h-4 w-4" />
                                 {t('auth.welcomeBack')}
                             </div>
-                            <h1 className="text-4xl font-black text-white xl:text-5xl tracking-tightest">
+                            <h1 className="text-4xl font-semibold text-white xl:text-5xl tracking-tightest">
                                 {t('auth.accessYourAccount')}
                                 <br />
                                 <span className="text-[#9B4DFF]">
@@ -258,7 +258,7 @@ function LoginPageInner(): React.JSX.Element {
                                         className="h-full w-full object-contain"
                                     />
                                 </div>
-                                <h2 className="text-center text-2xl font-black text-white">
+                                <h2 className="text-center text-2xl font-semibold text-white">
                                     {t('auth.loginTitle')}
                                 </h2>
                                 <p className="text-center text-sm text-white font-medium">
@@ -269,7 +269,7 @@ function LoginPageInner(): React.JSX.Element {
                             <div className="p-6 sm:p-8">
                                 <form onSubmit={handleSubmit(onSubmit)} className="grid gap-5" noValidate>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="email" className="text-sm font-black text-white">
+                                        <Label htmlFor="email" className="text-sm font-semibold text-white">
                                             {t('common.email')}
                                         </Label>
                                         <div className="relative">
@@ -291,7 +291,7 @@ function LoginPageInner(): React.JSX.Element {
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="password" className="text-sm font-black text-white">
+                                        <Label htmlFor="password" className="text-sm font-semibold text-white">
                                             {t('common.password')}
                                         </Label>
                                         <div className="relative">
@@ -388,7 +388,7 @@ function FeatureItem({ icon, title, desc }: { icon: React.ReactNode; title: stri
                 {icon}
             </div>
             <div>
-                <h3 className="text-sm font-black text-white">{title}</h3>
+                <h3 className="text-sm font-semibold text-white">{title}</h3>
                 <p className="text-sm text-white/60 font-medium">{desc}</p>
             </div>
         </div>

@@ -34,7 +34,7 @@ export default function ResetPage(): React.JSX.Element {
     return (
         <Suspense
             fallback={
-                <div className="min-h-dvh fintech-bg-container grid place-items-center text-sm text-white/50">
+                <div className="min-h-dvh grid place-items-center text-sm text-white/50" style={{ background: 'linear-gradient(180deg, #0a1352 0%, #0d1a5a 25%, #091040 50%, #060a28 75%, #030614 100%)' }}>
                     Carregando...
                 </div>
             }
@@ -60,9 +60,9 @@ function ResetInner(): React.JSX.Element {
 
     if (!token) {
         return (
-            <div className="min-h-dvh fintech-bg-container grid place-items-center px-4">
+            <div className="min-h-dvh grid place-items-center px-4" style={{ background: 'linear-gradient(180deg, #0a1352 0%, #0d1a5a 25%, #091040 50%, #060a28 75%, #030614 100%)' }}>
                 <div className="fintech-glass-card rounded-[2rem] p-8 max-w-sm w-full text-center space-y-4">
-                    <h2 className="text-lg font-black text-white">Link inválido</h2>
+                    <h2 className="text-lg font-semibold text-white">Link inválido</h2>
                     <p className="text-sm text-white/60">
                         O link de redefinição é inválido ou já expirou.
                     </p>
@@ -103,7 +103,7 @@ function ResetInner(): React.JSX.Element {
     }
 
     return (
-        <div className="min-h-dvh fintech-bg-container">
+        <div className="min-h-dvh" style={{ background: 'linear-gradient(180deg, #0a1352 0%, #0d1a5a 25%, #091040 50%, #060a28 75%, #030614 100%)' }}>
             <div className="mx-auto flex min-h-dvh max-w-5xl items-center justify-center px-4">
                 <div className="w-full max-w-md">
                     <div className="fintech-glass-card rounded-[2rem] overflow-hidden">
@@ -117,7 +117,7 @@ function ResetInner(): React.JSX.Element {
                                 >
                                     <ArrowLeft className="h-4 w-4" />
                                 </motion.button>
-                                <h1 className="text-xl font-black text-white">Nova senha</h1>
+                                <h1 className="text-xl font-semibold text-white">Nova senha</h1>
                             </div>
                             <p className="px-2 text-sm text-white/60">
                                 Escolha uma nova senha para sua conta.

@@ -582,7 +582,7 @@ export default function ProTradingPage() {
     };
 
     return (
-        <motion.div variants={stagger} initial="hidden" animate="show" className="pb-28">
+        <motion.div variants={stagger} initial="hidden" animate="show" className="pro-trading pb-28">
             <motion.div variants={fadeUp} className="flex items-center justify-between mt-2">
                 <div className="flex items-center gap-3">
                     <Link
