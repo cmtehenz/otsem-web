@@ -336,8 +336,8 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                                     key={wallet.id}
                                                     onClick={() => setSelectedWalletId(wallet.id)}
                                                     className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${selectedWalletId === wallet.id
-                                                        ? "border-[#6F00FF]/50 bg-[#FFB300]/20"
-                                                        : "border-border bg-muted hover:border-[#6F00FF]/30"
+                                                        ? "border-[#FFB300]/50 bg-[#FFB300]/20"
+                                                        : "border-border bg-muted hover:border-[#FFB300]/30"
                                                         }`}
                                                 >
                                                     <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
@@ -379,7 +379,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                className="border-[#6F00FF]/30 text-[#6F00FF] dark:text-[#6F00FF] hover:bg-[#6F00FF]/10"
+                                                className="border-[#FFB300]/30 text-[#6F00FF] dark:text-[#6F00FF] hover:bg-[#FFB300]/10"
                                             >
                                                 Cadastrar Carteira
                                             </Button>
@@ -436,11 +436,11 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                     placeholder="0,00"
-                                    className="w-full pl-12 pr-16 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full pl-12 pr-16 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
                                 />
                                 <button
                                     onClick={handleMax}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 text-xs font-medium text-[#6F00FF] dark:text-[#6F00FF] hover:text-[#6F00FF] bg-[#6F00FF]/10 rounded"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 text-xs font-medium text-[#6F00FF] dark:text-[#6F00FF] hover:text-[#6F00FF] bg-[#FFB300]/10 rounded"
                                 >
                                     MAX
                                 </button>
@@ -646,7 +646,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                 </div>
                             </div>
 
-                            <div className="bg-[#6F00FF]/10 border border-[#6F00FF]/30 rounded-xl p-4">
+                            <div className="bg-[#FFB300]/10 border border-[#FFB300]/30 rounded-xl p-4">
                                 <p className="text-[#6F00FF] dark:text-[#6F00FF] text-sm text-center">
                                     Este processo leva aproximadamente 2-5 minutos. Você pode fechar esta janela.
                                 </p>

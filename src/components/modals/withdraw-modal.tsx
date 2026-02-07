@@ -241,7 +241,7 @@ export function WithdrawModal() {
                         <div className="w-full space-y-3">
                             <button
                                 onClick={handleChoosePix}
-                                className="w-full bg-muted border border-border rounded-xl p-4 hover:border-[#6F00FF]/50 hover:bg-[#6F00FF]/10 transition text-left"
+                                className="w-full bg-muted border border-border rounded-xl p-4 hover:border-[#FFB300]/50 hover:bg-[#FFB300]/10 transition text-left"
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
@@ -257,7 +257,7 @@ export function WithdrawModal() {
 
                             <button
                                 onClick={handleChooseUsername}
-                                className="w-full bg-muted border border-border rounded-xl p-4 hover:border-[#6F00FF]/50 hover:bg-[#6F00FF]/10 transition text-left"
+                                className="w-full bg-muted border border-border rounded-xl p-4 hover:border-[#FFB300]/50 hover:bg-[#FFB300]/10 transition text-left"
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
@@ -309,7 +309,7 @@ export function WithdrawModal() {
                                 <button
                                     key={key.id}
                                     onClick={() => handleSelectKey(key)}
-                                    className="w-full bg-muted border border-border rounded-xl p-4 hover:border-[#6F00FF]/50 hover:bg-[#6F00FF]/10 transition text-left"
+                                    className="w-full bg-muted border border-border rounded-xl p-4 hover:border-[#FFB300]/50 hover:bg-[#FFB300]/10 transition text-left"
                                 >
                                     <div className="flex items-center justify-between">
                                         <div>
@@ -336,7 +336,7 @@ export function WithdrawModal() {
 
                             <button
                                 onClick={handleGoToPixPage}
-                                className="w-full border border-dashed border-border rounded-xl p-4 hover:border-[#6F00FF]/50 hover:bg-[#6F00FF]/5 transition flex items-center justify-center gap-2 text-muted-foreground hover:text-[#6F00FF] dark:hover:text-[#A78BFA]"
+                                className="w-full border border-dashed border-border rounded-xl p-4 hover:border-[#FFB300]/50 hover:bg-[#6F00FF]/5 transition flex items-center justify-center gap-2 text-muted-foreground hover:text-[#6F00FF] dark:hover:text-[#A78BFA]"
                             >
                                 <Plus className="w-4 h-4" />
                                 <span className="text-sm">Cadastrar nova chave</span>
@@ -378,7 +378,7 @@ export function WithdrawModal() {
                                     value={formatDisplayValue(cents)}
                                     onChange={handleInputChange}
                                     placeholder="0,00"
-                                    className="w-full pl-12 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full pl-12 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
                                     autoFocus
                                 />
                             </div>

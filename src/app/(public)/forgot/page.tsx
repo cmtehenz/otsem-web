@@ -104,7 +104,7 @@ export default function ForgotPage(): React.JSX.Element {
     }
 
     return (
-        <div className="min-h-dvh fintech-bg-container">
+        <div className="min-h-dvh" style={{ background: 'linear-gradient(180deg, #0a1352 0%, #0d1a5a 25%, #091040 50%, #060a28 75%, #030614 100%)' }}>
             <div className="mx-auto flex min-h-dvh max-w-5xl items-center justify-center px-4">
                 <div className="w-full max-w-md">
                     <div className="fintech-glass-card rounded-[2rem] overflow-hidden">
@@ -118,7 +118,7 @@ export default function ForgotPage(): React.JSX.Element {
                                 >
                                     <ArrowLeft className="h-4 w-4" />
                                 </motion.button>
-                                <h1 className="text-xl font-black text-white">Recuperar senha</h1>
+                                <h1 className="text-xl font-semibold text-white">Recuperar senha</h1>
                             </div>
                             <p className="px-2 text-sm text-white/60">
                                 Digite seu e-mail para receber o link de redefinição.

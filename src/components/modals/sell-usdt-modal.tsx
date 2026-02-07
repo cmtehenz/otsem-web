@@ -274,7 +274,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                         className={`flex-1 py-3 px-4 rounded-xl border transition font-medium ${
                                             network === "SOLANA"
                                                 ? "border-[#6F00FF] bg-[#FFB300]/20 text-[#6F00FF] dark:text-[#8B2FFF]"
-                                                : "border-border bg-muted text-muted-foreground hover:border-[#6F00FF]/30"
+                                                : "border-border bg-muted text-muted-foreground hover:border-[#FFB300]/30"
                                         }`}
                                     >
                                         Solana
@@ -284,7 +284,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                         className={`flex-1 py-3 px-4 rounded-xl border transition font-medium ${
                                             network === "TRON"
                                                 ? "border-[#6F00FF] bg-[#FFB300]/20 text-[#6F00FF] dark:text-[#8B2FFF]"
-                                                : "border-border bg-muted text-muted-foreground hover:border-[#6F00FF]/30"
+                                                : "border-border bg-muted text-muted-foreground hover:border-[#FFB300]/30"
                                         }`}
                                     >
                                         Tron (TRC20)
@@ -316,8 +316,8 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                                 onClick={() => handleSelectWallet(wallet)}
                                                 className={`w-full p-3 rounded-xl border text-left transition ${
                                                     selectedWallet?.id === wallet.id
-                                                        ? "border-[#6F00FF] bg-[#6F00FF]/10"
-                                                        : "border-border bg-muted hover:border-[#6F00FF]/30"
+                                                        ? "border-[#6F00FF] bg-[#FFB300]/10"
+                                                        : "border-border bg-muted hover:border-[#FFB300]/30"
                                                 }`}
                                             >
                                                 <div className="flex items-center justify-between">
@@ -393,7 +393,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                     placeholder="0.00"
-                                    className="w-full pl-10 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full pl-10 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
                                     autoFocus
                                 />
                             </div>
@@ -403,7 +403,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                     <button
                                         key={value}
                                         onClick={() => handleQuickAmount(value)}
-                                        className="px-4 py-2 text-sm font-medium rounded-full border border-[#6F00FF]/30 bg-[#6F00FF]/10 text-[#6F00FF] dark:text-[#A78BFA] hover:bg-[#FFB300]/20 hover:border-[#6F00FF]/50 transition"
+                                        className="px-4 py-2 text-sm font-medium rounded-full border border-[#FFB300]/30 bg-[#FFB300]/10 text-[#6F00FF] dark:text-[#A78BFA] hover:bg-[#FFB300]/20 hover:border-[#FFB300]/50 transition"
                                     >
                                         $ {value}
                                     </button>

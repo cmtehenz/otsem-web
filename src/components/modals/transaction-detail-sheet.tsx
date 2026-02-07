@@ -247,7 +247,7 @@ export function TransactionDetailSheet({ transactionId, open, onOpenChange }: Pr
                             {details.hasReceipt && (
                                 <button
                                     onClick={() => setReceiptOpen(true)}
-                                    className="w-full mt-6 mb-2 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#6F00FF] text-white font-semibold text-[15px] active:bg-[#5800CC] transition-colors"
+                                    className="w-full mt-6 mb-2 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#6F00FF] text-white font-semibold text-[15px] active:bg-[#E8A000] transition-colors"
                                 >
                                     <FileText className="w-4.5 h-4.5" />
                                     Ver comprovante

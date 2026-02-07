@@ -419,7 +419,7 @@ function RegisterPageInner(): React.JSX.Element {
                 <div className="flex w-full max-w-6xl items-center gap-12 xl:gap-16">
                     <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:gap-6 lg:self-start lg:pt-16">
                         <div>
-                            <h1 className="text-3xl xl:text-4xl font-black text-slate-900 tracking-tightest leading-tight">
+                            <h1 className="text-3xl xl:text-4xl font-semibold text-slate-900 tracking-tightest leading-tight">
                                 Crie sua conta
                             </h1>
                             <p className="mt-2 text-sm xl:text-base text-slate-500 font-medium">
@@ -459,7 +459,7 @@ function RegisterPageInner(): React.JSX.Element {
                                         className="h-full w-full object-contain"
                                     />
                                 </div>
-                                <CardTitle className="text-center text-lg sm:text-xl font-black text-slate-900">
+                                <CardTitle className="text-center text-lg sm:text-xl font-semibold text-slate-900">
                                     Criar conta
                                 </CardTitle>
                                 <p className="text-center text-xs text-slate-500 font-medium">
@@ -472,7 +472,7 @@ function RegisterPageInner(): React.JSX.Element {
 
                                     {/* Customer Type Selection */}
                                     <div className="grid gap-1.5">
-                                        <Label className="text-xs sm:text-sm font-black text-slate-900">
+                                        <Label className="text-xs sm:text-sm font-semibold text-slate-900">
                                             Tipo de cadastro
                                         </Label>
                                         <div className="grid grid-cols-2 gap-2">
@@ -520,7 +520,7 @@ function RegisterPageInner(): React.JSX.Element {
 
                                     {/* Full Name */}
                                     <div className="grid gap-1.5">
-                                        <Label htmlFor="name" className="text-xs sm:text-sm font-black text-slate-900">
+                                        <Label htmlFor="name" className="text-xs sm:text-sm font-semibold text-slate-900">
                                             Nome completo
                                         </Label>
                                         <div className="relative">
@@ -540,7 +540,7 @@ function RegisterPageInner(): React.JSX.Element {
                                     {/* CPF Field (only for PF) */}
                                     {customerType === "PF" && (
                                         <div className="grid gap-1.5 sm:gap-2">
-                                            <Label htmlFor="cpf" className="text-xs sm:text-sm font-black text-slate-900">
+                                            <Label htmlFor="cpf" className="text-xs sm:text-sm font-semibold text-slate-900">
                                                 CPF
                                             </Label>
                                             <div className="relative">
@@ -566,7 +566,7 @@ function RegisterPageInner(): React.JSX.Element {
                                     {/* CNPJ Field (only for PJ) */}
                                     {customerType === "PJ" && (
                                         <div className="grid gap-1.5 sm:gap-2">
-                                            <Label htmlFor="cnpj" className="text-xs sm:text-sm font-black text-slate-900">
+                                            <Label htmlFor="cnpj" className="text-xs sm:text-sm font-semibold text-slate-900">
                                                 CNPJ
                                             </Label>
                                             <div className="relative">
@@ -591,7 +591,7 @@ function RegisterPageInner(): React.JSX.Element {
 
                                     {/* Username */}
                                     <div className="grid gap-1.5 sm:gap-2">
-                                        <Label htmlFor="username" className="text-xs sm:text-sm font-black text-slate-900">
+                                        <Label htmlFor="username" className="text-xs sm:text-sm font-semibold text-slate-900">
                                             Nome de usuário
                                         </Label>
                                         <div className="relative">
@@ -621,7 +621,7 @@ function RegisterPageInner(): React.JSX.Element {
 
                                     {/* Email */}
                                     <div className="grid gap-1.5 sm:gap-2">
-                                        <Label htmlFor="email" className="text-xs sm:text-sm font-black text-slate-900">
+                                        <Label htmlFor="email" className="text-xs sm:text-sm font-semibold text-slate-900">
                                             E-mail
                                         </Label>
                                         <div className="relative">
@@ -644,7 +644,7 @@ function RegisterPageInner(): React.JSX.Element {
                                     {/* Password Fields - 2 columns on desktop */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         <div className="grid gap-1.5">
-                                            <Label htmlFor="password" className="text-xs sm:text-sm font-black text-slate-900">
+                                            <Label htmlFor="password" className="text-xs sm:text-sm font-semibold text-slate-900">
                                                 Senha
                                             </Label>
                                             <div className="relative">
@@ -672,7 +672,7 @@ function RegisterPageInner(): React.JSX.Element {
                                         </div>
 
                                         <div className="grid gap-1.5">
-                                            <Label htmlFor="confirm" className="text-xs sm:text-sm font-black text-slate-900">
+                                            <Label htmlFor="confirm" className="text-xs sm:text-sm font-semibold text-slate-900">
                                                 Confirmar senha
                                             </Label>
                                             <div className="relative">
@@ -771,7 +771,7 @@ function RegisterPageInner(): React.JSX.Element {
                                         </button>
                                     ) : (
                                         <div className="grid gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl border border-primary/30 bg-primary/5 p-2.5 sm:p-3">
-                                            <Label htmlFor="affiliateCode" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-black text-slate-900">
+                                            <Label htmlFor="affiliateCode" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold text-slate-900">
                                                 <Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                                                 Codigo de indicacao
                                             </Label>
@@ -800,7 +800,7 @@ function RegisterPageInner(): React.JSX.Element {
                                         disabled={loading}
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
-                                        className="btn-premium h-11 sm:h-12 rounded-xl sm:rounded-2xl font-black text-sm sm:text-base disabled:opacity-50 touch-manipulation"
+                                        className="btn-premium h-11 sm:h-12 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base disabled:opacity-50 touch-manipulation"
                                         aria-busy={loading}
                                     >
                                         {loading ? 'Criando conta...' : 'Criar conta'}
@@ -846,7 +846,7 @@ function FeatureItem({ icon, title, desc }: { icon: React.ReactNode; title: stri
                 {icon}
             </div>
             <div>
-                <h3 className="text-xs xl:text-sm font-black text-slate-900">{title}</h3>
+                <h3 className="text-xs xl:text-sm font-semibold text-slate-900">{title}</h3>
                 <p className="text-xs xl:text-sm text-slate-500 font-medium leading-snug">{desc}</p>
             </div>
         </div>
