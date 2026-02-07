@@ -129,25 +129,25 @@ export function KycUpgradeModal({
         <BottomSheet open={open} onOpenChange={handleClose}>
             <BottomSheetContent>
                 <BottomSheetHeader>
-                    <BottomSheetTitle className="text-xl font-bold text-foreground">
+                    <BottomSheetTitle className="text-xl font-bold text-white">
                         Solicitar Upgrade para {targetLevelName}
                     </BottomSheetTitle>
                 </BottomSheetHeader>
 
                 {step === "upload" && (
                     <div className="space-y-5">
-                        <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
-                            <p className="text-sm text-foreground">
-                                Novo limite: <span className="font-bold text-primary">{targetLimit}/mês</span>
+                        <div className="p-4 rounded-xl bg-[#6F00FF]/10 border border-[#6F00FF]/20">
+                            <p className="text-sm text-white">
+                                Novo limite: <span className="font-bold text-[#6F00FF]">{targetLimit}/mês</span>
                             </p>
                         </div>
 
                         <div>
-                            <p className="text-sm font-medium text-foreground mb-3">Documentos necessários:</p>
+                            <p className="text-sm font-medium text-white mb-3">Documentos necessários:</p>
                             <ul className="space-y-2">
                                 {requirements.map((req, i) => (
-                                    <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                    <li key={i} className="flex items-center gap-2 text-sm text-white/60">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-[#6F00FF]" />
                                         {req}
                                     </li>
                                 ))}
@@ -169,11 +169,11 @@ export function KycUpgradeModal({
                                 variant="outline"
                                 onClick={() => fileInputRef.current?.click()}
                                 disabled={submitting}
-                                className="w-full h-24 border-2 border-dashed border-primary/30 hover:border-primary/50 hover:bg-primary/5"
+                                className="w-full h-24 border-2 border-dashed border-white/20 hover:border-[#6F00FF]/50 hover:bg-white/5 bg-transparent"
                             >
                                 <div className="flex flex-col items-center gap-2">
-                                    <Upload className="w-6 h-6 text-primary" />
-                                    <span className="text-sm text-muted-foreground">
+                                    <Upload className="w-6 h-6 text-[#6F00FF]" />
+                                    <span className="text-sm text-white/60">
                                         Clique para selecionar arquivos
                                     </span>
                                 </div>
@@ -184,15 +184,15 @@ export function KycUpgradeModal({
                                     {selectedFiles.map((file, index) => (
                                         <div
                                             key={index}
-                                            className="flex items-center justify-between p-3 rounded-lg bg-muted"
+                                            className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10"
                                         >
                                             <div className="flex items-center gap-3 min-w-0">
-                                                <FileText className="w-5 h-5 text-primary flex-shrink-0" />
+                                                <FileText className="w-5 h-5 text-[#6F00FF] flex-shrink-0" />
                                                 <div className="min-w-0">
-                                                    <p className="text-sm font-medium text-foreground truncate">
+                                                    <p className="text-sm font-medium text-white truncate">
                                                         {file.name}
                                                     </p>
-                                                    <p className="text-xs text-muted-foreground">
+                                                    <p className="text-xs text-white/60">
                                                         {formatFileSize(file.size)}
                                                     </p>
                                                 </div>
@@ -213,7 +213,7 @@ export function KycUpgradeModal({
                             <Button
                                 variant="outline"
                                 onClick={handleClose}
-                                className="flex-1"
+                                className="flex-1 border-white/10 text-white hover:bg-white/10 bg-transparent"
                             >
                                 Cancelar
                             </Button>
@@ -227,7 +227,7 @@ export function KycUpgradeModal({
                             </Button>
                         </div>
 
-                        <p className="text-xs text-muted-foreground text-center">
+                        <p className="text-xs text-white/60 text-center">
                             Formatos aceitos: PDF, JPG, PNG. Máximo 10MB por arquivo.
                         </p>
                     </div>
@@ -235,9 +235,9 @@ export function KycUpgradeModal({
 
                 {step === "submitting" && (
                     <div className="py-10 text-center">
-                        <Loader2 className="w-12 h-12 text-primary mx-auto animate-spin mb-4" />
-                        <p className="text-foreground font-medium">Enviando solicitação...</p>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <Loader2 className="w-12 h-12 text-[#6F00FF] mx-auto animate-spin mb-4" />
+                        <p className="text-white font-medium">Enviando solicitação...</p>
+                        <p className="text-sm text-white/60 mt-1">
                             Aguarde enquanto processamos seus documentos
                         </p>
                     </div>
@@ -245,11 +245,11 @@ export function KycUpgradeModal({
 
                 {step === "success" && (
                     <div className="py-10 text-center">
-                        <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
-                            <CheckCircle2 className="w-8 h-8 text-green-500" />
+                        <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+                            <CheckCircle2 className="w-8 h-8 text-emerald-400" />
                         </div>
-                        <p className="text-foreground font-bold text-lg">Solicitação Enviada!</p>
-                        <p className="text-sm text-muted-foreground mt-2">
+                        <p className="text-white font-bold text-lg">Solicitação Enviada!</p>
+                        <p className="text-sm text-white/60 mt-2">
                             Nossa equipe analisará seus documentos e entrará em contato em até 48 horas.
                         </p>
                         <Button

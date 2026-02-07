@@ -279,56 +279,56 @@ export default function CustomerBoletoPage() {
                         exit={{ y: "100%" }}
                         transition={{ type: "spring", stiffness: 400, damping: 35, mass: 0.8 }}
                     >
-                        <div className="relative rounded-t-[24px] overflow-hidden pwa-sheet-safe-bottom bg-background/95 backdrop-blur-xl border-t border-white/[0.08] shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.5)]">
+                        <div className="relative rounded-t-[24px] overflow-hidden pwa-sheet-safe-bottom bg-[#0d0518]/95 backdrop-blur-xl border-t border-white/10 shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.5)]">
                             <div className="relative px-5 pt-3 pb-4">
                                 <div className="flex justify-center mb-3">
-                                    <div className="w-9 h-1 rounded-full bg-foreground/20" />
+                                    <div className="w-9 h-1 rounded-full bg-white/20" />
                                 </div>
 
-                                <h3 className="text-[17px] font-bold text-foreground mb-4">
+                                <h3 className="text-[17px] font-bold text-white mb-4">
                                     Detalhes do Pagamento
                                 </h3>
 
                                 <div className="space-y-3">
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Status</span>
+                                        <span className="text-white/60">Status</span>
                                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${getStatusConfig(selectedPayment.status).color}`}>
                                             {getStatusConfig(selectedPayment.status).icon}
                                             {getStatusConfig(selectedPayment.status).label}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Valor do boleto</span>
-                                        <span className="text-foreground font-medium">
+                                        <span className="text-white/60">Valor do boleto</span>
+                                        <span className="text-white font-medium">
                                             {formatBRL(selectedPayment.boletoAmount)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Taxa de serviço</span>
-                                        <span className="text-foreground">
+                                        <span className="text-white/60">Taxa de serviço</span>
+                                        <span className="text-white">
                                             {formatBRL(selectedPayment.serviceFee)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Total em BRL</span>
-                                        <span className="text-foreground font-medium">
+                                        <span className="text-white/60">Total em BRL</span>
+                                        <span className="text-white font-medium">
                                             {formatBRL(selectedPayment.totalBrl)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Crypto debitado</span>
+                                        <span className="text-white/60">Crypto debitado</span>
                                         <span className="text-white font-medium">
                                             {formatCrypto(selectedPayment.cryptoAmount, selectedPayment.cryptoCurrency)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Cotação</span>
-                                        <span className="text-foreground">
+                                        <span className="text-white/60">Cotação</span>
+                                        <span className="text-white">
                                             1 {selectedPayment.cryptoCurrency} = {formatBRL(selectedPayment.exchangeRate)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
-                                        <span className="text-muted-foreground">Código de barras</span>
+                                        <span className="text-white/60">Código de barras</span>
                                         <button
                                             onClick={() => {
                                                 navigator.clipboard.writeText(selectedPayment.barcode);
@@ -341,8 +341,8 @@ export default function CustomerBoletoPage() {
                                         </button>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Data</span>
-                                        <span className="text-foreground">
+                                        <span className="text-white/60">Data</span>
+                                        <span className="text-white">
                                             {formatDate(selectedPayment.createdAt)}
                                         </span>
                                     </div>

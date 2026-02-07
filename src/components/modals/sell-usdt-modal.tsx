@@ -239,13 +239,13 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
         <BottomSheet open={open} onOpenChange={handleClose}>
             <BottomSheetContent>
                 <BottomSheetHeader>
-                    <BottomSheetTitle className="text-foreground text-xl text-center">
+                    <BottomSheetTitle className="text-white text-xl text-center">
                         {step === "wallet" && "Vender USDT"}
                         {step === "amount" && "Valor da Venda"}
                         {step === "processing" && "Processando Venda"}
                         {step === "success" && "Venda Concluída!"}
                     </BottomSheetTitle>
-                    <BottomSheetDescription className="text-muted-foreground text-center text-sm">
+                    <BottomSheetDescription className="text-white/60 text-center text-sm">
                         {step === "wallet" && "Escolha a rede e a carteira de origem"}
                         {step === "amount" && "Informe quanto USDT deseja vender"}
                         {step === "processing" && "Acompanhe o progresso da sua venda"}
@@ -256,25 +256,25 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                 <div className="flex flex-col items-center space-y-5 py-4">
                     {step === "wallet" && (
                         <div className="w-full space-y-5">
-                            <div className="bg-muted border border-border rounded-xl p-4">
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                                 <div className="flex items-center gap-2 mb-2">
                                     <TrendingDown className="w-4 h-4 text-white/70" />
-                                    <span className="text-muted-foreground text-sm">Cotação atual</span>
+                                    <span className="text-white/60 text-sm">Cotação atual</span>
                                 </div>
-                                <p className="text-foreground font-bold text-lg">
+                                <p className="text-white font-bold text-lg">
                                     {rateLoading ? "..." : `1 USDT = ${formatBRL(usdtSellRate || 0)}`}
                                 </p>
                             </div>
 
                             <div className="space-y-2">
-                                <p className="text-muted-foreground text-sm">Escolha a rede:</p>
+                                <p className="text-white/60 text-sm">Escolha a rede:</p>
                                 <div className="flex gap-2">
                                     <button
                                         onClick={() => { setNetwork("SOLANA"); setSelectedWallet(null); }}
                                         className={`flex-1 py-3 px-4 rounded-xl border transition font-medium ${
                                             network === "SOLANA"
-                                                ? "border-[#6F00FF] bg-[#FFB300]/20 text-[#6F00FF] dark:text-[#8B2FFF]"
-                                                : "border-border bg-muted text-muted-foreground hover:border-[#FFB300]/30"
+                                                ? "border-[#6F00FF] bg-[#6F00FF]/10 text-[#6F00FF]"
+                                                : "border-white/10 bg-white/5 text-white/60 hover:border-[#FFB300]/30"
                                         }`}
                                     >
                                         Solana
@@ -283,8 +283,8 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                         onClick={() => { setNetwork("TRON"); setSelectedWallet(null); }}
                                         className={`flex-1 py-3 px-4 rounded-xl border transition font-medium ${
                                             network === "TRON"
-                                                ? "border-[#6F00FF] bg-[#FFB300]/20 text-[#6F00FF] dark:text-[#8B2FFF]"
-                                                : "border-border bg-muted text-muted-foreground hover:border-[#FFB300]/30"
+                                                ? "border-[#6F00FF] bg-[#6F00FF]/10 text-[#6F00FF]"
+                                                : "border-white/10 bg-white/5 text-white/60 hover:border-[#FFB300]/30"
                                         }`}
                                     >
                                         Tron (TRC20)
@@ -293,7 +293,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                             </div>
 
                             <div className="space-y-2">
-                                <p className="text-muted-foreground text-sm flex items-center gap-2">
+                                <p className="text-white/60 text-sm flex items-center gap-2">
                                     <Wallet className="w-4 h-4" />
                                     Selecione a carteira:
                                 </p>
@@ -303,8 +303,8 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                         <Loader2 className="w-6 h-6 text-white/70 animate-spin" />
                                     </div>
                                 ) : filteredWallets.length === 0 ? (
-                                    <div className="bg-muted border border-border rounded-xl p-4 text-center">
-                                        <p className="text-muted-foreground text-sm">
+                                    <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                                        <p className="text-white/60 text-sm">
                                             Nenhuma carteira {network} cadastrada
                                         </p>
                                     </div>
@@ -316,19 +316,19 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                                 onClick={() => handleSelectWallet(wallet)}
                                                 className={`w-full p-3 rounded-xl border text-left transition ${
                                                     selectedWallet?.id === wallet.id
-                                                        ? "border-[#6F00FF] bg-[#FFB300]/10"
-                                                        : "border-border bg-muted hover:border-[#FFB300]/30"
+                                                        ? "border-[#6F00FF] bg-[#6F00FF]/10"
+                                                        : "border-white/10 bg-white/5 hover:border-[#FFB300]/30"
                                                 }`}
                                             >
                                                 <div className="flex items-center justify-between">
-                                                    <p className="text-foreground font-medium text-sm">
+                                                    <p className="text-white font-medium text-sm">
                                                         {wallet.label || "Carteira"}
                                                     </p>
                                                     <p className="text-white text-sm font-medium">
                                                         {parseFloat(wallet.balance || "0").toFixed(2)} USDT
                                                     </p>
                                                 </div>
-                                                <p className="text-muted-foreground text-xs font-mono mt-1">
+                                                <p className="text-white/60 text-xs font-mono mt-1">
                                                     {wallet.externalAddress ? `${wallet.externalAddress.slice(0, 10)}...${wallet.externalAddress.slice(-8)}` : "Endereço indisponível"}
                                                 </p>
                                             </button>
@@ -352,20 +352,20 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                         <div className="w-full space-y-5">
                             <button
                                 onClick={handleBack}
-                                className="text-muted-foreground hover:text-foreground text-sm flex items-center gap-1"
+                                className="text-white/60 hover:text-white text-sm flex items-center gap-1"
                             >
                                 ← Voltar
                             </button>
 
-                            <div className="bg-muted border border-border rounded-xl p-3">
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-muted-foreground text-sm">Carteira:</span>
-                                    <span className="text-foreground text-xs font-mono">
+                                    <span className="text-white/60 text-sm">Carteira:</span>
+                                    <span className="text-white text-xs font-mono">
                                         {selectedWallet?.externalAddress ? `${selectedWallet.externalAddress.slice(0, 8)}...${selectedWallet.externalAddress.slice(-6)}` : "-"}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between mt-1">
-                                    <span className="text-muted-foreground text-sm">Rede:</span>
+                                    <span className="text-white/60 text-sm">Rede:</span>
                                     <span className={`text-sm font-medium ${network === "SOLANA" ? "text-[#6F00FF]" : "text-[#6F00FF]"}`}>
                                         {network}
                                     </span>
@@ -373,17 +373,17 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                             </div>
 
                             <div className="flex items-center justify-center gap-3 py-2">
-                                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xl">
+                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-xl">
                                     💵
                                 </div>
                                 <ArrowRight className="w-5 h-5 text-white/70" />
-                                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xl">
+                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-xl">
                                     🇧🇷
                                 </div>
                             </div>
 
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-lg">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 text-lg">
                                     $
                                 </span>
                                 <input
@@ -393,7 +393,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                     placeholder="0.00"
-                                    className="w-full pl-10 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full pl-10 pr-4 text-center text-xl bg-white/5 border border-white/10 text-white h-14 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-white/30"
                                     autoFocus
                                 />
                             </div>
@@ -403,15 +403,15 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                     <button
                                         key={value}
                                         onClick={() => handleQuickAmount(value)}
-                                        className="px-4 py-2 text-sm font-medium rounded-full border border-[#FFB300]/30 bg-[#FFB300]/10 text-[#6F00FF] dark:text-[#A78BFA] hover:bg-[#FFB300]/20 hover:border-[#FFB300]/50 transition"
+                                        className="px-4 py-2 text-sm font-medium rounded-full border border-[#FFB300]/30 bg-[#FFB300]/10 text-[#FFB300] hover:bg-[#FFB300]/20 hover:border-[#FFB300]/50 transition"
                                     >
                                         $ {value}
                                     </button>
                                 ))}
                             </div>
 
-                            <div className="bg-muted border border-border rounded-xl p-4">
-                                <p className="text-muted-foreground text-sm">Você receberá aproximadamente:</p>
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                                <p className="text-white/60 text-sm">Você receberá aproximadamente:</p>
                                 <p className="text-2xl font-bold text-white mt-1">
                                     {formatBRL(estimatedBrl)}
                                 </p>
@@ -432,7 +432,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 )}
                             </Button>
 
-                            <p className="text-muted-foreground text-xs text-center">
+                            <p className="text-white/60 text-xs text-center">
                                 Mínimo: {formatUSDT(minAmount)}
                             </p>
                         </div>
@@ -454,41 +454,41 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                             </div>
 
                             <div className="text-center">
-                                <p className="text-foreground font-bold text-lg">
+                                <p className="text-white font-bold text-lg">
                                     {STATUS_LABELS[conversionStatus] || "Processando..."}
                                 </p>
-                                <p className="text-muted-foreground text-sm mt-2">
+                                <p className="text-white/60 text-sm mt-2">
                                     Aguarde enquanto processamos sua venda
                                 </p>
                             </div>
 
-                            <div className="bg-muted border border-border rounded-xl p-4 space-y-4">
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-4">
                                 {STATUS_ORDER.map((status, idx) => {
                                     const currentIdx = STATUS_ORDER.indexOf(conversionStatus);
                                     const isCompleted = idx < currentIdx || conversionStatus === "COMPLETED";
                                     const isCurrent = status === conversionStatus && conversionStatus !== "COMPLETED";
-                                    
+
                                     return (
                                         <div key={status} className="flex items-center gap-3">
                                             <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                                                isCompleted 
-                                                    ? "bg-[#6F00FF]" 
-                                                    : isCurrent 
-                                                        ? "bg-[#6F00FF] animate-pulse" 
-                                                        : "bg-muted-foreground/20"
+                                                isCompleted
+                                                    ? "bg-[#6F00FF]"
+                                                    : isCurrent
+                                                        ? "bg-[#6F00FF] animate-pulse"
+                                                        : "bg-white/20"
                                             }`}>
                                                 {isCompleted ? (
                                                     <Check className="w-4 h-4 text-white" />
                                                 ) : isCurrent ? (
                                                     <Loader2 className="w-3 h-3 text-white animate-spin" />
                                                 ) : (
-                                                    <span className="text-xs text-muted-foreground">{idx + 1}</span>
+                                                    <span className="text-xs text-white/60">{idx + 1}</span>
                                                 )}
                                             </div>
                                             <span className={`text-sm ${
-                                                isCompleted || isCurrent 
-                                                    ? "text-foreground font-medium" 
-                                                    : "text-muted-foreground"
+                                                isCompleted || isCurrent
+                                                    ? "text-white font-medium"
+                                                    : "text-white/60"
                                             }`}>
                                                 {STATUS_LABELS[status]}
                                             </span>
@@ -497,28 +497,28 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                                 })}
                             </div>
 
-                            <div className="bg-muted border border-border rounded-xl p-4 space-y-2">
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Valor vendido</span>
-                                    <span className="text-foreground font-medium">{formatUSDT(numAmount)}</span>
+                                    <span className="text-white/60">Valor vendido</span>
+                                    <span className="text-white font-medium">{formatUSDT(numAmount)}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Valor em BRL</span>
+                                    <span className="text-white/60">Valor em BRL</span>
                                     <span className="text-white font-medium">
                                         {formatBRL(conversionDetail?.brlAmount || estimatedBrl)}
                                     </span>
                                 </div>
                                 {txHash && (
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">TX Hash</span>
-                                        <a 
-                                            href={network === "TRON" 
+                                        <span className="text-white/60">TX Hash</span>
+                                        <a
+                                            href={network === "TRON"
                                                 ? `https://tronscan.org/#/transaction/${txHash}`
                                                 : `https://solscan.io/tx/${txHash}`
                                             }
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-[#6F00FF] dark:text-[#6F00FF] text-xs font-mono hover:underline"
+                                            className="text-[#6F00FF] text-xs font-mono hover:underline"
                                         >
                                             {txHash.slice(0, 10)}...{txHash.slice(-6)}
                                         </a>
@@ -535,7 +535,7 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                             <Button
                                 onClick={handleClose}
                                 variant="outline"
-                                className="w-full border-border text-foreground rounded-xl py-6"
+                                className="w-full border-white/10 text-white rounded-xl py-6"
                             >
                                 Fechar e Acompanhar Depois
                             </Button>
@@ -551,36 +551,36 @@ export function SellUsdtModal({ open, onClose, onSuccess }: SellUsdtModalProps) 
                             </div>
 
                             <div className="text-center">
-                                <p className="text-foreground font-bold text-lg">
+                                <p className="text-white font-bold text-lg">
                                     Venda processada!
                                 </p>
-                                <p className="text-muted-foreground text-sm mt-2">
-                                    Sua venda de <span className="text-foreground font-medium">{formatUSDT(numAmount)}</span> foi realizada com sucesso.
+                                <p className="text-white/60 text-sm mt-2">
+                                    Sua venda de <span className="text-white font-medium">{formatUSDT(numAmount)}</span> foi realizada com sucesso.
                                 </p>
                             </div>
 
-                            <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-3">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Valor vendido</span>
-                                    <span className="text-foreground font-medium">{formatUSDT(numAmount)}</span>
+                                    <span className="text-white/60">Valor vendido</span>
+                                    <span className="text-white font-medium">{formatUSDT(numAmount)}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Valor em BRL</span>
+                                    <span className="text-white/60">Valor em BRL</span>
                                     <span className="text-white font-medium">
                                         {formatBRL(conversionDetail?.brlAmount || estimatedBrl)}
                                     </span>
                                 </div>
                                 {txHash && (
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">TX Hash</span>
-                                        <a 
-                                            href={network === "TRON" 
+                                        <span className="text-white/60">TX Hash</span>
+                                        <a
+                                            href={network === "TRON"
                                                 ? `https://tronscan.org/#/transaction/${txHash}`
                                                 : `https://solscan.io/tx/${txHash}`
                                             }
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-[#6F00FF] dark:text-[#6F00FF] text-xs font-mono hover:underline"
+                                            className="text-[#6F00FF] text-xs font-mono hover:underline"
                                         >
                                             {txHash.slice(0, 10)}...{txHash.slice(-6)}
                                         </a>

@@ -257,7 +257,7 @@ export default function CustomerPixPage() {
       <div className="flex h-[80dvh] flex-col items-center justify-center gap-3">
         <div className="relative">
           <div className="absolute inset-0 rounded-full bg-[#FFB300]/20 blur-xl animate-pulse" />
-          <div className="relative p-4 rounded-full bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08]">
+          <div className="relative p-4 rounded-full bg-white/5 border border-white/10">
             <Loader2 className="h-7 w-7 animate-spin text-[#6F00FF]" />
           </div>
         </div>
@@ -441,13 +441,13 @@ export default function CustomerPixPage() {
               {/* Actions dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="w-8 h-8 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08] flex items-center justify-center hover:bg-white/80 dark:hover:bg-white/[0.08] active:scale-95 transition-transform shrink-0">
+                  <button className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 active:scale-95 transition-transform shrink-0">
                     <MoreVertical className="w-4 h-4 text-white" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  className="w-48 rounded-xl bg-white/90 dark:bg-[#1a1025]/95 backdrop-blur-xl border border-white/60 dark:border-white/[0.08] shadow-xl"
+                  className="w-48 rounded-xl bg-[#1a1025]/95 backdrop-blur-xl border border-white/10 shadow-xl"
                 >
                   <DropdownMenuItem
                     onClick={() => onCopy(pix.keyValue)}
@@ -532,7 +532,7 @@ function AddKeyModal({
     <BottomSheet open={open} onOpenChange={onOpenChange}>
       <BottomSheetContent>
         <BottomSheetHeader className="p-5 pb-0">
-          <BottomSheetTitle className="text-[18px] font-bold text-foreground">
+          <BottomSheetTitle className="text-[18px] font-bold text-white">
             Nova Chave Pix
           </BottomSheetTitle>
         </BottomSheetHeader>
@@ -540,7 +540,7 @@ function AddKeyModal({
         <form onSubmit={onSubmit} className="p-5 pt-4 space-y-5">
           {/* Key type grid */}
           <div>
-            <label className="block text-[12px] font-semibold text-foreground uppercase tracking-wider mb-2.5">
+            <label className="block text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2.5">
               Tipo de chave
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -552,8 +552,8 @@ function AddKeyModal({
                   className={
                     "flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl text-[12px] font-medium active:scale-95 transition-all " +
                     (newType === kt.value
-                      ? "bg-[#FFB300]/10 text-[#6F00FF] border-2 border-[#6F00FF]/40 shadow-sm"
-                      : "bg-muted/50 border border-border text-foreground hover:border-[#6F00FF]/20")
+                      ? "bg-[#6F00FF]/10 text-[#6F00FF] border-2 border-[#6F00FF]/40 shadow-sm"
+                      : "bg-white/5 border border-white/10 text-white hover:border-[#6F00FF]/20")
                   }
                 >
                   <KeyTypeIconComponent type={kt.value} size="sm" />
@@ -566,7 +566,7 @@ function AddKeyModal({
           {/* Key value input */}
           {newType !== "RANDOM" && (
             <div>
-              <label className="block text-[12px] font-semibold text-foreground uppercase tracking-wider mb-2">
+              <label className="block text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-2">
                 Valor da chave
               </label>
               <Input
@@ -583,9 +583,9 @@ function AddKeyModal({
                         : "+55 11 99999-9999"
                 }
                 required
-                className="h-11 rounded-xl bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground text-[14px]"
+                className="h-11 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 text-[14px]"
               />
-              <p className="text-[11px] text-muted-foreground mt-1.5">
+              <p className="text-[11px] text-white/60 mt-1.5">
                 Se corresponder aos seus dados, ser&aacute; validada automaticamente.
               </p>
             </div>
@@ -593,13 +593,13 @@ function AddKeyModal({
 
           {/* Random key notice */}
           {newType === "RANDOM" && (
-            <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-muted/50 border border-border">
-              <AlertCircle className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-white/5 border border-white/10">
+              <AlertCircle className="w-4 h-4 text-white/60 shrink-0 mt-0.5" />
               <div>
-                <p className="text-[13px] font-semibold text-foreground">
+                <p className="text-[13px] font-semibold text-white">
                   Chave Aleat&oacute;ria
                 </p>
-                <p className="text-[12px] text-muted-foreground mt-0.5 leading-relaxed">
+                <p className="text-[12px] text-white/60 mt-0.5 leading-relaxed">
                   Ser&aacute; gerada automaticamente. Requer valida&ccedil;&atilde;o manual via
                   micro-transfer&ecirc;ncia.
                 </p>
@@ -612,7 +612,7 @@ function AddKeyModal({
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="flex-1 h-11 rounded-2xl text-[14px] font-semibold text-foreground bg-muted border border-border hover:bg-muted/80 active:scale-95 transition-transform"
+              className="flex-1 h-11 rounded-2xl text-[14px] font-semibold text-white bg-white/5 border border-white/10 hover:bg-white/10 active:scale-95 transition-transform"
             >
               Cancelar
             </button>
@@ -656,28 +656,28 @@ function DeleteKeyModal({
     <BottomSheet open={open} onOpenChange={onOpenChange}>
       <BottomSheetContent>
         <BottomSheetHeader className="p-5 pb-0">
-          <BottomSheetTitle className="text-[18px] font-bold text-foreground">
+          <BottomSheetTitle className="text-[18px] font-bold text-white">
             Remover Chave Pix
           </BottomSheetTitle>
         </BottomSheetHeader>
 
         <div className="p-5 pt-3 space-y-4">
-          <p className="text-[14px] text-foreground">
+          <p className="text-[14px] text-white">
             Tem certeza que deseja remover esta chave?
           </p>
 
           {keyToDelete && (
-            <div className={"flex items-center gap-3 p-3.5 rounded-xl bg-muted/50 border border-border"}>
+            <div className={"flex items-center gap-3 p-3.5 rounded-xl bg-white/5 border border-white/10"}>
               <div
-                className={"w-9 h-9 rounded-full flex items-center justify-center shrink-0 bg-muted text-foreground"}
+                className={"w-9 h-9 rounded-full flex items-center justify-center shrink-0 bg-white/10 text-white"}
               >
                 <KeyTypeIconComponent type={keyToDelete.keyType} />
               </div>
               <div className="min-w-0">
-                <p className="text-[14px] font-semibold text-foreground">
+                <p className="text-[14px] font-semibold text-white">
                   {getKeyTypeLabel(keyToDelete.keyType)}
                 </p>
-                <code className="text-[12px] text-muted-foreground font-mono truncate block">
+                <code className="text-[12px] text-white/60 font-mono truncate block">
                   {keyToDelete.keyValue}
                 </code>
               </div>
@@ -688,7 +688,7 @@ function DeleteKeyModal({
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="flex-1 h-11 rounded-2xl text-[14px] font-semibold text-foreground bg-muted border border-border hover:bg-muted/80 active:scale-95 transition-transform"
+              className="flex-1 h-11 rounded-2xl text-[14px] font-semibold text-white bg-white/5 border border-white/10 hover:bg-white/10 active:scale-95 transition-transform"
             >
               Cancelar
             </button>

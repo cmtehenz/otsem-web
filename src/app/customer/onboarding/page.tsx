@@ -27,7 +27,7 @@ function ProgressBar({ currentStep }: { currentStep: Step }) {
                     className={`h-1.5 flex-1 rounded-full transition-colors ${
                         i <= idx
                             ? "bg-[#6F00FF]"
-                            : "bg-muted"
+                            : "bg-white/10"
                     }`}
                 />
             ))}
@@ -109,8 +109,8 @@ export default function OnboardingPage() {
     }
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
-            <header className="flex items-center justify-center border-b border-border/50 px-4 py-4">
+        <div className="flex min-h-screen flex-col">
+            <header className="flex items-center justify-center border-b border-white/10 px-4 py-4">
                 <Image
                     src="/images/logo-64.png"
                     alt="OtsemPay"

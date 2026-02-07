@@ -124,11 +124,11 @@ export function TransactionDetailSheet({ transactionId, open, onOpenChange }: Pr
     return (
         <>
             <BottomSheet open={open} onOpenChange={onOpenChange}>
-                <BottomSheetContent className="dark:bg-[#1a1025]/98">
+                <BottomSheetContent>
                     {loading && (
                         <div className="flex flex-col items-center justify-center py-16">
                             <Loader2 className="h-8 w-8 animate-spin text-[#6F00FF]" />
-                            <p className="text-[13px] text-muted-foreground mt-4">
+                            <p className="text-[13px] text-white/60 mt-4">
                                 Carregando detalhes...
                             </p>
                         </div>
@@ -137,7 +137,7 @@ export function TransactionDetailSheet({ transactionId, open, onOpenChange }: Pr
                     {error && !loading && (
                         <div className="flex flex-col items-center justify-center py-16">
                             <XCircle className="h-8 w-8 text-red-400" />
-                            <p className="text-[13px] text-muted-foreground mt-4">{error}</p>
+                            <p className="text-[13px] text-white/60 mt-4">{error}</p>
                         </div>
                     )}
 
@@ -163,12 +163,12 @@ export function TransactionDetailSheet({ transactionId, open, onOpenChange }: Pr
                             </BottomSheetHeader>
 
                             {/* Amount */}
-                            <div className="text-center py-4 border-y border-border/50">
-                                <p className="text-[32px] font-bold text-foreground leading-none">
+                            <div className="text-center py-4 border-y border-white/10">
+                                <p className="text-[32px] font-bold text-white leading-none">
                                     {details.type === "PIX_IN" ? "+" : "-"}
                                     {formatCurrency(Math.abs(details.amount))}
                                 </p>
-                                <p className="text-[13px] text-muted-foreground mt-1">
+                                <p className="text-[13px] text-white/60 mt-1">
                                     {formatDateTime(details.createdAt)}
                                 </p>
                             </div>
@@ -274,8 +274,8 @@ export function TransactionDetailSheet({ transactionId, open, onOpenChange }: Pr
 
 function DetailSection({ title, children }: { title: string; children: React.ReactNode }) {
     return (
-        <div className="py-3 border-b border-border/30 last:border-b-0">
-            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+        <div className="py-3 border-b border-white/5 last:border-b-0">
+            <p className="text-[11px] font-semibold text-white/60 uppercase tracking-wider mb-2">
                 {title}
             </p>
             <div className="space-y-2">{children}</div>
@@ -286,8 +286,8 @@ function DetailSection({ title, children }: { title: string; children: React.Rea
 function DetailRow({ label, value }: { label: string; value: string }) {
     return (
         <div className="flex items-center justify-between">
-            <span className="text-[13px] text-muted-foreground">{label}</span>
-            <span className="text-[13px] font-medium text-foreground text-right max-w-[60%] truncate">
+            <span className="text-[13px] text-white/60">{label}</span>
+            <span className="text-[13px] font-medium text-white text-right max-w-[60%] truncate">
                 {value}
             </span>
         </div>
@@ -309,16 +309,16 @@ function DetailRowCopyable({
 
     return (
         <div className="flex items-center justify-between">
-            <span className="text-[13px] text-muted-foreground">{label}</span>
+            <span className="text-[13px] text-white/60">{label}</span>
             <button
                 onClick={onCopy}
-                className="flex items-center gap-1.5 text-[13px] font-medium text-foreground hover:text-[#6F00FF] transition-colors"
+                className="flex items-center gap-1.5 text-[13px] font-medium text-white hover:text-[#6F00FF] transition-colors"
             >
                 <span className="truncate max-w-[140px]">{truncated}</span>
                 {copied ? (
                     <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 ) : (
-                    <Copy className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                    <Copy className="w-3.5 h-3.5 text-white/60 shrink-0" />
                 )}
             </button>
         </div>

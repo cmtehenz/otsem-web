@@ -107,10 +107,10 @@ export function PwaInstallPrompt() {
                     exit={{ opacity: 0, y: 40, scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 >
-                    <div className="relative overflow-hidden rounded-[22px] border border-white/60 dark:border-white/[0.08] shadow-2xl">
+                    <div className="relative overflow-hidden rounded-[22px] border border-white/10 shadow-2xl">
                         {/* Glass background */}
                         <div
-                            className="absolute inset-0 bg-white/90 dark:bg-[#1a1025]/95"
+                            className="absolute inset-0 bg-[#0d0518]/95"
                             style={{
                                 WebkitBackdropFilter: "blur(40px) saturate(180%)",
                                 backdropFilter: "blur(40px) saturate(180%)",
@@ -121,9 +121,9 @@ export function PwaInstallPrompt() {
                             {/* Close button */}
                             <button
                                 onClick={dismiss}
-                                className="absolute top-3 right-3 p-1.5 rounded-full bg-black/5 dark:bg-white/10 active:scale-90 transition-transform"
+                                className="absolute top-3 right-3 p-1.5 rounded-full bg-white/10 active:scale-90 transition-transform"
                             >
-                                <X className="w-4 h-4 text-muted-foreground" strokeWidth={2} />
+                                <X className="w-4 h-4 text-white/60" strokeWidth={2} />
                             </button>
 
                             {/* Icon + title */}
@@ -136,10 +136,10 @@ export function PwaInstallPrompt() {
                                     )}
                                 </div>
                                 <div>
-                                    <h3 className="text-[15px] font-bold text-foreground leading-tight">
+                                    <h3 className="text-[15px] font-bold text-white leading-tight">
                                         Instale o Otsem Pay
                                     </h3>
-                                    <p className="text-[12px] text-muted-foreground">
+                                    <p className="text-[12px] text-white/60">
                                         Experiência muito melhor como app
                                     </p>
                                 </div>
@@ -150,20 +150,20 @@ export function PwaInstallPrompt() {
                                 /* iOS: manual instructions */
                                 <div className="space-y-2.5 mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#007AFF]/10 dark:bg-[#007AFF]/20 shrink-0">
+                                        <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#007AFF]/20 shrink-0">
                                             <Share className="w-3.5 h-3.5 text-[#007AFF]" strokeWidth={2} />
                                         </div>
-                                        <p className="text-[13px] text-foreground">
+                                        <p className="text-[13px] text-white">
                                             Toque no botão{" "}
                                             <span className="font-semibold">Compartilhar</span>
                                             {" "}na barra do Safari
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#007AFF]/10 dark:bg-[#007AFF]/20 shrink-0">
+                                        <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#007AFF]/20 shrink-0">
                                             <Plus className="w-3.5 h-3.5 text-[#007AFF]" strokeWidth={2} />
                                         </div>
-                                        <p className="text-[13px] text-foreground">
+                                        <p className="text-[13px] text-white">
                                             Selecione{" "}
                                             <span className="font-semibold">&ldquo;Adicionar à Tela de Início&rdquo;</span>
                                         </p>
@@ -189,7 +189,7 @@ export function PwaInstallPrompt() {
                                     className={`flex items-center justify-center w-5 h-5 rounded-md border-2 transition-colors ${
                                         dontRemind
                                             ? "bg-[#6F00FF] border-[#6F00FF]"
-                                            : "border-border dark:border-white/20"
+                                            : "border-white/20"
                                     }`}
                                 >
                                     {dontRemind && (
@@ -212,7 +212,7 @@ export function PwaInstallPrompt() {
                                         </motion.svg>
                                     )}
                                 </div>
-                                <span className="text-[13px] text-muted-foreground">
+                                <span className="text-[13px] text-white/60">
                                     Não mostrar novamente
                                 </span>
                             </button>

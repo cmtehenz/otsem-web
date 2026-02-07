@@ -159,11 +159,11 @@ export function ReceiptSheet({ transactionId, open, onOpenChange }: Props) {
 
     return (
         <BottomSheet open={open} onOpenChange={onOpenChange}>
-            <BottomSheetContent className="dark:bg-[#1a1025]/98">
+            <BottomSheetContent>
                 {loading && (
                     <div className="flex flex-col items-center justify-center py-16">
                         <Loader2 className="h-8 w-8 animate-spin text-[#6F00FF]" />
-                        <p className="text-[13px] text-muted-foreground mt-4">
+                        <p className="text-[13px] text-white/60 mt-4">
                             Carregando comprovante...
                         </p>
                     </div>
@@ -172,7 +172,7 @@ export function ReceiptSheet({ transactionId, open, onOpenChange }: Props) {
                 {error && !loading && (
                     <div className="flex flex-col items-center justify-center py-16">
                         <XCircle className="h-8 w-8 text-red-400" />
-                        <p className="text-[13px] text-muted-foreground mt-4">{error}</p>
+                        <p className="text-[13px] text-white/60 mt-4">{error}</p>
                     </div>
                 )}
 
@@ -435,7 +435,7 @@ export function ReceiptSheet({ transactionId, open, onOpenChange }: Props) {
                             <button
                                 onClick={handleShare}
                                 disabled={exporting}
-                                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border border-border/50 bg-card/30 text-foreground font-semibold text-[14px] active:bg-card/60 transition-colors disabled:opacity-50"
+                                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border border-white/10 bg-white/5 text-white font-semibold text-[14px] active:bg-white/10 transition-colors disabled:opacity-50"
                             >
                                 {exporting ? (
                                     <Loader2 className="w-4 h-4 animate-spin" />

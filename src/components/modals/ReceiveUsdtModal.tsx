@@ -19,13 +19,13 @@ export default function ReceiveUsdtModal() {
                 </BottomSheetHeader>
 
                 <div className="grid gap-3">
-                    <div className="rounded-xl border p-3 font-mono text-xs break-all">{address}</div>
+                    <div className="rounded-xl border border-white/10 bg-white/5 p-3 font-mono text-xs text-white break-all">{address}</div>
                     {/* {<QRCode value={address} size={180} />} */}
                 </div>
 
                 <BottomSheetFooter className="gap-2">
-                    <Button variant="outline" onClick={() => navigator.clipboard.writeText(address)}>Copiar</Button>
-                    <Button onClick={() => closeModal("receiveUsdt")}>Fechar</Button>
+                    <Button variant="outline" onClick={() => navigator.clipboard.writeText(address)} className="border-white/10 text-white hover:bg-white/10">Copiar</Button>
+                    <Button onClick={() => closeModal("receiveUsdt")} className="bg-[#6F00FF] hover:bg-[#5800CC] text-white">Fechar</Button>
                 </BottomSheetFooter>
             </BottomSheetContent>
         </BottomSheet>

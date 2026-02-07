@@ -150,11 +150,11 @@ export function UsernameTransferModal() {
         <BottomSheet open={isOpen} onOpenChange={handleClose}>
             <BottomSheetContent>
                 <BottomSheetHeader>
-                    <BottomSheetTitle className="text-foreground text-xl flex items-center gap-2">
+                    <BottomSheetTitle className="text-white text-xl flex items-center gap-2">
                         <UserRoundSearch className="w-5 h-5 text-[#6F00FF]" />
                         Enviar para usuário
                     </BottomSheetTitle>
-                    <BottomSheetDescription className="text-muted-foreground">
+                    <BottomSheetDescription className="text-white/60">
                         {step === "username" && "Envie BRL para outro usuário Otsem Pay"}
                         {step === "confirm" && "Confirme os dados da transferência"}
                         {step === "success" && "Transferência concluída"}
@@ -165,12 +165,12 @@ export function UsernameTransferModal() {
                 {step === "username" && (
                     <div className="space-y-4">
                         <div>
-                            <Label className="text-muted-foreground mb-2 block">
+                            <Label className="text-white/60 mb-2 block">
                                 Nome de usuário
                             </Label>
                             <div className="flex gap-2">
                                 <div className="relative flex-1">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/60 text-sm">
                                         @
                                     </span>
                                     <Input
@@ -184,7 +184,7 @@ export function UsernameTransferModal() {
                                             if (e.key === "Enter") handleLookup();
                                         }}
                                         placeholder="joaosilva"
-                                        className="border-border bg-background text-foreground text-sm pl-7"
+                                        className="border-white/10 bg-white/5 text-white text-sm pl-7"
                                     />
                                 </div>
                                 <Button
@@ -209,7 +209,7 @@ export function UsernameTransferModal() {
                                 <p className="text-white font-semibold text-[15px]">
                                     {recipient.name}
                                 </p>
-                                <p className="text-muted-foreground text-sm">
+                                <p className="text-white/60 text-sm">
                                     @{recipient.username}
                                 </p>
                             </div>
@@ -219,7 +219,7 @@ export function UsernameTransferModal() {
                             <Button
                                 variant="ghost"
                                 onClick={handleClose}
-                                className="flex-1 bg-muted border border-border text-foreground hover:bg-accent"
+                                className="flex-1 bg-white/5 border border-white/10 text-white hover:bg-white/10"
                             >
                                 Cancelar
                             </Button>
@@ -239,17 +239,17 @@ export function UsernameTransferModal() {
                 {step === "confirm" && recipient && (
                     <div className="space-y-4">
                         <div className="p-4 bg-white/5 border border-white/10 rounded-xl">
-                            <p className="text-muted-foreground text-xs mb-1">Enviar para</p>
+                            <p className="text-white/60 text-xs mb-1">Enviar para</p>
                             <p className="text-white font-semibold text-[15px]">
                                 {recipient.name}
                             </p>
-                            <p className="text-muted-foreground text-sm">
+                            <p className="text-white/60 text-sm">
                                 @{recipient.username}
                             </p>
                         </div>
 
                         <div>
-                            <Label className="text-muted-foreground mb-1 block">
+                            <Label className="text-white/60 mb-1 block">
                                 Valor (BRL)
                             </Label>
                             <Input
@@ -259,13 +259,13 @@ export function UsernameTransferModal() {
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                                 placeholder="0,00"
-                                className="border-border bg-background text-foreground text-sm"
+                                className="border-white/10 bg-white/5 text-white text-sm"
                                 autoFocus
                             />
                         </div>
 
                         <div>
-                            <Label className="text-muted-foreground mb-1 block">
+                            <Label className="text-white/60 mb-1 block">
                                 Descrição (opcional)
                             </Label>
                             <Input
@@ -273,7 +273,7 @@ export function UsernameTransferModal() {
                                 onChange={(e) => setDescription(e.target.value)}
                                 placeholder="Ex: Pagamento do almoço"
                                 maxLength={140}
-                                className="border-border bg-background text-foreground text-sm"
+                                className="border-white/10 bg-white/5 text-white text-sm"
                             />
                         </div>
 
@@ -281,7 +281,7 @@ export function UsernameTransferModal() {
                             <Button
                                 variant="ghost"
                                 onClick={() => setStep("username")}
-                                className="flex-1 bg-muted border border-border text-foreground hover:bg-accent"
+                                className="flex-1 bg-white/5 border border-white/10 text-white hover:bg-white/10"
                             >
                                 Voltar
                             </Button>
@@ -307,15 +307,15 @@ export function UsernameTransferModal() {
                 {step === "success" && result && (
                     <div className="space-y-4">
                         <div className="p-5 bg-white/5 border border-white/10 rounded-xl text-center">
-                            <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
+                            <CheckCircle2 className="w-12 h-12 text-white mx-auto mb-3" />
                             <p className="text-white font-semibold text-lg mb-1">
                                 Transferência enviada!
                             </p>
-                            <p className="text-muted-foreground text-sm">
+                            <p className="text-white/60 text-sm">
                                 {formatBRL(result.amount)} para @{result.receiver.username}
                             </p>
                             {result.description && (
-                                <p className="text-muted-foreground text-xs mt-2">
+                                <p className="text-white/60 text-xs mt-2">
                                     {result.description}
                                 </p>
                             )}

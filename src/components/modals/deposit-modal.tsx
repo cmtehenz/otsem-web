@@ -257,20 +257,20 @@ export function DepositModal() {
         <BottomSheet open={open.deposit} onOpenChange={handleClose}>
             <BottomSheetContent>
                 <BottomSheetHeader>
-                    <BottomSheetTitle className="text-foreground text-xl text-center flex items-center justify-center gap-2">
+                    <BottomSheetTitle className="text-white text-xl text-center flex items-center justify-center gap-2">
                         {step === "qrcode" && (
                             <Button
                                 onClick={handleBack}
                                 variant="ghost"
                                 size="icon"
-                                className="absolute left-4 top-4 text-muted-foreground hover:text-foreground hover:bg-accent h-8 w-8"
+                                className="absolute left-4 top-4 text-white/60 hover:text-white hover:bg-white/10 h-8 w-8"
                             >
                                 <ArrowLeft className="w-4 h-4" />
                             </Button>
                         )}
                         {titles[step]}
                     </BottomSheetTitle>
-                    <BottomSheetDescription className="text-muted-foreground text-center text-sm">
+                    <BottomSheetDescription className="text-white/60 text-center text-sm">
                         {descriptions[step]}
                     </BottomSheetDescription>
                 </BottomSheetHeader>
@@ -280,13 +280,13 @@ export function DepositModal() {
                     {step === "amount" ? (
                         <div className="w-full space-y-5">
                             <div className="text-center py-4 bg-gradient-to-b from-[#6F00FF]/10 to-transparent rounded-2xl">
-                                <p className="text-5xl font-bold bg-gradient-to-r from-[#FFD54F] to-[#FFB300] dark:from-[#6F00FF] dark:to-[#8B2FFF] bg-clip-text text-transparent">
+                                <p className="text-5xl font-bold bg-gradient-to-r from-[#FFD54F] to-[#FFB300] bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                             </div>
 
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xl">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 text-xl">
                                     R$
                                 </span>
                                 <input
@@ -296,7 +296,7 @@ export function DepositModal() {
                                     value={inputValue}
                                     onChange={handleInputChange}
                                     placeholder="0,00"
-                                    className="w-full pl-12 pr-4 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full pl-12 pr-4 text-center text-xl bg-white/5 border border-white/10 text-white h-14 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-white/30"
                                     autoFocus={false}
                                 />
                             </div>
@@ -319,7 +319,7 @@ export function DepositModal() {
                                 )}
                             </Button>
 
-                            <p className="text-muted-foreground text-xs text-center">
+                            <p className="text-white/60 text-xs text-center">
                                 Valor mínimo: R$ 1,00
                             </p>
                         </div>
@@ -329,9 +329,9 @@ export function DepositModal() {
                         <div className="flex flex-col items-center py-12">
                             <div className="relative">
                                 <div className="absolute inset-0 bg-[#FFB300]/20 rounded-full blur-xl animate-pulse"></div>
-                                <Loader2 className="h-12 w-12 animate-spin text-[#6F00FF] dark:text-[#6F00FF] relative" />
+                                <Loader2 className="h-12 w-12 animate-spin text-[#6F00FF] relative" />
                             </div>
-                            <p className="text-muted-foreground text-sm mt-6">Gerando QR Code...</p>
+                            <p className="text-white/60 text-sm mt-6">Gerando QR Code...</p>
                         </div>
 
                     /* ── Error ── */
@@ -340,10 +340,10 @@ export function DepositModal() {
                             <div className="bg-white/10 rounded-full p-4 mb-4">
                                 <QrCode className="h-12 w-12 text-white/40" />
                             </div>
-                            <p className="text-muted-foreground text-sm text-center mb-4">{error}</p>
+                            <p className="text-white/60 text-sm text-center mb-4">{error}</p>
                             <button
                                 onClick={handleBack}
-                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-[#FFB300]/30 bg-[#FFB300]/10 text-[#6F00FF] dark:text-[#A78BFA] hover:bg-[#FFB300]/20 hover:border-[#FFB300]/50 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-[#FFB300]/30 bg-[#FFB300]/10 text-white/70 hover:bg-[#FFB300]/20 hover:border-[#FFB300]/50 transition-colors"
                             >
                                 <ArrowLeft className="w-4 h-4" />
                                 Tentar novamente
@@ -354,8 +354,8 @@ export function DepositModal() {
                     ) : step === "qrcode" ? (
                         <>
                             <div className="text-center">
-                                <p className="text-muted-foreground text-sm">Valor do depósito</p>
-                                <p className="text-3xl font-bold bg-gradient-to-r from-[#FFD54F] to-[#FFB300] dark:from-[#6F00FF] dark:to-[#8B2FFF] bg-clip-text text-transparent">
+                                <p className="text-white/60 text-sm">Valor do depósito</p>
+                                <p className="text-3xl font-bold bg-gradient-to-r from-[#FFD54F] to-[#FFB300] bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
                             </div>
@@ -376,9 +376,9 @@ export function DepositModal() {
 
                             <div className="w-full space-y-3">
                                 {pixCopiaECola && (
-                                    <div className="bg-muted border border-border rounded-xl p-3">
-                                        <p className="text-muted-foreground text-xs mb-1">PIX Copia e Cola</p>
-                                        <p className="text-foreground/80 text-xs font-mono break-all line-clamp-2">
+                                    <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                                        <p className="text-white/60 text-xs mb-1">PIX Copia e Cola</p>
+                                        <p className="text-white/80 text-xs font-mono break-all line-clamp-2">
                                             {pixCopiaECola}
                                         </p>
                                     </div>
@@ -402,13 +402,13 @@ export function DepositModal() {
                                     )}
                                 </Button>
 
-                                <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs">
+                                <div className="flex items-center justify-center gap-2 text-white/60 text-xs">
                                     <Clock className="w-3.5 h-3.5" />
                                     <span>Expira em 24 horas</span>
                                 </div>
 
                                 {cobrancaTxId && (
-                                    <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs">
+                                    <div className="flex items-center justify-center gap-2 text-white/60 text-xs">
                                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
                                         <span>Aguardando pagamento...</span>
                                     </div>
@@ -430,16 +430,16 @@ export function DepositModal() {
                             </div>
 
                             <div className="text-center">
-                                <p className="text-foreground font-bold text-lg">
+                                <p className="text-white font-bold text-lg">
                                     {DEPOSIT_STATUS_LABELS[depositStatus]}
                                 </p>
-                                <p className="text-muted-foreground text-sm mt-2">
+                                <p className="text-white/60 text-sm mt-2">
                                     Aguarde enquanto confirmamos seu depósito
                                 </p>
                             </div>
 
                             {/* Progress steps */}
-                            <div className="bg-muted border border-border rounded-xl p-4 space-y-4">
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-4">
                                 {DEPOSIT_STATUS_ORDER.map((status, idx) => {
                                     const currentIdx = DEPOSIT_STATUS_ORDER.indexOf(depositStatus);
                                     const isCompleted = idx < currentIdx || depositStatus === "CONFIRMED";
@@ -452,20 +452,20 @@ export function DepositModal() {
                                                     ? "bg-[#6F00FF]"
                                                     : isCurrent
                                                         ? "bg-[#6F00FF] animate-pulse"
-                                                        : "bg-muted-foreground/20"
+                                                        : "bg-white/20"
                                             }`}>
                                                 {isCompleted ? (
                                                     <Check className="w-4 h-4 text-white" />
                                                 ) : isCurrent ? (
                                                     <Loader2 className="w-3 h-3 text-white animate-spin" />
                                                 ) : (
-                                                    <span className="text-xs text-muted-foreground">{idx + 1}</span>
+                                                    <span className="text-xs text-white/60">{idx + 1}</span>
                                                 )}
                                             </div>
                                             <span className={`text-sm ${
                                                 isCompleted || isCurrent
-                                                    ? "text-foreground font-medium"
-                                                    : "text-muted-foreground"
+                                                    ? "text-white font-medium"
+                                                    : "text-white/60"
                                             }`}>
                                                 {DEPOSIT_STATUS_LABELS[status]}
                                             </span>
@@ -475,15 +475,15 @@ export function DepositModal() {
                             </div>
 
                             {/* Amount info */}
-                            <div className="bg-muted border border-border rounded-xl p-4 space-y-2">
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Valor do depósito</span>
-                                    <span className="text-foreground font-medium">{displayAmount}</span>
+                                    <span className="text-white/60">Valor do depósito</span>
+                                    <span className="text-white font-medium">{displayAmount}</span>
                                 </div>
                             </div>
 
                             <div className="bg-[#FFB300]/10 border border-[#FFB300]/30 rounded-xl p-4">
-                                <p className="text-[#6F00FF] dark:text-[#A78BFA] text-sm text-center">
+                                <p className="text-white/70 text-sm text-center">
                                     Você pode fechar esta janela. Seu saldo será atualizado automaticamente.
                                 </p>
                             </div>
@@ -491,7 +491,7 @@ export function DepositModal() {
                             <Button
                                 onClick={handleClose}
                                 variant="outline"
-                                className="w-full border-border text-foreground rounded-xl py-6"
+                                className="w-full border-white/10 text-white hover:bg-white/10 rounded-xl py-6"
                             >
                                 Fechar e Acompanhar Depois
                             </Button>
@@ -507,11 +507,11 @@ export function DepositModal() {
                             </div>
 
                             <div className="text-center">
-                                <p className="text-muted-foreground text-sm mb-1">Depósito confirmado</p>
+                                <p className="text-white/60 text-sm mb-1">Depósito confirmado</p>
                                 <p className="text-3xl font-bold bg-gradient-to-r from-[#FFD54F] to-[#FFB300] bg-clip-text text-transparent">
                                     {displayAmount}
                                 </p>
-                                <p className="text-muted-foreground text-sm mt-2">
+                                <p className="text-white/60 text-sm mt-2">
                                     Seu saldo foi atualizado
                                 </p>
                             </div>

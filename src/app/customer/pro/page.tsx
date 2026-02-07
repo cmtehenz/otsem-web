@@ -1136,7 +1136,7 @@ export default function ProTradingPage() {
                     </BottomSheetHeader>
                     <div className="px-5 pb-6 space-y-3">
                         <div className="space-y-1">
-                            <Label className="text-[12px] text-foreground/70">Valor em USDT</Label>
+                            <Label className="text-[12px] text-white/70">Valor em USDT</Label>
                             <Input
                                 value={transferAmount}
                                 onChange={(e) => setTransferAmount(e.target.value)}

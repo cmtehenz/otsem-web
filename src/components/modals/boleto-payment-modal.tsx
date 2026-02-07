@@ -217,13 +217,13 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
         <BottomSheet open={open} onOpenChange={handleClose}>
             <BottomSheetContent>
                 <BottomSheetHeader>
-                    <BottomSheetTitle className="text-foreground text-xl text-center">
+                    <BottomSheetTitle className="text-white text-xl text-center">
                         {step === "input" && "Pagar Boleto"}
                         {step === "quote" && "Cotação do Pagamento"}
                         {step === "confirm" && "Confirmar Pagamento"}
                         {step === "success" && "Pagamento Enviado!"}
                     </BottomSheetTitle>
-                    <BottomSheetDescription className="text-muted-foreground text-center text-sm">
+                    <BottomSheetDescription className="text-white/60 text-center text-sm">
                         {step === "input" && "Pague boletos usando crypto da sua carteira"}
                         {step === "quote" && "Revise os valores antes de confirmar"}
                         {step === "confirm" && "Confirme para enviar o pagamento"}
@@ -237,7 +237,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                         <div className="w-full space-y-4">
                             {/* Barcode input */}
                             <div className="space-y-2">
-                                <label className="text-muted-foreground text-sm flex items-center gap-2">
+                                <label className="text-white/60 text-sm flex items-center gap-2">
                                     <Receipt className="w-4 h-4" />
                                     Código de barras (linha digitável)
                                 </label>
@@ -246,15 +246,15 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                     value={barcode}
                                     onChange={(e) => setBarcode(e.target.value)}
                                     placeholder="00000.00000 00000.000000 00000.000000 0 00000000000000"
-                                    className="w-full px-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full px-4 text-sm bg-white/5 border border-white/10 text-white h-12 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-white/30"
                                 />
                             </div>
 
                             {/* Amount input */}
                             <div className="space-y-2">
-                                <label className="text-muted-foreground text-sm">Valor do boleto (BRL)</label>
+                                <label className="text-white/60 text-sm">Valor do boleto (BRL)</label>
                                 <div className="relative cursor-pointer" onClick={handleAmountClick}>
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-lg">
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 text-lg">
                                         R$
                                     </span>
                                     <input
@@ -267,14 +267,14 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                         readOnly={!amountActive}
                                         onFocus={() => setAmountActive(true)}
                                         placeholder="0,00"
-                                        className={`w-full pl-12 pr-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50 ${!amountActive ? "cursor-pointer" : ""}`}
+                                        className={`w-full pl-12 pr-4 text-sm bg-white/5 border border-white/10 text-white h-12 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-white/30 ${!amountActive ? "cursor-pointer" : ""}`}
                                     />
                                 </div>
                             </div>
 
                             {/* Crypto currency selector */}
                             <div className="space-y-2">
-                                <label className="text-muted-foreground text-sm">Moeda de pagamento</label>
+                                <label className="text-white/60 text-sm">Moeda de pagamento</label>
                                 <div className="flex gap-2">
                                     {availableCurrencies.map((c) => (
                                         <button
@@ -282,8 +282,8 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                             onClick={() => handleCryptoSelect(c)}
                                             className={`flex-1 py-3 px-4 rounded-xl border transition font-medium text-sm ${
                                                 cryptoCurrency === c
-                                                    ? "border-[#6F00FF] bg-[#FFB300]/20 text-[#6F00FF] dark:text-[#8B2FFF]"
-                                                    : "border-border bg-muted text-muted-foreground hover:border-[#FFB300]/30"
+                                                    ? "border-[#6F00FF] bg-[#6F00FF]/10 text-[#6F00FF]"
+                                                    : "border-white/10 bg-white/5 text-white/60 hover:border-[#FFB300]/30"
                                             }`}
                                         >
                                             {c}
@@ -294,7 +294,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
 
                             {/* Wallet selector */}
                             <div className="space-y-2">
-                                <p className="text-muted-foreground text-sm flex items-center gap-2">
+                                <p className="text-white/60 text-sm flex items-center gap-2">
                                     <Wallet className="w-4 h-4" />
                                     Selecione a carteira
                                 </p>
@@ -314,7 +314,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                                     className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${
                                                         selectedWalletId === wallet.id
                                                             ? "border-[#FFB300]/50 bg-[#FFB300]/20"
-                                                            : "border-border bg-muted hover:border-[#FFB300]/30"
+                                                            : "border-white/10 bg-white/5 hover:border-[#FFB300]/30"
                                                     }`}
                                                 >
                                                     <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
@@ -322,7 +322,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                                     </div>
                                                     <div className="flex-1 text-left min-w-0">
                                                         <div className="flex items-center gap-2 flex-wrap">
-                                                            <p className="text-foreground font-medium text-sm truncate">
+                                                            <p className="text-white font-medium text-sm truncate">
                                                                 {wallet.label || `Carteira ${index + 1}`}
                                                             </p>
                                                             {isMain && (
@@ -332,7 +332,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        <p className="text-muted-foreground text-xs truncate">
+                                                        <p className="text-white/60 text-xs truncate">
                                                             {wallet.network} &bull; {wallet.externalAddress?.slice(0, 8)}...{wallet.externalAddress?.slice(-6)}
                                                         </p>
                                                     </div>
@@ -344,9 +344,9 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                         })}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-6 bg-muted border border-border rounded-xl">
-                                        <Wallet className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                                        <p className="text-muted-foreground text-sm mb-3">Nenhuma carteira cadastrada</p>
+                                    <div className="text-center py-6 bg-white/5 border border-white/10 rounded-xl">
+                                        <Wallet className="w-8 h-8 text-white/60 mx-auto mb-2" />
+                                        <p className="text-white/60 text-sm mb-3">Nenhuma carteira cadastrada</p>
                                         <Link href="/customer/wallet" onClick={handleClose}>
                                             <Button
                                                 variant="outline"
@@ -362,13 +362,13 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
 
                             {/* Description (optional) */}
                             <div className="space-y-2">
-                                <label className="text-muted-foreground text-sm">Descrição (opcional)</label>
+                                <label className="text-white/60 text-sm">Descrição (opcional)</label>
                                 <input
                                     type="text"
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     placeholder="Ex: Conta de luz, boleto bancário..."
-                                    className="w-full px-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full px-4 text-sm bg-white/5 border border-white/10 text-white h-12 rounded-xl focus:border-[#FFB300]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-white/30"
                                 />
                             </div>
 
@@ -397,26 +397,26 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                         <div className="w-full space-y-5">
                             <button
                                 onClick={handleBack}
-                                className="text-muted-foreground hover:text-foreground text-sm flex items-center gap-1"
+                                className="text-white/60 hover:text-white text-sm flex items-center gap-1"
                             >
                                 &larr; Voltar
                             </button>
 
-                            <div className="bg-muted border border-border rounded-xl p-5 space-y-4">
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-5 space-y-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl">
                                             <Receipt className="w-5 h-5 text-white" />
                                         </div>
                                         <div>
-                                            <p className="text-muted-foreground text-xs">Valor do boleto</p>
-                                            <p className="text-foreground font-bold">{formatBRL(quote.boletoAmount)}</p>
+                                            <p className="text-white/60 text-xs">Valor do boleto</p>
+                                            <p className="text-white font-bold">{formatBRL(quote.boletoAmount)}</p>
                                         </div>
                                     </div>
                                     <ArrowRight className="w-5 h-5 text-[#6F00FF]" />
                                     <div className="flex items-center gap-3">
                                         <div>
-                                            <p className="text-muted-foreground text-xs text-right">Débito em crypto</p>
+                                            <p className="text-white/60 text-xs text-right">Débito em crypto</p>
                                             <p className="text-white font-bold">
                                                 {formatCrypto(quote.cryptoAmount, quote.cryptoCurrency)}
                                             </p>
@@ -427,37 +427,37 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                     </div>
                                 </div>
 
-                                <div className="border-t border-border pt-4 space-y-2">
+                                <div className="border-t border-white/10 pt-4 space-y-2">
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Valor do boleto</span>
-                                        <span className="text-foreground">{formatBRL(quote.boletoAmount)}</span>
+                                        <span className="text-white/60">Valor do boleto</span>
+                                        <span className="text-white">{formatBRL(quote.boletoAmount)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">
+                                        <span className="text-white/60">
                                             Taxa de serviço ({quote.serviceFeePct}%)
                                         </span>
-                                        <span className="text-foreground">{formatBRL(quote.serviceFee)}</span>
+                                        <span className="text-white">{formatBRL(quote.serviceFee)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm font-medium">
-                                        <span className="text-muted-foreground">Total em BRL</span>
-                                        <span className="text-foreground">{formatBRL(quote.totalBrl)}</span>
+                                        <span className="text-white/60">Total em BRL</span>
+                                        <span className="text-white">{formatBRL(quote.totalBrl)}</span>
                                     </div>
-                                    <div className="border-t border-border pt-2 mt-2" />
+                                    <div className="border-t border-white/10 pt-2 mt-2" />
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Cotação</span>
-                                        <span className="text-foreground">
+                                        <span className="text-white/60">Cotação</span>
+                                        <span className="text-white">
                                             1 {quote.cryptoCurrency} = {formatBRL(quote.exchangeRate)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm font-bold">
-                                        <span className="text-muted-foreground">Valor a debitar</span>
+                                        <span className="text-white/60">Valor a debitar</span>
                                         <span className="text-white">
                                             {formatCrypto(quote.cryptoAmount, quote.cryptoCurrency)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Carteira</span>
-                                        <span className="text-foreground text-xs truncate max-w-[180px]">
+                                        <span className="text-white/60">Carteira</span>
+                                        <span className="text-white text-xs truncate max-w-[180px]">
                                             {selectedWallet?.label || "Carteira"} &bull;{" "}
                                             {selectedWallet?.externalAddress?.slice(0, 8)}...
                                             {selectedWallet?.externalAddress?.slice(-6)}
@@ -481,7 +481,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                 )}
                             </Button>
 
-                            <p className="text-muted-foreground text-xs text-center">
+                            <p className="text-white/60 text-xs text-center">
                                 Ao confirmar, o valor em crypto será reservado da sua carteira.
                                 O boleto será processado pelo administrador.
                             </p>
@@ -498,30 +498,30 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                             </div>
 
                             <div className="text-center">
-                                <p className="text-foreground font-bold text-lg">Pagamento enviado!</p>
-                                <p className="text-muted-foreground text-sm mt-2">
+                                <p className="text-white font-bold text-lg">Pagamento enviado!</p>
+                                <p className="text-white/60 text-sm mt-2">
                                     Seu pedido de pagamento de boleto foi registrado.
                                     O administrador processará o pagamento.
                                 </p>
                             </div>
 
                             {quote && (
-                                <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
+                                <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-3">
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Valor do boleto</span>
-                                        <span className="text-foreground font-medium">
+                                        <span className="text-white/60">Valor do boleto</span>
+                                        <span className="text-white font-medium">
                                             {formatBRL(quote.boletoAmount)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Crypto debitado</span>
+                                        <span className="text-white/60">Crypto debitado</span>
                                         <span className="text-white font-medium">
                                             {formatCrypto(quote.cryptoAmount, quote.cryptoCurrency)}
                                         </span>
                                     </div>
                                     {paymentId && (
                                         <div className="flex justify-between items-center text-sm">
-                                            <span className="text-muted-foreground">ID</span>
+                                            <span className="text-white/60">ID</span>
                                             <button
                                                 className="text-[#6F00FF] text-xs font-mono hover:underline flex items-center gap-1"
                                                 onClick={() => {
@@ -538,7 +538,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                             )}
 
                             <div className="bg-[#FFB300]/10 border border-[#FFB300]/30 rounded-xl p-4">
-                                <p className="text-[#6F00FF] text-sm text-center">
+                                <p className="text-white/70 text-sm text-center">
                                     Acompanhe o status na seção &quot;Meus Boletos&quot;.
                                 </p>
                             </div>
@@ -547,7 +547,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                 <Link href="/customer/boleto" onClick={handleClose} className="flex-1">
                                     <Button
                                         variant="outline"
-                                        className="w-full border-border text-foreground rounded-xl py-6"
+                                        className="w-full border-white/10 text-white rounded-xl py-6"
                                     >
                                         Ver Meus Boletos
                                     </Button>

@@ -190,9 +190,9 @@ function BottomSheetContent({
             className={cn(
               "fixed inset-x-0 bottom-0 z-50 flex flex-col",
               "max-h-[92dvh]",
-              "bg-background/95 dark:bg-[#1a1025]/95",
+              "bg-[#0d0518]/95",
               "backdrop-blur-xl",
-              "border-t border-white/[0.08]",
+              "border-t border-white/10",
               "rounded-t-[24px]",
               "shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.5)]",
               "pwa-sheet-safe-bottom",
@@ -203,7 +203,7 @@ function BottomSheetContent({
           >
             {/* Drag handle */}
             <div className="flex justify-center pt-3 pb-2 shrink-0 cursor-grab active:cursor-grabbing">
-              <div className="h-1 w-9 rounded-full bg-muted-foreground/25" />
+              <div className="h-1 w-9 rounded-full bg-white/20" />
             </div>
 
             {/* Inner content — scrollable */}
@@ -215,7 +215,7 @@ function BottomSheetContent({
             {showCloseButton && (
               <button
                 onClick={() => onOpenChange(false)}
-                className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-muted/80 text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white/60 hover:text-white hover:bg-white/15 transition-colors"
               >
                 <XIcon className="h-4 w-4" />
                 <span className="sr-only">Fechar</span>
@@ -251,7 +251,7 @@ function BottomSheetTitle({
 }: React.ComponentProps<"h2">) {
   return (
     <h2
-      className={cn("text-[17px] font-semibold text-foreground", className)}
+      className={cn("text-[17px] font-semibold text-white", className)}
       {...props}
     />
   );
@@ -263,7 +263,7 @@ function BottomSheetDescription({
 }: React.ComponentProps<"p">) {
   return (
     <p
-      className={cn("text-[13px] text-muted-foreground", className)}
+      className={cn("text-[13px] text-white/60", className)}
       {...props}
     />
   );

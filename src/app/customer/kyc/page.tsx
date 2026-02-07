@@ -521,7 +521,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                 <div
                   className={`flex h-10 w-10 items-center justify-center rounded-[14px] shadow ${
                     isLocked
-                      ? "bg-muted-foreground/10"
+                      ? "bg-white/10"
                       : level.iconBg
                   }`}
                 >
@@ -555,7 +555,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                 </span>
               )}
               {isLocked && (
-                <span className="rounded-full bg-muted-foreground/8 px-2.5 py-0.5 text-[11px] font-semibold text-white">
+                <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold text-white">
                   Bloqueado
                 </span>
               )}
@@ -583,7 +583,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                     {isCompleted || isCurrent ? (
                       <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-white" />
                     ) : (
-                      <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground/30" />
+                      <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-white/30" />
                     )}
                     {req}
                   </li>
