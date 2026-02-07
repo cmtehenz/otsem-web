@@ -7,18 +7,18 @@ import { ArrowLeft, Shield, Database, Eye, Lock, Users, Globe2, Mail, FileText }
 
 export default function PrivacyPolicyPage() {
   return (
-    <main className="min-h-screen bg-[#0a0118] text-white">
+    <main className="min-h-screen bg-[#050607] text-white">
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-1/2 left-1/2 h-[1000px] w-[1000px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#6F00FF]/20 via-[#6F00FF]/10 to-transparent blur-3xl" />
+        <div className="absolute -top-1/2 left-1/2 h-[1000px] w-[1000px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#3871F1]/20 via-[#3871F1]/10 to-transparent blur-3xl" />
       </div>
 
-      <header className="border-b border-white/5 bg-[#0a0118]/80 backdrop-blur-xl">
+      <header className="border-b border-white/5 bg-[#050607]/80 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-3">
             <Image src="/images/logo-64.png" alt="OtsemPay" width={40} height={40} className="h-10 w-10 object-contain" />
             <span className="text-xl font-bold tracking-tight">
               <span className="text-amber-400">Otsem</span>
-              <span className="text-[#6F00FF]">Pay</span>
+              <span className="text-[#3871F1]">Pay</span>
             </span>
           </Link>
           <Link href="/">
@@ -32,9 +32,9 @@ export default function PrivacyPolicyPage() {
 
       <div className="mx-auto max-w-4xl px-6 py-16">
         <div className="mb-12 text-center">
-          <div className="mb-4 inline-flex items-center justify-center gap-2 rounded-full border border-[#6F00FF]/50/30 bg-[#6F00FF]/50/10 px-4 py-2">
-            <Shield className="h-5 w-5 text-[#6F00FF]" />
-            <span className="text-sm font-medium text-[#6F00FF]/20">Política de Privacidade</span>
+          <div className="mb-4 inline-flex items-center justify-center gap-2 rounded-full border border-[#3871F1]/50/30 bg-[#3871F1]/50/10 px-4 py-2">
+            <Shield className="h-5 w-5 text-[#3871F1]" />
+            <span className="text-sm font-medium text-[#3871F1]/20">Política de Privacidade</span>
           </div>
           <h1 className="text-3xl font-bold sm:text-4xl lg:text-5xl">
             Política de Privacidade
@@ -44,7 +44,7 @@ export default function PrivacyPolicyPage() {
           </p>
         </div>
 
-        <div className="mb-8 rounded-2xl border border-[#6F00FF]/50/20 bg-[#6F00FF]/50/10 p-6">
+        <div className="mb-8 rounded-2xl border border-[#3871F1]/50/20 bg-[#3871F1]/50/10 p-6">
           <p className="text-white/80 leading-relaxed">
             A OtsemPay está comprometida com a proteção da sua privacidade e dos seus dados pessoais. Esta Política de Privacidade descreve como coletamos, usamos, armazenamos e protegemos suas informações pessoais em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018).
           </p>
@@ -103,27 +103,27 @@ export default function PrivacyPolicyPage() {
           >
             <ul className="mt-4 space-y-3 text-white/70">
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Prestação de Serviços:</strong> Processar transações, conversões de moeda e operações OTC.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Verificação de Identidade (KYC):</strong> Cumprir obrigações legais de prevenção à lavagem de dinheiro e financiamento ao terrorismo.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Comunicação:</strong> Enviar notificações sobre transações, atualizações de serviço e informações de segurança.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Segurança:</strong> Detectar e prevenir fraudes, atividades suspeitas e violações de segurança.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Melhoria de Serviços:</strong> Analisar padrões de uso para aprimorar nossa plataforma e experiência do usuário.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Cumprimento Legal:</strong> Atender obrigações legais, regulatórias e solicitações de autoridades competentes.</span>
               </li>
             </ul>
@@ -136,19 +136,19 @@ export default function PrivacyPolicyPage() {
           >
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <h4 className="font-semibold text-[#6F00FF]">Execução de Contrato</h4>
+                <h4 className="font-semibold text-[#3871F1]">Execução de Contrato</h4>
                 <p className="mt-2 text-sm text-white/60">Para prestação dos serviços contratados por você.</p>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <h4 className="font-semibold text-[#6F00FF]">Obrigação Legal</h4>
+                <h4 className="font-semibold text-[#3871F1]">Obrigação Legal</h4>
                 <p className="mt-2 text-sm text-white/60">Para cumprir exigências regulatórias (KYC/AML).</p>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <h4 className="font-semibold text-[#6F00FF]">Legítimo Interesse</h4>
+                <h4 className="font-semibold text-[#3871F1]">Legítimo Interesse</h4>
                 <p className="mt-2 text-sm text-white/60">Para segurança e prevenção a fraudes.</p>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <h4 className="font-semibold text-[#6F00FF]">Consentimento</h4>
+                <h4 className="font-semibold text-[#3871F1]">Consentimento</h4>
                 <p className="mt-2 text-sm text-white/60">Para comunicações de marketing (quando aplicável).</p>
               </div>
             </div>
@@ -161,19 +161,19 @@ export default function PrivacyPolicyPage() {
           >
             <ul className="mt-4 space-y-3 text-white/70">
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Parceiros de Serviço:</strong> Empresas que nos auxiliam na prestação de serviços (processamento de pagamentos, verificação de identidade, hospedagem de dados).</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Instituições Financeiras:</strong> Bancos e outras instituições para processamento de transações PIX e transferências.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Autoridades Governamentais:</strong> Quando exigido por lei, regulamentação ou ordem judicial.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Exchanges de Criptomoedas:</strong> Para processamento de operações com ativos digitais.</span>
               </li>
             </ul>
@@ -250,19 +250,19 @@ export default function PrivacyPolicyPage() {
           >
             <ul className="mt-4 space-y-3 text-white/70">
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Dados de Conta:</strong> Mantidos enquanto sua conta estiver ativa e por 5 anos após o encerramento.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Dados de Transações:</strong> Mantidos por 10 anos para cumprimento de obrigações fiscais e regulatórias.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Dados de KYC:</strong> Mantidos por 10 anos conforme regulamentações de prevenção à lavagem de dinheiro.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#6F00FF]/50" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-[#3871F1]/50" />
                 <span><strong className="text-white">Logs de Acesso:</strong> Mantidos por 6 meses conforme Marco Civil da Internet.</span>
               </li>
             </ul>
@@ -285,14 +285,14 @@ A data da última atualização será sempre indicada no topo desta página.`}
           >
             <div className="mt-4 space-y-4">
               <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-                <h4 className="font-semibold text-[#6F00FF]">Encarregado de Proteção de Dados (DPO)</h4>
+                <h4 className="font-semibold text-[#3871F1]">Encarregado de Proteção de Dados (DPO)</h4>
                 <p className="mt-2 text-white/70">
                   E-mail: dpo@otsembank.com.br<br />
                   Telefone: (11) 0000-0000
                 </p>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-                <h4 className="font-semibold text-[#6F00FF]">OtsemPay</h4>
+                <h4 className="font-semibold text-[#3871F1]">OtsemPay</h4>
                 <p className="mt-2 text-white/70">
                   E-mail: privacidade@otsembank.com.br<br />
                   Endereço: São Paulo, SP - Brasil<br />
@@ -310,14 +310,14 @@ A data da última atualização será sempre indicada no topo desta página.`}
             </Button>
           </Link>
           <Link href="/">
-            <Button className="h-12 rounded-full bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] px-8 font-semibold">
+            <Button className="h-12 rounded-full bg-gradient-to-r from-[#3871F1] to-[#3871F1] px-8 font-semibold">
               Voltar para o início
             </Button>
           </Link>
         </div>
       </div>
 
-      <footer className="border-t border-white/5 bg-[#0a0118]">
+      <footer className="border-t border-white/5 bg-[#050607]">
         <div className="mx-auto max-w-7xl px-6 py-8">
           <p className="text-center text-sm text-white/40">
             © {new Date().getFullYear()} OtsemPay. Todos os direitos reservados.
@@ -342,7 +342,7 @@ function Section({
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-8">
       <div className="mb-4 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#6F00FF]/50/20 text-[#6F00FF]">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3871F1]/50/20 text-[#3871F1]">
           {icon}
         </div>
         <h2 className="text-xl font-bold">{title}</h2>
@@ -360,11 +360,11 @@ function Section({
 function DataCategory({ title, items }: { title: string; items: string[] }) {
   return (
     <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-      <h4 className="mb-3 font-semibold text-[#6F00FF]">{title}</h4>
+      <h4 className="mb-3 font-semibold text-[#3871F1]">{title}</h4>
       <ul className="grid gap-2 text-sm text-white/70 sm:grid-cols-2">
         {items.map((item, i) => (
           <li key={i} className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#6F00FF]/50" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#3871F1]/50" />
             {item}
           </li>
         ))}
@@ -376,7 +376,7 @@ function DataCategory({ title, items }: { title: string; items: string[] }) {
 function RightItem({ title, description }: { title: string; description: string }) {
   return (
     <div className="flex items-start gap-4 rounded-xl border border-white/10 bg-white/5 p-4">
-      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-[#6F00FF]/50/20 text-sm font-bold text-[#6F00FF]">
+      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-[#3871F1]/50/20 text-sm font-bold text-[#3871F1]">
         {title.charAt(0)}
       </div>
       <div>

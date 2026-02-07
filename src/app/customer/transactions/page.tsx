@@ -533,39 +533,39 @@ export default function TransactionsPage() {
 
         if (meta.isPending) {
             return (
-                <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
-                    <ArrowRightLeft className={`${size} text-white`} />
+                <div className="w-9 h-9 rounded-full bg-white/8 flex items-center justify-center">
+                    <ArrowRightLeft className={`${size} text-white/60`} />
                 </div>
             );
         }
 
         if (meta.isTransfer) {
             return (
-                <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
-                    <UserRoundSearch className={`${size} text-white`} />
+                <div className="w-9 h-9 rounded-full bg-[#6C5CE7]/12 flex items-center justify-center">
+                    <UserRoundSearch className={`${size} text-[#8E7BFF]`} />
                 </div>
             );
         }
 
         if (meta.isConversionTx) {
             return (
-                <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
-                    <ArrowRightLeft className={`${size} text-white`} />
+                <div className="w-9 h-9 rounded-full bg-[#3871F1]/12 flex items-center justify-center">
+                    <ArrowRightLeft className={`${size} text-[#396DE6]`} />
                 </div>
             );
         }
 
         if (meta.isIncoming) {
             return (
-                <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
-                    <ArrowDownLeft className={`${size} text-white`} />
+                <div className="w-9 h-9 rounded-full bg-emerald-500/12 flex items-center justify-center">
+                    <ArrowDownLeft className={`${size} text-emerald-400`} />
                 </div>
             );
         }
 
         return (
-            <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
-                <ArrowUpRight className={`${size} text-white`} />
+            <div className="w-9 h-9 rounded-full bg-[#3871F1]/12 flex items-center justify-center">
+                <ArrowUpRight className={`${size} text-[#396DE6]`} />
             </div>
         );
     }
@@ -639,9 +639,9 @@ export default function TransactionsPage() {
         return (
             <div className="flex h-[80dvh] flex-col items-center justify-center px-4">
                 <div className="relative">
-                    <div className="absolute inset-0 bg-[#6F00FF]/30 rounded-full blur-xl animate-pulse" />
+                    <div className="absolute inset-0 bg-[#3871F1]/30 rounded-full blur-xl animate-pulse" />
                     <div className="relative">
-                        <Loader2 className="h-10 w-10 animate-spin text-[#6F00FF]" />
+                        <Loader2 className="h-10 w-10 animate-spin text-[#3871F1]" />
                     </div>
                 </div>
                 <p className="text-[13px] text-white mt-6">
@@ -687,7 +687,7 @@ export default function TransactionsPage() {
                                 whitespace-nowrap transition-all duration-200
                                 ${
                                     isActive
-                                        ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
+                                        ? "bg-[#3871F1] text-white shadow-lg shadow-[#3871F1]/25"
                                         : "bg-white/10 border border-white/15 text-white hover:text-white"
                                 }
                             `}
@@ -848,7 +848,7 @@ export default function TransactionsPage() {
                                     text-[13px] font-semibold transition-all duration-200
                                     ${
                                         page === p
-                                            ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
+                                            ? "bg-[#3871F1] text-white shadow-lg shadow-[#3871F1]/25"
                                             : "bg-white/10 border border-white/15 text-white hover:text-white hover:bg-white/15"
                                     }
                                 `}

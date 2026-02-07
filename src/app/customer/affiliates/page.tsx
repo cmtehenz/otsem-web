@@ -148,7 +148,7 @@ export default function AffiliatesPage() {
         return (
             <div className="flex items-center justify-center h-[50dvh]">
                 <div className="flex flex-col items-center gap-3">
-                    <div className="w-8 h-8 rounded-full border-2 border-[#6F00FF]/30 border-t-[#6F00FF] animate-spin" />
+                    <div className="w-8 h-8 rounded-full border-2 border-[#3871F1]/30 border-t-[#3871F1] animate-spin" />
                     <span className="text-[13px] text-white">Carregando...</span>
                 </div>
             </div>
@@ -171,8 +171,8 @@ export default function AffiliatesPage() {
                 </motion.div>
 
                 <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5 !p-8 text-center">
-                    <div className="w-16 h-16 rounded-full bg-[#6F00FF]/10 dark:bg-[#6F00FF]/20 flex items-center justify-center mx-auto mb-4">
-                        <Users className="w-7 h-7 text-[#6F00FF]" strokeWidth={1.8} />
+                    <div className="w-16 h-16 rounded-full bg-[#3871F1]/10 dark:bg-[#3871F1]/20 flex items-center justify-center mx-auto mb-4">
+                        <Users className="w-7 h-7 text-[#3871F1]" strokeWidth={1.8} />
                     </div>
                     <h3 className="text-[15px] font-semibold text-white mb-1">Recurso não disponível</h3>
                     <p className="text-[13px] text-white leading-relaxed max-w-[280px] mx-auto">
@@ -204,7 +204,7 @@ export default function AffiliatesPage() {
             <motion.div variants={fadeUp}>
                 <div className="relative overflow-hidden rounded-[20px] p-5">
                     {/* Glass gradient background */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#6F00FF] via-[#8B2FFF] to-[#6F00FF]" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#3871F1] via-[#396DE6] to-[#3871F1]" />
                     <div className="absolute -top-12 -right-12 w-28 h-28 rounded-full bg-white/10 blur-2xl" />
                     <div className="absolute -bottom-8 -left-8 w-24 h-24 rounded-full bg-white/10 blur-2xl" />
 
@@ -242,7 +242,7 @@ export default function AffiliatesPage() {
                             </div>
                             <button
                                 onClick={handleShare}
-                                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-[#6F00FF] text-[13px] font-semibold active:scale-95 transition-transform"
+                                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-[#3871F1] text-[13px] font-semibold active:scale-95 transition-transform"
                             >
                                 <Share2 className="w-4 h-4" strokeWidth={2} />
                                 Compartilhar
@@ -257,13 +257,13 @@ export default function AffiliatesPage() {
                 {/* Total referrals */}
                 <div className="fintech-glass-card rounded-[20px] p-5 !p-4 !rounded-[20px]">
                     <div className="flex items-center justify-between mb-2">
-                        <div className="w-8 h-8 rounded-full bg-[#6F00FF]/10 dark:bg-[#6F00FF]/20 flex items-center justify-center">
-                            <Users className="w-4 h-4 text-[#6F00FF]" strokeWidth={2} />
+                        <div className="w-8 h-8 rounded-full bg-[#3871F1]/10 dark:bg-[#3871F1]/20 flex items-center justify-center">
+                            <Users className="w-4 h-4 text-[#3871F1]" strokeWidth={2} />
                         </div>
                     </div>
                     <p className="text-[20px] font-bold text-white">{stats.totalReferrals ?? 0}</p>
                     <p className="text-[11px] text-white mt-0.5">Total indicados</p>
-                    <p className="text-[11px] text-[#6F00FF] dark:text-[#8B2FFF] font-medium mt-0.5">
+                    <p className="text-[11px] text-[#3871F1] dark:text-[#396DE6] font-medium mt-0.5">
                         {stats.activeReferrals ?? 0} ativos
                     </p>
                 </div>
@@ -329,7 +329,7 @@ export default function AffiliatesPage() {
                     onClick={() => setActiveTab("referrals")}
                     className={`px-4 py-2 rounded-full text-[13px] font-semibold active:scale-95 transition-all ${
                         activeTab === "referrals"
-                            ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
+                            ? "bg-[#3871F1] text-white shadow-lg shadow-[#3871F1]/25"
                             : "bg-white/60 dark:bg-white/[0.06] text-white border border-white/60 dark:border-white/[0.08]"
                     }`}
                 >
@@ -339,7 +339,7 @@ export default function AffiliatesPage() {
                     onClick={() => setActiveTab("commissions")}
                     className={`px-4 py-2 rounded-full text-[13px] font-semibold active:scale-95 transition-all ${
                         activeTab === "commissions"
-                            ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
+                            ? "bg-[#3871F1] text-white shadow-lg shadow-[#3871F1]/25"
                             : "bg-white/60 dark:bg-white/[0.06] text-white border border-white/60 dark:border-white/[0.08]"
                     }`}
                 >
@@ -352,8 +352,8 @@ export default function AffiliatesPage() {
                 {activeTab === "referrals" ? (
                     referrals.length === 0 ? (
                         <div className="py-10 text-center">
-                            <div className="w-14 h-14 rounded-full bg-[#6F00FF]/10 dark:bg-[#6F00FF]/20 flex items-center justify-center mx-auto mb-3">
-                                <Users className="w-6 h-6 text-[#6F00FF]" strokeWidth={1.8} />
+                            <div className="w-14 h-14 rounded-full bg-[#3871F1]/10 dark:bg-[#3871F1]/20 flex items-center justify-center mx-auto mb-3">
+                                <Users className="w-6 h-6 text-[#3871F1]" strokeWidth={1.8} />
                             </div>
                             <p className="text-[14px] font-medium text-white mb-1">Nenhum indicado ainda</p>
                             <p className="text-[13px] text-white">Compartilhe seu link para começar!</p>
@@ -363,8 +363,8 @@ export default function AffiliatesPage() {
                             {referrals.map((referral) => (
                                 <div key={referral.id} className="flex items-center justify-between py-3.5 first:pt-0 last:pb-0">
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <div className="w-10 h-10 rounded-full bg-[#6F00FF]/10 dark:bg-[#6F00FF]/20 flex items-center justify-center shrink-0">
-                                            <span className="text-[14px] font-bold text-[#6F00FF] dark:text-[#8B2FFF]">
+                                        <div className="w-10 h-10 rounded-full bg-[#3871F1]/10 dark:bg-[#3871F1]/20 flex items-center justify-center shrink-0">
+                                            <span className="text-[14px] font-bold text-[#3871F1] dark:text-[#396DE6]">
                                                 {referral.name.charAt(0).toUpperCase()}
                                             </span>
                                         </div>

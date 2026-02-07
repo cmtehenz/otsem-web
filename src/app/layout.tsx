@@ -23,8 +23,8 @@ export const viewport: Viewport = {
     userScalable: false,
     viewportFit: "cover",
     themeColor: [
-        { color: "#6F00FF", media: "(prefers-color-scheme: light)" },
-        { color: "#0a0118", media: "(prefers-color-scheme: dark)" },
+        { color: "#3871F1", media: "(prefers-color-scheme: light)" },
+        { color: "#050607", media: "(prefers-color-scheme: dark)" },
     ],
 };
 import { Toaster } from "@/components/ui/sonner";
@@ -92,7 +92,7 @@ export default async function RootLayout({
             alignItems: "center",
             justifyContent: "center",
             background: "url('/images/customer-bg.png') center top / cover no-repeat",
-            backgroundColor: "#050010",
+            backgroundColor: "#050607",
             transition: "opacity 0.2s ease-out",
           }}
         >

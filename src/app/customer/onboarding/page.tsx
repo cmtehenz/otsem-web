@@ -26,7 +26,7 @@ function ProgressBar({ currentStep }: { currentStep: Step }) {
                     key={step}
                     className={`h-1.5 flex-1 rounded-full transition-colors ${
                         i <= idx
-                            ? "bg-[#6F00FF]"
+                            ? "bg-[#3871F1]"
                             : "bg-muted"
                     }`}
                 />
@@ -120,7 +120,7 @@ export default function OnboardingPage() {
                 />
                 <span className="ml-3 text-lg font-bold">
                     <span className="text-amber-500 dark:text-amber-400">Otsem</span>
-                    <span className="text-[#6F00FF]">Pay</span>
+                    <span className="text-[#3871F1]">Pay</span>
                 </span>
             </header>
 

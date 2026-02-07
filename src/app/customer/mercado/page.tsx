@@ -100,7 +100,11 @@ function TokenRow({
             variants={fadeUp}
             onClick={() => onSelect(token)}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl bg-white/5 hover:bg-white/8 transition-colors text-left"
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-[20px] transition-colors text-left"
+            style={{
+                background: "rgba(18, 20, 29, 0.55)",
+                border: "1px solid rgba(163, 186, 239, 0.10)",
+            }}
         >
             {/* Rank */}
             <span className="text-[13px] font-medium text-white/60 w-6 text-right tabular-nums shrink-0">
@@ -108,7 +112,7 @@ function TokenRow({
             </span>
 
             {/* Icon */}
-            <div className="w-9 h-9 rounded-full overflow-hidden bg-white/10 shrink-0">
+            <div className="w-9 h-9 rounded-full overflow-hidden shrink-0" style={{ background: "rgba(18, 20, 29, 0.6)", border: "1px solid rgba(163, 186, 239, 0.10)" }}>
                 <Image
                     src={token.image}
                     alt={token.name}
@@ -211,7 +215,7 @@ function TokenDetailSheet({
 
     return (
         <BottomSheet open={open} onOpenChange={(v) => !v && onClose()}>
-            <BottomSheetContent className="bg-[#1a0a2e]/95 backdrop-blur-xl border-white/10">
+            <BottomSheetContent className="backdrop-blur-xl" style={{ background: "rgba(13, 14, 21, 0.95)", borderColor: "rgba(163, 186, 239, 0.14)" }}>
                 <BottomSheetHeader>
                     <BottomSheetTitle className="sr-only">
                         {token.name}
@@ -245,8 +249,8 @@ function TokenDetailSheet({
                     </div>
 
                     {/* Price */}
-                    <div className="bg-white/5 rounded-2xl p-4">
-                        <p className="text-[13px] text-white/60 mb-1">
+                    <div className="rounded-2xl p-4" style={{ background: "rgba(18, 20, 29, 0.55)", border: "1px solid rgba(163, 186, 239, 0.10)" }}>
+                        <p className="text-[13px] text-white/48 mb-1">
                             {t("currentPrice")}
                         </p>
                         <p className="text-3xl font-bold text-white tabular-nums">
@@ -273,9 +277,10 @@ function TokenDetailSheet({
                         {stats.map((stat) => (
                             <div
                                 key={stat.label}
-                                className="bg-white/5 rounded-xl p-3"
+                                className="rounded-xl p-3"
+                                style={{ background: "rgba(18, 20, 29, 0.55)", border: "1px solid rgba(163, 186, 239, 0.10)" }}
                             >
-                                <p className="text-[12px] text-white/60 mb-0.5">
+                                <p className="text-[12px] text-white/48 mb-0.5">
                                     {stat.label}
                                 </p>
                                 <p className="text-[14px] font-semibold text-white tabular-nums">
@@ -346,9 +351,10 @@ export default function MercadoPage() {
                 <Link href="/customer/dashboard">
                     <motion.div
                         whileTap={{ scale: 0.92 }}
-                        className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                        className="w-10 h-10 rounded-full flex items-center justify-center"
+                        style={{ background: "rgba(18, 20, 29, 0.55)", border: "1px solid rgba(163, 186, 239, 0.14)" }}
                     >
-                        <ArrowLeft className="w-5 h-5 text-white" />
+                        <ArrowLeft className="w-5 h-5 text-white/80" />
                     </motion.div>
                 </Link>
                 <div className="flex-1">
@@ -360,9 +366,10 @@ export default function MercadoPage() {
                 <motion.button
                     whileTap={{ scale: 0.92 }}
                     onClick={refresh}
-                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                    className="w-10 h-10 rounded-full flex items-center justify-center"
+                    style={{ background: "rgba(18, 20, 29, 0.55)", border: "1px solid rgba(163, 186, 239, 0.14)" }}
                 >
-                    <RefreshCw className="w-4.5 h-4.5 text-white/80" />
+                    <RefreshCw className="w-4.5 h-4.5 text-white/70" />
                 </motion.button>
             </motion.div>
 
@@ -375,7 +382,11 @@ export default function MercadoPage() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder={t("searchPlaceholder")}
-                        className="w-full pl-9 pr-9 py-2.5 rounded-xl bg-white/8 text-[15px] text-white placeholder:text-white/40 outline-none focus:bg-white/12 transition-colors border border-white/10 focus:border-white/20"
+                        className="w-full pl-9 pr-9 py-2.5 rounded-full text-[15px] text-white placeholder:text-white/40 outline-none transition-colors"
+                        style={{
+                            background: "rgba(18, 20, 29, 0.55)",
+                            border: "1px solid rgba(163, 186, 239, 0.14)",
+                        }}
                     />
                     {searchQuery && (
                         <button
@@ -386,12 +397,12 @@ export default function MercadoPage() {
                         </button>
                     )}
                 </div>
-                <div className="flex rounded-xl bg-white/8 border border-white/10 p-0.5">
+                <div className="flex rounded-full p-0.5" style={{ background: "rgba(18, 20, 29, 0.55)", border: "1px solid rgba(163, 186, 239, 0.14)" }}>
                     <button
                         onClick={() => setCurrency("usd")}
-                        className={`px-3 py-2 rounded-lg text-[13px] font-semibold transition-all ${
+                        className={`px-3.5 py-2 rounded-full text-[13px] font-semibold transition-all ${
                             currency === "usd"
-                                ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/30"
+                                ? "bg-[#3871F1] text-white shadow-lg shadow-[#3871F1]/30"
                                 : "text-white/60 hover:text-white"
                         }`}
                     >
@@ -399,9 +410,9 @@ export default function MercadoPage() {
                     </button>
                     <button
                         onClick={() => setCurrency("brl")}
-                        className={`px-3 py-2 rounded-lg text-[13px] font-semibold transition-all ${
+                        className={`px-3.5 py-2 rounded-full text-[13px] font-semibold transition-all ${
                             currency === "brl"
-                                ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/30"
+                                ? "bg-[#3871F1] text-white shadow-lg shadow-[#3871F1]/30"
                                 : "text-white/60 hover:text-white"
                         }`}
                     >

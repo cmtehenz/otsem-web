@@ -146,15 +146,15 @@ function QuickAction({
 }) {
     return (
         <motion.button
-            className="flex flex-col items-center gap-1"
+            className="flex flex-col items-center gap-1.5"
             onClick={onClick}
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 500, damping: 25 }}
         >
-            <div className="flex items-center justify-center w-12 h-12 rounded-full fintech-glass-btn active:bg-white/20 transition-colors">
-                <Icon className="w-[20px] h-[20px] text-[#FFFFFF]" strokeWidth={1.8} />
+            <div className="flex items-center justify-center w-12 h-12 rounded-full fintech-glass-btn active:bg-white/10 transition-colors">
+                <Icon className="w-[20px] h-[20px] text-white/90" strokeWidth={1.8} />
             </div>
-            <span className="text-[12px] font-medium text-white">{label}</span>
+            <span className="text-[12px] font-medium text-white/70">{label}</span>
         </motion.button>
     );
 }
@@ -211,14 +211,14 @@ function TransactionRow({ tx, onTap }: { tx: Transaction; onTap?: () => void }) 
     }
 
     const iconConfig = isPending
-        ? { bg: "bg-white/10", color: "text-white", Icon: ArrowRightLeft }
+        ? { bg: "bg-white/8", color: "text-white/60", Icon: ArrowRightLeft }
         : isTransfer
-          ? { bg: "bg-white/10", color: "text-white", Icon: UserRoundSearch }
+          ? { bg: "bg-[#6C5CE7]/12", color: "text-[#8E7BFF]", Icon: UserRoundSearch }
           : isConversionTx
-            ? { bg: "bg-white/10", color: "text-white", Icon: ArrowRightLeft }
+            ? { bg: "bg-[#3871F1]/12", color: "text-[#396DE6]", Icon: ArrowRightLeft }
             : isIncoming
-              ? { bg: "bg-white/10", color: "text-white", Icon: ArrowDownLeft }
-              : { bg: "bg-white/10", color: "text-white", Icon: ArrowUpRight };
+              ? { bg: "bg-emerald-500/12", color: "text-emerald-400", Icon: ArrowDownLeft }
+              : { bg: "bg-[#3871F1]/12", color: "text-[#396DE6]", Icon: ArrowUpRight };
 
     return (
         <motion.div
@@ -498,8 +498,8 @@ export default function Dashboard() {
         return (
             <div className="flex h-[60dvh] flex-col items-center justify-center">
                 <div className="relative">
-                    <div className="absolute inset-0 bg-[#6F00FF]/30 rounded-full blur-xl animate-pulse" />
-                    <Loader2 className="relative h-8 w-8 animate-spin text-[#8B2FFF]" />
+                    <div className="absolute inset-0 bg-[#3871F1]/30 rounded-full blur-xl animate-pulse" />
+                    <Loader2 className="relative h-8 w-8 animate-spin text-[#3871F1]" />
                 </div>
             </div>
         );
@@ -519,7 +519,7 @@ export default function Dashboard() {
             {/* ── Balance Section ── */}
             <motion.div variants={fadeUp} className="text-center pt-4">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                    <p className="text-[14px] font-medium text-white">Saldo total</p>
+                    <p className="text-[13px] font-medium text-white/70">Saldo total</p>
                     <motion.button
                         onClick={() => setBalanceHidden(!balanceHidden)}
                         className="p-2.5 -m-2.5 rounded-full active:bg-white/10 transition-colors"
@@ -528,16 +528,16 @@ export default function Dashboard() {
                         aria-label={balanceHidden ? "Mostrar saldo" : "Ocultar saldo"}
                     >
                         {balanceHidden ? (
-                            <EyeOff className="w-4 h-4 text-white" />
+                            <EyeOff className="w-4 h-4 text-white/60" />
                         ) : (
-                            <Eye className="w-4 h-4 text-white" />
+                            <Eye className="w-4 h-4 text-white/60" />
                         )}
                     </motion.button>
                 </div>
 
                 <motion.p
-                    className="text-[36px] font-bold text-[#FFFFFF] leading-none"
-                    style={{ letterSpacing: "-0.05em" }}
+                    className="text-[44px] font-bold leading-none"
+                    style={{ letterSpacing: "-0.03em", color: "rgba(255,255,255,0.92)" }}
                     key={balanceHidden ? "hidden" : "visible"}
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -548,31 +548,31 @@ export default function Dashboard() {
             </motion.div>
 
             {/* ── Currency Cards (symmetrical) ── */}
-            <motion.div variants={fadeUp} className="flex gap-3 mt-4">
+            <motion.div variants={fadeUp} className="flex gap-3 mt-5">
                 {/* BRL Card */}
-                <div className="flex-1 rounded-2xl fintech-glass-card px-4 py-4">
+                <div className="flex-1 fintech-glass-card px-4 py-4">
                     <div className="flex items-center gap-1.5 mb-2">
                         <span className="text-[15px]">🇧🇷</span>
-                        <span className="text-white text-[12px] font-medium">BRL</span>
+                        <span className="text-white/70 text-[12px] font-medium">BRL</span>
                     </div>
-                    <p className="text-[#FFFFFF] font-semibold text-[22px] leading-tight">
+                    <p className="font-semibold text-[22px] leading-tight" style={{ color: "rgba(255,255,255,0.92)" }}>
                         {balanceHidden ? "••••" : formatCurrency(saldoBRL)}
                     </p>
-                    <p className="text-white text-[11px] mt-1">Real Brasileiro</p>
+                    <p className="text-white/48 text-[11px] mt-1">Real Brasileiro</p>
                 </div>
 
                 {/* USDT Card (with rate integrated) */}
-                <div className="flex-1 rounded-2xl fintech-glass-card px-4 py-4">
+                <div className="flex-1 fintech-glass-card px-4 py-4">
                     <div className="flex items-center gap-1.5 mb-2">
                         <Image src="/images/usdt-icon.svg" alt="USDT" width={20} height={20} />
-                        <span className="text-white text-[12px] font-medium">USDT</span>
+                        <span className="text-white/70 text-[12px] font-medium">USDT</span>
                     </div>
-                    <p className="text-[#FFFFFF] font-semibold text-[22px] leading-tight">
+                    <p className="font-semibold text-[22px] leading-tight" style={{ color: "rgba(255,255,255,0.92)" }}>
                         {balanceHidden ? "••••" : usdtBalanceLoading ? "..." : formatUSD(saldoUSDT)}
                     </p>
                     <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-white/[0.06]">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#39FF14] animate-pulse" />
-                        <span className="text-[11px] text-white">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="text-[11px] text-white/70">
                             1 USDT = {usdtLoading ? "..." : formatCurrency(usdtRateWithSpread, 2)}
                         </span>
                     </div>
@@ -612,47 +612,47 @@ export default function Dashboard() {
                 <Link href="/customer/pro">
                     <motion.div
                         whileTap={{ scale: 0.98 }}
-                        className="rounded-2xl fintech-glass-card px-4 py-3.5 flex items-center gap-3 active:bg-white/10 transition-colors"
+                        className="fintech-glass-card px-4 py-3.5 flex items-center gap-3 active:bg-white/5 transition-colors"
                     >
-                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#6F00FF]/20">
-                            <Sparkles className="w-5 h-5 text-white" />
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#6C5CE7]/15">
+                            <Sparkles className="w-5 h-5 text-[#8E7BFF]" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-[15px] font-semibold text-white">PRO</p>
-                            <p className="text-[12px] text-white/70">Trading spot com livro de ofertas</p>
+                            <p className="text-[15px] font-semibold text-white/92">PRO</p>
+                            <p className="text-[12px] text-white/48">Trading spot com livro de ofertas</p>
                         </div>
-                        <ChevronRight className="w-4.5 h-4.5 text-white/50" />
+                        <ChevronRight className="w-4.5 h-4.5 text-white/30" />
                     </motion.div>
                 </Link>
             </motion.div>
 
             {/* ── Mercado Link ── */}
-            <motion.div variants={fadeUp} className="mt-4">
+            <motion.div variants={fadeUp} className="mt-3">
                 <Link href="/customer/mercado">
                     <motion.div
                         whileTap={{ scale: 0.98 }}
-                        className="rounded-2xl fintech-glass-card px-4 py-3.5 flex items-center gap-3 active:bg-white/10 transition-colors"
+                        className="fintech-glass-card px-4 py-3.5 flex items-center gap-3 active:bg-white/5 transition-colors"
                     >
-                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#6F00FF]/20">
-                            <TrendingUp className="w-5 h-5 text-white" />
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#3871F1]/15">
+                            <TrendingUp className="w-5 h-5 text-[#396DE6]" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-[15px] font-semibold text-white">Mercado cripto</p>
-                            <p className="text-[12px] text-white/70">Top 15 tokens em tempo real</p>
+                            <p className="text-[15px] font-semibold text-white/92">Mercado cripto</p>
+                            <p className="text-[12px] text-white/48">Top 15 tokens em tempo real</p>
                         </div>
-                        <ChevronRight className="w-4.5 h-4.5 text-white/50" />
+                        <ChevronRight className="w-4.5 h-4.5 text-white/30" />
                     </motion.div>
                 </Link>
             </motion.div>
 
             {/* ── Recent Activity ── */}
             <motion.div variants={fadeUp} className="mt-4">
-                <div className="rounded-2xl fintech-glass-activity p-4">
+                <div className="fintech-glass-activity p-4">
                     <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-[18px] font-bold text-[#FFFFFF]">Atividade recente</h3>
+                        <h3 className="text-[17px] font-bold" style={{ color: "rgba(255,255,255,0.92)" }}>Atividade recente</h3>
                         <Link
                             href="/customer/transactions"
-                            className="flex items-center gap-0.5 text-[12px] font-medium text-white active:opacity-80"
+                            className="flex items-center gap-0.5 text-[12px] font-medium text-[#3871F1] active:opacity-80"
                         >
                             Ver tudo
                             <ChevronRight className="w-3.5 h-3.5" />
@@ -675,9 +675,9 @@ export default function Dashboard() {
                     ) : (
                         <div className="flex flex-col items-center py-8">
                             <div className="w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center mb-2">
-                                <ArrowDownLeft className="w-4.5 h-4.5 text-white" />
+                                <ArrowDownLeft className="w-4.5 h-4.5 text-white/48" />
                             </div>
-                            <p className="text-[13px] text-white">Nenhuma transação ainda</p>
+                            <p className="text-[13px] text-white/48">Nenhuma transação ainda</p>
                         </div>
                     )}
                 </div>

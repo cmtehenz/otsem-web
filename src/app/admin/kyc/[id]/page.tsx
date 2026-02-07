@@ -278,7 +278,7 @@ export default function AdminKycDetailPage(): React.JSX.Element {
                         />
                         {data.username && (
                             <InfoRow
-                                icon={<User className="size-4 text-[#6F00FF]" />}
+                                icon={<User className="size-4 text-[#3871F1]" />}
                                 label="Username"
                                 value={`@${data.username}`}
                             />

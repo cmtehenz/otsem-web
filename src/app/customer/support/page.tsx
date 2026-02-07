@@ -197,7 +197,7 @@ export default function SupportPage() {
 
             {/* ── System Status ────────────────────────────── */}
             <motion.div variants={fadeUp}>
-                <div className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 bg-gradient-to-br from-[#6F00FF]/10 to-[#6F00FF]/5 dark:from-[#6F00FF]/20 dark:to-[#6F00FF]/5">
+                <div className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 bg-gradient-to-br from-[#3871F1]/10 to-[#3871F1]/5 dark:from-[#3871F1]/20 dark:to-[#3871F1]/5">
                     <div className="flex items-center gap-3">
                         <div className="relative flex-shrink-0">
                             <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
@@ -252,8 +252,8 @@ export default function SupportPage() {
                         href="mailto:suporte@otsempay.com"
                         className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 min-w-[160px] flex-1 snap-start active:scale-95 transition-transform group"
                     >
-                        <div className="w-10 h-10 rounded-2xl bg-[#6F00FF]/12 flex items-center justify-center mb-3">
-                            <Mail className="w-5 h-5 text-[#6F00FF]" />
+                        <div className="w-10 h-10 rounded-2xl bg-[#3871F1]/12 flex items-center justify-center mb-3">
+                            <Mail className="w-5 h-5 text-[#3871F1]" />
                         </div>
                         <div className="flex items-center gap-1.5 mb-1">
                             <span className="text-[14px] font-semibold text-white">
@@ -290,7 +290,7 @@ export default function SupportPage() {
             {/* ── Tutorials ───────────────────────────────── */}
             <motion.div variants={fadeUp}>
                 <div className="flex items-center gap-2 mb-3 px-0.5">
-                    <BookOpen className="w-[18px] h-[18px] text-[#6F00FF]" />
+                    <BookOpen className="w-[18px] h-[18px] text-[#3871F1]" />
                     <p className="text-[15px] font-semibold text-white">
                         Tutoriais Rápidos
                     </p>
@@ -309,7 +309,7 @@ export default function SupportPage() {
                             <p className="text-[11px] text-white leading-snug">
                                 {tutorial.description}
                             </p>
-                            <div className="flex items-center gap-1 text-[#6F00FF] text-[11px] font-medium mt-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="flex items-center gap-1 text-[#3871F1] text-[11px] font-medium mt-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                 Ver tutorial
                                 <ArrowRight className="w-3 h-3" />
                             </div>
@@ -321,7 +321,7 @@ export default function SupportPage() {
             {/* ── FAQ ─────────────────────────────────────── */}
             <motion.div variants={fadeUp}>
                 <div className="flex items-center gap-2 mb-3 px-0.5">
-                    <HelpCircle className="w-[18px] h-[18px] text-[#6F00FF]" />
+                    <HelpCircle className="w-[18px] h-[18px] text-[#3871F1]" />
                     <p className="text-[15px] font-semibold text-white">
                         Perguntas Frequentes
                     </p>
@@ -333,7 +333,7 @@ export default function SupportPage() {
             <motion.div variants={fadeUp}>
                 <div className="fintech-glass-card rounded-[20px] p-5 !rounded-[22px]">
                     <div className="flex items-center gap-2 mb-1">
-                        <AlertCircle className="w-[18px] h-[18px] text-[#6F00FF]" />
+                        <AlertCircle className="w-[18px] h-[18px] text-[#3871F1]" />
                         <h2 className="text-[15px] font-semibold text-white">
                             Abrir Chamado
                         </h2>
@@ -403,7 +403,7 @@ export default function SupportPage() {
                             <Button
                                 type="submit"
                                 disabled={submitting}
-                                className="h-11 px-6 rounded-xl bg-[#6F00FF] hover:bg-[#5C00D6] text-white text-[14px] font-semibold gap-2 active:scale-95 transition-transform shadow-lg shadow-[#6F00FF]/25"
+                                className="h-11 px-6 rounded-xl bg-[#3871F1] hover:bg-[#5C00D6] text-white text-[14px] font-semibold gap-2 active:scale-95 transition-transform shadow-lg shadow-[#3871F1]/25"
                             >
                                 {submitting ? (
                                     <span className="flex items-center gap-2">

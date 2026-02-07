@@ -26,49 +26,49 @@ const actions: ActionItem[] = [
         label: "Depositar",
         sublabel: "Via PIX",
         icon: ArrowDownLeft,
-        iconBg: "bg-emerald-500/15",
+        iconBg: "bg-emerald-500/12",
     },
     {
         id: "withdraw",
         label: "Transferir",
         sublabel: "PIX para qualquer banco",
         icon: ArrowUpRight,
-        iconBg: "bg-blue-500/15",
+        iconBg: "bg-[#3871F1]/12",
     },
     {
         id: "convertBrlUsdt",
         label: "Comprar USDT",
         sublabel: "Converter BRL para USDT",
         icon: ArrowRightLeft,
-        iconBg: "bg-[#6F00FF]/15",
+        iconBg: "bg-[#3871F1]/15",
     },
     {
         id: "sellUsdt",
         label: "Vender USDT",
         sublabel: "Converter USDT para BRL",
         icon: DollarSign,
-        iconBg: "bg-amber-500/15",
+        iconBg: "bg-amber-500/12",
     },
     {
         id: "usernameTransfer",
         label: "Enviar para usuário",
         sublabel: "Transferir BRL por @username",
         icon: UserRoundSearch,
-        iconBg: "bg-violet-500/15",
+        iconBg: "bg-[#6C5CE7]/12",
     },
     {
         id: "sendUsdt",
         label: "Enviar USDT",
         sublabel: "Para carteira externa",
         icon: Send,
-        iconBg: "bg-sky-500/15",
+        iconBg: "bg-[#396DE6]/12",
     },
     {
         id: "payBoleto",
         label: "Pagar Boleto",
         sublabel: "Pague boletos com crypto",
         icon: Receipt,
-        iconBg: "bg-orange-500/15",
+        iconBg: "bg-orange-500/12",
     },
 ];
 
@@ -134,18 +134,23 @@ export function ActionSheet({
                             }
                         }}
                     >
-                        <div className="relative rounded-t-[24px] overflow-hidden pwa-sheet-safe-bottom bg-background/95 backdrop-blur-xl border-t border-white/[0.08] shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.5)]">
+                        <div className="relative rounded-t-[24px] overflow-hidden pwa-sheet-safe-bottom backdrop-blur-xl border-t shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.5)]"
+                            style={{
+                                background: "rgba(13, 14, 21, 0.95)",
+                                borderColor: "rgba(163, 186, 239, 0.14)",
+                            }}
+                        >
                             <div className="relative px-5 pt-3 pb-4">
                                 {/* Drag handle */}
                                 <div className="flex justify-center mb-3">
-                                    <div className="w-9 h-1 rounded-full bg-foreground/20" />
+                                    <div className="w-9 h-1 rounded-full bg-white/20" />
                                 </div>
 
                                 {/* Title */}
-                                <h3 className="text-[17px] font-bold text-foreground mb-0.5">
+                                <h3 className="text-[17px] font-bold text-white/92 mb-0.5">
                                     Nova operação
                                 </h3>
-                                <p className="text-[13px] text-foreground/50 mb-4">
+                                <p className="text-[13px] text-white/48 mb-4">
                                     O que você gostaria de fazer?
                                 </p>
 
@@ -154,7 +159,7 @@ export function ActionSheet({
                                     {actions.map((action, index) => (
                                         <motion.button
                                             key={action.id}
-                                            className="w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl active:bg-foreground/[0.04] transition-colors"
+                                            className="w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl active:bg-white/[0.04] transition-colors"
                                             initial={{ opacity: 0, y: 12 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             whileTap={{ scale: 0.97 }}
@@ -170,15 +175,15 @@ export function ActionSheet({
                                                 className={`flex items-center justify-center w-10 h-10 rounded-full ${action.iconBg}`}
                                             >
                                                 <action.icon
-                                                    className="w-[18px] h-[18px] text-black"
+                                                    className="w-[18px] h-[18px] text-white/90"
                                                     strokeWidth={2}
                                                 />
                                             </div>
                                             <div className="text-left">
-                                                <p className="text-[15px] font-semibold text-foreground">
+                                                <p className="text-[15px] font-semibold text-white/92">
                                                     {action.label}
                                                 </p>
-                                                <p className="text-[12px] text-foreground/50">
+                                                <p className="text-[12px] text-white/48">
                                                     {action.sublabel}
                                                 </p>
                                             </div>

@@ -192,8 +192,8 @@ export default function WalletPage() {
         return (
             <div className="flex h-[60dvh] flex-col items-center justify-center">
                 <div className="relative">
-                    <div className="absolute inset-0 bg-[#6F00FF]/30 rounded-full blur-xl animate-pulse" />
-                    <Loader2 className="relative h-8 w-8 animate-spin text-[#6F00FF]" />
+                    <div className="absolute inset-0 bg-[#3871F1]/25 rounded-full blur-xl animate-pulse" />
+                    <Loader2 className="relative h-8 w-8 animate-spin text-[#3871F1]" />
                 </div>
             </div>
         );
@@ -221,7 +221,7 @@ export default function WalletPage() {
                     </button>
                     <button
                         onClick={openAddModal}
-                        className="flex items-center justify-center w-10 h-10 rounded-full bg-[#6F00FF] active:scale-95 transition-transform"
+                        className="flex items-center justify-center w-10 h-10 rounded-full bg-[#3871F1] active:scale-95 transition-transform"
                     >
                         <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
                     </button>
@@ -232,7 +232,7 @@ export default function WalletPage() {
             {wallets.length > 0 && (
                 <motion.div variants={fadeUp}>
                     <div className="relative overflow-hidden rounded-[20px] p-5">
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#8B2FFF]/80 via-[#6F00FF]/80 to-[#5800CC]/80" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#396DE6]/80 via-[#3871F1]/80 to-[#234FB3]/80" />
                         <div className="absolute -top-16 -right-16 w-32 h-32 rounded-full bg-white/10 blur-2xl" />
                         <div className="relative">
                             <p className="text-white text-[12px] font-medium mb-1">Total USDT</p>
@@ -250,8 +250,8 @@ export default function WalletPage() {
             {/* Wallets list */}
             {wallets.length === 0 ? (
                 <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5 !p-8 text-center">
-                    <div className="w-16 h-16 rounded-full bg-[#6F00FF]/10 flex items-center justify-center mx-auto mb-4">
-                        <Wallet className="w-7 h-7 text-[#6F00FF]" />
+                    <div className="w-16 h-16 rounded-full bg-[#3871F1]/10 flex items-center justify-center mx-auto mb-4">
+                        <Wallet className="w-7 h-7 text-[#3871F1]" />
                     </div>
                     <h2 className="text-lg font-bold text-white mb-1">Nenhuma carteira</h2>
                     <p className="text-[13px] text-white mb-5 max-w-xs mx-auto">
@@ -259,7 +259,7 @@ export default function WalletPage() {
                     </p>
                     <motion.button
                         onClick={openAddModal}
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#6F00FF] text-white font-semibold text-[14px]"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#3871F1] text-white font-semibold text-[14px]"
                         whileTap={{ scale: 0.95 }}
                     >
                         <Plus className="w-4 h-4" />
@@ -287,7 +287,7 @@ export default function WalletPage() {
                                                     {wallet.label || `Carteira ${index + 1}`}
                                                 </span>
                                                 {wallet.isMain && (
-                                                    <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-semibold bg-[#6F00FF]/12 text-[#6F00FF] dark:text-[#8B2FFF] rounded-full">
+                                                    <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-semibold bg-[#3871F1]/12 text-[#3871F1] dark:text-[#396DE6] rounded-full">
                                                         <Star className="w-2.5 h-2.5" />
                                                         Principal
                                                     </span>
@@ -391,14 +391,14 @@ export default function WalletPage() {
                                         onClick={() => setSelectedNetwork(network.id)}
                                         className={`flex items-center justify-center gap-2 p-3.5 rounded-2xl border transition-all active:scale-[0.97] ${
                                             selectedNetwork === network.id
-                                                ? "border-[#6F00FF]/50 bg-[#6F00FF]/10"
+                                                ? "border-[#3871F1]/50 bg-[#3871F1]/10"
                                                 : "border-border bg-muted/50 hover:border-border/80"
                                         }`}
                                     >
                                         <span className="text-lg">{network.icon}</span>
                                         <span className="text-[14px] font-medium text-foreground">{network.name}</span>
                                         {selectedNetwork === network.id && (
-                                            <Check className="w-4 h-4 text-[#6F00FF]" />
+                                            <Check className="w-4 h-4 text-[#3871F1]" />
                                         )}
                                     </button>
                                 ))}
@@ -412,7 +412,7 @@ export default function WalletPage() {
                                     onClick={() => setAddMode("create")}
                                     className={`p-3.5 rounded-2xl border transition-all text-left active:scale-[0.97] ${
                                         addMode === "create"
-                                            ? "border-[#6F00FF]/50 bg-[#6F00FF]/10"
+                                            ? "border-[#3871F1]/50 bg-[#3871F1]/10"
                                             : "border-border bg-muted/50 hover:border-border/80"
                                     }`}
                                 >
@@ -423,7 +423,7 @@ export default function WalletPage() {
                                     onClick={() => setAddMode("import")}
                                     className={`p-3.5 rounded-2xl border transition-all text-left active:scale-[0.97] ${
                                         addMode === "import"
-                                            ? "border-[#6F00FF]/50 bg-[#6F00FF]/10"
+                                            ? "border-[#3871F1]/50 bg-[#3871F1]/10"
                                             : "border-border bg-muted/50 hover:border-border/80"
                                     }`}
                                 >
@@ -468,7 +468,7 @@ export default function WalletPage() {
                                 <Button
                                     onClick={handleCreateWallet}
                                     disabled={creating}
-                                    className="flex-1 bg-[#6F00FF] hover:bg-[#6F00FF]/80 text-white font-semibold rounded-2xl h-12"
+                                    className="flex-1 bg-[#3871F1] hover:bg-[#234FB3] text-white font-semibold rounded-2xl h-12"
                                 >
                                     {creating ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Criando...</> : "Criar Carteira"}
                                 </Button>
@@ -476,7 +476,7 @@ export default function WalletPage() {
                                 <Button
                                     onClick={handleImportWallet}
                                     disabled={importing || !importAddress.trim()}
-                                    className="flex-1 bg-[#6F00FF] hover:bg-[#6F00FF]/80 text-white font-semibold rounded-2xl h-12"
+                                    className="flex-1 bg-[#3871F1] hover:bg-[#234FB3] text-white font-semibold rounded-2xl h-12"
                                 >
                                     {importing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Importando...</> : "Importar"}
                                 </Button>
@@ -517,7 +517,7 @@ export default function WalletPage() {
                                 </Button>
                             </div>
                         </div>
-                        <Button onClick={() => setWalletKeys(null)} className="w-full bg-[#6F00FF] hover:bg-[#6F00FF]/80 text-white font-semibold rounded-2xl h-12">
+                        <Button onClick={() => setWalletKeys(null)} className="w-full bg-[#3871F1] hover:bg-[#234FB3] text-white font-semibold rounded-2xl h-12">
                             Já salvei minha chave privada
                         </Button>
                     </div>
@@ -541,7 +541,7 @@ export default function WalletPage() {
                         </div>
                         <div className="flex gap-3">
                             <Button variant="ghost" onClick={() => setEditWallet(null)} className="flex-1 bg-muted border border-border text-foreground rounded-2xl h-12">Cancelar</Button>
-                            <Button onClick={handleSaveLabel} className="flex-1 bg-[#6F00FF] hover:bg-[#6F00FF]/80 text-white font-semibold rounded-2xl h-12">Salvar</Button>
+                            <Button onClick={handleSaveLabel} className="flex-1 bg-[#3871F1] hover:bg-[#234FB3] text-white font-semibold rounded-2xl h-12">Salvar</Button>
                         </div>
                     </div>
                 </BottomSheetContent>

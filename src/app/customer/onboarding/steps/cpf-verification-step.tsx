@@ -73,8 +73,8 @@ export function CpfVerificationStep({ customer, onComplete, onSkip }: CpfVerific
     return (
         <div className="space-y-6">
             <div className="text-center space-y-2">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#6F00FF]/10">
-                    <ShieldCheck className="h-6 w-6 text-[#6F00FF]" />
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#3871F1]/10">
+                    <ShieldCheck className="h-6 w-6 text-[#3871F1]" />
                 </div>
                 <h2 className="text-xl font-bold text-white">
                     Verificacao de CPF
@@ -87,7 +87,7 @@ export function CpfVerificationStep({ customer, onComplete, onSkip }: CpfVerific
             <div className="flex flex-col items-center gap-4 py-6">
                 {(status === "pending" || status === "not_started") && (
                     <>
-                        <Loader2 className="h-10 w-10 animate-spin text-[#6F00FF]" />
+                        <Loader2 className="h-10 w-10 animate-spin text-[#3871F1]" />
                         <p className="text-sm text-white text-center">
                             Verificando seus dados...
                             <br />

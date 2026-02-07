@@ -190,7 +190,7 @@ function BottomSheetContent({
             className={cn(
               "fixed inset-x-0 bottom-0 z-50 flex flex-col",
               "max-h-[92dvh]",
-              "bg-background/95 dark:bg-[#1a1025]/95",
+              "bg-background/95 dark:bg-[#0D0E15]/95",
               "backdrop-blur-xl",
               "border-t border-white/[0.08]",
               "rounded-t-[24px]",
