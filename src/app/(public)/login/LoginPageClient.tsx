@@ -208,7 +208,7 @@ function LoginPageInner(): React.JSX.Element {
                             <h1 className="text-4xl font-black text-white xl:text-5xl tracking-tightest">
                                 {t('auth.accessYourAccount')}
                                 <br />
-                                <span className="text-[#9B4DFF]">
+                                <span className="text-[#6C5CE7]">
                                     OtsemPay
                                 </span>
                             </h1>
@@ -224,7 +224,7 @@ function LoginPageInner(): React.JSX.Element {
                                 desc={t('auth.fastSettlementDesc')}
                             />
                             <FeatureItem
-                                icon={<Shield className="h-5 w-5 text-[#9B4DFF]" />}
+                                icon={<Shield className="h-5 w-5 text-[#6C5CE7]" />}
                                 title={t('auth.totalSecurity')}
                                 desc={t('auth.totalSecurityDesc')}
                             />
@@ -271,7 +271,7 @@ function LoginPageInner(): React.JSX.Element {
                                                 autoComplete="email"
                                                 inputMode="email"
                                                 placeholder="voce@exemplo.com"
-                                                className="h-12 rounded-2xl border-white/15 bg-white/10 pl-10 text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
+                                                className="h-12 rounded-2xl border-white/15 bg-white/10 pl-10 text-white placeholder:text-white/40 transition focus:border-[#396DE6] focus:ring-2 focus:ring-[#396DE6]/20"
                                                 aria-invalid={!!errors.email || undefined}
                                                 {...register('email')}
                                             />
@@ -292,7 +292,7 @@ function LoginPageInner(): React.JSX.Element {
                                                 type={showPw ? 'text' : 'password'}
                                                 autoComplete="current-password"
                                                 placeholder="••••••••"
-                                                className="h-12 rounded-2xl border-white/15 bg-white/10 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
+                                                className="h-12 rounded-2xl border-white/15 bg-white/10 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-[#396DE6] focus:ring-2 focus:ring-[#396DE6]/20"
                                                 aria-invalid={!!errors.password || undefined}
                                                 {...register('password')}
                                             />
@@ -314,7 +314,7 @@ function LoginPageInner(): React.JSX.Element {
                                         <label className="inline-flex items-center gap-2 text-white font-medium">
                                             <input
                                                 type="checkbox"
-                                                className="h-4 w-4 rounded border-white/20 bg-white/10 text-[#6F00FF] focus:ring-2 focus:ring-[#8B2FFF]/20"
+                                                className="h-4 w-4 rounded border-white/20 bg-white/10 text-[#3871F1] focus:ring-2 focus:ring-[#396DE6]/20"
                                                 {...register('remember')}
                                             />
                                             {t('auth.rememberMe')}
@@ -360,7 +360,7 @@ function LoginPageInner(): React.JSX.Element {
                                 {t('common.secureConnection')}
                             </div>
                             <div className="flex items-center gap-1.5">
-                                <CheckCircle2 className="h-3.5 w-3.5 text-[#9B4DFF]" />
+                                <CheckCircle2 className="h-3.5 w-3.5 text-[#6C5CE7]" />
                                 SSL/TLS
                             </div>
                         </div>

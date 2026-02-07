@@ -67,8 +67,8 @@ const KYC_LEVELS = {
       accent: "purple",
       ring: "ring-white/20",
       badge: "bg-white/10 text-white",
-      iconBg: "bg-gradient-to-br from-[#8B2FFF] to-[#6F00FF]",
-      barColor: "bg-[#6F00FF]",
+      iconBg: "bg-gradient-to-br from-[#396DE6] to-[#3871F1]",
+      barColor: "bg-[#3871F1]",
       requirements: [
         "CPF válido",
         "Cadastro completo",
@@ -82,10 +82,10 @@ const KYC_LEVELS = {
       limit: "R$ 100.000",
       icon: Star,
       accent: "purple",
-      ring: "ring-[#6F00FF]/40",
+      ring: "ring-[#3871F1]/40",
       badge: "bg-white/10 text-white",
-      iconBg: "bg-gradient-to-br from-[#9B4DFF] to-[#8B2FFF]",
-      barColor: "bg-[#8B2FFF]",
+      iconBg: "bg-gradient-to-br from-[#6C5CE7] to-[#396DE6]",
+      barColor: "bg-[#396DE6]",
       requirements: [
         "Comprovante de residência",
         "Comprovante de renda",
@@ -99,10 +99,10 @@ const KYC_LEVELS = {
       limit: "Ilimitado",
       icon: Crown,
       accent: "purple",
-      ring: "ring-[#8B2FFF]/40",
+      ring: "ring-[#396DE6]/40",
       badge: "bg-white/10 text-white",
-      iconBg: "bg-gradient-to-br from-[#6F00FF] to-[#5800CC]",
-      barColor: "bg-[#9B4DFF]",
+      iconBg: "bg-gradient-to-br from-[#3871F1] to-[#234FB3]",
+      barColor: "bg-[#6C5CE7]",
       requirements: [
         "Declaração de IR",
         "Análise patrimonial",
@@ -120,8 +120,8 @@ const KYC_LEVELS = {
       accent: "purple",
       ring: "ring-white/20",
       badge: "bg-white/10 text-white",
-      iconBg: "bg-gradient-to-br from-[#8B2FFF] to-[#6F00FF]",
-      barColor: "bg-[#6F00FF]",
+      iconBg: "bg-gradient-to-br from-[#396DE6] to-[#3871F1]",
+      barColor: "bg-[#3871F1]",
       requirements: [
         "CNPJ válido",
         "Cadastro completo",
@@ -135,10 +135,10 @@ const KYC_LEVELS = {
       limit: "R$ 200.000",
       icon: Star,
       accent: "purple",
-      ring: "ring-[#6F00FF]/40",
+      ring: "ring-[#3871F1]/40",
       badge: "bg-white/10 text-white",
-      iconBg: "bg-gradient-to-br from-[#9B4DFF] to-[#8B2FFF]",
-      barColor: "bg-[#8B2FFF]",
+      iconBg: "bg-gradient-to-br from-[#6C5CE7] to-[#396DE6]",
+      barColor: "bg-[#396DE6]",
       requirements: [
         "Balanço patrimonial",
         "DRE dos últimos 12 meses",
@@ -152,10 +152,10 @@ const KYC_LEVELS = {
       limit: "Ilimitado",
       icon: Crown,
       accent: "purple",
-      ring: "ring-[#8B2FFF]/40",
+      ring: "ring-[#396DE6]/40",
       badge: "bg-white/10 text-white",
-      iconBg: "bg-gradient-to-br from-[#6F00FF] to-[#5800CC]",
-      barColor: "bg-[#9B4DFF]",
+      iconBg: "bg-gradient-to-br from-[#3871F1] to-[#234FB3]",
+      barColor: "bg-[#6C5CE7]",
       requirements: [
         "Auditoria financeira",
         "Faturamento comprovado",
@@ -284,7 +284,7 @@ export default function CustomerKycPage(): React.JSX.Element {
   if (loading) {
     return (
       <div className="flex h-[80dvh] flex-col items-center justify-center gap-3">
-        <Loader2 className="h-8 w-8 animate-spin text-[#6F00FF]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#3871F1]" />
         <p className="text-[13px] text-white">Carregando...</p>
       </div>
     );
@@ -375,7 +375,7 @@ export default function CustomerKycPage(): React.JSX.Element {
           </div>
           <div className="relative h-[6px] w-full overflow-hidden rounded-full bg-white/10">
             <motion.div
-              className="absolute inset-y-0 left-0 rounded-full bg-[#6F00FF]"
+              className="absolute inset-y-0 left-0 rounded-full bg-[#3871F1]"
               initial={{ width: "0%" }}
               animate={{ width: `${progressPercent}%` }}
               transition={{ duration: 0.9, ease: [0.32, 0.72, 0, 1] }}
@@ -408,7 +408,7 @@ export default function CustomerKycPage(): React.JSX.Element {
                   </div>
                   <div className="relative h-[6px] w-full overflow-hidden rounded-full bg-white/10">
                     <motion.div
-                      className="absolute inset-y-0 left-0 rounded-full bg-[#8B2FFF]"
+                      className="absolute inset-y-0 left-0 rounded-full bg-[#396DE6]"
                       initial={{ width: "0%" }}
                       animate={{
                         width: `${limitsData.monthlyLimit > 0 ? Math.min((limitsData.usedThisMonth / limitsData.monthlyLimit) * 100, 100) : 0}%`,
@@ -545,7 +545,7 @@ export default function CustomerKycPage(): React.JSX.Element {
 
               {/* Status pill */}
               {isCurrent && (
-                <span className="rounded-full bg-[#6F00FF]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#6F00FF]">
+                <span className="rounded-full bg-[#3871F1]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#3871F1]">
                   Atual
                 </span>
               )}
@@ -629,7 +629,7 @@ export default function CustomerKycPage(): React.JSX.Element {
           variants={fadeUp}
           className="fintech-glass-card rounded-[20px] p-5 flex flex-col items-center py-8 text-center"
         >
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-[#8B2FFF] to-[#6F00FF] shadow-lg shadow-[#6F00FF]/25">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-[#396DE6] to-[#3871F1] shadow-lg shadow-[#3871F1]/25">
             <Crown className="h-8 w-8 text-white" />
           </div>
           <p className="text-[15px] font-bold text-white">

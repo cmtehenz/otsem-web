@@ -289,7 +289,7 @@ export default function ProTradingPage() {
             active = false;
             clearInterval(interval);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, []);
 
     useEffect(() => {
@@ -501,9 +501,10 @@ export default function ProTradingPage() {
                 description: ordId ? `ID: ${ordId}` : `Par: ${selectedPair}`,
             });
             setAmountInput("");
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
             toast.error("Não foi possível enviar a ordem", {
-                description: error?.response?.data?.message || "Tente novamente em instantes",
+                description: msg || "Tente novamente em instantes",
             });
         } finally {
             setPlacingOrder(false);
@@ -537,9 +538,10 @@ export default function ProTradingPage() {
             await http.post("/okx/spot/cancel-order", { orderId });
             await Promise.all([refreshHistory(), refreshBalances()]);
             toast.success("Ordem cancelada");
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
             toast.error("Não foi possível cancelar", {
-                description: error?.response?.data?.message || "Tente novamente",
+                description: msg || "Tente novamente",
             });
         } finally {
             setCancelingOrderId(null);
@@ -569,9 +571,10 @@ export default function ProTradingPage() {
             await Promise.all([refreshBalances(), refreshHistory()]);
             toast.success("Transferência concluída");
             setTransferOpen(false);
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
             toast.error("Não foi possível transferir", {
-                description: error?.response?.data?.message || "Tente novamente em instantes",
+                description: msg || "Tente novamente em instantes",
             });
         } finally {
             setTransferLoading(false);
@@ -612,7 +615,7 @@ export default function ProTradingPage() {
                             className={cn(
                                 "px-3.5 py-1.5 rounded-full text-[12px] font-semibold border transition-all",
                                 active
-                                    ? "bg-[#6F00FF] text-white border-[#6F00FF]"
+                                    ? "bg-[#3871F1] text-white border-[#3871F1]"
                                     : "bg-white/8 text-white/70 border-white/10"
                             )}
                         >
@@ -735,12 +738,12 @@ export default function ProTradingPage() {
                     <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
                         <defs>
                             <linearGradient id="pro-chart" x1="0" x2="0" y1="0" y2="1">
-                                <stop offset="0%" stopColor="#6F00FF" stopOpacity="0.45" />
-                                <stop offset="100%" stopColor="#6F00FF" stopOpacity="0" />
+                                <stop offset="0%" stopColor="#3871F1" stopOpacity="0.45" />
+                                <stop offset="100%" stopColor="#3871F1" stopOpacity="0" />
                             </linearGradient>
                         </defs>
                         <path d={`${chartPath} L 100 100 L 0 100 Z`} fill="url(#pro-chart)" />
-                        <path d={chartPath} fill="none" stroke="#6F00FF" strokeWidth="1.6" />
+                        <path d={chartPath} fill="none" stroke="#3871F1" strokeWidth="1.6" />
                     </svg>
                 </div>
             </motion.div>
@@ -1156,7 +1159,7 @@ export default function ProTradingPage() {
                             className={cn(
                                 "w-full py-3 rounded-2xl text-[14px] font-semibold text-white transition-all",
                                 transferDirection === "toPro"
-                                    ? "bg-[#6F00FF]/80 hover:bg-[#6F00FF]"
+                                    ? "bg-[#3871F1]/80 hover:bg-[#3871F1]"
                                     : "bg-white/20 hover:bg-white/30",
                                 transferLoading && "opacity-60"
                             )}

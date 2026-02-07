@@ -200,14 +200,14 @@ function LoadingSpinner() {
     return (
         <div className="flex flex-col items-center gap-3">
             <div className="relative">
-                <div className="absolute inset-0 bg-[#6F00FF]/30 rounded-full blur-xl animate-pulse" />
+                <div className="absolute inset-0 bg-[#3871F1]/30 rounded-full blur-xl animate-pulse" />
                 <motion.div
-                    className="relative w-10 h-10 rounded-full border-2 border-[#6F00FF]/20 border-t-[#6F00FF]"
+                    className="relative w-10 h-10 rounded-full border-2 border-[#3871F1]/20 border-t-[#3871F1]"
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 />
             </div>
-            <span className="text-sm text-white">Carregando...</span>
+            <span className="text-sm text-white/70">Carregando...</span>
         </div>
     );
 }

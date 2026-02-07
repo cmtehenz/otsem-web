@@ -120,7 +120,7 @@ export default function SendUsdtModal() {
             <BottomSheetContent>
                 <BottomSheetHeader>
                     <BottomSheetTitle className="text-foreground text-xl flex items-center gap-2">
-                        <Send className="w-5 h-5 text-[#6F00FF]" />
+                        <Send className="w-5 h-5 text-[#3871F1]" />
                         Enviar USDT
                     </BottomSheetTitle>
                     <BottomSheetDescription className="text-muted-foreground">
@@ -153,14 +153,14 @@ export default function SendUsdtModal() {
 
                         <Button
                             onClick={handleClose}
-                            className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold"
+                            className="w-full bg-linear-to-r from-[#3871F1] to-[#3871F1] hover:from-[#234FB3] hover:to-[#3871F1] text-white font-semibold"
                         >
                             Fechar
                         </Button>
                     </div>
                 ) : loading ? (
                     <div className="flex items-center justify-center py-8">
-                        <Loader2 className="w-6 h-6 animate-spin text-[#6F00FF]" />
+                        <Loader2 className="w-6 h-6 animate-spin text-[#3871F1]" />
                     </div>
                 ) : wallets.length === 0 ? (
                     <div className="text-center py-6">
@@ -221,7 +221,7 @@ export default function SendUsdtModal() {
                                     <button
                                         type="button"
                                         onClick={() => setAmount(selectedWallet.balance)}
-                                        className="text-xs text-[#6F00FF] hover:underline"
+                                        className="text-xs text-[#3871F1] hover:underline"
                                     >
                                         Máx: {Number(selectedWallet.balance).toFixed(2)}
                                     </button>
@@ -256,7 +256,7 @@ export default function SendUsdtModal() {
                             <Button
                                 onClick={handleSend}
                                 disabled={sending || !selectedWalletId || !toAddress.trim() || !amount.trim()}
-                                className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold"
+                                className="flex-1 bg-linear-to-r from-[#3871F1] to-[#3871F1] hover:from-[#234FB3] hover:to-[#3871F1] text-white font-semibold"
                             >
                                 {sending ? (
                                     <>

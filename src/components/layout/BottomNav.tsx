@@ -129,8 +129,8 @@ export function BottomNav() {
                                             className="flex items-center justify-center w-12 h-12 rounded-full"
                                             style={{
                                                 background:
-                                                    "linear-gradient(145deg, #FFD700 0%, #FFC107 50%, #FFB300 100%)",
-                                                boxShadow: "0 4px 20px rgba(255, 193, 7, 0.45)",
+                                                    "linear-gradient(145deg, #396DE6 0%, #3871F1 50%, #6C5CE7 100%)",
+                                                boxShadow: "0 4px 20px rgba(56, 113, 241, 0.45)",
                                             }}
                                             whileTap={{ scale: 0.88 }}
                                             transition={iosSpring}
@@ -144,7 +144,7 @@ export function BottomNav() {
                                                     transition={iosSpring}
                                                 >
                                                     <Plus
-                                                        className={`w-5.5 h-5.5 text-black ${actionSheetOpen ? "rotate-45" : ""}`}
+                                                        className={`w-5.5 h-5.5 text-white ${actionSheetOpen ? "rotate-45" : ""}`}
                                                         strokeWidth={2.5}
                                                     />
                                                 </motion.div>
@@ -161,18 +161,31 @@ export function BottomNav() {
                                     href={tab.href}
                                     className="relative flex flex-col items-center justify-center flex-1 py-1 outline-none"
                                 >
+                                    {/* Active glow indicator */}
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="nav-active-glow"
+                                            className="absolute -top-0.5 w-8 h-0.5 rounded-full"
+                                            style={{
+                                                background: "linear-gradient(90deg, transparent, #3871F1, transparent)",
+                                            }}
+                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                        />
+                                    )}
                                     <motion.div
                                         className="relative flex flex-col items-center gap-1 z-10"
                                         whileTap={{ scale: 0.82 }}
                                         transition={iosSpring}
                                     >
                                         <Icon
-                                            className={`w-[22px] h-[22px] transition-all duration-300 text-white`}
+                                            className={`w-[22px] h-[22px] transition-all duration-300 ${
+                                                isActive ? "text-[#3871F1]" : "text-white/70"
+                                            }`}
                                             strokeWidth={isActive ? 2.2 : 1.6}
                                         />
                                         <span
-                                            className={`text-[10px] leading-tight tracking-tight transition-all duration-300 text-white ${
-                                                isActive ? "font-semibold" : "font-medium"
+                                            className={`text-[10px] leading-tight tracking-tight transition-all duration-300 ${
+                                                isActive ? "font-semibold text-[#3871F1]" : "font-medium text-white/70"
                                             }`}
                                         >
                                             {tab.label}

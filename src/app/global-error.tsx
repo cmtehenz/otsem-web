@@ -41,7 +41,7 @@ export default function GlobalError({
               alignItems: "center",
               justifyContent: "center",
               borderRadius: 8,
-              background: "#6F00FF",
+              background: "#3871F1",
               padding: "10px 20px",
               fontSize: 14,
               fontWeight: 500,

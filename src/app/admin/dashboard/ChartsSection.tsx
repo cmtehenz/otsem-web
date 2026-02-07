@@ -74,7 +74,7 @@ export default function ChartsSection({ charts }: Props) {
                                             {day.count}
                                         </span>
                                         <div
-                                            className="w-full rounded-t bg-gradient-to-t from-[#6F00FF] to-[#8B2FFF] transition-all hover:opacity-80"
+                                            className="w-full rounded-t bg-gradient-to-t from-[#3871F1] to-[#396DE6] transition-all hover:opacity-80"
                                             style={{ height: `${(day.volume / maxVolume) * 100}%`, minHeight: "8px" }}
                                         />
                                     </div>

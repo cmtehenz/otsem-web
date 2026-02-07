@@ -22,10 +22,10 @@ const CTABanner = () => {
     <section className="relative z-10 section-padding container-mobile">
       <div className="mx-auto max-w-4xl">
         <div className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] shadow-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary via-[#8B2FFF] to-primary animate-gradient-shift" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary via-[#396DE6] to-primary animate-gradient-shift" />
 
           <div className="absolute -top-16 -left-16 w-40 h-40 bg-white/8 rounded-full blur-2xl" />
-          <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-[#6F00FF]/12 rounded-full blur-2xl" />
+          <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-[#3871F1]/12 rounded-full blur-2xl" />
 
           <div className="relative z-10 p-6 sm:p-10 md:p-12 text-center">
             <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-white/12 border border-white/15">

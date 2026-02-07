@@ -91,12 +91,12 @@ export default function BalanceCards({ balances }: Props) {
                 </CardContent>
             </Card>
 
-            <Card className="border-[#6F00FF]/20 bg-gradient-to-br from-[#6F00FF]/5 to-[#6F00FF]/10 sm:col-span-2 lg:col-span-1">
+            <Card className="border-[#3871F1]/20 bg-gradient-to-br from-[#3871F1]/5 to-[#3871F1]/10 sm:col-span-2 lg:col-span-1">
                 <CardContent className="p-4 sm:p-6">
                     <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                             <p className="text-xs sm:text-sm font-medium text-muted-foreground">Patrimônio Total (BRL)</p>
-                            <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-bold text-[#6F00FF] truncate">
+                            <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-bold text-[#3871F1] truncate">
                                 {formatBRL(totalBRLEquivalent)}
                             </p>
                             <div className="mt-2 sm:mt-3 flex items-center gap-2 text-[11px] sm:text-xs">
@@ -106,8 +106,8 @@ export default function BalanceCards({ balances }: Props) {
                                 </span>
                             </div>
                         </div>
-                        <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-[#6F00FF]/10 shrink-0">
-                            <div className="text-lg sm:text-xl font-bold text-[#6F00FF]">Σ</div>
+                        <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-[#3871F1]/10 shrink-0">
+                            <div className="text-lg sm:text-xl font-bold text-[#3871F1]">Σ</div>
                         </div>
                     </div>
                 </CardContent>

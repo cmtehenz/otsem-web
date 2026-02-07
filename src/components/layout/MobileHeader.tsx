@@ -3,9 +3,8 @@
 import * as React from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
-import { User } from "lucide-react";
+import { User, Search, Bell } from "lucide-react";
 
 const PHOTO_KEY = "otsem_profile_photo";
 
@@ -87,38 +86,19 @@ export function MobileHeader({ customerName, profilePhotoUrl, username }: { cust
             {/* Safe area container — gradient flows through, pt handles notch */}
             <div className="pwa-header-premium">
                 <div className="flex items-center justify-between px-5">
-                    {/* Left side: logo + greeting */}
-                    <div className="flex items-center gap-3.5">
-                        <Link href="/customer/dashboard" className="flex items-center">
-                            <Image
-                                src="/images/logo-128.png"
-                                alt="OtsemPay"
-                                width={44}
-                                height={44}
-                                priority
-                                className="object-contain"
-                            />
-                        </Link>
-                        <div className="flex flex-col">
-                            <span className="text-[14px] font-semibold text-white leading-tight">
-                                {getGreeting()}
-                            </span>
-                            <span className="text-[17px] font-bold text-white leading-tight tracking-tight">
-                                {displayName}
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Right side: profile photo */}
-                    <div className="flex items-center gap-2.5">
+                    {/* Left side: profile photo + greeting */}
+                    <div className="flex items-center gap-3">
                         <motion.div
                             whileTap={{ scale: 0.97 }}
                             transition={{ type: "spring", stiffness: 500, damping: 25 }}
                         >
                             <Link
                                 href="/customer/settings"
-                                className="flex items-center justify-center w-11 h-11 rounded-full bg-white/[0.08] border border-white/[0.08] active:bg-white/15 transition-colors overflow-hidden"
-                                style={{ transition: "background 0.25s cubic-bezier(0.32, 0.72, 0, 1)" }}
+                                className="flex items-center justify-center w-11 h-11 rounded-full overflow-hidden border border-white/[0.12]"
+                                style={{
+                                    background: "rgba(18, 20, 29, 0.45)",
+                                    transition: "background 0.25s cubic-bezier(0.32, 0.72, 0, 1)",
+                                }}
                             >
                                 {photoSrc ? (
                                     // eslint-disable-next-line @next/next/no-img-element
@@ -127,7 +107,6 @@ export function MobileHeader({ customerName, profilePhotoUrl, username }: { cust
                                         alt="Perfil"
                                         className="w-full h-full object-cover"
                                         onError={() => {
-                                            // If API URL fails to load, fall back to localStorage
                                             const stored = getStoredPhoto();
                                             if (stored && stored !== photoSrc) {
                                                 setPhotoSrc(stored);
@@ -141,8 +120,44 @@ export function MobileHeader({ customerName, profilePhotoUrl, username }: { cust
                                         {initials}
                                     </span>
                                 ) : (
-                                    <User className="w-[22px] h-[22px] text-white" strokeWidth={1.8} />
+                                    <User className="w-[22px] h-[22px] text-white/90" strokeWidth={1.8} />
                                 )}
+                            </Link>
+                        </motion.div>
+                        <div className="flex flex-col">
+                            <span className="text-[13px] font-medium text-white/70 leading-tight">
+                                {getGreeting()}
+                            </span>
+                            <span className="text-[17px] font-semibold text-white leading-tight tracking-tight">
+                                {displayName}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Right side: search + notifications */}
+                    <div className="flex items-center gap-2">
+                        <motion.div
+                            whileTap={{ scale: 0.97 }}
+                            transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                        >
+                            <Link
+                                href="/customer/mercado"
+                                className="flex items-center justify-center w-10 h-10 rounded-full border border-white/[0.12] active:bg-white/10 transition-colors"
+                                style={{ background: "rgba(18, 20, 29, 0.45)" }}
+                            >
+                                <Search className="w-[18px] h-[18px] text-white/80" strokeWidth={1.8} />
+                            </Link>
+                        </motion.div>
+                        <motion.div
+                            whileTap={{ scale: 0.97 }}
+                            transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                        >
+                            <Link
+                                href="/customer/support"
+                                className="flex items-center justify-center w-10 h-10 rounded-full border border-white/[0.12] active:bg-white/10 transition-colors"
+                                style={{ background: "rgba(18, 20, 29, 0.45)" }}
+                            >
+                                <Bell className="w-[18px] h-[18px] text-white/80" strokeWidth={1.8} />
                             </Link>
                         </motion.div>
                     </div>
