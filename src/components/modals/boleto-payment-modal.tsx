@@ -246,7 +246,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                     value={barcode}
                                     onChange={(e) => setBarcode(e.target.value)}
                                     placeholder="00000.00000 00000.000000 00000.000000 0 00000000000000"
-                                    className="w-full px-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-[#3871F1]/50 focus:ring-2 focus:ring-[#3871F1]/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full px-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
                                 />
                             </div>
 
@@ -267,7 +267,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                         readOnly={!amountActive}
                                         onFocus={() => setAmountActive(true)}
                                         placeholder="0,00"
-                                        className={`w-full pl-12 pr-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-[#3871F1]/50 focus:ring-2 focus:ring-[#3871F1]/20 focus:outline-none placeholder:text-muted-foreground/50 ${!amountActive ? "cursor-pointer" : ""}`}
+                                        className={`w-full pl-12 pr-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50 ${!amountActive ? "cursor-pointer" : ""}`}
                                     />
                                 </div>
                             </div>
@@ -282,8 +282,8 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                             onClick={() => handleCryptoSelect(c)}
                                             className={`flex-1 py-3 px-4 rounded-xl border transition font-medium text-sm ${
                                                 cryptoCurrency === c
-                                                    ? "border-[#3871F1] bg-[#3871F1]/20 text-[#3871F1] dark:text-[#396DE6]"
-                                                    : "border-border bg-muted text-muted-foreground hover:border-[#3871F1]/30"
+                                                    ? "border-[#6F00FF] bg-[#6F00FF]/20 text-[#6F00FF] dark:text-[#8B2FFF]"
+                                                    : "border-border bg-muted text-muted-foreground hover:border-[#6F00FF]/30"
                                             }`}
                                         >
                                             {c}
@@ -301,7 +301,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
 
                                 {walletsLoading ? (
                                     <div className="flex items-center justify-center py-6">
-                                        <Loader2 className="w-6 h-6 text-[#3871F1] animate-spin" />
+                                        <Loader2 className="w-6 h-6 text-[#6F00FF] animate-spin" />
                                     </div>
                                 ) : wallets.length > 0 ? (
                                     <div className="space-y-2 max-h-36 overflow-y-auto">
@@ -313,8 +313,8 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                                     onClick={() => setSelectedWalletId(wallet.id)}
                                                     className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${
                                                         selectedWalletId === wallet.id
-                                                            ? "border-[#3871F1]/50 bg-[#3871F1]/20"
-                                                            : "border-border bg-muted hover:border-[#3871F1]/30"
+                                                            ? "border-[#6F00FF]/50 bg-[#6F00FF]/20"
+                                                            : "border-border bg-muted hover:border-[#6F00FF]/30"
                                                     }`}
                                                 >
                                                     <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
@@ -337,7 +337,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                                         </p>
                                                     </div>
                                                     {selectedWalletId === wallet.id && (
-                                                        <Check className="w-5 h-5 text-[#3871F1] shrink-0" />
+                                                        <Check className="w-5 h-5 text-[#6F00FF] shrink-0" />
                                                     )}
                                                 </button>
                                             );
@@ -351,7 +351,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                className="border-[#3871F1]/30 text-[#3871F1] hover:bg-[#3871F1]/10"
+                                                className="border-[#6F00FF]/30 text-[#6F00FF] hover:bg-[#6F00FF]/10"
                                             >
                                                 Cadastrar Carteira
                                             </Button>
@@ -368,14 +368,14 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     placeholder="Ex: Conta de luz, boleto bancário..."
-                                    className="w-full px-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-[#3871F1]/50 focus:ring-2 focus:ring-[#3871F1]/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full px-4 text-sm bg-muted border border-border text-foreground h-12 rounded-xl focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
                                 />
                             </div>
 
                             <Button
                                 onClick={handleGetQuote}
                                 disabled={!barcode.trim() || numAmount < 1 || !selectedWalletId || loading}
-                                className="w-full bg-linear-to-r from-[#3871F1] to-[#3871F1] hover:from-[#234FB3] hover:to-[#3871F1] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <>
@@ -413,7 +413,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                             <p className="text-foreground font-bold">{formatBRL(quote.boletoAmount)}</p>
                                         </div>
                                     </div>
-                                    <ArrowRight className="w-5 h-5 text-[#3871F1]" />
+                                    <ArrowRight className="w-5 h-5 text-[#6F00FF]" />
                                     <div className="flex items-center gap-3">
                                         <div>
                                             <p className="text-muted-foreground text-xs text-right">Débito em crypto</p>
@@ -469,7 +469,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                             <Button
                                 onClick={handleSubmit}
                                 disabled={loading}
-                                className="w-full bg-linear-to-r from-[#3871F1] to-[#3871F1] hover:from-[#234FB3] hover:to-[#3871F1] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <>
@@ -523,7 +523,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                         <div className="flex justify-between items-center text-sm">
                                             <span className="text-muted-foreground">ID</span>
                                             <button
-                                                className="text-[#3871F1] text-xs font-mono hover:underline flex items-center gap-1"
+                                                className="text-[#6F00FF] text-xs font-mono hover:underline flex items-center gap-1"
                                                 onClick={() => {
                                                     navigator.clipboard.writeText(paymentId);
                                                     toast.success("ID copiado!");
@@ -537,8 +537,8 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                 </div>
                             )}
 
-                            <div className="bg-[#3871F1]/10 border border-[#3871F1]/30 rounded-xl p-4">
-                                <p className="text-[#3871F1] text-sm text-center">
+                            <div className="bg-[#6F00FF]/10 border border-[#6F00FF]/30 rounded-xl p-4">
+                                <p className="text-[#6F00FF] text-sm text-center">
                                     Acompanhe o status na seção &quot;Meus Boletos&quot;.
                                 </p>
                             </div>
@@ -554,7 +554,7 @@ export function BoletoPaymentModal({ open, onClose, onSuccess }: BoletoPaymentMo
                                 </Link>
                                 <Button
                                     onClick={handleClose}
-                                    className="flex-1 bg-linear-to-r from-[#3871F1] to-[#3871F1] hover:from-[#234FB3] hover:to-[#3871F1] text-white font-semibold rounded-xl py-6"
+                                    className="flex-1 bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6"
                                 >
                                     Fechar
                                 </Button>

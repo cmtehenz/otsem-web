@@ -129,8 +129,8 @@ export function BottomNav() {
                                             className="flex items-center justify-center w-12 h-12 rounded-full"
                                             style={{
                                                 background:
-                                                    "linear-gradient(145deg, #396DE6 0%, #3871F1 50%, #6C5CE7 100%)",
-                                                boxShadow: "0 4px 20px rgba(56, 113, 241, 0.45)",
+                                                    "linear-gradient(145deg, #9B4DFF 0%, #6F00FF 50%, #5800CC 100%)",
+                                                boxShadow: "0 4px 20px rgba(111, 0, 255, 0.45)",
                                             }}
                                             whileTap={{ scale: 0.88 }}
                                             transition={iosSpring}
@@ -167,7 +167,7 @@ export function BottomNav() {
                                             layoutId="nav-active-glow"
                                             className="absolute -top-0.5 w-8 h-0.5 rounded-full"
                                             style={{
-                                                background: "linear-gradient(90deg, transparent, #3871F1, transparent)",
+                                                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)",
                                             }}
                                             transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                         />
@@ -179,13 +179,13 @@ export function BottomNav() {
                                     >
                                         <Icon
                                             className={`w-[22px] h-[22px] transition-all duration-300 ${
-                                                isActive ? "text-[#3871F1]" : "text-white/70"
+                                                isActive ? "text-white" : "text-white/70"
                                             }`}
                                             strokeWidth={isActive ? 2.2 : 1.6}
                                         />
                                         <span
                                             className={`text-[10px] leading-tight tracking-tight transition-all duration-300 ${
-                                                isActive ? "font-semibold text-[#3871F1]" : "font-medium text-white/70"
+                                                isActive ? "font-semibold text-white" : "font-medium text-white/70"
                                             }`}
                                         >
                                             {tab.label}

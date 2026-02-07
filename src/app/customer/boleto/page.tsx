@@ -176,7 +176,7 @@ export default function CustomerBoletoPage() {
                 <motion.button
                     whileTap={{ scale: 0.97 }}
                     onClick={() => openModal("payBoleto")}
-                    className="px-4 py-2 rounded-full bg-[#3871F1] text-white text-sm font-semibold"
+                    className="px-4 py-2 rounded-full bg-[#6F00FF] text-white text-sm font-semibold"
                 >
                     + Novo
                 </motion.button>
@@ -190,7 +190,7 @@ export default function CustomerBoletoPage() {
                         onClick={() => setFilter(f.key)}
                         className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition ${
                             filter === f.key
-                                ? "bg-[#3871F1]/20 text-[#3871F1] border border-[#3871F1]/50"
+                                ? "bg-[#6F00FF]/20 text-[#6F00FF] border border-[#6F00FF]/50"
                                 : "bg-white/5 text-white/70 border border-white/10 hover:border-white/20"
                         }`}
                     >
@@ -211,7 +211,7 @@ export default function CustomerBoletoPage() {
                     <motion.button
                         whileTap={{ scale: 0.97 }}
                         onClick={() => openModal("payBoleto")}
-                        className="mt-4 px-6 py-3 rounded-full bg-[#3871F1] text-white text-sm font-semibold"
+                        className="mt-4 px-6 py-3 rounded-full bg-[#6F00FF] text-white text-sm font-semibold"
                     >
                         Pagar Boleto
                     </motion.button>
@@ -334,7 +334,7 @@ export default function CustomerBoletoPage() {
                                                 navigator.clipboard.writeText(selectedPayment.barcode);
                                                 toast.success("Código copiado!");
                                             }}
-                                            className="text-[#3871F1] text-xs font-mono flex items-center gap-1 hover:underline"
+                                            className="text-[#6F00FF] text-xs font-mono flex items-center gap-1 hover:underline"
                                         >
                                             {selectedPayment.barcode.slice(0, 12)}...
                                             <Copy className="w-3 h-3" />

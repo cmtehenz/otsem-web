@@ -66,7 +66,7 @@
     --popover: #ffffff;
     --popover-foreground: #1a1025;
 
-    --primary: #3871F1;
+    --primary: #6F00FF;
     --primary-foreground: #ffffff;
     --secondary: #f3f1f9;
     --secondary-foreground: #1a1025;
@@ -78,84 +78,67 @@
 
     --border: #e5e1f0;
     --input: #e5e1f0;
-    --ring: #3871F1;
+    --ring: #6F00FF;
 
-    --chart-1: #3871F1;
+    --chart-1: #6F00FF;
     --chart-2: #22c55e;
     --chart-3: #f59e0b;
     --chart-4: #06b6d4;
     --chart-5: #ec4899;
 
-    /* Blue/Purple Glass design tokens */
-    --brand-blue: #3871F1;
-    --brand-blue-deep: #234FB3;
-    --brand-blue-electric: #396DE6;
-    --brand-purple: #6C5CE7;
-    --brand-purple-glow: #8E7BFF;
-    --bg-primary: #050607;
-    --bg-secondary: #0D0E15;
-    --surface-glass: rgba(18, 20, 29, 0.55);
-    --stroke-glass: rgba(163, 186, 239, 0.14);
-    --stroke-glass-highlight: rgba(255, 255, 255, 0.06);
-    --glow-blue: rgba(56, 113, 241, 0.45);
-    --glow-purple: rgba(108, 92, 231, 0.35);
-    --text-primary-customer: rgba(255, 255, 255, 0.92);
-    --text-secondary-customer: rgba(255, 255, 255, 0.70);
-    --text-tertiary-customer: rgba(255, 255, 255, 0.48);
-
     --sidebar: #ffffff;
     --sidebar-foreground: #1a1025;
-    --sidebar-primary: #3871F1;
+    --sidebar-primary: #6F00FF;
     --sidebar-primary-foreground: #ffffff;
     --sidebar-accent: #f3f1f9;
     --sidebar-accent-foreground: #1a1025;
     --sidebar-border: #e5e1f0;
-    --sidebar-ring: #3871F1;
+    --sidebar-ring: #6F00FF;
 }
 
 .dark {
-    --background: #050607;
+    --background: #0a0118;
     --foreground: #f8f7fc;
-    --surface: #12141D;
-    --surface-elevated: #15171C;
+    --surface: #1a1025;
+    --surface-elevated: #241930;
 
     --text-primary: #f8f7fc;
     --text-secondary: #c4bfd4;
     --text-muted: #8b839e;
 
-    --card: #12141D;
+    --card: #1a1025;
     --card-foreground: #f8f7fc;
-    --popover: #12141D;
+    --popover: #1a1025;
     --popover-foreground: #f8f7fc;
 
-    --primary: #3871F1;
+    --primary: #6F00FF;
     --primary-foreground: #ffffff;
-    --secondary: #15171C;
+    --secondary: #241930;
     --secondary-foreground: #f8f7fc;
-    --muted: #15171C;
+    --muted: #241930;
     --muted-foreground: #8b839e;
-    --accent: #15171C;
+    --accent: #241930;
     --accent-foreground: #f8f7fc;
     --destructive: #f87171;
 
-    --border: rgba(163, 186, 239, 0.14);
-    --input: rgba(163, 186, 239, 0.14);
-    --ring: #3871F1;
+    --border: rgba(255, 255, 255, 0.1);
+    --input: rgba(255, 255, 255, 0.1);
+    --ring: #6F00FF;
 
-    --chart-1: #3871F1;
+    --chart-1: #6F00FF;
     --chart-2: #4ade80;
     --chart-3: #fbbf24;
     --chart-4: #22d3ee;
     --chart-5: #f472b6;
 
-    --sidebar: #050607;
+    --sidebar: #0a0118;
     --sidebar-foreground: #f8f7fc;
-    --sidebar-primary: #3871F1;
+    --sidebar-primary: #6F00FF;
     --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #15171C;
+    --sidebar-accent: #241930;
     --sidebar-accent-foreground: #f8f7fc;
-    --sidebar-border: rgba(163, 186, 239, 0.14);
-    --sidebar-ring: #3871F1;
+    --sidebar-border: rgba(255, 255, 255, 0.1);
+    --sidebar-ring: #6F00FF;
 }
 
 @layer base {
@@ -166,8 +149,8 @@
     html {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        /* Dark fallback — matches deep dark base */
-        background-color: #050607;
+        /* Dark fallback — matches background image top (dark end of gradient) */
+        background-color: #050010;
         height: 100%;
         margin: 0;
         padding: 0;
@@ -217,7 +200,7 @@
         /* IMPORTANT: Use background-color + background-image separately.
            The `background` shorthand resets background-color to transparent,
            which exposes the white iOS window behind the home indicator area. */
-        background-color: #050607;
+        background-color: #050010;
         background-image: url('/images/customer-bg.png');
         background-size: cover;
         background-position: center top;
@@ -353,12 +336,12 @@
 
 @keyframes pulseGlow {
     0%, 100% {
-        box-shadow: 0 4px 20px rgba(56, 113, 241, 0.5),
-                    0 0 40px rgba(56, 113, 241, 0.3);
+        box-shadow: 0 4px 20px rgba(139, 92, 246, 0.5),
+                    0 0 40px rgba(139, 92, 246, 0.3);
     }
     50% {
-        box-shadow: 0 4px 30px rgba(56, 113, 241, 0.7),
-                    0 0 60px rgba(56, 113, 241, 0.4);
+        box-shadow: 0 4px 30px rgba(139, 92, 246, 0.7),
+                    0 0 60px rgba(139, 92, 246, 0.4);
     }
 }
 
@@ -388,23 +371,31 @@
     }
 
     .liquid-glass {
-        background: rgba(18, 20, 29, 0.55);
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.2) 0%,
+            rgba(255, 255, 255, 0.05) 100%
+        );
         -webkit-backdrop-filter: blur(20px) saturate(150%);
         backdrop-filter: blur(20px) saturate(150%);
-        border: 1px solid rgba(163, 186, 239, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         box-shadow:
-            0 8px 32px rgba(0, 0, 0, 0.25),
-            0 2px 8px rgba(0, 0, 0, 0.12),
-            inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            0 8px 32px rgba(0, 0, 0, 0.12),
+            0 2px 8px rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     .dark .liquid-glass {
-        background: rgba(18, 20, 29, 0.55);
-        border-color: rgba(163, 186, 239, 0.14);
+        background: linear-gradient(
+            135deg,
+            rgba(15, 15, 20, 0.8) 0%,
+            rgba(15, 15, 20, 0.6) 100%
+        );
+        border-color: rgba(255, 255, 255, 0.1);
         box-shadow:
             0 8px 32px rgba(0, 0, 0, 0.4),
             0 2px 8px rgba(0, 0, 0, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
     .rich-glass {
@@ -435,11 +426,11 @@
     }
 
     .dark .premium-card {
-        @apply bg-[#12141D]/90;
-        border-color: rgba(163, 186, 239, 0.14);
+        @apply bg-[#1a1025]/90;
+        border-color: rgba(255, 255, 255, 0.10);
         box-shadow:
-            inset 0 0.5px 0 rgba(255, 255, 255, 0.06),
-            inset 0 0 12px rgba(56, 113, 241, 0.02),
+            inset 0 0.5px 0 rgba(255, 255, 255, 0.08),
+            inset 0 0 12px rgba(255, 255, 255, 0.02),
             0 20px 40px -10px rgba(0, 0, 0, 0.4),
             0 8px 16px -4px rgba(0, 0, 0, 0.25);
     }
@@ -462,17 +453,17 @@
 
     .btn-premium {
         @apply relative overflow-hidden bg-primary text-white font-semibold py-4 px-8 rounded-[16px] transition-all duration-300 active:scale-[0.97] shadow-lg flex items-center justify-center gap-2.5;
-        background: linear-gradient(180deg, #396DE6 0%, #3871F1 50%, #234FB3 100%);
+        background: linear-gradient(180deg, #8B2FFF 0%, #6F00FF 100%);
         box-shadow:
-            0 0 0 0.5px rgba(56, 113, 241, 0.5),
-            0 4px 12px rgba(56, 113, 241, 0.35),
-            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            0 0 0 0.5px rgba(111, 0, 255, 0.5),
+            0 4px 12px rgba(111, 0, 255, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     .btn-premium::after {
         content: "";
         @apply absolute inset-0 opacity-0 transition-opacity duration-300;
-        background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%);
+        background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
     }
 
     .btn-premium:hover::after {
@@ -482,8 +473,8 @@
     .btn-premium:active {
         transform: scale(0.97);
         box-shadow:
-            0 0 0 0.5px rgba(56, 113, 241, 0.5),
-            0 2px 6px rgba(56, 113, 241, 0.25);
+            0 0 0 0.5px rgba(111, 0, 255, 0.5),
+            0 2px 6px rgba(111, 0, 255, 0.25);
     }
 
     .btn-premium-outline {
@@ -531,7 +522,7 @@
     }
 
     .text-gradient-primary {
-        background: linear-gradient(135deg, #3871F1 0%, #6C5CE7 100%);
+        background: linear-gradient(135deg, #6F00FF 0%, #9B4DFF 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -673,21 +664,45 @@
         right: 0;
         bottom: -50px;
         z-index: 0;
-        background:
-            radial-gradient(900px 600px at 70% 15%, rgba(56, 113, 241, 0.85), rgba(56, 113, 241, 0) 60%),
-            radial-gradient(700px 500px at 25% 50%, rgba(108, 92, 231, 0.55), rgba(108, 92, 231, 0) 60%),
-            radial-gradient(500px 400px at 80% 80%, rgba(56, 113, 241, 0.25), rgba(56, 113, 241, 0) 60%),
-            linear-gradient(180deg, #0D0E15 0%, #050607 60%);
+        background: linear-gradient(
+            180deg,
+            #020008 0%,
+            #080020 8%,
+            #100040 16%,
+            #1a0a60 24%,
+            #261080 32%,
+            #3418a0 40%,
+            #4428b8 48%,
+            #5838c8 56%,
+            #7050d8 64%,
+            #8868e0 72%,
+            #a088e8 80%,
+            #b8a8f0 88%,
+            #d0c4f8 94%,
+            #e8e0ff 100%
+        );
         pointer-events: none;
     }
 
     /* ── Container gradient — applied directly as background, no z-index needed ─── */
     .fintech-bg-container {
-        background:
-            radial-gradient(900px 600px at 70% 15%, rgba(56, 113, 241, 0.85), rgba(56, 113, 241, 0) 60%),
-            radial-gradient(700px 500px at 25% 50%, rgba(108, 92, 231, 0.55), rgba(108, 92, 231, 0) 60%),
-            radial-gradient(500px 400px at 80% 80%, rgba(56, 113, 241, 0.25), rgba(56, 113, 241, 0) 60%),
-            linear-gradient(180deg, #0D0E15 0%, #050607 60%);
+        background: linear-gradient(
+            180deg,
+            #020008 0%,
+            #080020 8%,
+            #100040 16%,
+            #1a0a60 24%,
+            #261080 32%,
+            #3418a0 40%,
+            #4428b8 48%,
+            #5838c8 56%,
+            #7050d8 64%,
+            #8868e0 72%,
+            #a088e8 80%,
+            #b8a8f0 88%,
+            #d0c4f8 94%,
+            #e8e0ff 100%
+        );
         /* Default height for browser mode (same as Tailwind h-dvh).
            Standalone PWA mode overrides this below to include safe area. */
         height: 100dvh;
@@ -707,18 +722,18 @@
 
     /* ── Liquid Glass dock (Hyper-Premium, no borders) ─── */
     .liquid-glass-dock {
-        background: rgba(18, 20, 29, 0.65);
-        -webkit-backdrop-filter: blur(32px) saturate(180%);
-        backdrop-filter: blur(32px) saturate(180%);
-        border: 0.5px solid rgba(163, 186, 239, 0.18);
+        background: rgba(255, 255, 255, 0.05);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        backdrop-filter: blur(24px) saturate(180%);
+        border: none;
         border-radius: 9999px;
         position: relative;
         overflow: hidden;
         box-shadow:
-            0 8px 40px -8px rgba(0, 0, 0, 0.35),
-            0 2px 8px rgba(0, 0, 0, 0.15),
-            inset 0 0.5px 0 0 rgba(163, 186, 239, 0.15),
-            inset 0 0 20px 0 rgba(56, 113, 241, 0.04);
+            0 8px 32px -8px rgba(0, 0, 0, 0.25),
+            0 2px 8px rgba(0, 0, 0, 0.1),
+            inset 0 0.5px 0 0 rgba(255, 255, 255, 0.25),
+            inset 0 0 20px 0 rgba(255, 255, 255, 0.04);
     }
 
     .liquid-glass-dock::before {
@@ -728,7 +743,7 @@
         border-radius: inherit;
         background: radial-gradient(
             ellipse 80% 50% at 50% 0%,
-            rgba(163, 186, 239, 0.08) 0%,
+            rgba(255, 255, 255, 0.10) 0%,
             transparent 70%
         );
         pointer-events: none;
@@ -736,30 +751,30 @@
     }
 
     .dark .liquid-glass-dock {
-        background: rgba(18, 20, 29, 0.65);
+        background: rgba(255, 255, 255, 0.04);
         box-shadow:
-            0 8px 40px -8px rgba(0, 0, 0, 0.45),
-            0 2px 8px rgba(0, 0, 0, 0.25),
-            inset 0 0.5px 0 0 rgba(163, 186, 239, 0.12),
-            inset 0 0 20px 0 rgba(56, 113, 241, 0.03);
+            0 8px 32px -8px rgba(0, 0, 0, 0.4),
+            0 2px 8px rgba(0, 0, 0, 0.2),
+            inset 0 0.5px 0 0 rgba(255, 255, 255, 0.15),
+            inset 0 0 20px 0 rgba(255, 255, 255, 0.02);
     }
 
     /* ── Metaball Glassmorphism dock (iOS 26 Liquid Glass) ── */
     .metaball-glass-dock {
         width: 92vw;
         max-width: 420px;
-        background: rgba(18, 20, 29, 0.70);
-        -webkit-backdrop-filter: blur(32px) saturate(180%);
-        backdrop-filter: blur(32px) saturate(180%);
-        border: 0.5px solid rgba(163, 186, 239, 0.18);
+        background: rgba(255, 255, 255, 0.03);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        backdrop-filter: blur(24px) saturate(180%);
+        border: 0.5px solid rgba(255, 255, 255, 0.10);
         border-radius: 28px;
         position: relative;
         overflow: visible;
         box-shadow:
-            0 8px 40px -8px rgba(0, 0, 0, 0.35),
-            0 2px 12px rgba(0, 0, 0, 0.10),
-            inset 0 1px 0 0 rgba(163, 186, 239, 0.12),
-            inset 0 -0.5px 0 0 rgba(163, 186, 239, 0.04);
+            0 8px 40px -8px rgba(0, 0, 0, 0.15),
+            0 2px 12px rgba(0, 0, 0, 0.04),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+            inset 0 -0.5px 0 0 rgba(255, 255, 255, 0.02);
     }
 
     /* Liquid glass shimmer highlight on top edge */
@@ -773,9 +788,9 @@
         background: linear-gradient(
             90deg,
             transparent 0%,
-            rgba(163, 186, 239, 0.25) 30%,
-            rgba(163, 186, 239, 0.40) 50%,
-            rgba(163, 186, 239, 0.25) 70%,
+            rgba(255, 255, 255, 0.35) 30%,
+            rgba(255, 255, 255, 0.5) 50%,
+            rgba(255, 255, 255, 0.35) 70%,
             transparent 100%
         );
         border-radius: 1px;
@@ -790,7 +805,7 @@
         border-radius: inherit;
         background: radial-gradient(
             ellipse 60% 80% at 50% 0%,
-            rgba(56, 113, 241, 0.06) 0%,
+            rgba(255, 255, 255, 0.05) 0%,
             transparent 60%
         );
         pointer-events: none;
@@ -799,33 +814,27 @@
 
     /* ── Glassmorphism surface card ──────────────────── */
     .fintech-glass-card {
-        background: rgba(18, 20, 29, 0.55);
-        -webkit-backdrop-filter: blur(18px) saturate(140%);
-        backdrop-filter: blur(18px) saturate(140%);
-        border: 1px solid rgba(163, 186, 239, 0.14);
-        border-radius: 24px;
-        box-shadow:
-            0 12px 40px -8px rgba(0, 0, 0, 0.25),
-            inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        background: rgba(255, 255, 255, 0.08);
+        -webkit-backdrop-filter: blur(20px) saturate(140%);
+        backdrop-filter: blur(20px) saturate(140%);
+        border: 0.5px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.25);
     }
 
     /* ── Glassmorphism action button (outlined circle) ─ */
     .fintech-glass-btn {
-        background: rgba(18, 20, 29, 0.45);
-        border: 1px solid rgba(163, 186, 239, 0.18);
-        box-shadow: 0 2px 12px -2px rgba(0, 0, 0, 0.15);
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 2px 12px -2px rgba(0, 0, 0, 0.12);
     }
 
     /* ── Glassmorphism activity container ────────────── */
     .fintech-glass-activity {
-        background: rgba(18, 20, 29, 0.45);
-        -webkit-backdrop-filter: blur(18px);
-        backdrop-filter: blur(18px);
-        border: 1px solid rgba(163, 186, 239, 0.14);
-        border-radius: 24px;
-        box-shadow:
-            0 12px 40px -8px rgba(0, 0, 0, 0.25),
-            inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        background: rgba(255, 255, 255, 0.04);
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
+        border: 0.5px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.18);
     }
 
     /* ── Vivid purple gradient background for customer app ── */
@@ -885,11 +894,11 @@
 }
 
 .dark [data-sonner-toast] {
-    background: rgba(18, 20, 29, 0.92) !important;
-    border-color: rgba(163, 186, 239, 0.14) !important;
+    background: rgba(26, 16, 37, 0.88) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
     box-shadow:
-        0 8px 32px -8px rgba(0, 0, 0, 0.4),
-        inset 0 0 0 0.5px rgba(163, 186, 239, 0.08) !important;
+        0 8px 32px -8px rgba(0, 0, 0, 0.3),
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.06) !important;
 }
 
 [data-sonner-toast][data-type="success"] {
@@ -899,7 +908,7 @@
 }
 
 .dark [data-sonner-toast][data-type="success"] {
-    background: rgba(5, 46, 22, 0.90) !important;
+    background: rgba(5, 46, 22, 0.85) !important;
     border-color: rgba(34, 197, 94, 0.2) !important;
     color: #86efac !important;
 }
@@ -911,7 +920,7 @@
 }
 
 .dark [data-sonner-toast][data-type="error"] {
-    background: rgba(69, 10, 10, 0.90) !important;
+    background: rgba(69, 10, 10, 0.85) !important;
     border-color: rgba(239, 68, 68, 0.2) !important;
     color: #fca5a5 !important;
 }
@@ -935,9 +944,9 @@
 }
 
 .dark [data-sonner-toast][data-type="info"] {
-    background: rgba(18, 20, 50, 0.90) !important;
-    border-color: rgba(56, 113, 241, 0.2) !important;
-    color: #A3BAEF !important;
+    background: rgba(46, 16, 101, 0.85) !important;
+    border-color: rgba(139, 92, 246, 0.2) !important;
+    color: #c4b5fd !important;
 }
 
 [data-sonner-toast] [data-description] {

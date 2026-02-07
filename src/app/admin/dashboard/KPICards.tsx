@@ -68,8 +68,8 @@ export default function KPICards({ kpis }: Props) {
             line1: `Total: ${formatNumber(kpis.totalTransactions)}`,
             line2: "transações",
             icon: ArrowUpDown,
-            iconColor: "text-[#3871F1]",
-            iconBg: "bg-[#3871F1]/10",
+            iconColor: "text-[#6F00FF]",
+            iconBg: "bg-[#6F00FF]/10",
         },
         {
             title: "Conversões USDT",

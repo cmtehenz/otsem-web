@@ -30,7 +30,7 @@ const actions = [
         label: "Transações",
         href: "/admin/recebidos",
         icon: ArrowUpDown,
-        color: "border-[#3871F1]/20 hover:bg-[#3871F1]/5 hover:border-[#3871F1]/40",
+        color: "border-[#6F00FF]/20 hover:bg-[#6F00FF]/5 hover:border-[#6F00FF]/40",
     },
     {
         label: "Carteiras USDT",

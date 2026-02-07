@@ -311,7 +311,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                         <div className="w-full space-y-4">
                             <div className="bg-muted border border-border rounded-xl p-4">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <TrendingUp className="w-4 h-4 text-[#3871F1] dark:text-[#3871F1]" />
+                                    <TrendingUp className="w-4 h-4 text-[#6F00FF] dark:text-[#6F00FF]" />
                                     <span className="text-muted-foreground text-sm">Cotação atual</span>
                                 </div>
                                 <p className="text-foreground font-bold text-lg">
@@ -324,7 +324,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
 
                                 {walletsLoading ? (
                                     <div className="flex items-center justify-center py-6">
-                                        <Loader2 className="w-6 h-6 text-[#3871F1] dark:text-[#3871F1] animate-spin" />
+                                        <Loader2 className="w-6 h-6 text-[#6F00FF] dark:text-[#6F00FF] animate-spin" />
                                     </div>
                                 ) : wallets.length > 0 ? (
                                     <div className="space-y-2 max-h-48 overflow-y-auto">
@@ -336,8 +336,8 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                                     key={wallet.id}
                                                     onClick={() => setSelectedWalletId(wallet.id)}
                                                     className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${selectedWalletId === wallet.id
-                                                        ? "border-[#3871F1]/50 bg-[#3871F1]/20"
-                                                        : "border-border bg-muted hover:border-[#3871F1]/30"
+                                                        ? "border-[#6F00FF]/50 bg-[#6F00FF]/20"
+                                                        : "border-border bg-muted hover:border-[#6F00FF]/30"
                                                         }`}
                                                 >
                                                     <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
@@ -365,7 +365,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                                         </div>
                                                     </div>
                                                     {selectedWalletId === wallet.id && (
-                                                        <Check className="w-5 h-5 text-[#3871F1] dark:text-[#3871F1] shrink-0" />
+                                                        <Check className="w-5 h-5 text-[#6F00FF] dark:text-[#6F00FF] shrink-0" />
                                                     )}
                                                 </button>
                                             );
@@ -379,7 +379,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                className="border-[#3871F1]/30 text-[#3871F1] dark:text-[#3871F1] hover:bg-[#3871F1]/10"
+                                                className="border-[#6F00FF]/30 text-[#6F00FF] dark:text-[#6F00FF] hover:bg-[#6F00FF]/10"
                                             >
                                                 Cadastrar Carteira
                                             </Button>
@@ -390,7 +390,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
 
                             {wallets.length > 0 && (
                                 <div className="text-center">
-                                    <Link href="/customer/wallet" onClick={handleClose} className="text-[#3871F1] dark:text-[#3871F1] hover:text-[#3871F1] text-sm">
+                                    <Link href="/customer/wallet" onClick={handleClose} className="text-[#6F00FF] dark:text-[#6F00FF] hover:text-[#6F00FF] text-sm">
                                         Gerenciar carteiras →
                                     </Link>
                                 </div>
@@ -399,7 +399,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                             <Button
                                 onClick={handleContinueToAmount}
                                 disabled={!selectedWalletId || wallets.length === 0}
-                                className="w-full bg-linear-to-r from-[#3871F1] to-[#3871F1] hover:from-[#234FB3] hover:to-[#3871F1] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 Continuar
                             </Button>
@@ -419,7 +419,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                 <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xl">
                                     🇧🇷
                                 </div>
-                                <ArrowRight className="w-5 h-5 text-[#3871F1] dark:text-[#3871F1]" />
+                                <ArrowRight className="w-5 h-5 text-[#6F00FF] dark:text-[#6F00FF]" />
                                 <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xl">
                                     💵
                                 </div>
@@ -436,11 +436,11 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                     placeholder="0,00"
-                                    className="w-full pl-12 pr-16 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#3871F1]/50 focus:ring-2 focus:ring-[#3871F1]/20 focus:outline-none placeholder:text-muted-foreground/50"
+                                    className="w-full pl-12 pr-16 text-center text-xl bg-muted border border-border text-foreground h-14 rounded-xl focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none placeholder:text-muted-foreground/50"
                                 />
                                 <button
                                     onClick={handleMax}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 text-xs font-medium text-[#3871F1] dark:text-[#3871F1] hover:text-[#3871F1] bg-[#3871F1]/10 rounded"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 text-xs font-medium text-[#6F00FF] dark:text-[#6F00FF] hover:text-[#6F00FF] bg-[#6F00FF]/10 rounded"
                                 >
                                     MAX
                                 </button>
@@ -456,7 +456,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                             <Button
                                 onClick={handleContinueToConfirm}
                                 disabled={numAmount < minAmount}
-                                className="w-full bg-linear-to-r from-[#3871F1] to-[#3871F1] hover:from-[#234FB3] hover:to-[#3871F1] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 Continuar
                             </Button>
@@ -487,7 +487,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                             <p className="text-foreground font-bold">{formatBRL(numAmount)}</p>
                                         </div>
                                     </div>
-                                    <ArrowRight className="w-5 h-5 text-[#3871F1] dark:text-[#3871F1]" />
+                                    <ArrowRight className="w-5 h-5 text-[#6F00FF] dark:text-[#6F00FF]" />
                                     <div className="flex items-center gap-3">
                                         <div>
                                             <p className="text-muted-foreground text-xs text-right">Para</p>
@@ -548,7 +548,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                             <Button
                                 onClick={handleConvert}
                                 disabled={loading || !!limitError}
-                                className="w-full bg-linear-to-r from-[#3871F1] to-[#3871F1] hover:from-[#234FB3] hover:to-[#3871F1] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <>
@@ -566,8 +566,8 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                         <div className="w-full space-y-5">
                             <div className="flex justify-center">
                                 <div className="relative">
-                                    <div className="w-20 h-20 rounded-full border-4 border-[#3871F1]/20 flex items-center justify-center">
-                                        <Loader2 className="w-10 h-10 text-[#3871F1] animate-spin" />
+                                    <div className="w-20 h-20 rounded-full border-4 border-[#6F00FF]/20 flex items-center justify-center">
+                                        <Loader2 className="w-10 h-10 text-[#6F00FF] animate-spin" />
                                     </div>
                                     {conversionStatus === "COMPLETED" && (
                                         <div className="absolute inset-0 flex items-center justify-center bg-card rounded-full">
@@ -596,9 +596,9 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                         <div key={status} className="flex items-center gap-3">
                                             <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                                                 isCompleted 
-                                                    ? "bg-[#3871F1]" 
+                                                    ? "bg-[#6F00FF]" 
                                                     : isCurrent 
-                                                        ? "bg-[#3871F1] animate-pulse" 
+                                                        ? "bg-[#6F00FF] animate-pulse" 
                                                         : "bg-muted-foreground/20"
                                             }`}>
                                                 {isCompleted ? (
@@ -646,8 +646,8 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
                                 </div>
                             </div>
 
-                            <div className="bg-[#3871F1]/10 border border-[#3871F1]/30 rounded-xl p-4">
-                                <p className="text-[#3871F1] dark:text-[#3871F1] text-sm text-center">
+                            <div className="bg-[#6F00FF]/10 border border-[#6F00FF]/30 rounded-xl p-4">
+                                <p className="text-[#6F00FF] dark:text-[#6F00FF] text-sm text-center">
                                     Este processo leva aproximadamente 2-5 minutos. Você pode fechar esta janela.
                                 </p>
                             </div>
@@ -672,7 +672,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
 
                             <div className="text-center">
                                 <p className="text-muted-foreground text-sm mb-1">Você recebeu</p>
-                                <p className="text-3xl font-bold bg-linear-to-r from-[#3871F1] to-[#396DE6] bg-clip-text text-transparent">
+                                <p className="text-3xl font-bold bg-linear-to-r from-[#6F00FF] to-[#8B2FFF] bg-clip-text text-transparent">
                                     {formatUSDT(usdtNet || conversionDetail?.usdtAmount || convertedAmount)}
                                 </p>
                                 <p className="text-muted-foreground text-sm mt-2">
@@ -694,7 +694,7 @@ export function ConvertModal({ open, onClose, onSuccess, brlBalance }: ConvertMo
 
                             <Button
                                 onClick={handleClose}
-                                className="w-full bg-linear-to-r from-[#3871F1] to-[#3871F1] hover:from-[#234FB3] hover:to-[#3871F1] text-white font-semibold rounded-xl py-6"
+                                className="w-full bg-linear-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white font-semibold rounded-xl py-6"
                             >
                                 Fechar
                             </Button>

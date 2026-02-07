@@ -20,6 +20,7 @@ import http from "@/lib/http";
 import { useAuth } from "@/contexts/auth-context";
 import { useUsdtRate } from "@/lib/useUsdtRate";
 import { useUiModals } from "@/stores/ui-modals";
+import { iconColors, iconContainerSmClass } from "@/lib/icon-colors";
 import { ConvertModal } from "@/components/modals/convert-modal";
 import { TransactionDetailSheet } from "@/components/modals/transaction-detail-sheet";
 import Image from "next/image";
@@ -210,15 +211,21 @@ function TransactionRow({ tx, onTap }: { tx: Transaction; onTap?: () => void }) 
         displayName = displayName.replace(/aguardando\s*/gi, "").replace(/depósito pix de\s*/gi, "").trim();
     }
 
-    const iconConfig = isPending
-        ? { bg: "bg-white/8", color: "text-white/60", Icon: ArrowRightLeft }
+    const txIconType = isPending
+        ? "pending" as const
         : isTransfer
-          ? { bg: "bg-[#6C5CE7]/12", color: "text-[#8E7BFF]", Icon: UserRoundSearch }
+          ? "transfer" as const
           : isConversionTx
-            ? { bg: "bg-[#3871F1]/12", color: "text-[#396DE6]", Icon: ArrowRightLeft }
+            ? (isSellConversion ? "sell" as const : "conversion" as const)
             : isIncoming
-              ? { bg: "bg-emerald-500/12", color: "text-emerald-400", Icon: ArrowDownLeft }
-              : { bg: "bg-[#3871F1]/12", color: "text-[#396DE6]", Icon: ArrowUpRight };
+              ? "deposit" as const
+              : "withdraw" as const;
+    const txColors = iconColors[txIconType];
+    const IconComponent = isPending ? ArrowRightLeft
+        : isTransfer ? UserRoundSearch
+        : isConversionTx ? ArrowRightLeft
+        : isIncoming ? ArrowDownLeft
+        : ArrowUpRight;
 
     return (
         <motion.div
@@ -226,8 +233,8 @@ function TransactionRow({ tx, onTap }: { tx: Transaction; onTap?: () => void }) 
             whileTap={{ scale: 0.98 }}
             onClick={onTap}
         >
-            <div className={`flex items-center justify-center w-9 h-9 rounded-full ${iconConfig.bg}`}>
-                <iconConfig.Icon className={`w-4 h-4 ${iconConfig.color}`} strokeWidth={2} />
+            <div className={`${iconContainerSmClass} ${txColors.bg}`}>
+                <IconComponent className={`w-4 h-4 ${txColors.text}`} strokeWidth={2} />
             </div>
 
             <div className="flex-1 min-w-0">
@@ -498,8 +505,8 @@ export default function Dashboard() {
         return (
             <div className="flex h-[60dvh] flex-col items-center justify-center">
                 <div className="relative">
-                    <div className="absolute inset-0 bg-[#3871F1]/30 rounded-full blur-xl animate-pulse" />
-                    <Loader2 className="relative h-8 w-8 animate-spin text-[#3871F1]" />
+                    <div className="absolute inset-0 bg-primary/30 rounded-full blur-xl animate-pulse" />
+                    <Loader2 className="relative h-8 w-8 animate-spin text-primary" />
                 </div>
             </div>
         );
@@ -536,8 +543,8 @@ export default function Dashboard() {
                 </div>
 
                 <motion.p
-                    className="text-[44px] font-bold leading-none"
-                    style={{ letterSpacing: "-0.03em", color: "rgba(255,255,255,0.92)" }}
+                    className="text-[36px] font-bold leading-none text-white"
+                    style={{ letterSpacing: "-0.03em" }}
                     key={balanceHidden ? "hidden" : "visible"}
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -555,7 +562,7 @@ export default function Dashboard() {
                         <span className="text-[15px]">🇧🇷</span>
                         <span className="text-white/70 text-[12px] font-medium">BRL</span>
                     </div>
-                    <p className="font-semibold text-[22px] leading-tight" style={{ color: "rgba(255,255,255,0.92)" }}>
+                    <p className="font-semibold text-[22px] leading-tight" style={{ color: "white" }}>
                         {balanceHidden ? "••••" : formatCurrency(saldoBRL)}
                     </p>
                     <p className="text-white/48 text-[11px] mt-1">Real Brasileiro</p>
@@ -567,7 +574,7 @@ export default function Dashboard() {
                         <Image src="/images/usdt-icon.svg" alt="USDT" width={20} height={20} />
                         <span className="text-white/70 text-[12px] font-medium">USDT</span>
                     </div>
-                    <p className="font-semibold text-[22px] leading-tight" style={{ color: "rgba(255,255,255,0.92)" }}>
+                    <p className="font-semibold text-[22px] leading-tight" style={{ color: "white" }}>
                         {balanceHidden ? "••••" : usdtBalanceLoading ? "..." : formatUSD(saldoUSDT)}
                     </p>
                     <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-white/[0.06]">
@@ -614,8 +621,8 @@ export default function Dashboard() {
                         whileTap={{ scale: 0.98 }}
                         className="fintech-glass-card px-4 py-3.5 flex items-center gap-3 active:bg-white/5 transition-colors"
                     >
-                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#6C5CE7]/15">
-                            <Sparkles className="w-5 h-5 text-[#8E7BFF]" />
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
+                            <Sparkles className="w-5 h-5 text-primary" />
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-[15px] font-semibold text-white/92">PRO</p>
@@ -633,8 +640,8 @@ export default function Dashboard() {
                         whileTap={{ scale: 0.98 }}
                         className="fintech-glass-card px-4 py-3.5 flex items-center gap-3 active:bg-white/5 transition-colors"
                     >
-                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#3871F1]/15">
-                            <TrendingUp className="w-5 h-5 text-[#396DE6]" />
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
+                            <TrendingUp className="w-5 h-5 text-primary" />
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-[15px] font-semibold text-white/92">Mercado cripto</p>
@@ -649,10 +656,10 @@ export default function Dashboard() {
             <motion.div variants={fadeUp} className="mt-4">
                 <div className="fintech-glass-activity p-4">
                     <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-[17px] font-bold" style={{ color: "rgba(255,255,255,0.92)" }}>Atividade recente</h3>
+                        <h3 className="text-[17px] font-bold" style={{ color: "white" }}>Atividade recente</h3>
                         <Link
                             href="/customer/transactions"
-                            className="flex items-center gap-0.5 text-[12px] font-medium text-[#3871F1] active:opacity-80"
+                            className="flex items-center gap-0.5 text-[12px] font-medium text-primary active:opacity-80"
                         >
                             Ver tudo
                             <ChevronRight className="w-3.5 h-3.5" />

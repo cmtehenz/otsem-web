@@ -342,7 +342,7 @@ export default function AdminUsersPage() {
                                                     <div className="min-w-0 flex-1">
                                                         <p className="font-medium truncate">{user.name || "—"}</p>
                                                         {user.username && (
-                                                            <p className="text-sm font-medium text-[#3871F1]">@{user.username}</p>
+                                                            <p className="text-sm font-medium text-[#6F00FF]">@{user.username}</p>
                                                         )}
                                                         <p className="text-sm text-muted-foreground truncate">{user.email}</p>
                                                     </div>
@@ -398,7 +398,7 @@ export default function AdminUsersPage() {
                                                         <div>
                                                             <p className="font-medium">{user.name || "—"}</p>
                                                             {user.username && (
-                                                                <p className="text-sm font-medium text-[#3871F1]">@{user.username}</p>
+                                                                <p className="text-sm font-medium text-[#6F00FF]">@{user.username}</p>
                                                             )}
                                                             <p className="text-sm text-muted-foreground">{user.email}</p>
                                                         </div>

@@ -68,7 +68,7 @@ function ResetInner(): React.JSX.Element {
                     </p>
                     <Link
                         href="/forgot"
-                        className="inline-block text-sm font-bold text-[#6C5CE7] hover:underline"
+                        className="inline-block text-sm font-bold text-[#9B4DFF] hover:underline"
                     >
                         Solicitar novo link
                     </Link>
@@ -137,7 +137,7 @@ function ResetInner(): React.JSX.Element {
                                             type={showPw ? "text" : "password"}
                                             autoComplete="new-password"
                                             placeholder="Mínimo 8 caracteres"
-                                            className="h-12 rounded-2xl border-white/15 bg-white/10 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-[#396DE6] focus:ring-2 focus:ring-[#396DE6]/20"
+                                            className="h-12 rounded-2xl border-white/15 bg-white/10 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                             aria-invalid={!!errors.password || undefined}
                                             {...register("password")}
                                         />
@@ -165,7 +165,7 @@ function ResetInner(): React.JSX.Element {
                                             type={showConfirm ? "text" : "password"}
                                             autoComplete="new-password"
                                             placeholder="Repita a senha"
-                                            className="h-12 rounded-2xl border-white/15 bg-white/10 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-[#396DE6] focus:ring-2 focus:ring-[#396DE6]/20"
+                                            className="h-12 rounded-2xl border-white/15 bg-white/10 pl-10 pr-10 text-white placeholder:text-white/40 transition focus:border-[#8B2FFF] focus:ring-2 focus:ring-[#8B2FFF]/20"
                                             aria-invalid={!!errors.confirm || undefined}
                                             {...register("confirm")}
                                         />
@@ -184,7 +184,7 @@ function ResetInner(): React.JSX.Element {
 
                                 <Button
                                     type="submit"
-                                    className="w-full h-12 rounded-2xl bg-[#3871F1] hover:bg-[#234FB3] text-white font-bold"
+                                    className="w-full h-12 rounded-2xl bg-[#6F00FF] hover:bg-[#5800CC] text-white font-bold"
                                     disabled={isSubmitting}
                                     aria-busy={isSubmitting}
                                 >
@@ -193,7 +193,7 @@ function ResetInner(): React.JSX.Element {
 
                                 <p className="text-center text-sm text-white/60">
                                     Lembrou a senha?{" "}
-                                    <Link href="/login" className="font-bold text-[#6C5CE7] hover:underline">
+                                    <Link href="/login" className="font-bold text-[#9B4DFF] hover:underline">
                                         Entrar
                                     </Link>
                                 </p>

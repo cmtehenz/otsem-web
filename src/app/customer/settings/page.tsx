@@ -131,8 +131,8 @@ function SectionTitle({
 }) {
   return (
     <div className="flex items-center gap-2.5 mb-5">
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3871F1]/15">
-        <Icon className="h-4 w-4 text-[#3871F1]" />
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#6F00FF]/15">
+        <Icon className="h-4 w-4 text-[#6F00FF]" />
       </div>
       <h2 className="text-[15px] font-semibold text-white">{title}</h2>
     </div>
@@ -362,7 +362,7 @@ export default function SettingsPage() {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingPhoto}
-              className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#3871F1] border-2 border-black/20 active:scale-95 transition-transform"
+              className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#6F00FF] border-2 border-black/20 active:scale-95 transition-transform"
             >
               <Camera className="w-3.5 h-3.5 text-white" strokeWidth={2} />
             </button>
@@ -375,7 +375,7 @@ export default function SettingsPage() {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingPhoto}
-                className="text-[13px] font-medium text-[#3871F1] active:opacity-70 transition-opacity"
+                className="text-[13px] font-medium text-[#6F00FF] active:opacity-70 transition-opacity"
               >
                 {uploadingPhoto ? "Enviando..." : "Escolher foto"}
               </button>
@@ -591,7 +591,7 @@ export default function SettingsPage() {
               onClick={() => switchLocale(locale.code)}
               className={`relative flex items-center gap-2.5 px-3.5 py-3 rounded-xl border-2 transition-all active:scale-95 ${
                 currentLocale === locale.code
-                  ? "border-[#3871F1] bg-[#3871F1]/15"
+                  ? "border-[#6F00FF] bg-[#6F00FF]/15"
                   : "border-white/15 hover:border-white/30"
               }`}
             >

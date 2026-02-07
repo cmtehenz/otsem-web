@@ -68,7 +68,7 @@ const FeaturesGrid = () => {
         <div className="mb-12 sm:mb-16">
           <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/8 border border-primary/12 text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/12 text-primary font-semibold text-[9px] sm:text-[10px] uppercase tracking-[0.15em] mb-4">
                 {t("badge")}
               </div>
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tightest text-slate-900 leading-[1.1]">
@@ -86,7 +86,7 @@ const FeaturesGrid = () => {
                   key={index}
                   className="ios-card-premium group"
                 >
-                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-primary/8 border border-primary/10 transition-transform duration-300 group-hover:scale-105">
+                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 border border-primary/10 transition-transform duration-300 group-hover:scale-105">
                     <feature.icon className="h-4 w-4 text-primary" strokeWidth={1.75} />
                   </div>
                   <h3 className="font-semibold text-slate-900 text-[12px] sm:text-[13px] tracking-tight">{feature.title}</h3>

@@ -127,7 +127,7 @@ export function TransactionDetailSheet({ transactionId, open, onOpenChange }: Pr
                 <BottomSheetContent className="dark:bg-[#1a1025]/98">
                     {loading && (
                         <div className="flex flex-col items-center justify-center py-16">
-                            <Loader2 className="h-8 w-8 animate-spin text-[#3871F1]" />
+                            <Loader2 className="h-8 w-8 animate-spin text-[#6F00FF]" />
                             <p className="text-[13px] text-muted-foreground mt-4">
                                 Carregando detalhes...
                             </p>
@@ -145,7 +145,7 @@ export function TransactionDetailSheet({ transactionId, open, onOpenChange }: Pr
                         <>
                             <BottomSheetHeader>
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-[#3871F1]/20 flex items-center justify-center">
+                                    <div className="w-10 h-10 rounded-full bg-[#6F00FF]/20 flex items-center justify-center">
                                         {getTypeIcon()}
                                     </div>
                                     <div>
@@ -247,7 +247,7 @@ export function TransactionDetailSheet({ transactionId, open, onOpenChange }: Pr
                             {details.hasReceipt && (
                                 <button
                                     onClick={() => setReceiptOpen(true)}
-                                    className="w-full mt-6 mb-2 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#3871F1] text-white font-semibold text-[15px] active:bg-[#234FB3] transition-colors"
+                                    className="w-full mt-6 mb-2 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#6F00FF] text-white font-semibold text-[15px] active:bg-[#5800CC] transition-colors"
                                 >
                                     <FileText className="w-4.5 h-4.5" />
                                     Ver comprovante
@@ -312,7 +312,7 @@ function DetailRowCopyable({
             <span className="text-[13px] text-muted-foreground">{label}</span>
             <button
                 onClick={onCopy}
-                className="flex items-center gap-1.5 text-[13px] font-medium text-foreground hover:text-[#3871F1] transition-colors"
+                className="flex items-center gap-1.5 text-[13px] font-medium text-foreground hover:text-[#6F00FF] transition-colors"
             >
                 <span className="truncate max-w-[140px]">{truncated}</span>
                 {copied ? (

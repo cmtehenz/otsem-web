@@ -162,7 +162,7 @@ export function ReceiptSheet({ transactionId, open, onOpenChange }: Props) {
             <BottomSheetContent className="dark:bg-[#1a1025]/98">
                 {loading && (
                     <div className="flex flex-col items-center justify-center py-16">
-                        <Loader2 className="h-8 w-8 animate-spin text-[#3871F1]" />
+                        <Loader2 className="h-8 w-8 animate-spin text-[#6F00FF]" />
                         <p className="text-[13px] text-muted-foreground mt-4">
                             Carregando comprovante...
                         </p>
@@ -420,7 +420,7 @@ export function ReceiptSheet({ transactionId, open, onOpenChange }: Props) {
                                         style={{
                                             fontSize: "13px",
                                             fontWeight: 700,
-                                            color: "#3871F1",
+                                            color: "#6F00FF",
                                             margin: 0,
                                         }}
                                     >
@@ -447,7 +447,7 @@ export function ReceiptSheet({ transactionId, open, onOpenChange }: Props) {
                             <button
                                 onClick={handleDownload}
                                 disabled={exporting}
-                                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#3871F1] text-white font-semibold text-[14px] active:bg-[#234FB3] transition-colors disabled:opacity-50"
+                                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#6F00FF] text-white font-semibold text-[14px] active:bg-[#5800CC] transition-colors disabled:opacity-50"
                             >
                                 {exporting ? (
                                     <Loader2 className="w-4 h-4 animate-spin" />

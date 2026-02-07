@@ -52,7 +52,7 @@ function formatDate(dateStr: string): string {
 }
 
 const networkConfig: Record<string, { label: string; className: string }> = {
-    SOLANA: { label: "Solana", className: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-[#396DE6]" },
+    SOLANA: { label: "Solana", className: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-[#8B2FFF]" },
     TRON: { label: "Tron (TRC20)", className: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" },
 };
 
@@ -215,7 +215,7 @@ export default function AdminWalletsPage() {
                                             <div className="min-w-0 flex-1">
                                                 <p className="font-medium">{wallet.customerName || "—"}</p>
                                                 {wallet.customerUsername && (
-                                                    <p className="text-sm font-medium text-[#3871F1]">@{wallet.customerUsername}</p>
+                                                    <p className="text-sm font-medium text-[#6F00FF]">@{wallet.customerUsername}</p>
                                                 )}
                                                 <p className="text-sm text-muted-foreground truncate">{wallet.customerEmail}</p>
                                             </div>
@@ -269,7 +269,7 @@ export default function AdminWalletsPage() {
                                                     <div>
                                                         <p className="font-medium">{wallet.customerName || "—"}</p>
                                                         {wallet.customerUsername && (
-                                                            <p className="text-sm font-medium text-[#3871F1]">@{wallet.customerUsername}</p>
+                                                            <p className="text-sm font-medium text-[#6F00FF]">@{wallet.customerUsername}</p>
                                                         )}
                                                         <p className="text-sm text-muted-foreground">{wallet.customerEmail}</p>
                                                     </div>

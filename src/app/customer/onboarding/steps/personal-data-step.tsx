@@ -119,8 +119,8 @@ export function PersonalDataStep({ customer, onComplete }: PersonalDataStepProps
     return (
         <div className="space-y-6">
             <div className="text-center space-y-2">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#3871F1]/10">
-                    <UserRound className="h-6 w-6 text-[#3871F1]" />
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#6F00FF]/10">
+                    <UserRound className="h-6 w-6 text-[#6F00FF]" />
                 </div>
                 <h2 className="text-xl font-bold text-white">
                     Dados pessoais
@@ -264,7 +264,7 @@ export function PersonalDataStep({ customer, onComplete }: PersonalDataStepProps
                 <Button
                     type="submit"
                     disabled={submitting}
-                    className="w-full h-12 rounded-xl bg-[#3871F1] hover:bg-[#3871F1]/90 text-white font-semibold"
+                    className="w-full h-12 rounded-xl bg-[#6F00FF] hover:bg-[#6F00FF]/90 text-white font-semibold"
                 >
                     {submitting ? (
                         <Loader2 className="h-4 w-4 animate-spin mr-2" />

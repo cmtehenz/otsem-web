@@ -84,7 +84,7 @@ export default function DashboardKPI({
                     <CardTitle className="text-sm font-medium text-muted-foreground">
                         Transações Cartão
                     </CardTitle>
-                    <CreditCard className="size-5 text-[#3871F1]" />
+                    <CreditCard className="size-5 text-[#6F00FF]" />
                 </CardHeader>
                 <CardContent>
                     <div className="text-3xl font-bold">{cardTxs}</div>

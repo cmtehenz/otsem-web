@@ -200,9 +200,9 @@ function LoadingSpinner() {
     return (
         <div className="flex flex-col items-center gap-3">
             <div className="relative">
-                <div className="absolute inset-0 bg-[#3871F1]/30 rounded-full blur-xl animate-pulse" />
+                <div className="absolute inset-0 bg-[#6F00FF]/30 rounded-full blur-xl animate-pulse" />
                 <motion.div
-                    className="relative w-10 h-10 rounded-full border-2 border-[#3871F1]/20 border-t-[#3871F1]"
+                    className="relative w-10 h-10 rounded-full border-2 border-[#6F00FF]/20 border-t-[#6F00FF]"
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 />

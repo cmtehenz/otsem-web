@@ -14,6 +14,11 @@ import {
     ExternalLink,
     BookOpen,
     ArrowRight,
+    Activity,
+    ArrowDownLeft,
+    ArrowRightLeft,
+    ShieldCheck,
+    Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,22 +79,22 @@ const tutorials = [
     {
         title: "Primeiro Depósito",
         description: "Aprenda a fazer seu primeiro depósito via PIX",
-        icon: "💰",
+        Icon: ArrowDownLeft,
     },
     {
         title: "Converter para USDT",
         description: "Como trocar seus reais por dólares digitais",
-        icon: "🔄",
+        Icon: ArrowRightLeft,
     },
     {
         title: "Verificar Identidade",
         description: "Complete seu KYC em poucos minutos",
-        icon: "🪪",
+        Icon: ShieldCheck,
     },
     {
         title: "Gerenciar Carteiras",
         description: "Adicione e gerencie suas carteiras crypto",
-        icon: "👛",
+        Icon: Wallet,
     },
 ];
 
@@ -111,45 +116,51 @@ function FAQAccordion({ items }: { items: FAQItem[] }) {
     const [openIndex, setOpenIndex] = React.useState<number | null>(null);
 
     return (
-        <div className="space-y-2">
-            {items.map((item, index) => (
-                <motion.div
-                    key={index}
-                    variants={fadeUp}
-                    className="fintech-glass-card rounded-[20px] p-5 !rounded-[18px] !p-0 overflow-hidden"
-                >
-                    <button
-                        onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                        className="w-full flex items-center justify-between p-4 text-left active:scale-[0.98] transition-transform"
+        <div className="space-y-3">
+            {items.map((item, index) => {
+                const isOpen = openIndex === index;
+                return (
+                    <motion.div
+                        key={index}
+                        variants={fadeUp}
+                        className="fintech-glass-card !rounded-2xl !p-0 overflow-hidden"
                     >
-                        <span className="text-[14px] font-medium text-white pr-4 leading-snug">
-                            {item.question}
-                        </span>
-                        <motion.div
-                            animate={{ rotate: openIndex === index ? 180 : 0 }}
-                            transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
-                            className="flex-shrink-0"
+                        <button
+                            onClick={() => setOpenIndex(isOpen ? null : index)}
+                            className="w-full flex items-center justify-between gap-3 p-4 sm:p-5 text-left active:scale-[0.98] transition-transform"
                         >
-                            <ChevronDown className="w-[18px] h-[18px] text-white" />
-                        </motion.div>
-                    </button>
-                    <AnimatePresence initial={false}>
-                        {openIndex === index && (
+                            <span className="text-[14px] sm:text-[15px] font-medium text-white leading-snug flex-1">
+                                {item.question}
+                            </span>
                             <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-                                className="overflow-hidden"
+                                animate={{ rotate: isOpen ? 180 : 0 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                                className="flex-shrink-0 w-7 h-7 rounded-full bg-white/10 flex items-center justify-center"
                             >
-                                <div className="px-4 pb-4 text-[13px] text-white leading-relaxed">
-                                    {item.answer}
-                                </div>
+                                <ChevronDown className="w-4 h-4 text-white/80" />
                             </motion.div>
-                        )}
-                    </AnimatePresence>
-                </motion.div>
-            ))}
+                        </button>
+                        <AnimatePresence initial={false}>
+                            {isOpen && (
+                                <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+                                    className="overflow-hidden"
+                                >
+                                    <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-0">
+                                        <div className="h-px bg-white/10 mb-3" />
+                                        <p className="text-[13px] sm:text-[14px] text-white/90 leading-relaxed">
+                                            {item.answer}
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </motion.div>
+                );
+            })}
         </div>
     );
 }
@@ -197,27 +208,31 @@ export default function SupportPage() {
 
             {/* ── System Status ────────────────────────────── */}
             <motion.div variants={fadeUp}>
-                <div className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 bg-gradient-to-br from-[#3871F1]/10 to-[#3871F1]/5 dark:from-[#3871F1]/20 dark:to-[#3871F1]/5">
-                    <div className="flex items-center gap-3">
+                <div className="fintech-glass-card !rounded-2xl !p-5 bg-gradient-to-br from-primary/10 to-primary/5">
+                    <div className="flex items-center gap-4">
                         <div className="relative flex-shrink-0">
-                            <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
-                                <CheckCircle2 className="w-[18px] h-[18px] text-white" />
+                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 flex items-center justify-center">
+                                <Activity className="w-6 h-6 text-emerald-400" />
                             </div>
-                            <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-white/60 border-2 border-background animate-pulse" />
+                            <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-black/30 animate-pulse" />
                         </div>
-                        <div className="min-w-0">
-                            <p className="text-[14px] font-semibold text-white">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-[16px] font-semibold text-white">
                                 Sistema Operacional
                             </p>
-                            <p className="text-[12px] text-white">
+                            <p className="text-[13px] text-white/80 mt-0.5">
                                 Todos os serviços funcionando normalmente
                             </p>
+                        </div>
+                        <div className="flex-shrink-0 hidden sm:flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                            <span className="text-[12px] font-medium text-emerald-400">Online</span>
                         </div>
                     </div>
                 </div>
             </motion.div>
 
-            {/* ── Contact Methods (horizontal scroll on mobile) ── */}
+            {/* ── Contact Methods ─────────────────────────── */}
             <motion.div variants={fadeUp}>
                 <p className="text-[15px] font-semibold text-white mb-3 px-0.5">
                     Fale conosco
@@ -228,61 +243,67 @@ export default function SupportPage() {
                         href="https://wa.me/5511999999999"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 min-w-[160px] flex-1 snap-start active:scale-95 transition-transform group"
+                        className="fintech-glass-card !rounded-2xl !p-0 min-w-[170px] flex-1 snap-start active:scale-[0.96] transition-transform group"
                     >
-                        <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center mb-3">
-                            <MessageCircle className="w-5 h-5 text-white" />
+                        <div className="p-4 sm:p-5">
+                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 flex items-center justify-center mb-3">
+                                <MessageCircle className="w-5 h-5 text-emerald-400" />
+                            </div>
+                            <div className="flex items-center gap-1.5 mb-1.5">
+                                <span className="text-[15px] font-semibold text-white">
+                                    WhatsApp
+                                </span>
+                                <ExternalLink className="w-3.5 h-3.5 text-white/40 group-hover:text-white/80 transition-colors" />
+                            </div>
+                            <p className="text-[13px] text-white/80 leading-snug">
+                                Atendimento rápido
+                            </p>
+                            <p className="text-[12px] text-white/60 mt-2">
+                                Seg-Sex 9h-18h
+                            </p>
                         </div>
-                        <div className="flex items-center gap-1.5 mb-1">
-                            <span className="text-[14px] font-semibold text-white">
-                                WhatsApp
-                            </span>
-                            <ExternalLink className="w-3 h-3 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </div>
-                        <p className="text-[12px] text-white leading-snug">
-                            Atendimento rápido
-                        </p>
-                        <p className="text-[11px] text-white mt-1.5">
-                            Seg-Sex 9h-18h
-                        </p>
                     </a>
 
                     {/* Email */}
                     <a
                         href="mailto:suporte@otsempay.com"
-                        className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 min-w-[160px] flex-1 snap-start active:scale-95 transition-transform group"
+                        className="fintech-glass-card !rounded-2xl !p-0 min-w-[170px] flex-1 snap-start active:scale-[0.96] transition-transform group"
                     >
-                        <div className="w-10 h-10 rounded-2xl bg-[#3871F1]/12 flex items-center justify-center mb-3">
-                            <Mail className="w-5 h-5 text-[#3871F1]" />
+                        <div className="p-4 sm:p-5">
+                            <div className="w-12 h-12 rounded-2xl bg-primary/15 flex items-center justify-center mb-3">
+                                <Mail className="w-5 h-5 text-primary" />
+                            </div>
+                            <div className="flex items-center gap-1.5 mb-1.5">
+                                <span className="text-[15px] font-semibold text-white">
+                                    Email
+                                </span>
+                                <ExternalLink className="w-3.5 h-3.5 text-white/40 group-hover:text-white/80 transition-colors" />
+                            </div>
+                            <p className="text-[13px] text-white/80 leading-snug">
+                                suporte@otsempay.com
+                            </p>
+                            <p className="text-[12px] text-white/60 mt-2">
+                                Resposta em até 24h
+                            </p>
                         </div>
-                        <div className="flex items-center gap-1.5 mb-1">
-                            <span className="text-[14px] font-semibold text-white">
-                                Email
-                            </span>
-                            <ExternalLink className="w-3 h-3 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </div>
-                        <p className="text-[12px] text-white leading-snug">
-                            suporte@otsempay.com
-                        </p>
-                        <p className="text-[11px] text-white mt-1.5">
-                            Resposta em até 24h
-                        </p>
                     </a>
 
                     {/* Phone */}
-                    <div className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 min-w-[160px] flex-1 snap-start">
-                        <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center mb-3">
-                            <Phone className="w-5 h-5 text-white" />
+                    <div className="fintech-glass-card !rounded-2xl !p-0 min-w-[170px] flex-1 snap-start">
+                        <div className="p-4 sm:p-5">
+                            <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center mb-3">
+                                <Phone className="w-5 h-5 text-white" />
+                            </div>
+                            <span className="text-[15px] font-semibold text-white block mb-1.5">
+                                Telefone
+                            </span>
+                            <p className="text-[13px] text-white/80 leading-snug">
+                                (11) 3000-0000
+                            </p>
+                            <p className="text-[12px] text-white/60 mt-2">
+                                Seg-Sex 9h-18h
+                            </p>
                         </div>
-                        <span className="text-[14px] font-semibold text-white block mb-1">
-                            Telefone
-                        </span>
-                        <p className="text-[12px] text-white leading-snug">
-                            (11) 3000-0000
-                        </p>
-                        <p className="text-[11px] text-white mt-1.5">
-                            Seg-Sex 9h-18h
-                        </p>
                     </div>
                 </div>
             </motion.div>
@@ -290,30 +311,36 @@ export default function SupportPage() {
             {/* ── Tutorials ───────────────────────────────── */}
             <motion.div variants={fadeUp}>
                 <div className="flex items-center gap-2 mb-3 px-0.5">
-                    <BookOpen className="w-[18px] h-[18px] text-[#3871F1]" />
+                    <BookOpen className="w-[18px] h-[18px] text-primary" />
                     <p className="text-[15px] font-semibold text-white">
                         Tutoriais Rápidos
                     </p>
                 </div>
                 <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide snap-x snap-mandatory">
                     {tutorials.map((tutorial, index) => (
-                        <button
+                        <motion.button
                             key={index}
+                            whileTap={{ scale: 0.97 }}
+                            transition={{ type: "spring", stiffness: 500, damping: 25 }}
                             onClick={() => toast.info("Tutorial em desenvolvimento")}
-                            className="fintech-glass-card rounded-[20px] p-5 !rounded-[20px] !p-4 min-w-[148px] flex-1 text-left snap-start active:scale-95 transition-transform group"
+                            className="fintech-glass-card !rounded-2xl !p-0 min-w-[155px] flex-1 text-left snap-start group"
                         >
-                            <div className="text-[28px] mb-2.5">{tutorial.icon}</div>
-                            <h3 className="text-[13px] font-semibold text-white mb-0.5 leading-snug">
-                                {tutorial.title}
-                            </h3>
-                            <p className="text-[11px] text-white leading-snug">
-                                {tutorial.description}
-                            </p>
-                            <div className="flex items-center gap-1 text-[#3871F1] text-[11px] font-medium mt-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                Ver tutorial
-                                <ArrowRight className="w-3 h-3" />
+                            <div className="p-4 sm:p-5">
+                                <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
+                                    <tutorial.Icon className="w-5 h-5 text-primary" />
+                                </div>
+                                <h3 className="text-[13px] font-semibold text-white mb-1 leading-snug">
+                                    {tutorial.title}
+                                </h3>
+                                <p className="text-[11px] text-white/70 leading-snug">
+                                    {tutorial.description}
+                                </p>
+                                <div className="flex items-center gap-1 text-primary text-[11px] font-medium mt-3 opacity-70 group-hover:opacity-100 transition-opacity">
+                                    Ver tutorial
+                                    <ArrowRight className="w-3 h-3" />
+                                </div>
                             </div>
-                        </button>
+                        </motion.button>
                     ))}
                 </div>
             </motion.div>
@@ -321,7 +348,7 @@ export default function SupportPage() {
             {/* ── FAQ ─────────────────────────────────────── */}
             <motion.div variants={fadeUp}>
                 <div className="flex items-center gap-2 mb-3 px-0.5">
-                    <HelpCircle className="w-[18px] h-[18px] text-[#3871F1]" />
+                    <HelpCircle className="w-[18px] h-[18px] text-primary" />
                     <p className="text-[15px] font-semibold text-white">
                         Perguntas Frequentes
                     </p>
@@ -331,23 +358,27 @@ export default function SupportPage() {
 
             {/* ── Support Ticket Form ─────────────────────── */}
             <motion.div variants={fadeUp}>
-                <div className="fintech-glass-card rounded-[20px] p-5 !rounded-[22px]">
-                    <div className="flex items-center gap-2 mb-1">
-                        <AlertCircle className="w-[18px] h-[18px] text-[#3871F1]" />
-                        <h2 className="text-[15px] font-semibold text-white">
-                            Abrir Chamado
-                        </h2>
+                <div className="fintech-glass-card !rounded-2xl !p-5 sm:!p-6">
+                    <div className="flex items-center gap-3 mb-1.5">
+                        <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center">
+                            <AlertCircle className="w-[18px] h-[18px] text-primary" />
+                        </div>
+                        <div>
+                            <h2 className="text-[16px] font-semibold text-white">
+                                Abrir Chamado
+                            </h2>
+                        </div>
                     </div>
-                    <p className="text-[13px] text-white mb-5">
+                    <p className="text-[13px] text-white/80 mb-5 ml-12">
                         Não encontrou o que procurava? Envie sua dúvida ou reporte um problema.
                     </p>
 
                     <form onSubmit={handleSubmitTicket} className="space-y-4">
                         <div className="grid sm:grid-cols-2 gap-4">
-                            <div className="space-y-1.5">
+                            <div className="space-y-2">
                                 <Label
                                     htmlFor="subject"
-                                    className="text-[13px] font-medium text-white"
+                                    className="text-[13px] font-medium text-white/90"
                                 >
                                     Assunto
                                 </Label>
@@ -356,18 +387,18 @@ export default function SupportPage() {
                                     value={ticketSubject}
                                     onChange={(e) => setTicketSubject(e.target.value)}
                                     placeholder="Ex: Problema com depósito"
-                                    className="h-11 rounded-xl bg-white/10 border-white/15 text-[14px] placeholder:text-white"
+                                    className="h-12 rounded-xl bg-white/8 border-white/10 text-[14px] text-white placeholder:text-white/40 focus:border-primary/50 focus:ring-primary/20 transition-colors"
                                 />
                             </div>
-                            <div className="space-y-1.5">
+                            <div className="space-y-2">
                                 <Label
                                     htmlFor="category"
-                                    className="text-[13px] font-medium text-white"
+                                    className="text-[13px] font-medium text-white/90"
                                 >
                                     Categoria
                                 </Label>
                                 <Select value={ticketCategory} onValueChange={setTicketCategory}>
-                                    <SelectTrigger className="h-11 rounded-xl bg-white/10 border-white/15 text-[14px]">
+                                    <SelectTrigger className="h-12 rounded-xl bg-white/8 border-white/10 text-[14px] focus:border-primary/50 focus:ring-primary/20 transition-colors">
                                         <SelectValue placeholder="Selecione uma categoria" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -382,10 +413,10 @@ export default function SupportPage() {
                             </div>
                         </div>
 
-                        <div className="space-y-1.5">
+                        <div className="space-y-2">
                             <Label
                                 htmlFor="message"
-                                className="text-[13px] font-medium text-white"
+                                className="text-[13px] font-medium text-white/90"
                             >
                                 Mensagem
                             </Label>
@@ -395,18 +426,18 @@ export default function SupportPage() {
                                 onChange={(e) => setTicketMessage(e.target.value)}
                                 placeholder="Descreva sua dúvida ou problema com o máximo de detalhes possível..."
                                 rows={5}
-                                className="rounded-xl bg-white/10 border-white/15 text-[14px] placeholder:text-white resize-none"
+                                className="rounded-xl bg-white/8 border-white/10 text-[14px] text-white placeholder:text-white/40 resize-none focus:border-primary/50 focus:ring-primary/20 transition-colors"
                             />
                         </div>
 
-                        <div className="flex justify-end pt-1">
+                        <div className="flex justify-end pt-2">
                             <Button
                                 type="submit"
                                 disabled={submitting}
-                                className="h-11 px-6 rounded-xl bg-[#3871F1] hover:bg-[#5C00D6] text-white text-[14px] font-semibold gap-2 active:scale-95 transition-transform shadow-lg shadow-[#3871F1]/25"
+                                className="h-12 px-7 rounded-xl bg-gradient-to-r from-[#6F00FF] to-[#6F00FF] hover:from-[#5800CC] hover:to-[#6F00FF] text-white text-[14px] font-semibold gap-2.5 active:scale-[0.96] transition-transform shadow-lg shadow-primary/25 disabled:opacity-60"
                             >
                                 {submitting ? (
-                                    <span className="flex items-center gap-2">
+                                    <span className="flex items-center gap-2.5">
                                         <motion.div
                                             animate={{ rotate: 360 }}
                                             transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}

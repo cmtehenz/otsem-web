@@ -256,9 +256,9 @@ export default function CustomerPixPage() {
     return (
       <div className="flex h-[80dvh] flex-col items-center justify-center gap-3">
         <div className="relative">
-          <div className="absolute inset-0 rounded-full bg-[#3871F1]/20 blur-xl animate-pulse" />
+          <div className="absolute inset-0 rounded-full bg-[#6F00FF]/20 blur-xl animate-pulse" />
           <div className="relative p-4 rounded-full bg-white/50 dark:bg-white/[0.05] border border-white/60 dark:border-white/[0.08]">
-            <Loader2 className="h-7 w-7 animate-spin text-[#3871F1]" />
+            <Loader2 className="h-7 w-7 animate-spin text-[#6F00FF]" />
           </div>
         </div>
         <p className="text-[13px] text-white">
@@ -297,9 +297,9 @@ export default function CustomerPixPage() {
           className="fintech-glass-card rounded-[20px] p-5 flex flex-col items-center text-center py-14 px-6"
         >
           <div className="relative mb-5">
-            <div className="absolute inset-0 rounded-full bg-[#3871F1]/15 blur-2xl scale-150" />
-            <div className="relative w-16 h-16 rounded-full bg-[#3871F1]/10 flex items-center justify-center">
-              <KeyRound className="w-7 h-7 text-[#3871F1]" />
+            <div className="absolute inset-0 rounded-full bg-[#6F00FF]/15 blur-2xl scale-150" />
+            <div className="relative w-16 h-16 rounded-full bg-[#6F00FF]/10 flex items-center justify-center">
+              <KeyRound className="w-7 h-7 text-[#6F00FF]" />
             </div>
           </div>
 
@@ -313,7 +313,7 @@ export default function CustomerPixPage() {
 
           <button
             onClick={() => setShowModal(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#3871F1] hover:bg-[#396DE6] text-white text-[15px] font-semibold active:scale-95 transition-transform"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#6F00FF] hover:bg-[#8B2FFF] text-white text-[15px] font-semibold active:scale-95 transition-transform"
           >
             <Plus className="w-4 h-4" />
             Cadastrar Chave Pix
@@ -359,7 +359,7 @@ export default function CustomerPixPage() {
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="w-10 h-10 rounded-full bg-[#3871F1] hover:bg-[#396DE6] text-white flex items-center justify-center active:scale-95 transition-transform shadow-lg shadow-[#3871F1]/25"
+          className="w-10 h-10 rounded-full bg-[#6F00FF] hover:bg-[#8B2FFF] text-white flex items-center justify-center active:scale-95 transition-transform shadow-lg shadow-[#6F00FF]/25"
         >
           <Plus className="w-5 h-5" />
         </button>
@@ -370,8 +370,8 @@ export default function CustomerPixPage() {
         variants={fadeUp}
         className="fintech-glass-card rounded-[20px] p-5 !p-3.5 mb-4 flex items-start gap-3"
       >
-        <div className="w-8 h-8 rounded-xl bg-[#3871F1]/10 flex items-center justify-center shrink-0">
-          <ShieldCheck className="w-4 h-4 text-[#3871F1]" />
+        <div className="w-8 h-8 rounded-xl bg-[#6F00FF]/10 flex items-center justify-center shrink-0">
+          <ShieldCheck className="w-4 h-4 text-[#6F00FF]" />
         </div>
         <div className="min-w-0">
           <p className="text-[13px] font-semibold text-white leading-tight">
@@ -417,7 +417,7 @@ export default function CustomerPixPage() {
                   <code className="text-[13px] text-white font-mono truncate max-w-[200px] sm:max-w-none">
                     {pix.keyValue}
                   </code>
-                  <Copy className="w-3 h-3 text-white group-hover:text-[#3871F1] transition-colors shrink-0" />
+                  <Copy className="w-3 h-3 text-white group-hover:text-[#6F00FF] transition-colors shrink-0" />
                 </button>
 
                 {/* Date & error info */}
@@ -460,7 +460,7 @@ export default function CustomerPixPage() {
                     <DropdownMenuItem
                       onClick={() => handleValidate(pix.id)}
                       disabled={validating === pix.id}
-                      className="gap-2 text-[13px] rounded-lg cursor-pointer text-[#3871F1]"
+                      className="gap-2 text-[13px] rounded-lg cursor-pointer text-[#6F00FF]"
                     >
                       {validating === pix.id ? (
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -552,8 +552,8 @@ function AddKeyModal({
                   className={
                     "flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl text-[12px] font-medium active:scale-95 transition-all " +
                     (newType === kt.value
-                      ? "bg-[#3871F1]/10 text-[#3871F1] border-2 border-[#3871F1]/40 shadow-sm"
-                      : "bg-muted/50 border border-border text-foreground hover:border-[#3871F1]/20")
+                      ? "bg-[#6F00FF]/10 text-[#6F00FF] border-2 border-[#6F00FF]/40 shadow-sm"
+                      : "bg-muted/50 border border-border text-foreground hover:border-[#6F00FF]/20")
                   }
                 >
                   <KeyTypeIconComponent type={kt.value} size="sm" />
@@ -619,7 +619,7 @@ function AddKeyModal({
             <button
               type="submit"
               disabled={submitting || (newType !== "RANDOM" && !newValue)}
-              className="flex-1 h-11 rounded-2xl text-[14px] font-semibold text-white bg-[#3871F1] hover:bg-[#396DE6] disabled:opacity-40 disabled:pointer-events-none active:scale-95 transition-transform flex items-center justify-center gap-2"
+              className="flex-1 h-11 rounded-2xl text-[14px] font-semibold text-white bg-[#6F00FF] hover:bg-[#8B2FFF] disabled:opacity-40 disabled:pointer-events-none active:scale-95 transition-transform flex items-center justify-center gap-2"
             >
               {submitting ? (
                 <>

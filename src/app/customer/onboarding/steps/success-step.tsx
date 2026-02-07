@@ -25,7 +25,7 @@ export function SuccessStep() {
 
             <Button
                 onClick={() => router.replace("/customer/dashboard")}
-                className="w-full h-12 rounded-xl bg-[#3871F1] hover:bg-[#3871F1]/90 text-white font-semibold"
+                className="w-full h-12 rounded-xl bg-[#6F00FF] hover:bg-[#6F00FF]/90 text-white font-semibold"
             >
                 Acessar Dashboard
                 <ArrowRight className="h-4 w-4 ml-2" />

@@ -11,13 +11,14 @@ import {
     Receipt,
 } from "lucide-react";
 import { useUiModals } from "@/stores/ui-modals";
+import { iconColors, type IconType } from "@/lib/icon-colors";
 
 type ActionItem = {
     id: string;
     label: string;
     sublabel: string;
     icon: typeof ArrowDownLeft;
-    iconBg: string;
+    colorKey: IconType;
 };
 
 const actions: ActionItem[] = [
@@ -26,49 +27,49 @@ const actions: ActionItem[] = [
         label: "Depositar",
         sublabel: "Via PIX",
         icon: ArrowDownLeft,
-        iconBg: "bg-emerald-500/12",
+        colorKey: "deposit",
     },
     {
         id: "withdraw",
         label: "Transferir",
         sublabel: "PIX para qualquer banco",
         icon: ArrowUpRight,
-        iconBg: "bg-[#3871F1]/12",
+        colorKey: "withdraw",
     },
     {
         id: "convertBrlUsdt",
         label: "Comprar USDT",
         sublabel: "Converter BRL para USDT",
         icon: ArrowRightLeft,
-        iconBg: "bg-[#3871F1]/15",
+        colorKey: "conversion",
     },
     {
         id: "sellUsdt",
         label: "Vender USDT",
         sublabel: "Converter USDT para BRL",
         icon: DollarSign,
-        iconBg: "bg-amber-500/12",
+        colorKey: "sell",
     },
     {
         id: "usernameTransfer",
         label: "Enviar para usuário",
         sublabel: "Transferir BRL por @username",
         icon: UserRoundSearch,
-        iconBg: "bg-[#6C5CE7]/12",
+        colorKey: "transfer",
     },
     {
         id: "sendUsdt",
         label: "Enviar USDT",
         sublabel: "Para carteira externa",
         icon: Send,
-        iconBg: "bg-[#396DE6]/12",
+        colorKey: "send",
     },
     {
         id: "payBoleto",
         label: "Pagar Boleto",
         sublabel: "Pague boletos com crypto",
         icon: Receipt,
-        iconBg: "bg-orange-500/12",
+        colorKey: "boleto",
     },
 ];
 
@@ -134,10 +135,9 @@ export function ActionSheet({
                             }
                         }}
                     >
-                        <div className="relative rounded-t-[24px] overflow-hidden pwa-sheet-safe-bottom backdrop-blur-xl border-t shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.5)]"
+                        <div className="relative rounded-t-[24px] overflow-hidden pwa-sheet-safe-bottom backdrop-blur-xl border-t border-white/[0.08] shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.5)]"
                             style={{
-                                background: "rgba(13, 14, 21, 0.95)",
-                                borderColor: "rgba(163, 186, 239, 0.14)",
+                                background: "rgba(26, 16, 37, 0.95)",
                             }}
                         >
                             <div className="relative px-5 pt-3 pb-4">
@@ -147,48 +147,51 @@ export function ActionSheet({
                                 </div>
 
                                 {/* Title */}
-                                <h3 className="text-[17px] font-bold text-white/92 mb-0.5">
+                                <h3 className="text-[17px] font-bold text-white mb-0.5">
                                     Nova operação
                                 </h3>
-                                <p className="text-[13px] text-white/48 mb-4">
+                                <p className="text-[13px] text-white/50 mb-4">
                                     O que você gostaria de fazer?
                                 </p>
 
                                 {/* Action items */}
                                 <div className="space-y-1">
-                                    {actions.map((action, index) => (
-                                        <motion.button
-                                            key={action.id}
-                                            className="w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl active:bg-white/[0.04] transition-colors"
-                                            initial={{ opacity: 0, y: 12 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            whileTap={{ scale: 0.97 }}
-                                            transition={{
-                                                delay: index * 0.04,
-                                                type: "spring",
-                                                stiffness: 500,
-                                                damping: 25,
-                                            }}
-                                            onClick={() => handleAction(action.id)}
-                                        >
-                                            <div
-                                                className={`flex items-center justify-center w-10 h-10 rounded-full ${action.iconBg}`}
+                                    {actions.map((action, index) => {
+                                        const colors = iconColors[action.colorKey];
+                                        return (
+                                            <motion.button
+                                                key={action.id}
+                                                className="w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl active:bg-white/[0.04] transition-colors"
+                                                initial={{ opacity: 0, y: 12 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                whileTap={{ scale: 0.97 }}
+                                                transition={{
+                                                    delay: index * 0.04,
+                                                    type: "spring",
+                                                    stiffness: 500,
+                                                    damping: 25,
+                                                }}
+                                                onClick={() => handleAction(action.id)}
                                             >
-                                                <action.icon
-                                                    className="w-[18px] h-[18px] text-white/90"
-                                                    strokeWidth={2}
-                                                />
-                                            </div>
-                                            <div className="text-left">
-                                                <p className="text-[15px] font-semibold text-white/92">
-                                                    {action.label}
-                                                </p>
-                                                <p className="text-[12px] text-white/48">
-                                                    {action.sublabel}
-                                                </p>
-                                            </div>
-                                        </motion.button>
-                                    ))}
+                                                <div
+                                                    className={`flex items-center justify-center w-10 h-10 rounded-full ${colors.bg}`}
+                                                >
+                                                    <action.icon
+                                                        className={`w-[18px] h-[18px] ${colors.text}`}
+                                                        strokeWidth={2}
+                                                    />
+                                                </div>
+                                                <div className="text-left">
+                                                    <p className="text-[15px] font-semibold text-white">
+                                                        {action.label}
+                                                    </p>
+                                                    <p className="text-[12px] text-white/50">
+                                                        {action.sublabel}
+                                                    </p>
+                                                </div>
+                                            </motion.button>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>

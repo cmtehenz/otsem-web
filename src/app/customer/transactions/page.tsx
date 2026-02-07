@@ -541,7 +541,7 @@ export default function TransactionsPage() {
 
         if (meta.isTransfer) {
             return (
-                <div className="w-9 h-9 rounded-full bg-[#6C5CE7]/12 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-full bg-[#9B4DFF]/12 flex items-center justify-center">
                     <UserRoundSearch className={`${size} text-[#8E7BFF]`} />
                 </div>
             );
@@ -549,8 +549,8 @@ export default function TransactionsPage() {
 
         if (meta.isConversionTx) {
             return (
-                <div className="w-9 h-9 rounded-full bg-[#3871F1]/12 flex items-center justify-center">
-                    <ArrowRightLeft className={`${size} text-[#396DE6]`} />
+                <div className="w-9 h-9 rounded-full bg-[#6F00FF]/12 flex items-center justify-center">
+                    <ArrowRightLeft className={`${size} text-[#8B2FFF]`} />
                 </div>
             );
         }
@@ -564,8 +564,8 @@ export default function TransactionsPage() {
         }
 
         return (
-            <div className="w-9 h-9 rounded-full bg-[#3871F1]/12 flex items-center justify-center">
-                <ArrowUpRight className={`${size} text-[#396DE6]`} />
+            <div className="w-9 h-9 rounded-full bg-[#6F00FF]/12 flex items-center justify-center">
+                <ArrowUpRight className={`${size} text-[#8B2FFF]`} />
             </div>
         );
     }
@@ -639,9 +639,9 @@ export default function TransactionsPage() {
         return (
             <div className="flex h-[80dvh] flex-col items-center justify-center px-4">
                 <div className="relative">
-                    <div className="absolute inset-0 bg-[#3871F1]/30 rounded-full blur-xl animate-pulse" />
+                    <div className="absolute inset-0 bg-[#6F00FF]/30 rounded-full blur-xl animate-pulse" />
                     <div className="relative">
-                        <Loader2 className="h-10 w-10 animate-spin text-[#3871F1]" />
+                        <Loader2 className="h-10 w-10 animate-spin text-[#6F00FF]" />
                     </div>
                 </div>
                 <p className="text-[13px] text-white mt-6">
@@ -687,7 +687,7 @@ export default function TransactionsPage() {
                                 whitespace-nowrap transition-all duration-200
                                 ${
                                     isActive
-                                        ? "bg-[#3871F1] text-white shadow-lg shadow-[#3871F1]/25"
+                                        ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
                                         : "bg-white/10 border border-white/15 text-white hover:text-white"
                                 }
                             `}
@@ -848,7 +848,7 @@ export default function TransactionsPage() {
                                     text-[13px] font-semibold transition-all duration-200
                                     ${
                                         page === p
-                                            ? "bg-[#3871F1] text-white shadow-lg shadow-[#3871F1]/25"
+                                            ? "bg-[#6F00FF] text-white shadow-lg shadow-[#6F00FF]/25"
                                             : "bg-white/10 border border-white/15 text-white hover:text-white hover:bg-white/15"
                                     }
                                 `}

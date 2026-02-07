@@ -124,7 +124,7 @@ export default function AdminCustomersPage(): React.JSX.Element {
         <div className="flex flex-col gap-4 sm:gap-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-xl sm:text-2xl font-semibold bg-linear-to-r from-indigo-600 to-[#3871F1] bg-clip-text text-transparent">
+                    <h1 className="text-xl sm:text-2xl font-semibold bg-linear-to-r from-indigo-600 to-[#6F00FF] bg-clip-text text-transparent">
                         Clientes
                     </h1>
                     <p className="text-xs sm:text-sm text-muted-foreground">
@@ -192,7 +192,7 @@ export default function AdminCustomersPage(): React.JSX.Element {
                                                 <span className="text-sm font-medium truncate">{getDisplayName(i)}</span>
                                             </div>
                                             {i.username && (
-                                                <p className="text-xs font-medium text-[#3871F1] mt-0.5">@{i.username}</p>
+                                                <p className="text-xs font-medium text-[#6F00FF] mt-0.5">@{i.username}</p>
                                             )}
                                             <p className="text-xs text-muted-foreground mt-1 truncate">{i.email}</p>
                                             <p className="text-[11px] font-mono text-muted-foreground">{getTaxNumber(i)}</p>
@@ -251,7 +251,7 @@ export default function AdminCustomersPage(): React.JSX.Element {
                                                 <div>
                                                     <span>{getDisplayName(i)}</span>
                                                     {i.username && (
-                                                        <p className="text-xs font-medium text-[#3871F1]">@{i.username}</p>
+                                                        <p className="text-xs font-medium text-[#6F00FF]">@{i.username}</p>
                                                     )}
                                                 </div>
                                             </TableCell>

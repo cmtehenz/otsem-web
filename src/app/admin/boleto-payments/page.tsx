@@ -271,10 +271,10 @@ export default function AdminBoletoPaymentsPage() {
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Taxas</CardTitle>
-                            <Banknote className="h-4 w-4 text-[#3871F1]" />
+                            <Banknote className="h-4 w-4 text-[#6F00FF]" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-[#3871F1]">
+                            <div className="text-2xl font-bold text-[#6F00FF]">
                                 {formatCurrency(stats.totalFeesCollected)}
                             </div>
                             <p className="text-xs text-muted-foreground">Total de taxas</p>
@@ -291,7 +291,7 @@ export default function AdminBoletoPaymentsPage() {
                         variant={statusFilter === f.key ? "default" : "outline"}
                         size="sm"
                         onClick={() => setStatusFilter(f.key)}
-                        className={statusFilter === f.key ? "bg-[#3871F1] hover:bg-[#234FB3]" : ""}
+                        className={statusFilter === f.key ? "bg-[#6F00FF] hover:bg-[#5800CC]" : ""}
                     >
                         {f.label}
                     </Button>
@@ -327,7 +327,7 @@ export default function AdminBoletoPaymentsPage() {
                                             <div className="min-w-0 flex-1">
                                                 <p className="font-medium">{payment.customer?.name || "-"}</p>
                                                 {payment.customer?.username && (
-                                                    <p className="text-sm font-medium text-[#3871F1]">
+                                                    <p className="text-sm font-medium text-[#6F00FF]">
                                                         @{payment.customer.username}
                                                     </p>
                                                 )}
@@ -389,7 +389,7 @@ export default function AdminBoletoPaymentsPage() {
                                                             {payment.customer?.name || "-"}
                                                         </p>
                                                         {payment.customer?.username && (
-                                                            <p className="text-xs font-medium text-[#3871F1]">
+                                                            <p className="text-xs font-medium text-[#6F00FF]">
                                                                 @{payment.customer.username}
                                                             </p>
                                                         )}
@@ -465,7 +465,7 @@ export default function AdminBoletoPaymentsPage() {
                                     <p className="text-sm text-muted-foreground">Cliente</p>
                                     <p className="font-medium">{selectedPayment.customer?.name || "-"}</p>
                                     {selectedPayment.customer?.username && (
-                                        <p className="text-sm font-medium text-[#3871F1]">
+                                        <p className="text-sm font-medium text-[#6F00FF]">
                                             @{selectedPayment.customer.username}
                                         </p>
                                     )}
@@ -655,7 +655,7 @@ export default function AdminBoletoPaymentsPage() {
                                         ? "Motivo da rejeição..."
                                         : "Notas sobre o pagamento..."
                                 }
-                                className="w-full px-3 py-2 text-sm bg-muted border border-border rounded-lg focus:border-[#3871F1]/50 focus:ring-2 focus:ring-[#3871F1]/20 focus:outline-none resize-none h-20"
+                                className="w-full px-3 py-2 text-sm bg-muted border border-border rounded-lg focus:border-[#6F00FF]/50 focus:ring-2 focus:ring-[#6F00FF]/20 focus:outline-none resize-none h-20"
                             />
                         </div>
                     )}
