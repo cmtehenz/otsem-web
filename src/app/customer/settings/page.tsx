@@ -172,11 +172,16 @@ export default function SettingsPage() {
 
   // ── Load customer ────────────────────────────
   React.useEffect(() => {
-    async function loadCustomer() {
+    if (!authUser) return;
+
+    let cancelled = false;
+
+    async function loadCustomer(attempt = 1): Promise<void> {
       try {
         const res = await http.get<{ data: CustomerData } | CustomerData>(
           "/customers/me",
         );
+        if (cancelled) return;
         const data =
           "data" in res.data && res.data.data
             ? res.data.data
@@ -195,14 +200,40 @@ export default function SettingsPage() {
           setProfilePhoto(storedPhoto);
         }
       } catch (err) {
+        if (cancelled) return;
+
+        // Retry once after a short delay before showing error
+        if (attempt < 2) {
+          await new Promise((r) => setTimeout(r, 1500));
+          if (!cancelled) return loadCustomer(attempt + 1);
+          return;
+        }
+
         console.error("Erro ao carregar dados:", err);
-        toast.error("Erro ao carregar dados do perfil");
+
+        // Fall back to auth context data if available
+        if (authUser) {
+          setCustomer({
+            id: authUser.id,
+            name: authUser.name || "",
+            email: authUser.email,
+            phone: "",
+            type: "PF",
+          });
+          setName(authUser.name || "");
+          const storedPhoto = getStoredPhoto();
+          if (storedPhoto) setProfilePhoto(storedPhoto);
+        } else {
+          toast.error("Erro ao carregar dados do perfil");
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
     loadCustomer();
-  }, []);
+
+    return () => { cancelled = true; };
+  }, [authUser]);
 
   // ── Handle photo upload ────────────────────
   async function handlePhotoSelect(e: React.ChangeEvent<HTMLInputElement>) {
