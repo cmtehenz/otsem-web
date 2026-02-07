@@ -7,6 +7,7 @@ import {
   Globe,
   Camera,
   KeyRound,
+  Shield,
   ShieldCheck,
   HelpCircle,
   Users,
@@ -20,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import http from "@/lib/http";
 import { useAuth } from "@/contexts/auth-context";
+import { TwoFactorSetup } from "@/components/auth/TwoFactorSetup";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -141,7 +143,7 @@ function SectionTitle({
 
 // ─── Page ──────────────────────────────────────────────────
 export default function SettingsPage() {
-  const { user: _user } = useAuth();
+  const { user: authUser } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
@@ -159,6 +161,9 @@ export default function SettingsPage() {
   const [usernameField, setUsernameField] = React.useState("");
   const [savingUsername, setSavingUsername] = React.useState(false);
   const [hasUsername, setHasUsername] = React.useState(false);
+
+  // 2FA
+  const [twoFactorEnabled, setTwoFactorEnabled] = React.useState(authUser?.twoFactorEnabled ?? false);
 
   // Profile photo
   const [profilePhoto, setProfilePhoto] = React.useState<string | null>(null);
@@ -586,6 +591,20 @@ export default function SettingsPage() {
           </div>
         )}
       </motion.div>
+
+      {/* ── Section: Two-Factor Authentication ──── */}
+      {authUser && (
+        <motion.div variants={fadeUp}>
+          <TwoFactorSetup
+            user={{
+              id: authUser.id,
+              email: authUser.email,
+              twoFactorEnabled,
+            }}
+            onSuccess={() => setTwoFactorEnabled((v) => !v)}
+          />
+        </motion.div>
+      )}
 
       {/* ── Section 2: Preferences ──────────────── */}
       <motion.div variants={fadeUp} className="fintech-glass-card rounded-[20px] p-5">

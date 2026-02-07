@@ -39,6 +39,7 @@
     "settings": "Configuración",
     "balanceAdjustment": "Ajuste de Saldo",
     "bankSettings": "Config. Bancaria",
+    "security": "Seguridad",
     "webhooks": "Webhooks",
     "featureFlags": "Feature Flags",
     "logs": "Logs"

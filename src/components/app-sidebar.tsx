@@ -17,6 +17,7 @@ import {
   Building2,
   Receipt,
   Scale,
+  Shield,
 } from "lucide-react";
 
 import {
@@ -75,6 +76,7 @@ function useNav(): Item[] {
       url: "/admin",
       items: [
         { title: t("bankSettings"), url: "/admin/settings/bank", icon: Building2 },
+        { title: t("security"), url: "/admin/settings/security", icon: Shield },
       ],
     },
   ];

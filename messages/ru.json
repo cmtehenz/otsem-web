@@ -39,6 +39,7 @@
     "settings": "Настройки",
     "balanceAdjustment": "Корректировка баланса",
     "bankSettings": "Настройки банка",
+    "security": "Безопасность",
     "webhooks": "Вебхуки",
     "featureFlags": "Feature Flags",
     "logs": "Логи"
