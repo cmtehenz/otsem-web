@@ -3,7 +3,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowLeft, ChevronDown, TrendingDown, TrendingUp } from "lucide-react";
+import {
+    ArrowLeft,
+    CandlestickChart,
+    ChartLine,
+    ChevronDown,
+    Maximize2,
+    TrendingDown,
+    TrendingUp,
+} from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -208,6 +216,8 @@ export default function ProTradingPage() {
     const [trades, setTrades] = useState<SpotTrade[]>([]);
     const [candles, setCandles] = useState<SpotCandle[]>([]);
     const [timeframe, setTimeframe] = useState<Timeframe>("1h");
+    const [chartMode, setChartMode] = useState<"line" | "candles">("line");
+    const [chartExpanded, setChartExpanded] = useState(false);
     const [spotBalances, setSpotBalances] = useState<SpotBalance[]>([]);
     const [wallets, setWallets] = useState<WalletItem[]>([]);
     const [transferAsset, setTransferAsset] = useState<typeof ASSETS[number]>("USDT");
@@ -231,6 +241,7 @@ export default function ProTradingPage() {
     const [orderType, setOrderType] = useState<"limit" | "market">("limit");
     const [priceInput, setPriceInput] = useState(formatNumber(pair.price, pair.priceDecimals));
     const [amountInput, setAmountInput] = useState("");
+    const [amountDenomination, setAmountDenomination] = useState<"base" | "quote">("base");
     const [placingOrder, setPlacingOrder] = useState(false);
 
     const walletBalances = useMemo(() => {
@@ -274,6 +285,7 @@ export default function ProTradingPage() {
     useEffect(() => {
         setPriceInput(formatNumber(pair.price, pair.priceDecimals));
         setAmountInput("");
+        setAmountDenomination("base");
         setTicker(null);
         setOrderBook(null);
         setTrades([]);
@@ -466,6 +478,67 @@ export default function ProTradingPage() {
             .join(" ");
     }, [chartPoints]);
 
+    const chartCandles = useMemo(() => {
+        if (candleSeries.length >= 2) return candleSeries;
+        if (chartPoints.length < 2) return [];
+
+        const now = Date.now();
+        return chartPoints.map((close, index) => {
+            const prevClose = index === 0 ? close : chartPoints[index - 1];
+            const open = prevClose;
+            const high = Math.max(open, close) * 1.0015;
+            const low = Math.min(open, close) * 0.9985;
+            return {
+                ts: now + index * 60_000,
+                open,
+                high,
+                low,
+                close,
+                volume: 0,
+            };
+        });
+    }, [candleSeries, chartPoints]);
+
+    const candleGeometry = useMemo(() => {
+        if (chartCandles.length < 2) return [];
+        const min = Math.min(...chartCandles.map((candle) => candle.low));
+        const max = Math.max(...chartCandles.map((candle) => candle.high));
+        const range = max - min || 1;
+        const step = 100 / chartCandles.length;
+        const bodyWidth = Math.max(0.9, Math.min(4.5, step * 0.55));
+
+        return chartCandles.map((candle, index) => {
+            const x = (index + 0.5) * step;
+            const openY = 100 - ((candle.open - min) / range) * 100;
+            const closeY = 100 - ((candle.close - min) / range) * 100;
+            const highY = 100 - ((candle.high - min) / range) * 100;
+            const lowY = 100 - ((candle.low - min) / range) * 100;
+            const bodyTop = Math.min(openY, closeY);
+            const bodyHeight = Math.max(Math.abs(openY - closeY), 0.9);
+
+            return {
+                x,
+                highY,
+                lowY,
+                bodyTop,
+                bodyHeight,
+                bullish: candle.close >= candle.open,
+                bodyLeft: x - bodyWidth / 2,
+                bodyWidth,
+            };
+        });
+    }, [chartCandles]);
+
+    const chartOpen = chartCandles[0]?.open ?? lastPrice;
+    const chartClose = chartCandles[chartCandles.length - 1]?.close ?? lastPrice;
+    const chartHigh = chartCandles.length
+        ? Math.max(...chartCandles.map((candle) => candle.high))
+        : high24h;
+    const chartLow = chartCandles.length
+        ? Math.min(...chartCandles.map((candle) => candle.low))
+        : low24h;
+    const chartRangePct = chartOpen > 0 ? ((chartClose - chartOpen) / chartOpen) * 100 : 0;
+
     const depth = useMemo(() => {
         const asksRaw = orderBook?.asks ?? [];
         const bidsRaw = orderBook?.bids ?? [];
@@ -510,15 +583,30 @@ export default function ProTradingPage() {
 
     const isPositive = change >= 0;
     const priceValue = orderType === "market" ? lastPrice : toNumber(priceInput) || lastPrice;
-    const amountValue = toNumber(amountInput);
-    const totalValue = priceValue * amountValue;
+    const amountValueRaw = toNumber(amountInput);
+    const baseAmount = amountDenomination === "base"
+        ? amountValueRaw
+        : priceValue > 0
+            ? amountValueRaw / priceValue
+            : 0;
+    const quoteAmount = amountDenomination === "quote"
+        ? amountValueRaw
+        : baseAmount * priceValue;
+    const totalValue = quoteAmount;
     const feeValue = totalValue * PRO_FEE_RATE;
     const feeRateLabel = (PRO_FEE_RATE * 100).toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
     });
     const netValue = orderSide === "buy" ? totalValue + feeValue : Math.max(0, totalValue - feeValue);
-    const canSubmit = amountValue > 0 && (orderType === "market" || priceValue > 0) && !placingOrder;
+    const hasEnoughBalance = orderSide === "buy"
+        ? availableQuote >= netValue
+        : availableBase >= baseAmount;
+    const canSubmit =
+        baseAmount > 0 &&
+        (orderType === "market" || priceValue > 0) &&
+        hasEnoughBalance &&
+        !placingOrder;
 
     const handlePlaceOrder = async () => {
         if (!canSubmit) return;
@@ -535,13 +623,24 @@ export default function ProTradingPage() {
                 instId: selectedPair,
                 side: orderSide,
                 ordType: orderType,
-                sz: amountValue.toString(),
+                sz: baseAmount.toString(),
             };
             if (orderType === "limit") {
                 payload.px = priceValue.toString();
             }
-            if (orderType === "market" && orderSide === "buy") {
-                payload.tgtCcy = "base_ccy";
+            if (orderType === "market") {
+                if (orderSide === "buy") {
+                    if (amountDenomination === "quote") {
+                        payload.sz = quoteAmount.toString();
+                        payload.tgtCcy = "quote_ccy";
+                    } else {
+                        payload.sz = baseAmount.toString();
+                        payload.tgtCcy = "base_ccy";
+                    }
+                } else {
+                    payload.sz = baseAmount.toString();
+                    payload.tgtCcy = "base_ccy";
+                }
             }
             const res = await http.post("/okx/spot/order", payload);
             const ordId = res.data?.data?.[0]?.ordId || res.data?.data?.[0]?.sCode;
@@ -794,34 +893,117 @@ export default function ProTradingPage() {
                     <span>{formatCompact(vol24h)}</span>
                 </div>
 
-                <div className="mt-4 flex items-center gap-2 overflow-x-auto">
-                    {TIMEFRAMES.map((tf) => (
+                <div className="mt-4 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                        {TIMEFRAMES.map((tf) => (
+                            <button
+                                key={tf}
+                                onClick={() => setTimeframe(tf)}
+                                className={cn(
+                                    "px-2.5 py-1 rounded-full text-[11px] font-semibold border",
+                                    tf === timeframe
+                                        ? "bg-white/15 text-white border-white/20"
+                                        : "bg-white/5 text-white/60 border-white/10"
+                                )}
+                            >
+                                {tf}
+                            </button>
+                        ))}
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
                         <button
-                            key={tf}
-                            onClick={() => setTimeframe(tf)}
+                            type="button"
+                            onClick={() => setChartMode("line")}
                             className={cn(
-                                "px-2.5 py-1 rounded-full text-[11px] font-semibold border",
-                                tf === timeframe
-                                    ? "bg-white/15 text-white border-white/20"
+                                "h-8 w-8 rounded-full border flex items-center justify-center transition-colors",
+                                chartMode === "line"
+                                    ? "bg-white/15 text-white border-white/25"
                                     : "bg-white/5 text-white/60 border-white/10"
                             )}
+                            aria-label="Ver gráfico em linha"
                         >
-                            {tf}
+                            <ChartLine className="w-4 h-4" />
                         </button>
-                    ))}
+                        <button
+                            type="button"
+                            onClick={() => setChartMode("candles")}
+                            className={cn(
+                                "h-8 w-8 rounded-full border flex items-center justify-center transition-colors",
+                                chartMode === "candles"
+                                    ? "bg-white/15 text-white border-white/25"
+                                    : "bg-white/5 text-white/60 border-white/10"
+                            )}
+                            aria-label="Ver gráfico em candles"
+                        >
+                            <CandlestickChart className="w-4 h-4" />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setChartExpanded(true)}
+                            className="h-8 w-8 rounded-full border bg-white/5 border-white/10 text-white/70 flex items-center justify-center hover:bg-white/12 transition-colors"
+                            aria-label="Expandir gráfico"
+                        >
+                            <Maximize2 className="w-4 h-4" />
+                        </button>
+                    </div>
                 </div>
 
-                <div className="mt-4 h-36 rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+                <button
+                    type="button"
+                    onClick={() => setChartExpanded(true)}
+                    className="mt-4 relative w-full h-36 rounded-2xl bg-white/5 border border-white/10 overflow-hidden text-left"
+                >
+                    <div className="absolute top-2.5 right-2.5 z-10 px-2 py-1 rounded-full bg-black/30 border border-white/15 text-[10px] font-semibold text-white/90">
+                        Expandir
+                    </div>
                     <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
                         <defs>
-                            <linearGradient id="pro-chart" x1="0" x2="0" y1="0" y2="1">
+                            <linearGradient id="pro-chart-mini" x1="0" x2="0" y1="0" y2="1">
                                 <stop offset="0%" stopColor="#6F00FF" stopOpacity="0.45" />
                                 <stop offset="100%" stopColor="#6F00FF" stopOpacity="0" />
                             </linearGradient>
                         </defs>
-                        <path d={`${chartPath} L 100 100 L 0 100 Z`} fill="url(#pro-chart)" />
-                        <path d={chartPath} fill="none" stroke="#6F00FF" strokeWidth="1.6" />
+                        {chartMode === "candles" ? (
+                            <>
+                                {candleGeometry.map((candle, index) => (
+                                    <g key={`mini-candle-${index}`}>
+                                        <line
+                                            x1={candle.x}
+                                            y1={candle.highY}
+                                            x2={candle.x}
+                                            y2={candle.lowY}
+                                            stroke={candle.bullish ? "#34d399" : "#fb7185"}
+                                            strokeWidth={0.6}
+                                            strokeLinecap="round"
+                                        />
+                                        <rect
+                                            x={candle.bodyLeft}
+                                            y={candle.bodyTop}
+                                            width={candle.bodyWidth}
+                                            height={candle.bodyHeight}
+                                            rx={0.4}
+                                            fill={candle.bullish ? "#34d399" : "#fb7185"}
+                                            opacity={0.95}
+                                        />
+                                    </g>
+                                ))}
+                            </>
+                        ) : (
+                            <>
+                                <path d={`${chartPath} L 100 100 L 0 100 Z`} fill="url(#pro-chart-mini)" />
+                                <path d={chartPath} fill="none" stroke="#6F00FF" strokeWidth="1.6" />
+                            </>
+                        )}
                     </svg>
+                </button>
+                <div className="mt-2 flex items-center justify-between text-[11px] text-white/60">
+                    <span>{chartMode === "candles" ? "Modo candles" : "Modo linha"}</span>
+                    <span className={cn(
+                        "font-semibold tabular-nums",
+                        chartRangePct >= 0 ? "text-emerald-300" : "text-rose-300",
+                    )}>
+                        {chartRangePct >= 0 ? "+" : ""}{chartRangePct.toFixed(2)}%
+                    </span>
                 </div>
             </motion.div>
 
@@ -973,13 +1155,50 @@ export default function ProTradingPage() {
                         />
                     </div>
                     <div className="space-y-1">
-                        <Label className="text-[12px] text-white/70">Quantidade ({pair.base})</Label>
+                        <div className="flex items-center justify-between">
+                            <Label className="text-[12px] text-white/70">
+                                {amountDenomination === "base"
+                                    ? `Quantidade (${pair.base})`
+                                    : `Valor (${pair.quote})`}
+                            </Label>
+                            <ToggleGroup
+                                type="single"
+                                value={amountDenomination}
+                                onValueChange={(value) => value && setAmountDenomination(value as "base" | "quote")}
+                                className="bg-white/5 border border-white/10 rounded-lg overflow-hidden"
+                            >
+                                <ToggleGroupItem
+                                    value="base"
+                                    className="px-2.5 h-7 text-[10px] font-semibold text-white data-[state=on]:bg-white/20"
+                                >
+                                    {pair.base}
+                                </ToggleGroupItem>
+                                <ToggleGroupItem
+                                    value="quote"
+                                    className="px-2.5 h-7 text-[10px] font-semibold text-white data-[state=on]:bg-white/20"
+                                >
+                                    {pair.quote}
+                                </ToggleGroupItem>
+                            </ToggleGroup>
+                        </div>
                         <Input
                             value={amountInput}
                             onChange={(e) => setAmountInput(e.target.value)}
-                            placeholder={`0.00 ${pair.base}`}
+                            placeholder={`0.00 ${amountDenomination === "base" ? pair.base : pair.quote}`}
                             className="bg-white/5 border-white/10 text-white"
                         />
+                        {amountValueRaw > 0 && (
+                            <p className="text-[11px] text-white/55">
+                                {amountDenomination === "base"
+                                    ? `≈ ${formatNumber(totalValue, pair.priceDecimals)} ${pair.quote}`
+                                    : `≈ ${formatNumber(baseAmount, pair.qtyDecimals)} ${pair.base}`}
+                            </p>
+                        )}
+                        {orderSide === "sell" && amountDenomination === "quote" && (
+                            <p className="text-[10px] text-white/45">
+                                Em venda por {pair.quote}, o sistema converte para {pair.base} ao enviar a ordem.
+                            </p>
+                        )}
                     </div>
                     <div className="flex items-center justify-between text-[11px] text-white/50">
                         <span>Disponível</span>
@@ -992,21 +1211,28 @@ export default function ProTradingPage() {
                     <div className="flex items-center justify-between text-[12px] text-white/60">
                         <span>Total estimado</span>
                         <span className="text-white/90 font-semibold tabular-nums">
-                            {amountValue > 0 ? formatNumber(totalValue, pair.priceDecimals) : "0,00"} USDT
+                            {amountValueRaw > 0 ? formatNumber(totalValue, pair.priceDecimals) : "0,00"} {pair.quote}
                         </span>
                     </div>
                     <div className="flex items-center justify-between text-[12px] text-white/60">
                         <span>Taxa PRO ({feeRateLabel}%)</span>
                         <span className="text-white/80 font-semibold tabular-nums">
-                            {amountValue > 0 ? formatNumber(feeValue, pair.priceDecimals) : "0,00"} USDT
+                            {amountValueRaw > 0 ? formatNumber(feeValue, pair.priceDecimals) : "0,00"} {pair.quote}
                         </span>
                     </div>
                     <div className="flex items-center justify-between text-[12px] text-white/80">
                         <span>{orderSide === "buy" ? "Total com taxa" : "Recebe líquido"}</span>
                         <span className="text-white font-semibold tabular-nums">
-                            {amountValue > 0 ? formatNumber(netValue, pair.priceDecimals) : "0,00"} USDT
+                            {amountValueRaw > 0 ? formatNumber(netValue, pair.priceDecimals) : "0,00"} {pair.quote}
                         </span>
                     </div>
+                    {!hasEnoughBalance && amountValueRaw > 0 && (
+                        <p className="text-[11px] text-rose-300">
+                            {orderSide === "buy"
+                                ? `Saldo insuficiente em ${pair.quote} para cobrir total + taxa.`
+                                : `Saldo insuficiente em ${pair.base} para esta venda.`}
+                        </p>
+                    )}
                     <button
                         type="button"
                         onClick={handlePlaceOrder}
@@ -1198,6 +1424,162 @@ export default function ProTradingPage() {
                     </div>
                 </div>
             </motion.div>
+
+            <BottomSheet open={chartExpanded} onOpenChange={setChartExpanded}>
+                <BottomSheetContent className="max-h-[96dvh] bg-[#0c0518]/95 border-white/15">
+                    <BottomSheetHeader>
+                        <BottomSheetTitle>
+                            Gráfico {pair.base}/{pair.quote}
+                        </BottomSheetTitle>
+                        <BottomSheetDescription>
+                            Visualização expandida com linha/candles e atualização em tempo real.
+                        </BottomSheetDescription>
+                    </BottomSheetHeader>
+
+                    <div className="pb-5 space-y-4">
+                        <div className="flex items-end justify-between gap-3">
+                            <div>
+                                <p className="text-[12px] text-white/60">Último preço</p>
+                                <p className="text-[26px] font-bold text-white tabular-nums">
+                                    {formatNumber(lastPrice, pair.priceDecimals)}
+                                    <span className="text-[12px] font-semibold text-white/60 ml-1">{pair.quote}</span>
+                                </p>
+                            </div>
+                            <div
+                                className={cn(
+                                    "px-2.5 py-1 rounded-full text-[12px] font-semibold tabular-nums",
+                                    chartRangePct >= 0 ? "bg-emerald-500/15 text-emerald-300" : "bg-rose-500/15 text-rose-300",
+                                )}
+                            >
+                                {chartRangePct >= 0 ? "+" : ""}{chartRangePct.toFixed(2)}%
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                                {TIMEFRAMES.map((tf) => (
+                                    <button
+                                        key={`expanded-${tf}`}
+                                        onClick={() => setTimeframe(tf)}
+                                        className={cn(
+                                            "px-3 py-1 rounded-full text-[11px] font-semibold border",
+                                            tf === timeframe
+                                                ? "bg-white/15 text-white border-white/20"
+                                                : "bg-white/5 text-white/60 border-white/10",
+                                        )}
+                                    >
+                                        {tf}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <ToggleGroup
+                                type="single"
+                                value={chartMode}
+                                onValueChange={(value) => value && setChartMode(value as "line" | "candles")}
+                                className="bg-white/5 border border-white/10 rounded-xl overflow-hidden shrink-0"
+                            >
+                                <ToggleGroupItem
+                                    value="line"
+                                    className="px-3 text-[11px] font-semibold text-white data-[state=on]:bg-white/20"
+                                >
+                                    <span className="inline-flex items-center gap-1">
+                                        <ChartLine className="w-3.5 h-3.5" />
+                                        Linha
+                                    </span>
+                                </ToggleGroupItem>
+                                <ToggleGroupItem
+                                    value="candles"
+                                    className="px-3 text-[11px] font-semibold text-white data-[state=on]:bg-white/20"
+                                >
+                                    <span className="inline-flex items-center gap-1">
+                                        <CandlestickChart className="w-3.5 h-3.5" />
+                                        Candles
+                                    </span>
+                                </ToggleGroupItem>
+                            </ToggleGroup>
+                        </div>
+
+                        <div className="relative h-[52vh] rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+                            <div className="absolute inset-0 pointer-events-none">
+                                {[20, 40, 60, 80].map((line) => (
+                                    <div
+                                        key={`chart-grid-${line}`}
+                                        className="absolute left-0 right-0 border-t border-white/8"
+                                        style={{ top: `${line}%` }}
+                                    />
+                                ))}
+                            </div>
+                            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full relative z-10">
+                                <defs>
+                                    <linearGradient id="pro-chart-expanded" x1="0" x2="0" y1="0" y2="1">
+                                        <stop offset="0%" stopColor="#6F00FF" stopOpacity="0.42" />
+                                        <stop offset="100%" stopColor="#6F00FF" stopOpacity="0.02" />
+                                    </linearGradient>
+                                </defs>
+                                {chartMode === "candles" ? (
+                                    <>
+                                        {candleGeometry.map((candle, index) => (
+                                            <g key={`expanded-candle-${index}`}>
+                                                <line
+                                                    x1={candle.x}
+                                                    y1={candle.highY}
+                                                    x2={candle.x}
+                                                    y2={candle.lowY}
+                                                    stroke={candle.bullish ? "#34d399" : "#fb7185"}
+                                                    strokeWidth={0.42}
+                                                    strokeLinecap="round"
+                                                />
+                                                <rect
+                                                    x={candle.bodyLeft}
+                                                    y={candle.bodyTop}
+                                                    width={candle.bodyWidth}
+                                                    height={candle.bodyHeight}
+                                                    rx={0.28}
+                                                    fill={candle.bullish ? "#34d399" : "#fb7185"}
+                                                    opacity={0.98}
+                                                />
+                                            </g>
+                                        ))}
+                                    </>
+                                ) : (
+                                    <>
+                                        <path d={`${chartPath} L 100 100 L 0 100 Z`} fill="url(#pro-chart-expanded)" />
+                                        <path d={chartPath} fill="none" stroke="#9B4DFF" strokeWidth="1.1" />
+                                    </>
+                                )}
+                            </svg>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2">
+                            <div className="rounded-xl bg-white/5 border border-white/10 p-2.5">
+                                <p className="text-[10px] text-white/55">Abertura</p>
+                                <p className="text-[12px] font-semibold text-white tabular-nums">
+                                    {formatNumber(chartOpen, pair.priceDecimals)} {pair.quote}
+                                </p>
+                            </div>
+                            <div className="rounded-xl bg-white/5 border border-white/10 p-2.5">
+                                <p className="text-[10px] text-white/55">Fechamento</p>
+                                <p className="text-[12px] font-semibold text-white tabular-nums">
+                                    {formatNumber(chartClose, pair.priceDecimals)} {pair.quote}
+                                </p>
+                            </div>
+                            <div className="rounded-xl bg-white/5 border border-white/10 p-2.5">
+                                <p className="text-[10px] text-white/55">Máxima do período</p>
+                                <p className="text-[12px] font-semibold text-white tabular-nums">
+                                    {formatNumber(chartHigh, pair.priceDecimals)} {pair.quote}
+                                </p>
+                            </div>
+                            <div className="rounded-xl bg-white/5 border border-white/10 p-2.5">
+                                <p className="text-[10px] text-white/55">Mínima do período</p>
+                                <p className="text-[12px] font-semibold text-white tabular-nums">
+                                    {formatNumber(chartLow, pair.priceDecimals)} {pair.quote}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </BottomSheetContent>
+            </BottomSheet>
 
             <BottomSheet open={transferOpen} onOpenChange={setTransferOpen}>
                 <BottomSheetContent>
