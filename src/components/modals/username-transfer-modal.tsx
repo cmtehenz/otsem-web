@@ -96,8 +96,13 @@ export function UsernameTransferModal() {
         setRecipient(null);
 
         try {
+            // Use X-Anonymous to skip Bearer token — the backend's ownership
+            // guard returns 403 when an authenticated customer looks up
+            // another customer's data.  Anonymous access is allowed on this
+            // endpoint (same approach used by RegisterForm).
             const res = await http.get<RecipientInfo>(
-                `/customers/by-username/${encodeURIComponent(cleaned)}`
+                `/customers/by-username/${encodeURIComponent(cleaned)}`,
+                { headers: { "X-Anonymous": "true" } }
             );
             setRecipient(res.data);
             setUsername(cleaned);
@@ -136,7 +141,11 @@ export function UsernameTransferModal() {
             triggerRefresh();
             toast.success("Transferência enviada!");
         } catch (err: unknown) {
-            toast.error(getErrorMessage(err, "Erro ao enviar transferência"));
+            if (isAxiosError(err) && err.response?.status === 403) {
+                toast.error("Sem permissão para realizar transferências. Verifique o status da sua conta.");
+            } else {
+                toast.error(getErrorMessage(err, "Erro ao enviar transferência"));
+            }
         } finally {
             setSending(false);
         }
