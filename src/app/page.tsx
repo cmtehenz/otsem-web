@@ -8,8 +8,8 @@ import HeroSection from "@/components/sections/hero";
 const SectionSkeleton = () => (
   <div className="w-full py-16 animate-pulse">
     <div className="container mx-auto px-4 sm:px-6 space-y-4">
-      <div className="h-8 bg-white/5 rounded-lg w-1/3 mx-auto" />
-      <div className="h-4 bg-white/[0.03] rounded w-2/3 mx-auto" />
+      <div className="h-8 bg-slate-100 rounded-lg w-1/3 mx-auto" />
+      <div className="h-4 bg-slate-50 rounded w-2/3 mx-auto" />
     </div>
   </div>
 );
@@ -42,13 +42,7 @@ const Footer = dynamic(() => import("@/components/sections/footer"), {
 
 export default function Home() {
   return (
-    <div className="relative flex min-h-screen flex-col overflow-x-hidden selection:bg-[#6F00FF]/30 selection:text-white" style={{ background: "url('/bg-gradient.png') center top / cover no-repeat fixed", backgroundColor: "#050010" }}>
-      {/* Subtle background glow accents */}
-      <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-15%] left-[-15%] w-[70vw] h-[70vw] max-w-[600px] max-h-[600px] bg-[#6F00FF]/8 blur-[80px] rounded-full" />
-        <div className="absolute bottom-[5%] right-[-10%] w-[60vw] h-[60vw] max-w-[500px] max-h-[500px] bg-[#6F00FF]/6 blur-[80px] rounded-full" />
-      </div>
-
+    <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-white selection:bg-[#6F00FF]/15 selection:text-[#6F00FF]">
       <Header />
       <main className="flex-grow w-full">
         <HeroSection />
