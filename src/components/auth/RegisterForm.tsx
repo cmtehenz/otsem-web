@@ -198,7 +198,7 @@ export default function RegisterForm(): React.JSX.Element {
         <Suspense fallback={
             <div
                 className="grid min-h-screen place-items-center text-sm text-white/50"
-                style={{ background: "url('/bg-gradient.png') center top / cover no-repeat", backgroundColor: "#050010" }}
+                style={{ background: "url('/images/Untitled.png') center top / cover no-repeat", backgroundColor: "#050010" }}
             >
                 Carregando...
             </div>
@@ -391,7 +391,7 @@ function RegisterPageInner(): React.JSX.Element {
     }
 
     return (
-        <div className="relative min-h-screen w-full overflow-hidden" style={{ background: "url('/bg-gradient.png') center top / cover no-repeat", backgroundColor: "#050010" }}>
+        <div className="relative min-h-screen w-full overflow-hidden" style={{ background: "url('/images/Untitled.png') center top / cover no-repeat", backgroundColor: "#050010" }}>
             <div className="pointer-events-none absolute inset-0 -z-10">
                 <motion.div
                     animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.15, 1] }}

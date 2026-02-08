@@ -50,7 +50,7 @@ function safeNext(nextParam: string | null | undefined, fallback = '/customer/da
 export default function LoginPageClient(): React.JSX.Element {
     return (
         <Suspense fallback={
-            <div className="fixed inset-0 grid place-items-center overflow-hidden text-sm text-white/50" style={{ overscrollBehavior: 'none', background: "url('/bg-gradient.png') center top / cover no-repeat", backgroundColor: '#050010' }}>
+            <div className="fixed inset-0 grid place-items-center overflow-hidden text-sm text-white/50" style={{ overscrollBehavior: 'none', background: "url('/images/Untitled.png') center top / cover no-repeat", backgroundColor: '#050010' }}>
                 ...
             </div>
         }>
@@ -157,7 +157,7 @@ function LoginPageInner(): React.JSX.Element {
     // Show 2FA verification if required
     if (requires2FA) {
         return (
-            <div className="fixed inset-0 overflow-hidden" style={{ overscrollBehavior: 'none', touchAction: 'pan-x', background: "url('/bg-gradient.png') center top / cover no-repeat", backgroundColor: '#050010' }}>
+            <div className="fixed inset-0 overflow-hidden" style={{ overscrollBehavior: 'none', touchAction: 'pan-x', background: "url('/images/Untitled.png') center top / cover no-repeat", backgroundColor: '#050010' }}>
                 {!isPwa && (
                     <div className="fixed top-6 left-6 z-50">
                         <motion.button
@@ -184,7 +184,7 @@ function LoginPageInner(): React.JSX.Element {
     }
 
     return (
-        <div className="fixed inset-0 overflow-hidden" style={{ overscrollBehavior: 'none', touchAction: 'pan-x', background: "url('/bg-gradient.png') center top / cover no-repeat", backgroundColor: '#050010' }}>
+        <div className="fixed inset-0 overflow-hidden" style={{ overscrollBehavior: 'none', touchAction: 'pan-x', background: "url('/images/Untitled.png') center top / cover no-repeat", backgroundColor: '#050010' }}>
             {!isPwa && (
                 <div className="fixed top-6 left-6 z-50">
                     <Link href="/">

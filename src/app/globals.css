@@ -201,7 +201,7 @@
            The `background` shorthand resets background-color to transparent,
            which exposes the white iOS window behind the home indicator area. */
         background-color: #050010;
-        background-image: url('/bg-gradient.png');
+        background-image: url('/images/Untitled.png');
         background-size: cover;
         background-position: center top;
         background-repeat: no-repeat;
@@ -665,13 +665,13 @@
         right: 0;
         bottom: -50px;
         z-index: 0;
-        background: url('/bg-gradient.png') center / cover no-repeat;
+        background: url('/images/Untitled.png') center / cover no-repeat;
         pointer-events: none;
     }
 
     /* ── Container gradient — applied directly as background, no z-index needed ─── */
     .fintech-bg-container {
-        background: url('/bg-gradient.png') center / cover no-repeat;
+        background: url('/images/Untitled.png') center / cover no-repeat;
         /* Default height for browser mode (same as Tailwind h-dvh).
            Standalone PWA mode overrides this below to include safe area. */
         height: 100dvh;
@@ -854,12 +854,12 @@
         right: 0;
         bottom: -50px;
         z-index: 0;
-        background: url('/bg-gradient.png') center top / cover no-repeat;
+        background: url('/images/Untitled.png') center top / cover no-repeat;
         pointer-events: none;
     }
 
     .dark .customer-app-bg-layer {
-        background: url('/bg-gradient.png') center top / cover no-repeat;
+        background: url('/images/Untitled.png') center top / cover no-repeat;
     }
 
     .social-icon-hover {
