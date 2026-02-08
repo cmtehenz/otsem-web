@@ -10,9 +10,11 @@ import {
     DollarSign,
     UserRoundSearch,
     Receipt,
+    X,
 } from "lucide-react";
 import { useUiModals } from "@/stores/ui-modals";
 import { iconColors, type IconType } from "@/lib/icon-colors";
+import { AppIcon } from "@/components/ui/app-icon";
 
 type ActionItem = {
     id: string;
@@ -111,10 +113,10 @@ export function ActionSheet({
                 <>
                     {/* Overlay */}
                     <motion.div
-                        className="fixed inset-0 z-[60] bg-black/40"
+                        className="fixed inset-0 z-[60] bg-black/45"
                         style={{
-                            WebkitBackdropFilter: "blur(4px)",
-                            backdropFilter: "blur(4px)",
+                            WebkitBackdropFilter: "blur(6px)",
+                            backdropFilter: "blur(6px)",
                         }}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -144,33 +146,49 @@ export function ActionSheet({
                             }
                         }}
                     >
-                        <div className="relative rounded-t-[24px] overflow-hidden pwa-sheet-safe-bottom backdrop-blur-xl border-t border-white/[0.08] shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.5)]"
+                        <div
+                            className="relative mx-3 mb-2 rounded-[30px] overflow-hidden pwa-sheet-safe-bottom border border-white/[0.14] shadow-[0_24px_52px_-18px_rgba(0,0,0,0.55)]"
                             style={{
-                                background: "rgba(26, 16, 37, 0.95)",
+                                background:
+                                    "linear-gradient(150deg, rgba(33, 21, 50, 0.96) 0%, rgba(19, 12, 31, 0.98) 100%)",
                             }}
                         >
-                            <div className="relative px-5 pt-3 pb-4">
+                            <div className="absolute -top-24 -right-16 w-44 h-44 rounded-full bg-[#6F00FF]/30 blur-3xl pointer-events-none" />
+                            <div className="absolute -bottom-24 -left-16 w-44 h-44 rounded-full bg-[#FFB300]/20 blur-3xl pointer-events-none" />
+
+                            <div className="relative px-4 pt-3 pb-4">
                                 {/* Drag handle */}
-                                <div className="flex justify-center mb-3">
-                                    <div className="w-9 h-1 rounded-full bg-white/20" />
+                                <div className="flex justify-center mb-2.5">
+                                    <div className="w-10 h-1 rounded-full bg-white/20" />
                                 </div>
 
-                                {/* Title */}
-                                <h3 className="text-[17px] font-bold text-white mb-0.5">
-                                    Nova operação
-                                </h3>
-                                <p className="text-[13px] text-white/90 mb-4">
-                                    O que você gostaria de fazer?
-                                </p>
+                                <div className="flex items-start justify-between gap-3 mb-4">
+                                    <div>
+                                        <h3 className="text-[18px] font-bold text-white mb-0.5">
+                                            Nova operação
+                                        </h3>
+                                        <p className="text-[12px] text-white">
+                                            Acesse os atalhos mais usados da sua conta.
+                                        </p>
+                                    </div>
+                                    <motion.button
+                                        whileTap={{ scale: 0.92 }}
+                                        onClick={onClose}
+                                        className="shrink-0 w-9 h-9 rounded-full bg-white/[0.08] border border-white/[0.12] flex items-center justify-center active:bg-white/[0.14] transition-colors"
+                                        aria-label="Fechar ações"
+                                    >
+                                        <AppIcon icon={X} size="sm" className="text-white" />
+                                    </motion.button>
+                                </div>
 
                                 {/* Action items */}
-                                <div className="space-y-1">
+                                <div className="grid grid-cols-2 gap-2">
                                     {actions.map((action, index) => {
                                         const colors = iconColors[action.colorKey];
                                         return (
                                             <motion.button
                                                 key={action.id}
-                                                className="w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl active:bg-white/[0.04] transition-colors"
+                                                className="w-full text-left rounded-2xl border border-white/[0.10] bg-white/[0.05] px-3 py-3.5 min-h-[86px] active:bg-white/[0.1] transition-colors"
                                                 initial={{ opacity: 0, y: 12 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 whileTap={{ scale: 0.97 }}
@@ -182,21 +200,20 @@ export function ActionSheet({
                                                 }}
                                                 onClick={() => handleAction(action.id)}
                                             >
-                                                <div
-                                                    className={`flex items-center justify-center w-10 h-10 rounded-full ${colors.bg}`}
-                                                >
-                                                    <action.icon
-                                                        className={`w-[18px] h-[18px] ${colors.text}`}
-                                                        strokeWidth={2}
-                                                    />
-                                                </div>
-                                                <div className="text-left">
-                                                    <p className="text-[15px] font-semibold text-white">
-                                                        {action.label}
-                                                    </p>
-                                                    <p className="text-[12px] text-white/90">
-                                                        {action.sublabel}
-                                                    </p>
+                                                <div className="flex items-start gap-2.5">
+                                                    <div
+                                                        className={`flex items-center justify-center w-9 h-9 rounded-xl ${colors.bg}`}
+                                                    >
+                                                        <AppIcon icon={action.icon} size="md" className={colors.text} />
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <p className="text-[13px] font-semibold text-white leading-tight">
+                                                            {action.label}
+                                                        </p>
+                                                        <p className="text-[11px] text-white mt-1 leading-snug">
+                                                            {action.sublabel}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </motion.button>
                                         );

@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { User } from "lucide-react";
+import { AppIcon } from "@/components/ui/app-icon";
 
 const PHOTO_KEY = "otsem_profile_photo";
 
@@ -141,7 +142,7 @@ export function MobileHeader({ customerName, profilePhotoUrl, username }: { cust
                                         {initials}
                                     </span>
                                 ) : (
-                                    <User className="w-[22px] h-[22px] text-white" strokeWidth={1.8} />
+                                    <AppIcon icon={User} size="nav" className="text-white" />
                                 )}
                             </Link>
                         </motion.div>

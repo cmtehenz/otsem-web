@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ActionSheet } from "./ActionSheet";
+import { AppIcon } from "@/components/ui/app-icon";
 
 const iosSpring = {
     type: "spring" as const,
@@ -143,9 +144,11 @@ export function BottomNav() {
                                                     exit={{ rotate: actionSheetOpen ? 90 : -90, opacity: 0, scale: 0.5 }}
                                                     transition={iosSpring}
                                                 >
-                                                    <Plus
-                                                        className={`w-5.5 h-5.5 text-black ${actionSheetOpen ? "rotate-45" : ""}`}
-                                                        strokeWidth={2.5}
+                                                    <AppIcon
+                                                        icon={Plus}
+                                                        size="lg"
+                                                        className={`text-black ${actionSheetOpen ? "rotate-45" : ""}`}
+                                                        strokeWidth={2.4}
                                                     />
                                                 </motion.div>
                                             </AnimatePresence>
@@ -177,11 +180,12 @@ export function BottomNav() {
                                         whileTap={{ scale: 0.82 }}
                                         transition={iosSpring}
                                     >
-                                        <Icon
-                                            className={`w-[22px] h-[22px] transition-all duration-300 ${
+                                        <AppIcon
+                                            icon={Icon}
+                                            size="nav"
+                                            className={`transition-all duration-300 ${
                                                 isActive ? "text-white" : "text-white/90"
                                             }`}
-                                            strokeWidth={isActive ? 2.2 : 1.6}
                                         />
                                         <span
                                             className={`text-[10px] leading-tight tracking-tight transition-all duration-300 ${
