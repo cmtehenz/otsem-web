@@ -418,14 +418,14 @@ export default function WalletPage() {
                                         key={asset.id}
                                         onClick={() => setSelectedAssetId(asset.id)}
                                         className={`flex items-center justify-center gap-2 p-3.5 rounded-2xl border transition-all active:scale-[0.97] ${
-                                            selectedNetwork === network.id
+                                            selectedAssetId === asset.id
                                                 ? "border-[#FFB300]/50 bg-[#FFB300]/10"
                                                 : "border-white/10 bg-white/5 hover:border-white/15"
                                         }`}
                                     >
-                                        <span className="text-lg">{network.icon}</span>
-                                        <span className="text-[14px] font-medium text-white">{network.name}</span>
-                                        {selectedNetwork === network.id && (
+                                        <span className="text-lg">{asset.icon}</span>
+                                        <span className="text-[14px] font-medium text-white">{asset.name}</span>
+                                        {selectedAssetId === asset.id && (
                                             <Check className="w-4 h-4 text-[#6F00FF]" />
                                         )}
                                     </button>
@@ -468,7 +468,7 @@ export default function WalletPage() {
                                     <Input
                                         value={importAddress}
                                         onChange={(e) => setImportAddress(e.target.value)}
-                                        placeholder={selectedNetwork === "SOLANA" ? "Ex: 7xKXt..." : "Ex: TJYs..."}
+                                        placeholder={selectedAsset.network === "SOLANA" ? "Ex: 7xKXt..." : "Ex: TJYs..."}
                                         className="border-white/10 bg-white/5 text-white placeholder:text-white/30 mt-1 font-mono text-[13px]"
                                     />
                                 </div>
