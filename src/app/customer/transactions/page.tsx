@@ -16,6 +16,8 @@ import http from "@/lib/http";
 import { useAuth } from "@/contexts/auth-context";
 import { TransactionDetailSheet } from "@/components/modals/transaction-detail-sheet";
 import type { Transaction } from "@/types/transaction";
+import { iconColors, iconContainerSmClass } from "@/lib/icon-colors";
+import { AppIcon } from "@/components/ui/app-icon";
 
 type FilterType = "ALL" | "PIX_IN" | "PIX_OUT" | "CONVERSION";
 
@@ -529,43 +531,41 @@ export default function TransactionsPage() {
     // ── Icon helper ─────────────────────────────────────
 
     function getIcon(_tx: Transaction, meta: ReturnType<typeof getTransactionMeta>) {
-        const size = "w-[18px] h-[18px]";
-
         if (meta.isPending) {
             return (
-                <div className="w-9 h-9 rounded-full bg-white/8 flex items-center justify-center">
-                    <ArrowRightLeft className={`${size} text-white`} />
+                <div className={`${iconContainerSmClass} ${iconColors.pending.bg}`}>
+                    <AppIcon icon={ArrowRightLeft} size="sm" className={iconColors.pending.text} />
                 </div>
             );
         }
 
         if (meta.isTransfer) {
             return (
-                <div className="w-9 h-9 rounded-full bg-[#9B4DFF]/12 flex items-center justify-center">
-                    <UserRoundSearch className={`${size} text-[#8E7BFF]`} />
+                <div className={`${iconContainerSmClass} ${iconColors.transfer.bg}`}>
+                    <AppIcon icon={UserRoundSearch} size="sm" className={iconColors.transfer.text} />
                 </div>
             );
         }
 
         if (meta.isConversionTx) {
             return (
-                <div className="w-9 h-9 rounded-full bg-[#6F00FF]/12 flex items-center justify-center">
-                    <ArrowRightLeft className={`${size} text-[#8B2FFF]`} />
+                <div className={`${iconContainerSmClass} ${iconColors.conversion.bg}`}>
+                    <AppIcon icon={ArrowRightLeft} size="sm" className={iconColors.conversion.text} />
                 </div>
             );
         }
 
         if (meta.isIncoming) {
             return (
-                <div className="w-9 h-9 rounded-full bg-emerald-500/12 flex items-center justify-center">
-                    <ArrowDownLeft className={`${size} text-emerald-400`} />
+                <div className={`${iconContainerSmClass} ${iconColors.deposit.bg}`}>
+                    <AppIcon icon={ArrowDownLeft} size="sm" className={iconColors.deposit.text} />
                 </div>
             );
         }
 
         return (
-            <div className="w-9 h-9 rounded-full bg-[#6F00FF]/12 flex items-center justify-center">
-                <ArrowUpRight className={`${size} text-[#8B2FFF]`} />
+            <div className={`${iconContainerSmClass} ${iconColors.withdraw.bg}`}>
+                <AppIcon icon={ArrowUpRight} size="sm" className={iconColors.withdraw.text} />
             </div>
         );
     }
@@ -723,7 +723,7 @@ export default function TransactionsPage() {
                             className="fintech-glass-card rounded-[20px] p-5 rounded-2xl p-10 flex flex-col items-center justify-center"
                         >
                             <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mb-4">
-                                <Inbox className="w-6 h-6 text-white" />
+                                <AppIcon icon={Inbox} size="lg" className="text-white" />
                             </div>
                             <p className="text-[14px] font-medium text-white">
                                 Nenhuma transação encontrada
@@ -826,7 +826,7 @@ export default function TransactionsPage() {
                             ${page === 1 ? "opacity-30 cursor-not-allowed" : "hover:bg-white/15"}
                         `}
                     >
-                        <ChevronLeft className="w-4 h-4 text-white" />
+                        <AppIcon icon={ChevronLeft} size="sm" className="text-white" />
                     </motion.button>
 
                     {/* Page numbers */}
@@ -873,7 +873,7 @@ export default function TransactionsPage() {
                             ${page === totalPages ? "opacity-30 cursor-not-allowed" : "hover:bg-white/15"}
                         `}
                     >
-                        <ChevronRight className="w-4 h-4 text-white" />
+                        <AppIcon icon={ChevronRight} size="sm" className="text-white" />
                     </motion.button>
                 </motion.div>
             )}

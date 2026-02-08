@@ -34,6 +34,13 @@ type UseTopTokensOptions = {
     refreshInterval?: number;
 };
 
+type TopTokensResponse = {
+    tokens: CoinMarketData[];
+    updatedAt: number;
+    stale?: boolean;
+    source?: "coingecko" | "cache" | "stale-cache";
+};
+
 export function useTopTokens(options: UseTopTokensOptions = {}) {
     const {
         currency = "usd",
@@ -56,7 +63,7 @@ export function useTopTokens(options: UseTopTokensOptions = {}) {
         abortRef.current = controller;
 
         try {
-            const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${perPage}&page=1&sparkline=false&price_change_percentage=24h`;
+            const url = `/market-data/top-tokens?currency=${currency}&perPage=${perPage}`;
             const res = await fetch(url, { signal: controller.signal });
 
             if (!res.ok) {
@@ -66,9 +73,9 @@ export function useTopTokens(options: UseTopTokensOptions = {}) {
                 throw new Error(`HTTP ${res.status}`);
             }
 
-            const data: CoinMarketData[] = await res.json();
-            setTokens(data);
-            setUpdatedAt(Date.now());
+            const payload: TopTokensResponse = await res.json();
+            setTokens(payload.tokens || []);
+            setUpdatedAt(payload.updatedAt || Date.now());
         } catch (err: unknown) {
             if (err instanceof Error && err.name === "AbortError") return;
             const message = err instanceof Error ? err.message : "Failed to fetch tokens";

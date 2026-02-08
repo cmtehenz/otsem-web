@@ -21,12 +21,13 @@ import http from "@/lib/http";
 import { useAuth } from "@/contexts/auth-context";
 import { useUsdtRate } from "@/lib/useUsdtRate";
 import { useUiModals } from "@/stores/ui-modals";
-import { iconColors, iconContainerSmClass } from "@/lib/icon-colors";
+import { iconColors, iconContainerClass, iconContainerSmClass, type IconType } from "@/lib/icon-colors";
 import { ConvertModal } from "@/components/modals/convert-modal";
 import { TransactionDetailSheet } from "@/components/modals/transaction-detail-sheet";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { AppIcon } from "@/components/ui/app-icon";
 
 // ─── Types ───────────────────────────────────────────────
 type AccountSummary = {
@@ -139,13 +140,17 @@ const fadeUp = {
 // ─── Circular Quick Action Button (fintech style) ───────
 function QuickAction({
     icon: Icon,
+    colorKey,
     label,
     onClick,
 }: {
     icon: typeof ArrowDownLeft;
+    colorKey: IconType;
     label: string;
     onClick: () => void;
 }) {
+    const colors = iconColors[colorKey];
+
     return (
         <motion.button
             className="flex flex-col items-center gap-1.5"
@@ -153,8 +158,8 @@ function QuickAction({
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 500, damping: 25 }}
         >
-            <div className="flex items-center justify-center w-12 h-12 rounded-full fintech-glass-btn active:bg-white/10 transition-colors">
-                <Icon className="w-[20px] h-[20px] text-white" strokeWidth={1.8} />
+            <div className={`${iconContainerClass} rounded-full fintech-glass-btn active:bg-white/10 transition-colors`}>
+                <AppIcon icon={Icon} size="lg" className={colors.text} />
             </div>
             <span className="text-[12px] font-medium text-white">{label}</span>
         </motion.button>
@@ -235,7 +240,7 @@ function TransactionRow({ tx, onTap }: { tx: Transaction; onTap?: () => void }) 
             onClick={onTap}
         >
             <div className={`${iconContainerSmClass} ${txColors.bg}`}>
-                <IconComponent className={`w-4 h-4 ${txColors.text}`} strokeWidth={2} />
+                <AppIcon icon={IconComponent} size="sm" className={txColors.text} />
             </div>
 
             <div className="flex-1 min-w-0">
@@ -536,9 +541,9 @@ export default function Dashboard() {
                         aria-label={balanceHidden ? "Mostrar saldo" : "Ocultar saldo"}
                     >
                         {balanceHidden ? (
-                            <EyeOff className="w-4 h-4 text-white" />
+                            <AppIcon icon={EyeOff} size="sm" className="text-white" />
                         ) : (
-                            <Eye className="w-4 h-4 text-white" />
+                            <AppIcon icon={Eye} size="sm" className="text-white" />
                         )}
                     </motion.button>
                 </div>
@@ -591,31 +596,37 @@ export default function Dashboard() {
             <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-6 mt-4">
                 <QuickAction
                     icon={ArrowDownLeft}
+                    colorKey="deposit"
                     label="Depositar"
                     onClick={() => openModal("deposit")}
                 />
                 <QuickAction
                     icon={ArrowUpRight}
+                    colorKey="withdraw"
                     label="Transferir"
                     onClick={() => openModal("withdraw")}
                 />
                 <QuickAction
                     icon={ArrowRightLeft}
+                    colorKey="conversion"
                     label="Comprar"
                     onClick={() => setShowConvertModal(true)}
                 />
                 <QuickAction
                     icon={DollarSign}
+                    colorKey="sell"
                     label="Vender"
                     onClick={() => openModal("sellUsdt")}
                 />
                 <QuickAction
                     icon={Download}
+                    colorKey="deposit"
                     label="Receber"
                     onClick={() => openModal("receiveUsdt")}
                 />
                 <QuickAction
                     icon={Receipt}
+                    colorKey="boleto"
                     label="Pagar"
                     onClick={() => openModal("payBoleto")}
                 />
@@ -628,13 +639,13 @@ export default function Dashboard() {
                         className="fintech-glass-card px-4 py-3.5 flex items-center gap-3 active:bg-white/5 transition-colors"
                     >
                         <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#FFB300]/15">
-                            <Sparkles className="w-5 h-5 text-[#FFD54F]" />
+                            <AppIcon icon={Sparkles} size="lg" className="text-[#FFD54F]" />
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-[15px] font-semibold text-white">PRO</p>
                             <p className="text-[12px] text-white/90">Trading spot com livro de ofertas</p>
                         </div>
-                        <ChevronRight className="w-4.5 h-4.5 text-white/70" />
+                        <AppIcon icon={ChevronRight} size="sm" className="text-white/70" />
                     </motion.div>
                 </Link>
             </motion.div>
@@ -647,13 +658,13 @@ export default function Dashboard() {
                         className="fintech-glass-card px-4 py-3.5 flex items-center gap-3 active:bg-white/5 transition-colors"
                     >
                         <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#FFB300]/15">
-                            <TrendingUp className="w-5 h-5 text-[#FFD54F]" />
+                            <AppIcon icon={TrendingUp} size="lg" className="text-[#FFD54F]" />
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-[15px] font-semibold text-white">Mercado cripto</p>
                             <p className="text-[12px] text-white/90">Top 15 tokens em tempo real</p>
                         </div>
-                        <ChevronRight className="w-4.5 h-4.5 text-white/70" />
+                        <AppIcon icon={ChevronRight} size="sm" className="text-white/70" />
                     </motion.div>
                 </Link>
             </motion.div>
@@ -668,7 +679,7 @@ export default function Dashboard() {
                             className="flex items-center gap-0.5 text-[12px] font-medium text-[#FFD54F] active:opacity-80"
                         >
                             Ver tudo
-                            <ChevronRight className="w-3.5 h-3.5" />
+                            <AppIcon icon={ChevronRight} size="xs" />
                         </Link>
                     </div>
 
@@ -688,7 +699,7 @@ export default function Dashboard() {
                     ) : (
                         <div className="flex flex-col items-center py-8">
                             <div className="w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center mb-2">
-                                <ArrowDownLeft className="w-4.5 h-4.5 text-white/90" />
+                                <AppIcon icon={ArrowDownLeft} size="sm" className="text-white/90" />
                             </div>
                             <p className="text-[13px] text-white/90">Nenhuma transação ainda</p>
                         </div>
