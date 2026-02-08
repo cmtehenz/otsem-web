@@ -91,7 +91,7 @@ export default async function RootLayout({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "url('/bg-gradient.png') center top / cover no-repeat",
+            background: "url('/images/Untitled.png') center top / cover no-repeat",
             backgroundColor: "#050010",
             transition: "opacity 0.2s ease-out",
           }}
